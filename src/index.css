@@ -402,6 +402,147 @@ h1 {
   grid-column: 1 / -1;
 }
 
+.facility-alerts {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #dce7df;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.facility-alert-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: end;
+}
+
+.facility-alert-summary h3 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.facility-alert-summary p {
+  margin-bottom: 0;
+  color: #607168;
+  line-height: 1.5;
+}
+
+.facility-alert-kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.facility-alert-kpis span {
+  display: grid;
+  gap: 4px;
+  min-height: 82px;
+  align-content: center;
+  border: 1px solid #e1e9e4;
+  border-radius: 8px;
+  background: #fbfdfb;
+  color: #607168;
+  font-size: 12px;
+  padding: 12px;
+}
+
+.facility-alert-kpis b {
+  color: #17211a;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.facility-alert-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.facility-alert-list article {
+  display: grid;
+  gap: 12px;
+  border: 1px solid #e1e9e4;
+  border-radius: 8px;
+  background: #fbfdfb;
+  padding: 14px;
+}
+
+.facility-alert-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: start;
+}
+
+.facility-alert-head h4 {
+  overflow: hidden;
+  margin: 0 0 4px;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.facility-alert-head span,
+.facility-alert-items small {
+  color: #607168;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.facility-alert-counts {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 2px 6px;
+  align-items: baseline;
+  text-align: right;
+}
+
+.facility-alert-counts b {
+  color: #b42318;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.facility-alert-counts small {
+  color: #607168;
+  font-size: 10px;
+}
+
+.facility-alert-items {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.facility-alert-items div {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+}
+
+.facility-alert-items strong {
+  color: #17211a;
+  font-size: 12px;
+}
+
+.facility-alert-items span {
+  overflow: hidden;
+  color: #34453b;
+  font-size: 12px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.facility-alert-items span small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .warehouse-comparison {
   grid-template-columns: 320px minmax(0, 1fr);
   align-items: start;
@@ -1712,6 +1853,10 @@ td.neutral {
   .field-kpis,
   .field-grid,
   .field-commodity-list,
+  .facility-alert-summary,
+  .facility-alert-kpis,
+  .facility-alert-list,
+  .facility-alert-items,
   .warehouse-comparison,
   .forecast-head,
   .forecast-cards,

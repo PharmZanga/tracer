@@ -479,6 +479,10 @@ function App() {
   const weakestFieldDistricts = tracerFacilityData.districts.slice(0, 8);
   const weakestFieldProgrammes = tracerFacilityData.programmes.slice(0, 8);
   const weakestFieldCommodities = tracerFacilityData.commodities.slice(0, 10);
+  const facilityAlerts = tracerFacilityData.facilities.slice(0, 18);
+  const stockoutFacilityCount = tracerFacilityData.facilities.filter((facility) => facility.stockoutItemCount > 0).length;
+  const lowStockFacilityCount = tracerFacilityData.facilities.filter((facility) => facility.lowStockItemCount > 0).length;
+  const criticalFacility = facilityAlerts[0];
   const fieldToWarehouseComparison = useMemo(() => {
     const latestWarehouseRows = fullCommodityHistory
       .map((item) => ({ ...item, status: classify(item.mos[end]) }))
@@ -622,7 +626,8 @@ function App() {
 
     if (lower.includes("district") || lower.includes("facility") || lower.includes("province")) {
       const districts = weakestFieldDistricts.slice(0, 4).map((row) => `${row.name}, ${row.province} ${formatPercent(row.availability)}`).join("; ");
-      setAssistantAnswer(`End-to-end field view starts from facility commodity rows, rolls them to districts, provinces, and national. Weakest current districts are: ${districts}. Use the field visibility panel to scan province, district, facility-level, programme, and commodity pressure before comparing to ZAMMSA inventory.`);
+      const facilityText = criticalFacility ? ` Highest facility alert: ${criticalFacility.name}, ${criticalFacility.district}, ${criticalFacility.province} with ${criticalFacility.stockoutItemCount} stockout commodities and ${criticalFacility.lowStockItemCount} low-stock commodities.` : "";
+      setAssistantAnswer(`End-to-end field view starts from facility commodity rows, rolls them to districts, provinces, and national. Weakest current districts are: ${districts}.${facilityText} Use the facility alerts panel to see exact stockout and low-stock commodities.`);
       return;
     }
 
@@ -736,6 +741,51 @@ function App() {
             <span>Reporting footprint</span>
             <strong>{tracerFacilityData.counts.districts}</strong>
             <small>{tracerFacilityData.counts.facilityUnits} facility reporting units</small>
+          </div>
+        </div>
+        <div className="facility-alerts">
+          <div className="facility-alert-summary">
+            <div>
+              <p className="eyebrow dark">Weekly Facility Alerts</p>
+              <h3>Facilities with stockouts and low stock</h3>
+              <p>Stockout flags are submitted commodities at or near zero MOS. Low stock flags are commodities below 2 MOS but not yet stocked out.</p>
+            </div>
+            <div className="facility-alert-kpis">
+              <span><b>{stockoutFacilityCount}</b> facilities with stockouts</span>
+              <span><b>{lowStockFacilityCount}</b> facilities with low stock</span>
+            </div>
+          </div>
+          <div className="facility-alert-list">
+            {facilityAlerts.map((facility) => (
+              <article key={`${facility.province}-${facility.district}-${facility.facilityLevel}-${facility.name}`}>
+                <div className="facility-alert-head">
+                  <div>
+                    <h4>{facility.name}</h4>
+                    <span>{facility.district} | {facility.province} | {facility.facilityLevel}</span>
+                  </div>
+                  <div className="facility-alert-counts">
+                    <b>{facility.stockoutItemCount}</b>
+                    <small>stockout</small>
+                    <b>{facility.lowStockItemCount}</b>
+                    <small>low stock</small>
+                  </div>
+                </div>
+                <div className="facility-alert-items">
+                  <div>
+                    <strong>Stockout commodities</strong>
+                    {facility.stockoutItems.length ? facility.stockoutItems.slice(0, 4).map((item) => (
+                      <span key={`${facility.name}-stockout-${item.program}-${item.item}`}>{item.item} <small>{item.program}</small></span>
+                    )) : <span>No stockouts submitted</span>}
+                  </div>
+                  <div>
+                    <strong>Low-stock commodities</strong>
+                    {facility.lowStockItems.length ? facility.lowStockItems.slice(0, 4).map((item) => (
+                      <span key={`${facility.name}-low-${item.program}-${item.item}`}>{item.item} <small>{item.program} | MOS {item.mos}</small></span>
+                    )) : <span>No low-stock items submitted</span>}
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
         <div className="field-grid">

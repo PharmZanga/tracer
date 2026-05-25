@@ -1640,6 +1640,14645 @@ export const tracerFacilityData = {
       "province": "WESTERN PROVINCE"
     }
   ],
+  "facilities": [
+    {
+      "name": "CHINSALI DISTRICT HOSPITAL",
+      "rows": 110,
+      "availability": 0.2636,
+      "mos": 1.12,
+      "stockout": 81,
+      "nearCritical": 8,
+      "understocked": 6,
+      "accordingToPlan": 6,
+      "abovePlan": 9,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 34870.0,
+      "amc": 13750.41,
+      "riskRows": 95,
+      "stockoutRate": 0.7364,
+      "province": "MUCHINGA PROVINCE",
+      "district": "CHINSALI",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 60.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 45.0
+        },
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 20.0
+        },
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 20.0
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 20.0,
+          "amc": 500.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Adrenaline Acid Tartrate 1mg/ml inj, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.5,
+          "quantity": 100.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Dextrose 50% injection 20ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.54,
+          "quantity": 162.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.6,
+          "quantity": 1790.0,
+          "amc": 3000.0
+        },
+        {
+          "item": "Magnesium Sulphate 50% injection, 10ml vial (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.6,
+          "quantity": 30.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Salbutamol Inhaler 0.1mg 1, 2001s, (1)",
+          "program": "OTHER EM",
+          "mos": 0.7,
+          "quantity": 35.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.71,
+          "quantity": 71.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.78,
+          "quantity": 39.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.89,
+          "quantity": 443.0,
+          "amc": 500.0
+        }
+      ],
+      "stockoutItemCount": 81,
+      "lowStockItemCount": 14
+    },
+    {
+      "name": "ALL",
+      "rows": 140,
+      "availability": 0.4357,
+      "mos": 2.59,
+      "stockout": 79,
+      "nearCritical": 4,
+      "understocked": 7,
+      "accordingToPlan": 16,
+      "abovePlan": 34,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 50416.0,
+      "amc": 3208.0,
+      "riskRows": 90,
+      "stockoutRate": 0.5643,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "MUSHINDAMO",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.5,
+          "quantity": 4.0,
+          "amc": 8.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 18's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.5,
+          "quantity": 18.0,
+          "amc": 36.0
+        },
+        {
+          "item": "Amiloride HCl + Hydrochlorothiazide 5/50mg Tablet (1000)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.6,
+          "quantity": 3.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Chlorpheniramine Maleate 4mg Tablet(1000)",
+          "program": "OTHER EM",
+          "mos": 0.67,
+          "quantity": 8.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 1.25,
+          "quantity": 10.0,
+          "amc": 8.0
+        },
+        {
+          "item": "Rapid Diagnostic Test for Malaria kit (25)",
+          "program": "TEST KITS",
+          "mos": 1.29,
+          "quantity": 245.0,
+          "amc": 190.0
+        },
+        {
+          "item": "Benzyl Benzoate Lotion 25% 1(1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 1.44,
+          "quantity": 79.0,
+          "amc": 55.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 1.47,
+          "quantity": 25.0,
+          "amc": 17.0
+        }
+      ],
+      "stockoutItemCount": 79,
+      "lowStockItemCount": 11
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 70,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 27903.0,
+      "amc": 7845.0,
+      "riskRows": 70,
+      "stockoutRate": 1.0,
+      "province": "CENTRAL PROVINCE",
+      "district": "SHIBUYUNJI",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 124.0,
+          "amc": 26.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 315.0,
+          "amc": 62.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 750.0,
+          "amc": 155.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 200.0,
+          "amc": 42.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 435.0,
+          "amc": 107.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 224.0,
+          "amc": 61.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 660.0,
+          "amc": 66.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 63.0,
+          "amc": 16.0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 70,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "KITWE TEACHING",
+      "rows": 70,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 70,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 0.0,
+      "riskRows": 70,
+      "stockoutRate": 1.0,
+      "province": "COPPERBELT PROVINCE",
+      "district": "KITWE",
+      "facilityLevel": "LEVEL 3 ADULT HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Isoflurane 500ml Solution (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Propofol 1% injection, 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml Injection(1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Morphine Sulphate 10mg/ml Injection, 1ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 70,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 70,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 0.0,
+      "riskRows": 70,
+      "stockoutRate": 1.0,
+      "province": "MUCHINGA PROVINCE",
+      "district": "CHINSALI",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 70,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 70,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 0.0,
+      "riskRows": 70,
+      "stockoutRate": 1.0,
+      "province": "MUCHINGA PROVINCE",
+      "district": "CHINSALI",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 70,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 70,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 0.7,
+      "riskRows": 70,
+      "stockoutRate": 1.0,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "CHAVUMA",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 70,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 70,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 12493.0,
+      "riskRows": 70,
+      "stockoutRate": 1.0,
+      "province": "SOUTHERN PROVINCE",
+      "district": "SINAZONGWE",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 49.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 29.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 590.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 25.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 362.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 64.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 120.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 18.0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 70,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 70,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 49153.0,
+      "riskRows": 70,
+      "stockoutRate": 1.0,
+      "province": "SOUTHERN PROVINCE",
+      "district": "SINAZONGWE",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 443.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 235.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1779.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 192.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1318.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 604.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 589.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 114.0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 70,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "KITWE TEACHING",
+      "rows": 90,
+      "availability": 0.3556,
+      "mos": 2.78,
+      "stockout": 58,
+      "nearCritical": 12,
+      "understocked": 9,
+      "accordingToPlan": 3,
+      "abovePlan": 3,
+      "overstock": 5,
+      "dataGap": 0,
+      "quantity": 88333.0,
+      "amc": 110647.02,
+      "riskRows": 79,
+      "stockoutRate": 0.6444,
+      "province": "COPPERBELT PROVINCE",
+      "district": "KITWE",
+      "facilityLevel": "LEVEL 3 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Propofol 1% injection, 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 20.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml Injection(1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 200.0,
+          "amc": 3200.0
+        },
+        {
+          "item": "Ibuprofen 200mg Tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 20.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 1200.0,
+          "amc": 3000.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 500.0,
+          "amc": 1500.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 5000.0
+        },
+        {
+          "item": "Cephalexin 125mg/5ml suspension 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 4000.01
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Omeprazole 20mg Capsule (100)",
+          "program": "GIT",
+          "mos": 0.5,
+          "quantity": 100.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 12's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.52,
+          "quantity": 40.0,
+          "amc": 77.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.54,
+          "quantity": 2700.0,
+          "amc": 5000.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.57,
+          "quantity": 400.0,
+          "amc": 700.0
+        },
+        {
+          "item": "Glibenclamide 5mg tab (100)",
+          "program": "ENDOCRINE",
+          "mos": 0.57,
+          "quantity": 400.0,
+          "amc": 700.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.6,
+          "quantity": 600.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Burret Giving Set 150ml, Disposable (1)",
+          "program": "OTHER MS",
+          "mos": 0.67,
+          "quantity": 300.0,
+          "amc": 450.0
+        },
+        {
+          "item": "Phenobarbitone 200mg/ml, injection 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.7,
+          "quantity": 700.0,
+          "amc": 1000.0
+        }
+      ],
+      "stockoutItemCount": 58,
+      "lowStockItemCount": 21
+    },
+    {
+      "name": "ISOKA DISTRICT HOSPITAL",
+      "rows": 50,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 50,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 8995.0,
+      "riskRows": 50,
+      "stockoutRate": 1.0,
+      "province": "MUCHINGA PROVINCE",
+      "district": "ISOKA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 20.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 28.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 45.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 900.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 45.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 50,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "MUYOMBE DISTRICT HOSPITAL",
+      "rows": 50,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 50,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 646.0,
+      "riskRows": 50,
+      "stockoutRate": 1.0,
+      "province": "MUCHINGA PROVINCE",
+      "district": "MAFINGA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 4.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 3.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 3.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 50,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "MANSA GENERAL HOSPITAL",
+      "rows": 90,
+      "availability": 0.4778,
+      "mos": 1.35,
+      "stockout": 47,
+      "nearCritical": 11,
+      "understocked": 14,
+      "accordingToPlan": 9,
+      "abovePlan": 9,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 85319.0,
+      "amc": 40952.0,
+      "riskRows": 72,
+      "stockoutRate": 0.5222,
+      "province": "LUAPULA PROVINCE",
+      "district": "MANSA",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 150.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 30.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1200.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 456.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 200mg/5ml suspension (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(10)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 325.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 300.0,
+          "amc": 1200.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Ringers Lactate solution 500ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.5,
+          "quantity": 600.0,
+          "amc": 1200.0
+        },
+        {
+          "item": "POP (Plaster of Paris) 7cm x 5m(1)",
+          "program": "OTHER MS",
+          "mos": 0.53,
+          "quantity": 425.0,
+          "amc": 800.0
+        },
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.54,
+          "quantity": 65.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Catheter Foley FR16/ FR18 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.58,
+          "quantity": 700.0,
+          "amc": 1200.0
+        },
+        {
+          "item": "Frusemide 10mg/ml injection, 2ml amp (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.67,
+          "quantity": 800.0,
+          "amc": 1200.0
+        },
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.68,
+          "quantity": 170.0,
+          "amc": 250.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.7,
+          "quantity": 3350.0,
+          "amc": 4800.0
+        },
+        {
+          "item": "Artesunate 60mg injection (1)",
+          "program": "MALARIA",
+          "mos": 0.78,
+          "quantity": 775.0,
+          "amc": 1000.0
+        }
+      ],
+      "stockoutItemCount": 47,
+      "lowStockItemCount": 25
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.3714,
+      "mos": 0.57,
+      "stockout": 44,
+      "nearCritical": 7,
+      "understocked": 13,
+      "accordingToPlan": 5,
+      "abovePlan": 1,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 6084.0,
+      "amc": 9600.0,
+      "riskRows": 64,
+      "stockoutRate": 0.6286,
+      "province": "WESTERN PROVINCE",
+      "district": "LUAMPA DISTRICT",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 66.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 28.0,
+          "amc": 163.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 95.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 886.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 32.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 22.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 23.0,
+          "amc": 71.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 40.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Rapid Diagnostic Test for Malaria kit (25)",
+          "program": "TEST KITS",
+          "mos": 0.51,
+          "quantity": 235.0,
+          "amc": 459.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.52,
+          "quantity": 13.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Vaccine- Inactivated polio (IPV)",
+          "program": "VACCINES",
+          "mos": 0.62,
+          "quantity": 100.0,
+          "amc": 161.0
+        },
+        {
+          "item": "Vaccine- Diptheria, Pertussis, Tetanus (DPT)",
+          "program": "VACCINES",
+          "mos": 0.63,
+          "quantity": 300.0,
+          "amc": 474.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.84,
+          "quantity": 87.0,
+          "amc": 103.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.98,
+          "quantity": 64.0,
+          "amc": 65.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.98,
+          "quantity": 65.0,
+          "amc": 66.0
+        },
+        {
+          "item": "Vaccine- Pneumococcal conjugate (PCV)",
+          "program": "VACCINES",
+          "mos": 1.03,
+          "quantity": 156.0,
+          "amc": 151.0
+        }
+      ],
+      "stockoutItemCount": 44,
+      "lowStockItemCount": 20
+    },
+    {
+      "name": "MUFUMBWE DH",
+      "rows": 100,
+      "availability": 0.58,
+      "mos": 2.33,
+      "stockout": 42,
+      "nearCritical": 6,
+      "understocked": 13,
+      "accordingToPlan": 19,
+      "abovePlan": 20,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 28275.0,
+      "amc": 9061.0,
+      "riskRows": 61,
+      "stockoutRate": 0.42,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "MUFUMBWE",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 15.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 200.0,
+          "amc": 600.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 15.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Suture Silk Non-Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.5,
+          "quantity": 7.0,
+          "amc": 14.0
+        },
+        {
+          "item": "Lidocaine HCl 2% + Adrenaline Dental inj, 1.8ml (100)",
+          "program": "DENTAL",
+          "mos": 0.6,
+          "quantity": 3.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Bandage P.O.P 7.5cm X 2.7m(1)",
+          "program": "OTHER MS",
+          "mos": 0.67,
+          "quantity": 20.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.73,
+          "quantity": 57.0,
+          "amc": 78.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.75,
+          "quantity": 15.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.79,
+          "quantity": 144.0,
+          "amc": 183.0
+        },
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 1.0,
+          "quantity": 18.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Amiloride HCl + Hydrochlorothiazide 5/50mg Tablet (1000)",
+          "program": "CARDIOVASCULAR",
+          "mos": 1.0,
+          "quantity": 2.0,
+          "amc": 2.0
+        }
+      ],
+      "stockoutItemCount": 42,
+      "lowStockItemCount": 19
+    },
+    {
+      "name": "SAMFYA DISTRICT HOSPITAL",
+      "rows": 82,
+      "availability": 0.4878,
+      "mos": 2.13,
+      "stockout": 42,
+      "nearCritical": 4,
+      "understocked": 9,
+      "accordingToPlan": 13,
+      "abovePlan": 14,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 7107.0,
+      "amc": 5366.0,
+      "riskRows": 55,
+      "stockoutRate": 0.5122,
+      "province": "LUAPULA PROVINCE",
+      "district": "SAMFYA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 17.0,
+          "amc": 54.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 25.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 41.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 12.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(10)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 55.0
+        },
+        {
+          "item": "Ceftazidime Injection",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Ciprofloxacin HCl USP 0.3% eye drops 5ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 60.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.5,
+          "quantity": 500.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.58,
+          "quantity": 7.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.87,
+          "quantity": 26.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Timolol 0.5% eye drops (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.9,
+          "quantity": 9.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.0,
+          "quantity": 150.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Betamethasone 0.1% eye/ ear drops 5ml (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 1.0,
+          "quantity": 32.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Cyclopentolate hydrochloride 1% eye drop, 5ml (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 1.0,
+          "quantity": 0,
+          "amc": 62.0
+        },
+        {
+          "item": "Dexamethasone 0.1% w/v eye/ear drops, 5ml (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 1.0,
+          "quantity": 0,
+          "amc": 70.0
+        }
+      ],
+      "stockoutItemCount": 42,
+      "lowStockItemCount": 13
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.4286,
+      "mos": 1.03,
+      "stockout": 40,
+      "nearCritical": 10,
+      "understocked": 9,
+      "accordingToPlan": 6,
+      "abovePlan": 5,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 7504.0,
+      "amc": 6527.0,
+      "riskRows": 59,
+      "stockoutRate": 0.5714,
+      "province": "NORTHERN PROVINCE",
+      "district": "LUPOSOSHI",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 13.0,
+          "amc": 53.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 37.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 600.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 45.0,
+          "amc": 146.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 22.0
+        },
+        {
+          "item": "Abacavir Sulphate/Lamivudine Dispersable 120/60mg Tablet(60)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 41.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 22.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 4.0,
+          "amc": 19.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Gauze absorbent 91cm x 50m roll (1)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.53,
+          "quantity": 9.0,
+          "amc": 17.0
+        },
+        {
+          "item": "Pregnancy Test",
+          "program": "TEST KITS",
+          "mos": 0.53,
+          "quantity": 63.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Needle Luer 21G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.58,
+          "quantity": 7.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.62,
+          "quantity": 5.0,
+          "amc": 8.0
+        },
+        {
+          "item": "Clotrimazole, 20g Tube 1% Cream(1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 0.67,
+          "quantity": 10.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.72,
+          "quantity": 21.0,
+          "amc": 29.0
+        },
+        {
+          "item": "Chlorpheniramine Maleate 4mg Tablet(1000)",
+          "program": "OTHER EM",
+          "mos": 0.75,
+          "quantity": 9.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.78,
+          "quantity": 90.0,
+          "amc": 115.0
+        }
+      ],
+      "stockoutItemCount": 40,
+      "lowStockItemCount": 19
+    },
+    {
+      "name": "CHAVUMA DH",
+      "rows": 100,
+      "availability": 0.6,
+      "mos": 2.66,
+      "stockout": 40,
+      "nearCritical": 4,
+      "understocked": 14,
+      "accordingToPlan": 20,
+      "abovePlan": 22,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 28913.0,
+      "amc": 5068.11,
+      "riskRows": 58,
+      "stockoutRate": 0.4,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "CHAVUMA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 43.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 7.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 720.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Glibenclamide 5mg tab (100)",
+          "program": "ENDOCRINE",
+          "mos": 0.5,
+          "quantity": 1.0,
+          "amc": 2.0
+        },
+        {
+          "item": "Artesunate 60mg injection (1)",
+          "program": "MALARIA",
+          "mos": 0.54,
+          "quantity": 108.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Needle Luer 21G/23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.88,
+          "quantity": 22.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Dextrose 50% injection 20ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.89,
+          "quantity": 17.0,
+          "amc": 19.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 1.0,
+          "quantity": 144.0,
+          "amc": 35.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 1.0,
+          "quantity": 320.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Co-Trimoxazole 480mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.0,
+          "quantity": 211.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.0,
+          "quantity": 690.0,
+          "amc": 128.0
+        }
+      ],
+      "stockoutItemCount": 40,
+      "lowStockItemCount": 18
+    },
+    {
+      "name": "Livingstone UTH",
+      "rows": 90,
+      "availability": 0.5667,
+      "mos": 3.58,
+      "stockout": 39,
+      "nearCritical": 9,
+      "understocked": 11,
+      "accordingToPlan": 12,
+      "abovePlan": 11,
+      "overstock": 8,
+      "dataGap": 0,
+      "quantity": 60431.0,
+      "amc": 43322.0,
+      "riskRows": 59,
+      "stockoutRate": 0.4333,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Livingstone",
+      "facilityLevel": "LEVEL 3 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 80.0
+        },
+        {
+          "item": "Propofol 1% injection, 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1500.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml Injection(1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 500.0
+        },
+        {
+          "item": "Morphine Sulphate 10mg/ml Injection, 1ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 300.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 420.0,
+          "amc": 2500.0
+        },
+        {
+          "item": "Ciprofloxacin Infusion 2mg/ml 1 bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 40.0,
+          "amc": 1000.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Sodium Bicarbonate 8.4% inj 20ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.5,
+          "quantity": 5.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.51,
+          "quantity": 51.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Artesunate 60mg injection (1)",
+          "program": "MALARIA",
+          "mos": 0.55,
+          "quantity": 60.0,
+          "amc": 110.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.57,
+          "quantity": 40.0,
+          "amc": 70.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.72,
+          "quantity": 1450.0,
+          "amc": 2000.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.8,
+          "quantity": 400.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Suture Vicryl Polyglycolic USP (12)",
+          "program": "SUTURE",
+          "mos": 0.83,
+          "quantity": 10.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.88,
+          "quantity": 1760.0,
+          "amc": 2000.0
+        }
+      ],
+      "stockoutItemCount": 39,
+      "lowStockItemCount": 20
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.4429,
+      "mos": 14.21,
+      "stockout": 39,
+      "nearCritical": 0,
+      "understocked": 13,
+      "accordingToPlan": 6,
+      "abovePlan": 7,
+      "overstock": 5,
+      "dataGap": 0,
+      "quantity": 115198.0,
+      "amc": 165005.0,
+      "riskRows": 52,
+      "stockoutRate": 0.5571,
+      "province": "SOUTHERN PROVINCE",
+      "district": "MAZABUKA",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 167.0,
+          "amc": 3200.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 6403.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 80.0,
+          "amc": 1328.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2922.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 56.0,
+          "amc": 194.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 1320.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 646.0,
+          "amc": 8743.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 637.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.0,
+          "quantity": 1104.0,
+          "amc": 1495.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.0,
+          "quantity": 431.0,
+          "amc": 746.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 1.0,
+          "quantity": 3207.0,
+          "amc": 3674.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 1.0,
+          "quantity": 396.0,
+          "amc": 266.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 1.0,
+          "quantity": 1684.0,
+          "amc": 1490.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 1.0,
+          "quantity": 648.0,
+          "amc": 630.0
+        },
+        {
+          "item": "Minigrip Packs 7.5cm X 10.5cm (1000)",
+          "program": "OTHER MS",
+          "mos": 1.0,
+          "quantity": 18716.0,
+          "amc": 27012.0
+        },
+        {
+          "item": "Syringe Disposable 2ml (100)",
+          "program": "SYRINGES",
+          "mos": 1.0,
+          "quantity": 237.0,
+          "amc": 212.0
+        }
+      ],
+      "stockoutItemCount": 39,
+      "lowStockItemCount": 13
+    },
+    {
+      "name": "KABWE CENTRAL",
+      "rows": 70,
+      "availability": 0.4429,
+      "mos": 3.13,
+      "stockout": 39,
+      "nearCritical": 3,
+      "understocked": 7,
+      "accordingToPlan": 2,
+      "abovePlan": 19,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 172996.0,
+      "amc": 42985.0,
+      "riskRows": 49,
+      "stockoutRate": 0.5571,
+      "province": "CENTRAL PROVINCE",
+      "district": "KABWE",
+      "facilityLevel": "LEVEL 3 HOSPITAL",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 40.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Propofol 1% injection, 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 8.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml Injection(1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2899.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg &100mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 60.0,
+          "amc": 1600.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 300.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 227.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 200.0,
+          "amc": 500.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Oxytocin IV 10IU/ml injection 1ml amp (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.65,
+          "quantity": 730.0,
+          "amc": 1127.0
+        },
+        {
+          "item": "Ciprofloxacin Infusion 2mg/ml 1 bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.72,
+          "quantity": 290.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Artesunate 60mg injection (1)",
+          "program": "MALARIA",
+          "mos": 0.86,
+          "quantity": 300.0,
+          "amc": 350.0
+        },
+        {
+          "item": "Labetalol HCL injection BP 5mg/20ml (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 1.0,
+          "quantity": 74.0,
+          "amc": 74.0
+        },
+        {
+          "item": "Insulin Safety 1ml Syringe 31G (100)",
+          "program": "SYRINGES",
+          "mos": 1.2,
+          "quantity": 120.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.22,
+          "quantity": 550.0,
+          "amc": 450.0
+        },
+        {
+          "item": "Phytomenadione(Vit K) 10mg Injection,1ml(1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 1.67,
+          "quantity": 500.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Adrenaline Acid Tartrate 1mg/ml inj, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 1.74,
+          "quantity": 5205.0,
+          "amc": 3000.0
+        }
+      ],
+      "stockoutItemCount": 39,
+      "lowStockItemCount": 10
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.4714,
+      "mos": 1.87,
+      "stockout": 37,
+      "nearCritical": 2,
+      "understocked": 9,
+      "accordingToPlan": 15,
+      "abovePlan": 5,
+      "overstock": 2,
+      "dataGap": 0,
+      "quantity": 2388.0,
+      "amc": 2868.0,
+      "riskRows": 48,
+      "stockoutRate": 0.5286,
+      "province": "SOUTHERN PROVINCE",
+      "district": "NAMWALA",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 22.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 62.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 19.0,
+          "amc": 65.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 80.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 6.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 35.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Rapid Diagnostic Test for Malaria kit (25)",
+          "program": "TEST KITS",
+          "mos": 0.67,
+          "quantity": 2.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Sulphadoxine / Pyrimethamine 500/25mg tablet (100)",
+          "program": "MALARIA",
+          "mos": 0.76,
+          "quantity": 39.0,
+          "amc": 51.0
+        },
+        {
+          "item": "Needle Luer 21G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 1.0,
+          "quantity": 4.0,
+          "amc": 4.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.2,
+          "quantity": 6.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Needle Luer 23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 1.25,
+          "quantity": 5.0,
+          "amc": 4.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.29,
+          "quantity": 27.0,
+          "amc": 21.0
+        },
+        {
+          "item": "Chlorpheniramine Maleate 4mg Tablet(1000)",
+          "program": "OTHER EM",
+          "mos": 1.33,
+          "quantity": 4.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.56,
+          "quantity": 14.0,
+          "amc": 9.0
+        }
+      ],
+      "stockoutItemCount": 37,
+      "lowStockItemCount": 11
+    },
+    {
+      "name": "NCHANGA NORTH GENERAL",
+      "rows": 60,
+      "availability": 0.3833,
+      "mos": 2.98,
+      "stockout": 37,
+      "nearCritical": 5,
+      "understocked": 4,
+      "accordingToPlan": 5,
+      "abovePlan": 5,
+      "overstock": 4,
+      "dataGap": 0,
+      "quantity": 109083.0,
+      "amc": 33575.0,
+      "riskRows": 46,
+      "stockoutRate": 0.6167,
+      "province": "COPPERBELT PROVINCE",
+      "district": "CHINGOLA",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 1500.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 15.0,
+          "amc": 1350.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 70.0,
+          "amc": 550.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 100.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Labetalol HCL injection BP 5mg/20ml (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.5,
+          "quantity": 25.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.55,
+          "quantity": 300.0,
+          "amc": 550.0
+        },
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.73,
+          "quantity": 110.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Lidocaine HCl 2% + Adrenaline Dental inj, 1.8ml (100)",
+          "program": "DENTAL",
+          "mos": 0.75,
+          "quantity": 375.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Catheter Foley FR16/ FR18 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.82,
+          "quantity": 825.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Phytomenadione(Vit K) 10mg Injection,1ml(1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 1.0,
+          "quantity": 400.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 1.1,
+          "quantity": 550.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 1.2,
+          "quantity": 1020.0,
+          "amc": 850.0
+        }
+      ],
+      "stockoutItemCount": 37,
+      "lowStockItemCount": 9
+    },
+    {
+      "name": "LEVY MWANAWASA UTH",
+      "rows": 90,
+      "availability": 0.6111,
+      "mos": 2.2,
+      "stockout": 35,
+      "nearCritical": 16,
+      "understocked": 10,
+      "accordingToPlan": 10,
+      "abovePlan": 19,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 162945.0,
+      "amc": 79507.1,
+      "riskRows": 61,
+      "stockoutRate": 0.3889,
+      "province": "LUSAKA PROVINCE",
+      "district": "LUSAKA",
+      "facilityLevel": "LEVEL 3 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 150.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Propofol 1% injection, 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 1532.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 400.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 70.0,
+          "amc": 825.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 2000.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Cephalexin 125mg/5ml suspension 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 300.0,
+          "amc": 2000.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 700.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Ibuprofen 200mg Tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.52,
+          "quantity": 83.0,
+          "amc": 160.0
+        },
+        {
+          "item": "Dexamethasone sodium phosphate 4mg/ml injection, 1ml (1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.53,
+          "quantity": 530.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.64,
+          "quantity": 320.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Atropine sulphate 1ml/ml injection, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.68,
+          "quantity": 2700.0,
+          "amc": 4000.0
+        },
+        {
+          "item": "Metformin 500mg tablet (1000)",
+          "program": "ENDOCRINE",
+          "mos": 0.71,
+          "quantity": 147.0,
+          "amc": 208.0
+        },
+        {
+          "item": "Bandage P.O.P 7.5cm X 2.7m(1)",
+          "program": "OTHER MS",
+          "mos": 0.71,
+          "quantity": 1200.0,
+          "amc": 1680.0
+        },
+        {
+          "item": "Amphotericin B, 50mg Injection Powder, Liposomal (1)",
+          "program": "ANTIFUNGAL",
+          "mos": 0.72,
+          "quantity": 65.0,
+          "amc": 90.0
+        },
+        {
+          "item": "Nevirapine 50mg/5ml 100ml Suspension(1)",
+          "program": "ART",
+          "mos": 0.73,
+          "quantity": 73.0,
+          "amc": 100.0
+        }
+      ],
+      "stockoutItemCount": 35,
+      "lowStockItemCount": 26
+    },
+    {
+      "name": "KABOMPO DH",
+      "rows": 100,
+      "availability": 0.65,
+      "mos": 4.62,
+      "stockout": 35,
+      "nearCritical": 5,
+      "understocked": 8,
+      "accordingToPlan": 11,
+      "abovePlan": 41,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 52109.2,
+      "amc": 8353.34,
+      "riskRows": 48,
+      "stockoutRate": 0.35,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "KABOMPO",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 110.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 60.0,
+          "amc": 396.6
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 260.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 250.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Gentamycin/dexamethasone eye drops",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.5,
+          "quantity": 28.0,
+          "amc": 55.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.55,
+          "quantity": 12.0,
+          "amc": 22.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.64,
+          "quantity": 7.0,
+          "amc": 11.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.67,
+          "quantity": 2.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Lidocaine HCl 2% + Adrenaline Dental inj, 1.8ml (100)",
+          "program": "DENTAL",
+          "mos": 0.7,
+          "quantity": 50.0,
+          "amc": 70.0
+        },
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 1.0,
+          "quantity": 25.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.08,
+          "quantity": 13.2,
+          "amc": 11.6
+        }
+      ],
+      "stockoutItemCount": 35,
+      "lowStockItemCount": 13
+    },
+    {
+      "name": "CHINSALI GENERAL HOSPITAL",
+      "rows": 35,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 35,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 2297.0,
+      "riskRows": 35,
+      "stockoutRate": 1.0,
+      "province": "MUCHINGA PROVINCE",
+      "district": "CHINSALI",
+      "facilityLevel": "OPTHAMOLOGY UNITS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 200mg/5ml suspension (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        },
+        {
+          "item": "Ceftazidime Injection",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Ciprofloxacin HCl USP 0.3% eye drops 5ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 35,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.5143,
+      "mos": 1.0,
+      "stockout": 34,
+      "nearCritical": 13,
+      "understocked": 12,
+      "accordingToPlan": 7,
+      "abovePlan": 4,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 64403.0,
+      "amc": 61291.0,
+      "riskRows": 59,
+      "stockoutRate": 0.4857,
+      "province": "LUSAKA PROVINCE",
+      "district": "CHONGWE",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 60.0,
+          "amc": 851.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 242.0
+        },
+        {
+          "item": "Abacavir Sulphate/Lamivudine 60/30mg Tablet(60)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 314.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 152.0,
+          "amc": 729.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 58.0,
+          "amc": 249.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 14.0,
+          "amc": 197.0
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 53.0,
+          "amc": 202.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 80.0,
+          "amc": 1077.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.51,
+          "quantity": 480.0,
+          "amc": 950.0
+        },
+        {
+          "item": "Condoms Latex Male (144)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.51,
+          "quantity": 1745.0,
+          "amc": 3449.0
+        },
+        {
+          "item": "Vaccine Tetanus/Deptheria (TD)",
+          "program": "VACCINES",
+          "mos": 0.52,
+          "quantity": 580.0,
+          "amc": 1111.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.53,
+          "quantity": 451.0,
+          "amc": 855.0
+        },
+        {
+          "item": "Plaster Adhesive Zinc Oxide 7.5cm X 5m roll (1)",
+          "program": "OTHER MS",
+          "mos": 0.56,
+          "quantity": 176.0,
+          "amc": 316.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.57,
+          "quantity": 417.0,
+          "amc": 727.0
+        },
+        {
+          "item": "Silver Sulphadiazine 1% Cream 20g tube (1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 0.59,
+          "quantity": 135.0,
+          "amc": 227.0
+        },
+        {
+          "item": "Ethinyloestradiol/Levonorgestrel 130mg/150mcg tablet, cycle (3)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.66,
+          "quantity": 249.0,
+          "amc": 379.0
+        }
+      ],
+      "stockoutItemCount": 34,
+      "lowStockItemCount": 25
+    },
+    {
+      "name": "LUWI MH",
+      "rows": 60,
+      "availability": 0.4333,
+      "mos": 3.17,
+      "stockout": 34,
+      "nearCritical": 0,
+      "understocked": 4,
+      "accordingToPlan": 6,
+      "abovePlan": 16,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 6022.0,
+      "amc": 2377.0,
+      "riskRows": 38,
+      "stockoutRate": 0.5667,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "MWINILUNGA",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 31.0,
+          "amc": 44.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 295.0,
+          "amc": 110.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 524.0,
+          "amc": 0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 46.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 0
+        },
+        {
+          "item": "Phytomenadione(Vit K) 10mg Injection,1ml(1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 205.0,
+          "amc": 13.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Dexamethasone sodium phosphate 4mg/ml injection, 1ml (1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 1.0,
+          "quantity": 130.0,
+          "amc": 137.0
+        },
+        {
+          "item": "Dextrose 50% injection 20ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 1.0,
+          "quantity": 94.0,
+          "amc": 16.0
+        },
+        {
+          "item": "Abdominal Swabs X-Ray Detectable 8ply (5) X-Ray Detectable 8ply (5)",
+          "program": "IMAGING",
+          "mos": 1.0,
+          "quantity": 4.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Oxytocin IV 10IU/ml injection 1ml amp (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 1.0,
+          "quantity": 195.0,
+          "amc": 100.0
+        }
+      ],
+      "stockoutItemCount": 34,
+      "lowStockItemCount": 4
+    },
+    {
+      "name": "LUMWANA DH",
+      "rows": 100,
+      "availability": 0.67,
+      "mos": 3.84,
+      "stockout": 33,
+      "nearCritical": 1,
+      "understocked": 15,
+      "accordingToPlan": 17,
+      "abovePlan": 34,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 65324.0,
+      "amc": 10458.0,
+      "riskRows": 49,
+      "stockoutRate": 0.33,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "KALUMBILA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 20.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 60.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 6.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Co-Trimoxazole 480mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 22.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 400.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.95,
+          "quantity": 475.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.0,
+          "quantity": 3.0,
+          "amc": 8.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.0,
+          "quantity": 33.0,
+          "amc": 136.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 1.0,
+          "quantity": 304.0,
+          "amc": 2.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 1.0,
+          "quantity": 959.0,
+          "amc": 117.0
+        },
+        {
+          "item": "Silver Sulphadiazine 1% Cream 20g tube (1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 1.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Lidocaine HCl 2% + Adrenaline Dental inj, 1.8ml (100)",
+          "program": "DENTAL",
+          "mos": 1.0,
+          "quantity": 200.0,
+          "amc": 1.0
+        },
+        {
+          "item": "Glibenclamide 5mg tab (100)",
+          "program": "ENDOCRINE",
+          "mos": 1.0,
+          "quantity": 10.0,
+          "amc": 10.0
+        }
+      ],
+      "stockoutItemCount": 33,
+      "lowStockItemCount": 16
+    },
+    {
+      "name": "UTH ADULT",
+      "rows": 70,
+      "availability": 0.5286,
+      "mos": 3.47,
+      "stockout": 33,
+      "nearCritical": 5,
+      "understocked": 3,
+      "accordingToPlan": 9,
+      "abovePlan": 20,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 218511.0,
+      "amc": 82809.0,
+      "riskRows": 41,
+      "stockoutRate": 0.4714,
+      "province": "LUSAKA PROVINCE",
+      "district": "LUSAKA",
+      "facilityLevel": "LEVEL 3 ADULT HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Propofol 1% injection, 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 363.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 400.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(14)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 400.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml Injection(1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 400.0,
+          "amc": 3479.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 25.0
+        },
+        {
+          "item": "Ciprofloxacin Infusion 2mg/ml 1 bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 800.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1600.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1584.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Suture Vicryl Polyglycolic USP (12)",
+          "program": "SUTURE",
+          "mos": 0.52,
+          "quantity": 133.0,
+          "amc": 254.0
+        },
+        {
+          "item": "Enalapril 10mg Tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.55,
+          "quantity": 1415.0,
+          "amc": 2560.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.56,
+          "quantity": 950.0,
+          "amc": 1700.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.72,
+          "quantity": 864.0,
+          "amc": 1200.0
+        },
+        {
+          "item": "Frusemide 10mg/ml injection, 2ml amp (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.9,
+          "quantity": 900.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Morphine Sulphate 10mg/ml Injection, 1ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 1.49,
+          "quantity": 1970.0,
+          "amc": 1320.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 1.54,
+          "quantity": 15264.0,
+          "amc": 9930.0
+        },
+        {
+          "item": "Isoflurane 500ml Solution (1)",
+          "program": "ANAESTHESIA",
+          "mos": 1.75,
+          "quantity": 228.0,
+          "amc": 130.0
+        }
+      ],
+      "stockoutItemCount": 33,
+      "lowStockItemCount": 8
+    },
+    {
+      "name": "ALL",
+      "rows": 69,
+      "availability": 0.5362,
+      "mos": 1.42,
+      "stockout": 32,
+      "nearCritical": 12,
+      "understocked": 7,
+      "accordingToPlan": 12,
+      "abovePlan": 6,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 65344.0,
+      "amc": 70700.0,
+      "riskRows": 51,
+      "stockoutRate": 0.4638,
+      "province": "NORTHERN PROVINCE",
+      "district": "MUNGWI",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 102.0,
+          "amc": 600.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 110.0,
+          "amc": 605.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2000.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 436.0,
+          "amc": 988.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 440.0,
+          "amc": 1340.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 39.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 260.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 44.0,
+          "amc": 300.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Vaccine- Measles/Rubella (MR)",
+          "program": "VACCINES",
+          "mos": 0.5,
+          "quantity": 2000.0,
+          "amc": 4000.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.52,
+          "quantity": 1034.0,
+          "amc": 2000.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.6,
+          "quantity": 305.0,
+          "amc": 507.0
+        },
+        {
+          "item": "Suture Chromic Catgut Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.6,
+          "quantity": 122.0,
+          "amc": 205.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.61,
+          "quantity": 616.0,
+          "amc": 1012.0
+        },
+        {
+          "item": "Water for injection 10ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.67,
+          "quantity": 3000.0,
+          "amc": 4500.0
+        },
+        {
+          "item": "Vaccine- Rota Virus (RV)",
+          "program": "VACCINES",
+          "mos": 0.67,
+          "quantity": 3000.0,
+          "amc": 4500.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 6's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.7,
+          "quantity": 234.0,
+          "amc": 336.0
+        }
+      ],
+      "stockoutItemCount": 32,
+      "lowStockItemCount": 19
+    },
+    {
+      "name": "CHIMWEMWE LEVEL 2",
+      "rows": 60,
+      "availability": 0.4667,
+      "mos": 1.58,
+      "stockout": 32,
+      "nearCritical": 4,
+      "understocked": 8,
+      "accordingToPlan": 8,
+      "abovePlan": 8,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 18245.0,
+      "amc": 18115.0,
+      "riskRows": 44,
+      "stockoutRate": 0.5333,
+      "province": "COPPERBELT PROVINCE",
+      "district": "KITWE",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 27.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 25.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 200.0,
+          "amc": 1310.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 65.0,
+          "amc": 145.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 660.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 23.0
+        },
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 185.0,
+          "amc": 410.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 14.0,
+          "amc": 30.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Povidone Iodine 10% 500ml Bottle (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.59,
+          "quantity": 41.0,
+          "amc": 70.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.59,
+          "quantity": 950.0,
+          "amc": 1600.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.63,
+          "quantity": 38.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.83,
+          "quantity": 25.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        },
+        {
+          "item": "Dextrose 50% injection 20ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 1.17,
+          "quantity": 240.0,
+          "amc": 205.0
+        },
+        {
+          "item": "Phytomenadione(Vit K) 10mg Injection,1ml(1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 1.33,
+          "quantity": 200.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.5,
+          "quantity": 3000.0,
+          "amc": 2000.0
+        }
+      ],
+      "stockoutItemCount": 32,
+      "lowStockItemCount": 12
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.5429,
+      "mos": 7.55,
+      "stockout": 32,
+      "nearCritical": 4,
+      "understocked": 6,
+      "accordingToPlan": 11,
+      "abovePlan": 11,
+      "overstock": 6,
+      "dataGap": 0,
+      "quantity": 64714.0,
+      "amc": 21788.9,
+      "riskRows": 42,
+      "stockoutRate": 0.4571,
+      "province": "SOUTHERN PROVINCE",
+      "district": "NAMWALA",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 265.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 17.0,
+          "amc": 375.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 35.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 39.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 550.0,
+          "amc": 1136.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 38.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 22.0,
+          "amc": 46.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Chlorpheniramine Maleate 4mg Tablet(1000)",
+          "program": "OTHER EM",
+          "mos": 0.51,
+          "quantity": 22.0,
+          "amc": 43.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.57,
+          "quantity": 118.0,
+          "amc": 207.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.67,
+          "quantity": 14.0,
+          "amc": 21.0
+        },
+        {
+          "item": "Suture Silk Non-Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.72,
+          "quantity": 13.0,
+          "amc": 18.0
+        },
+        {
+          "item": "Vaccine- Oral Poliovirus (OPV)",
+          "program": "VACCINES",
+          "mos": 1.05,
+          "quantity": 2740.0,
+          "amc": 2618.0
+        },
+        {
+          "item": "Vaccine- Measles/Rubella (MR)",
+          "program": "VACCINES",
+          "mos": 1.16,
+          "quantity": 3554.0,
+          "amc": 3071.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 1.18,
+          "quantity": 20.0,
+          "amc": 17.0
+        },
+        {
+          "item": "Vaccine- Tetanus/Deptheria (TD)",
+          "program": "VACCINES",
+          "mos": 1.69,
+          "quantity": 1500.0,
+          "amc": 888.0
+        }
+      ],
+      "stockoutItemCount": 32,
+      "lowStockItemCount": 10
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.5571,
+      "mos": 1.58,
+      "stockout": 31,
+      "nearCritical": 8,
+      "understocked": 13,
+      "accordingToPlan": 9,
+      "abovePlan": 9,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 24346.0,
+      "amc": 20551.0,
+      "riskRows": 52,
+      "stockoutRate": 0.4429,
+      "province": "LUAPULA PROVINCE",
+      "district": "NCHELENGE",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 39.0,
+          "amc": 102.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 120.0,
+          "amc": 375.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 28.0,
+          "amc": 91.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 18.0,
+          "amc": 244.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 28.0,
+          "amc": 246.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 56.0,
+          "amc": 161.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 40.0,
+          "amc": 961.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 8.0,
+          "amc": 44.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Suture Chromic Catgut Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.52,
+          "quantity": 35.0,
+          "amc": 67.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.56,
+          "quantity": 75.0,
+          "amc": 135.0
+        },
+        {
+          "item": "Standard Q HIV/Syphilis Combo(25)",
+          "program": "TEST KITS",
+          "mos": 0.68,
+          "quantity": 51.0,
+          "amc": 75.0
+        },
+        {
+          "item": "Vaccine- Measles/Rubella (MR)",
+          "program": "VACCINES",
+          "mos": 0.72,
+          "quantity": 418.0,
+          "amc": 584.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 24's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.86,
+          "quantity": 151.0,
+          "amc": 175.0
+        },
+        {
+          "item": "Ethinyloestradiol/Levonorgestrel 130mg/150mcg tablet, cycle (3)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.88,
+          "quantity": 395.0,
+          "amc": 447.0
+        },
+        {
+          "item": "Needle Luer 23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.89,
+          "quantity": 826.0,
+          "amc": 932.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.91,
+          "quantity": 77.0,
+          "amc": 85.0
+        }
+      ],
+      "stockoutItemCount": 31,
+      "lowStockItemCount": 21
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.5571,
+      "mos": 1.6,
+      "stockout": 31,
+      "nearCritical": 6,
+      "understocked": 11,
+      "accordingToPlan": 15,
+      "abovePlan": 7,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 17369.0,
+      "amc": 10443.0,
+      "riskRows": 48,
+      "stockoutRate": 0.4429,
+      "province": "WESTERN PROVINCE",
+      "district": "NKEYEMA DISTRICT",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 39.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 60.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 210.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 35.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 260.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 26.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 35.0,
+          "amc": 195.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 14.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.5,
+          "quantity": 90.0,
+          "amc": 180.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 24's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.61,
+          "quantity": 77.0,
+          "amc": 126.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 18's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.75,
+          "quantity": 63.0,
+          "amc": 84.0
+        },
+        {
+          "item": "Artesunate Rectal CAPSULE 100mg (2)",
+          "program": "MALARIA",
+          "mos": 0.78,
+          "quantity": 35.0,
+          "amc": 45.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.81,
+          "quantity": 84.0,
+          "amc": 104.0
+        },
+        {
+          "item": "Vaccine- Oral Poliovirus (OPV)",
+          "program": "VACCINES",
+          "mos": 0.88,
+          "quantity": 700.0,
+          "amc": 800.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 1.09,
+          "quantity": 231.0,
+          "amc": 211.0
+        },
+        {
+          "item": "Salbutamol Inhaler 0.1mg 1, 2001s, (1)",
+          "program": "OTHER EM",
+          "mos": 1.23,
+          "quantity": 49.0,
+          "amc": 40.0
+        }
+      ],
+      "stockoutItemCount": 31,
+      "lowStockItemCount": 17
+    },
+    {
+      "name": "MPULUNGU DH",
+      "rows": 50,
+      "availability": 0.38,
+      "mos": 1.14,
+      "stockout": 31,
+      "nearCritical": 5,
+      "understocked": 5,
+      "accordingToPlan": 3,
+      "abovePlan": 6,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 4876.0,
+      "amc": 4879.02,
+      "riskRows": 41,
+      "stockoutRate": 0.62,
+      "province": "NORTHERN PROVINCE",
+      "district": "MPULUNGU",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 200.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 70.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.58,
+          "quantity": 29.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.62,
+          "quantity": 31.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.67,
+          "quantity": 200.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Insulin Lente (protaphane) 100IU/ml, 10ml vial (1)",
+          "program": "ENDOCRINE",
+          "mos": 0.77,
+          "quantity": 46.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.8,
+          "quantity": 40.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Ringers Lactate solution 500ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 1.3,
+          "quantity": 39.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 1.4,
+          "quantity": 700.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Acetylsalicylic acid 75mg tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 1.5,
+          "quantity": 150.0,
+          "amc": 100.0
+        }
+      ],
+      "stockoutItemCount": 31,
+      "lowStockItemCount": 10
+    },
+    {
+      "name": "SENGA DH",
+      "rows": 50,
+      "availability": 0.38,
+      "mos": 1.14,
+      "stockout": 31,
+      "nearCritical": 5,
+      "understocked": 5,
+      "accordingToPlan": 3,
+      "abovePlan": 6,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 4876.0,
+      "amc": 5279.01,
+      "riskRows": 41,
+      "stockoutRate": 0.62,
+      "province": "NORTHERN PROVINCE",
+      "district": "SENGA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 200.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 70.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.58,
+          "quantity": 29.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.62,
+          "quantity": 31.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.67,
+          "quantity": 200.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Insulin Lente (protaphane) 100IU/ml, 10ml vial (1)",
+          "program": "ENDOCRINE",
+          "mos": 0.77,
+          "quantity": 46.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.8,
+          "quantity": 40.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Ringers Lactate solution 500ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 1.3,
+          "quantity": 39.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 1.4,
+          "quantity": 700.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Acetylsalicylic acid 75mg tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 1.5,
+          "quantity": 150.0,
+          "amc": 100.0
+        }
+      ],
+      "stockoutItemCount": 31,
+      "lowStockItemCount": 10
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.5714,
+      "mos": 0.99,
+      "stockout": 30,
+      "nearCritical": 19,
+      "understocked": 11,
+      "accordingToPlan": 7,
+      "abovePlan": 3,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 10938.0,
+      "amc": 7780.0,
+      "riskRows": 60,
+      "stockoutRate": 0.4286,
+      "province": "NORTHERN PROVINCE",
+      "district": "MPULUNGU",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 13.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 300.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 30.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 30.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 39.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 6.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Suture Chromic Catgut Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.5,
+          "quantity": 10.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 18's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.53,
+          "quantity": 16.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.54,
+          "quantity": 54.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.54,
+          "quantity": 107.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Promethazine HCl 25mg/ml injection, 2ml amp (1)",
+          "program": "OTHER EM",
+          "mos": 0.54,
+          "quantity": 65.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Dextrose 50% injection 20ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.55,
+          "quantity": 66.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Salbutamol Inhaler 0.1mg 1, 2001s, (1)",
+          "program": "OTHER EM",
+          "mos": 0.55,
+          "quantity": 11.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.57,
+          "quantity": 170.0,
+          "amc": 300.0
+        }
+      ],
+      "stockoutItemCount": 30,
+      "lowStockItemCount": 30
+    },
+    {
+      "name": "Mazabuka G.Hospital",
+      "rows": 60,
+      "availability": 0.5,
+      "mos": 6.53,
+      "stockout": 30,
+      "nearCritical": 4,
+      "understocked": 10,
+      "accordingToPlan": 7,
+      "abovePlan": 6,
+      "overstock": 3,
+      "dataGap": 0,
+      "quantity": 31612.0,
+      "amc": 18092.0,
+      "riskRows": 44,
+      "stockoutRate": 0.5,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Mazabuka",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 300.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 800.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 8.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 60.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.5,
+          "quantity": 50.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.6,
+          "quantity": 30.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Magnesium Sulphate 50% injection, 10ml vial (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.75,
+          "quantity": 150.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.83,
+          "quantity": 1000.0,
+          "amc": 1200.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 1.0,
+          "quantity": 100.0,
+          "amc": 100.0
+        },
+        {
+          "item": "X-RAY FILMS 30X40CM (BLUE SENSITIVE) NON INTERLEAV",
+          "program": "IMAGING",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        },
+        {
+          "item": "X-Ray Film 35x35cm (Blue Sensitive) Interleaved (100)",
+          "program": "IMAGING",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        },
+        {
+          "item": "Suture Chromic Catgut Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 1.0,
+          "quantity": 10.0,
+          "amc": 10.0
+        }
+      ],
+      "stockoutItemCount": 30,
+      "lowStockItemCount": 14
+    },
+    {
+      "name": "ST PAULS MISSION",
+      "rows": 60,
+      "availability": 0.5,
+      "mos": 2.28,
+      "stockout": 30,
+      "nearCritical": 4,
+      "understocked": 9,
+      "accordingToPlan": 7,
+      "abovePlan": 10,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 15362.0,
+      "amc": 10379.0,
+      "riskRows": 43,
+      "stockoutRate": 0.5,
+      "province": "LUAPULA PROVINCE",
+      "district": "NCHELENGE",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 650.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 30.0,
+          "amc": 1960.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 285.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Phytomenadione(Vit K) 10mg Injection,1ml(1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 8.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 14.0
+        },
+        {
+          "item": "Catheter Foley FR16/ FR18 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.0,
+          "quantity": 40.0,
+          "amc": 89.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.52,
+          "quantity": 80.0,
+          "amc": 153.0
+        },
+        {
+          "item": "Salbutamol 2.5mg Nebules (1)",
+          "program": "EMERGENCY",
+          "mos": 0.62,
+          "quantity": 5.0,
+          "amc": 8.0
+        },
+        {
+          "item": "POP (Plaster of Paris) 7cm x 5m(1)",
+          "program": "OTHER MS",
+          "mos": 0.8,
+          "quantity": 120.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Needle Luer 21G/23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.94,
+          "quantity": 68.0,
+          "amc": 72.0
+        },
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 1.0,
+          "quantity": 30.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.11,
+          "quantity": 42.0,
+          "amc": 38.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 1.43,
+          "quantity": 140.0,
+          "amc": 98.0
+        },
+        {
+          "item": "Lidocaine HCl 2% + Adrenaline Dental inj, 1.8ml (100)",
+          "program": "DENTAL",
+          "mos": 1.5,
+          "quantity": 3.0,
+          "amc": 2.0
+        }
+      ],
+      "stockoutItemCount": 30,
+      "lowStockItemCount": 13
+    },
+    {
+      "name": "ST FIDELIS MISSION",
+      "rows": 50,
+      "availability": 0.4,
+      "mos": 1.76,
+      "stockout": 30,
+      "nearCritical": 4,
+      "understocked": 6,
+      "accordingToPlan": 3,
+      "abovePlan": 7,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 4915.0,
+      "amc": 3373.0,
+      "riskRows": 40,
+      "stockoutRate": 0.6,
+      "province": "NORTHERN PROVINCE",
+      "district": "KASAMA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 18.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 20.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Acetylsalicylic acid 75mg tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 22.0,
+          "amc": 50.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Needle Luer 21G/23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.7,
+          "quantity": 7.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Metformin 500mg tablet (1000)",
+          "program": "ENDOCRINE",
+          "mos": 0.8,
+          "quantity": 4.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.9,
+          "quantity": 270.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.9,
+          "quantity": 45.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.0,
+          "quantity": 10.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.17,
+          "quantity": 70.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 1.2,
+          "quantity": 60.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 1.3,
+          "quantity": 26.0,
+          "amc": 20.0
+        }
+      ],
+      "stockoutItemCount": 30,
+      "lowStockItemCount": 10
+    },
+    {
+      "name": "SENAMA LEVEL1",
+      "rows": 49,
+      "availability": 0.3878,
+      "mos": 1.93,
+      "stockout": 30,
+      "nearCritical": 4,
+      "understocked": 1,
+      "accordingToPlan": 6,
+      "abovePlan": 8,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 15091.0,
+      "amc": 10279.0,
+      "riskRows": 35,
+      "stockoutRate": 0.6122,
+      "province": "LUAPULA PROVINCE",
+      "district": "MANSA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 220.0,
+          "amc": 552.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 66.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Co-Trimoxazole 480mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 140.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 12.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Needle Luer 21G/23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.57,
+          "quantity": 30.0,
+          "amc": 53.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.61,
+          "quantity": 1076.0,
+          "amc": 1754.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.69,
+          "quantity": 24.0,
+          "amc": 35.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.75,
+          "quantity": 150.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 1.62,
+          "quantity": 97.0,
+          "amc": 60.0
+        }
+      ],
+      "stockoutItemCount": 30,
+      "lowStockItemCount": 5
+    },
+    {
+      "name": "KAPIRI URBAN CLINIC",
+      "rows": 30,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 30,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 0.0,
+      "riskRows": 30,
+      "stockoutRate": 1.0,
+      "province": "CENTRAL PROVINCE",
+      "district": "KAPIRI",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 30,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "NAMPUNDWE",
+      "rows": 30,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 30,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 0.0,
+      "riskRows": 30,
+      "stockoutRate": 1.0,
+      "province": "CENTRAL PROVINCE",
+      "district": "SHIBUYUNJI",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 30,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "LOLOMA MH",
+      "rows": 30,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 30,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 0.3,
+      "riskRows": 30,
+      "stockoutRate": 1.0,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "LOLOMA",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 30,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.5857,
+      "mos": 1.17,
+      "stockout": 29,
+      "nearCritical": 12,
+      "understocked": 22,
+      "accordingToPlan": 3,
+      "abovePlan": 4,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 13507.0,
+      "amc": 7174.85,
+      "riskRows": 63,
+      "stockoutRate": 0.4143,
+      "province": "LUAPULA PROVINCE",
+      "district": "MWANSABOMBWE",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 24.0,
+          "amc": 37.13
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 69.13
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 23.0,
+          "amc": 151.13
+        },
+        {
+          "item": "Abacavir Sulphate/Lamivudine Dispersable 120/60mg Tablet(60)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 8.0,
+          "amc": 25.13
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 16.0,
+          "amc": 38.13
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 11.0,
+          "amc": 57.13
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 38.13
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 11.0,
+          "amc": 151.13
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.56,
+          "quantity": 18.0,
+          "amc": 26.13
+        },
+        {
+          "item": "Vaccine- Rota Virus (RV)",
+          "program": "VACCINES",
+          "mos": 0.56,
+          "quantity": 49.0,
+          "amc": 73.13
+        },
+        {
+          "item": "Ethinyloestradiol/Levonorgestrel 130mg/150mcg tablet, cycle (3)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.57,
+          "quantity": 71.0,
+          "amc": 59.13
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.61,
+          "quantity": 96.0,
+          "amc": 34.13
+        },
+        {
+          "item": "Vaccine- Pneumococcal conjugate (PCV)",
+          "program": "VACCINES",
+          "mos": 0.63,
+          "quantity": 61.0,
+          "amc": 88.13
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 18's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.64,
+          "quantity": 37.0,
+          "amc": 57.13
+        },
+        {
+          "item": "Ringers Lactate solution 500ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.75,
+          "quantity": 58.0,
+          "amc": 54.13
+        },
+        {
+          "item": "Suture Silk Non-Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.8,
+          "quantity": 28.0,
+          "amc": 37.13
+        }
+      ],
+      "stockoutItemCount": 29,
+      "lowStockItemCount": 34
+    },
+    {
+      "name": "SOLWEZI GH",
+      "rows": 60,
+      "availability": 0.5167,
+      "mos": 1.82,
+      "stockout": 29,
+      "nearCritical": 15,
+      "understocked": 8,
+      "accordingToPlan": 0,
+      "abovePlan": 8,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 49256.0,
+      "amc": 49389.0,
+      "riskRows": 52,
+      "stockoutRate": 0.4833,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "SOLWEZI",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 25.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 5228.0,
+          "amc": 13879.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 150.0,
+          "amc": 1733.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 80.0,
+          "amc": 573.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 15.0,
+          "amc": 32.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 7.0,
+          "amc": 17.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.59,
+          "quantity": 240.0,
+          "amc": 410.0
+        },
+        {
+          "item": "Needle Luer 21G/23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.61,
+          "quantity": 140.0,
+          "amc": 230.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.65,
+          "quantity": 1035.0,
+          "amc": 1600.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.67,
+          "quantity": 36.0,
+          "amc": 54.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.67,
+          "quantity": 101.0,
+          "amc": 151.0
+        },
+        {
+          "item": "Artesunate 60mg injection (1)",
+          "program": "MALARIA",
+          "mos": 0.68,
+          "quantity": 650.0,
+          "amc": 950.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.71,
+          "quantity": 74.0,
+          "amc": 104.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.71,
+          "quantity": 5370.0,
+          "amc": 7580.0
+        }
+      ],
+      "stockoutItemCount": 29,
+      "lowStockItemCount": 23
+    },
+    {
+      "name": "MANSANSA MINI",
+      "rows": 50,
+      "availability": 0.42,
+      "mos": 1.71,
+      "stockout": 29,
+      "nearCritical": 1,
+      "understocked": 10,
+      "accordingToPlan": 4,
+      "abovePlan": 6,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 12562.0,
+      "amc": 3665.0,
+      "riskRows": 40,
+      "stockoutRate": 0.58,
+      "province": "CENTRAL PROVINCE",
+      "district": "LUANO",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 4.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 25.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 3460.0,
+          "amc": 0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 15.0,
+          "amc": 47.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 20.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Gauze Swab X-Ray Detectable (100)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.5,
+          "quantity": 2.0,
+          "amc": 4.0
+        },
+        {
+          "item": "Salbutamol Inhaler 0.1mg 1, 2001s, (1)",
+          "program": "OTHER EM",
+          "mos": 1.0,
+          "quantity": 3.0,
+          "amc": 1.0
+        },
+        {
+          "item": "Artesunate 60mg injection (1)",
+          "program": "MALARIA",
+          "mos": 1.1,
+          "quantity": 260.0,
+          "amc": 240.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 1.3,
+          "quantity": 20.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Magnesium Sulphate 50% injection, 10ml vial (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 1.3,
+          "quantity": 20.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.4,
+          "quantity": 14.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.6,
+          "quantity": 70.0,
+          "amc": 44.0
+        },
+        {
+          "item": "Co-Trimoxazole 480mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.7,
+          "quantity": 45.0,
+          "amc": 5.0
+        }
+      ],
+      "stockoutItemCount": 29,
+      "lowStockItemCount": 11
+    },
+    {
+      "name": "SOLWEZI GH",
+      "rows": 35,
+      "availability": 0.1714,
+      "mos": 1.33,
+      "stockout": 29,
+      "nearCritical": 1,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 5,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 26635.0,
+      "amc": 3846.25,
+      "riskRows": 30,
+      "stockoutRate": 0.8286,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "SOLWEZI",
+      "facilityLevel": "OPTHAMOLOGY UNITS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 129.0,
+          "amc": 272.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 200mg/5ml suspension (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Ceftazidime Injection",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Ciprofloxacin HCl USP 0.3% eye drops 5ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Vancomycin 1g Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Bevacizumab 400mg Injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.75,
+          "quantity": 80.0,
+          "amc": 107.0
+        }
+      ],
+      "stockoutItemCount": 29,
+      "lowStockItemCount": 1
+    },
+    {
+      "name": "Livingstone UTH",
+      "rows": 30,
+      "availability": 0.0333,
+      "mos": 0.44,
+      "stockout": 29,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 1,
+      "dataGap": 0,
+      "quantity": 2150.0,
+      "amc": 280.26,
+      "riskRows": 29,
+      "stockoutRate": 0.9667,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Livingstone",
+      "facilityLevel": "CANCER DISEASES UNITS",
+      "stockoutItems": [
+        {
+          "item": "Aceclofenac + Paracetamol tab 100/500mg(100)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 150.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Tramadol Cap BP 50mg(100)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Tramadol Hydrochloride 50mg /ml, 2ml inj(1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 70.0
+        },
+        {
+          "item": "Actinomycin D.Lyophilized 500mcg/ml injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Bicalutamide Tablet 50mg(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Bleomycin 15IU, injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Calcium Folinate (Leucovorin calcium) 50mg/5ml Inj (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Carboplatin 150mg/15ml vial Injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 29,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "LEWANIKA GENERAL HOSPITAL",
+      "rows": 59,
+      "availability": 0.5254,
+      "mos": 2.05,
+      "stockout": 28,
+      "nearCritical": 14,
+      "understocked": 4,
+      "accordingToPlan": 3,
+      "abovePlan": 10,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 51392.0,
+      "amc": 77517.0,
+      "riskRows": 46,
+      "stockoutRate": 0.4746,
+      "province": "WESTERN PROVINCE",
+      "district": "MONGU",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS#7/",
+      "stockoutItems": [
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 300.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.03,
+          "quantity": 10.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 3500.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1300.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        },
+        {
+          "item": "Frusemide 10mg/ml injection, 2ml amp (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5000.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(1000)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 2000.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.17,
+          "quantity": 250.0,
+          "amc": 1500.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.38,
+          "quantity": 1500.0,
+          "amc": 4000.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.38,
+          "quantity": 1150.0,
+          "amc": 3000.0
+        },
+        {
+          "item": "Bupivacaine Hydrochloride Monohydrate Spinal 4ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.39,
+          "quantity": 235.0,
+          "amc": 600.0
+        },
+        {
+          "item": "Gauze Absorbent 90cm x 100yards Roll (1)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.44,
+          "quantity": 531.0,
+          "amc": 1200.0
+        },
+        {
+          "item": "Suture Vicryl Polyglycolic USP (12)",
+          "program": "SUTURE",
+          "mos": 0.46,
+          "quantity": 23.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.48,
+          "quantity": 143.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Catheter Foley FR16/ FR18 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.54,
+          "quantity": 108.0,
+          "amc": 200.0
+        }
+      ],
+      "stockoutItemCount": 28,
+      "lowStockItemCount": 18
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.6,
+      "mos": 10.13,
+      "stockout": 28,
+      "nearCritical": 7,
+      "understocked": 10,
+      "accordingToPlan": 9,
+      "abovePlan": 6,
+      "overstock": 10,
+      "dataGap": 0,
+      "quantity": 59543.0,
+      "amc": 14563.0,
+      "riskRows": 45,
+      "stockoutRate": 0.4,
+      "province": "SOUTHERN PROVINCE",
+      "district": "SIAVONGA",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 75.0,
+          "amc": 37.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 4.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 45.0,
+          "amc": 395.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 9.0
+        },
+        {
+          "item": "Abacavir Sulphate/Lamivudine 60/30mg Tablet(60)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 46.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 34.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 72.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 6.0,
+          "amc": 985.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Amiloride HCl + Hydrochlorothiazide 5/50mg Tablet (1000)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.5,
+          "quantity": 7.0,
+          "amc": 14.0
+        },
+        {
+          "item": "Syringe Disposable 2ml (100)",
+          "program": "SYRINGES",
+          "mos": 0.62,
+          "quantity": 45.0,
+          "amc": 72.0
+        },
+        {
+          "item": "Vaccine- Pneumococcal conjugate (PCV)",
+          "program": "VACCINES",
+          "mos": 0.62,
+          "quantity": 412.0,
+          "amc": 665.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 6's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.7,
+          "quantity": 7.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Vaccine- Inactivated polio (IPV)",
+          "program": "VACCINES",
+          "mos": 0.7,
+          "quantity": 375.0,
+          "amc": 537.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.77,
+          "quantity": 242.0,
+          "amc": 315.0
+        },
+        {
+          "item": "Vaccine- Bacille Calmette-Guerin (BCG)",
+          "program": "VACCINES",
+          "mos": 0.78,
+          "quantity": 480.0,
+          "amc": 618.0
+        },
+        {
+          "item": "Sodiumc Dichloroisocyanurate (Sodium Dichloroisocyanurate 2.75g tablet (100)) 2.5g tablet (100)",
+          "program": "DISIFECTANT",
+          "mos": 1.0,
+          "quantity": 2.0,
+          "amc": 2.0
+        }
+      ],
+      "stockoutItemCount": 28,
+      "lowStockItemCount": 17
+    },
+    {
+      "name": "Zimba",
+      "rows": 50,
+      "availability": 0.44,
+      "mos": 1.44,
+      "stockout": 28,
+      "nearCritical": 5,
+      "understocked": 6,
+      "accordingToPlan": 5,
+      "abovePlan": 5,
+      "overstock": 1,
+      "dataGap": 0,
+      "quantity": 11414.0,
+      "amc": 3769.0,
+      "riskRows": 39,
+      "stockoutRate": 0.56,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Zimba",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 35.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 8.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 6.0,
+          "amc": 32.0
+        },
+        {
+          "item": "Co-Trimoxazole 480mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 60.0,
+          "amc": 21.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 32.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 7.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.57,
+          "quantity": 8.0,
+          "amc": 14.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.63,
+          "quantity": 12.0,
+          "amc": 19.0
+        },
+        {
+          "item": "Atropine sulphate 1ml/ml injection, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.66,
+          "quantity": 35.0,
+          "amc": 53.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.89,
+          "quantity": 17.0,
+          "amc": 19.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.98,
+          "quantity": 110.0,
+          "amc": 112.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 1.0,
+          "quantity": 40.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Magnesium Sulphate 50% injection, 10ml vial (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 1.0,
+          "quantity": 30.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.14,
+          "quantity": 40.0,
+          "amc": 35.0
+        }
+      ],
+      "stockoutItemCount": 28,
+      "lowStockItemCount": 11
+    },
+    {
+      "name": "NATIONAL HEART HOSPITAL",
+      "rows": 70,
+      "availability": 0.6,
+      "mos": 4.42,
+      "stockout": 28,
+      "nearCritical": 6,
+      "understocked": 5,
+      "accordingToPlan": 6,
+      "abovePlan": 25,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 38321.0,
+      "amc": 11234.0,
+      "riskRows": 39,
+      "stockoutRate": 0.4,
+      "province": "LUSAKA PROVINCE",
+      "district": "LUSAKA",
+      "facilityLevel": "HEART HOSPITAL",
+      "stockoutItems": [
+        {
+          "item": "Atracurium Besylate 10mg/ml injection (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 450.0
+        },
+        {
+          "item": "Paracetamol 10mg/ml for IV injection, 1 (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 90.0,
+          "amc": 800.0
+        },
+        {
+          "item": "Midazolam 5mg/ml Injection, 1ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 156.0
+        },
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Acetylsalicylic acid 75mg tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 450.0
+        },
+        {
+          "item": "Adenosine 3mg/ml",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Amiodarone HCl 150mg inj (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 44.0,
+          "amc": 165.0
+        },
+        {
+          "item": "Carvedilol 6.25mg Tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 130.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Dobutamine 250mg/20ml Injection(1)",
+          "program": "EMERGENCY",
+          "mos": 0.5,
+          "quantity": 55.0,
+          "amc": 110.0
+        },
+        {
+          "item": "Nitroglycerine 5mg, 1ml Injection (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.58,
+          "quantity": 200.0,
+          "amc": 342.0
+        },
+        {
+          "item": "Closed Suction tubes",
+          "program": "OTHER MS",
+          "mos": 0.74,
+          "quantity": 74.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Morphine injection 10mg, 1ml (1)",
+          "program": "ANALGESIA",
+          "mos": 0.78,
+          "quantity": 39.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Frusemide 10mg/ml injection, 2ml amp (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.78,
+          "quantity": 3137.0,
+          "amc": 4000.0
+        },
+        {
+          "item": "Imipenem/cilastatin 500mg IV",
+          "program": "ANTIBIOTIC",
+          "mos": 0.8,
+          "quantity": 8.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Labetalol HCL injection BP 5mg/20ml (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 1.08,
+          "quantity": 179.0,
+          "amc": 165.0
+        },
+        {
+          "item": "Esomeprazole Sodium Powder 40mg/10ml injection (1)",
+          "program": "GIT",
+          "mos": 1.45,
+          "quantity": 87.0,
+          "amc": 60.0
+        }
+      ],
+      "stockoutItemCount": 28,
+      "lowStockItemCount": 11
+    },
+    {
+      "name": "MAKULULU/MDR CLINIC",
+      "rows": 30,
+      "availability": 0.0667,
+      "mos": 0.07,
+      "stockout": 28,
+      "nearCritical": 1,
+      "understocked": 1,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 14.0,
+      "amc": 15.5,
+      "riskRows": 30,
+      "stockoutRate": 0.9333,
+      "province": "CENTRAL PROVINCE",
+      "district": "KABWE",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Levofloxacin 250mg Tablet(100)",
+          "program": "TB-MDR",
+          "mos": 0.85,
+          "quantity": 11.0,
+          "amc": 13.0
+        },
+        {
+          "item": "Pyridoxine (Vitamin B6) 50mg Tablet(1000)",
+          "program": "VITAMINS/MINERALS",
+          "mos": 1.2,
+          "quantity": 3.0,
+          "amc": 2.5
+        }
+      ],
+      "stockoutItemCount": 28,
+      "lowStockItemCount": 2
+    },
+    {
+      "name": "NDOLA TEACHING",
+      "rows": 30,
+      "availability": 0.0667,
+      "mos": 0.16,
+      "stockout": 28,
+      "nearCritical": 0,
+      "understocked": 1,
+      "accordingToPlan": 1,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 14381.0,
+      "amc": 6000.28,
+      "riskRows": 29,
+      "stockoutRate": 0.9333,
+      "province": "COPPERBELT PROVINCE",
+      "district": "NDOLA",
+      "facilityLevel": "CANCER DISEASES UNITS",
+      "stockoutItems": [
+        {
+          "item": "Aceclofenac + Paracetamol tab 100/500mg(100)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Tramadol Cap BP 50mg(100)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Tramadol Hydrochloride 50mg /ml, 2ml inj(1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Actinomycin D.Lyophilized 500mcg/ml injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Bicalutamide Tablet 50mg(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Bleomycin 15IU, injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Calcium Folinate (Leucovorin calcium) 50mg/5ml Inj (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Carboplatin 150mg/15ml vial Injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Morphine Sulphate 10mg/ml Injection, 1ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 1.85,
+          "quantity": 5561.0,
+          "amc": 3000.0
+        }
+      ],
+      "stockoutItemCount": 28,
+      "lowStockItemCount": 1
+    },
+    {
+      "name": "ALL",
+      "rows": 69,
+      "availability": 0.6087,
+      "mos": 1.47,
+      "stockout": 27,
+      "nearCritical": 6,
+      "understocked": 13,
+      "accordingToPlan": 19,
+      "abovePlan": 4,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 11328.0,
+      "amc": 9569.0,
+      "riskRows": 46,
+      "stockoutRate": 0.3913,
+      "province": "NORTHERN PROVINCE",
+      "district": "CHILUBI",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 33.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 32.0,
+          "amc": 81.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 600.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 7.0,
+          "amc": 19.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 29.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 37.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 12.0,
+          "amc": 140.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Chlorpheniramine Maleate 4mg Tablet(1000)",
+          "program": "OTHER EM",
+          "mos": 0.5,
+          "quantity": 30.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Artesunate Rectal CAPSULE 100mg (2)",
+          "program": "MALARIA",
+          "mos": 0.56,
+          "quantity": 48.0,
+          "amc": 85.0
+        },
+        {
+          "item": "Umbilical Cord Clamps (1)",
+          "program": "OTHER MS",
+          "mos": 0.61,
+          "quantity": 200.0,
+          "amc": 328.0
+        },
+        {
+          "item": "Vaccine- Inactivated polio (IPV)",
+          "program": "VACCINES",
+          "mos": 0.67,
+          "quantity": 450.0,
+          "amc": 672.0
+        },
+        {
+          "item": "Salbutamol Inhaler 0.1mg 1, 2001s, (1)",
+          "program": "OTHER EM",
+          "mos": 0.75,
+          "quantity": 9.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Vaccine- Measles/Rubella (MR)",
+          "program": "VACCINES",
+          "mos": 0.93,
+          "quantity": 325.0,
+          "amc": 348.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 6's tab (30)",
+          "program": "MALARIA",
+          "mos": 1.0,
+          "quantity": 50.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Gauze absorbent 91cm x 50m roll (1)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 1.04,
+          "quantity": 50.0,
+          "amc": 48.0
+        }
+      ],
+      "stockoutItemCount": 27,
+      "lowStockItemCount": 19
+    },
+    {
+      "name": "Nchelege D. Hospital",
+      "rows": 50,
+      "availability": 0.46,
+      "mos": 2.42,
+      "stockout": 27,
+      "nearCritical": 4,
+      "understocked": 5,
+      "accordingToPlan": 5,
+      "abovePlan": 9,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 4642.0,
+      "amc": 3087.0,
+      "riskRows": 36,
+      "stockoutRate": 0.54,
+      "province": "LUAPULA PROVINCE",
+      "district": "Nchelenge",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 4.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 15.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 72.0,
+          "amc": 316.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 4.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 8.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Atropine sulphate 1ml/ml injection, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.5,
+          "quantity": 20.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.79,
+          "quantity": 15.0,
+          "amc": 19.0
+        },
+        {
+          "item": "Syringes 5mls/10mls/20mls/50mls (100)",
+          "program": "SYRINGES",
+          "mos": 0.83,
+          "quantity": 10.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.95,
+          "quantity": 180.0,
+          "amc": 190.0
+        },
+        {
+          "item": "Metformin 500mg tablet (1000)",
+          "program": "ENDOCRINE",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        },
+        {
+          "item": "Oxytocin IV 10IU/ml injection 1ml amp (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 1.12,
+          "quantity": 90.0,
+          "amc": 80.0
+        },
+        {
+          "item": "Aminophylline 25mg/ml injection, 10ml amp (1)",
+          "program": "OTHER EM",
+          "mos": 1.2,
+          "quantity": 12.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 1.42,
+          "quantity": 220.0,
+          "amc": 155.0
+        }
+      ],
+      "stockoutItemCount": 27,
+      "lowStockItemCount": 9
+    },
+    {
+      "name": "SOLWEZI GH",
+      "rows": 30,
+      "availability": 0.1,
+      "mos": 0.65,
+      "stockout": 27,
+      "nearCritical": 0,
+      "understocked": 1,
+      "accordingToPlan": 0,
+      "abovePlan": 2,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 740.0,
+      "amc": 508.22,
+      "riskRows": 28,
+      "stockoutRate": 0.9,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "SOLWEZI",
+      "facilityLevel": "CANCER DISEASES UNITS",
+      "stockoutItems": [
+        {
+          "item": "Aceclofenac + Paracetamol tab 100/500mg(100)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 12.0
+        },
+        {
+          "item": "Tramadol Hydrochloride 50mg /ml, 2ml inj(1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Actinomycin D.Lyophilized 500mcg/ml injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Bicalutamide Tablet 50mg(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Bleomycin 15IU, injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Calcium Folinate (Leucovorin calcium) 50mg/5ml Inj (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Carboplatin 150mg/15ml vial Injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Cisplatin 50mg/50ml Injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Ondansetron HCl 2mg/ml, 30ml oral solution (1)",
+          "program": "GIT",
+          "mos": 1.09,
+          "quantity": 500.0,
+          "amc": 460.0
+        }
+      ],
+      "stockoutItemCount": 27,
+      "lowStockItemCount": 1
+    },
+    {
+      "name": "CHIPATA CENTRAL HOSPITAL",
+      "rows": 90,
+      "availability": 0.7111,
+      "mos": 1.13,
+      "stockout": 26,
+      "nearCritical": 36,
+      "understocked": 17,
+      "accordingToPlan": 5,
+      "abovePlan": 6,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 46305.0,
+      "amc": 77980.0,
+      "riskRows": 79,
+      "stockoutRate": 0.2889,
+      "province": "EASTERN PROVINCE",
+      "district": "CHIPATA",
+      "facilityLevel": "LEVEL 3 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1500.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2000.0
+        },
+        {
+          "item": "Ciprofloxacin Infusion 2mg/ml 1 bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.04,
+          "quantity": 450.0,
+          "amc": 10000.0
+        },
+        {
+          "item": "Carbamazepine 200mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Sodium Valproate 200mg Tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Fluconazole infusion 2mg/ml, 100ml Bottle (1)",
+          "program": "ANTIFUNGAL",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 500.0
+        },
+        {
+          "item": "Enalapril 10mg Tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 500.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.13,
+          "quantity": 100.0,
+          "amc": 750.0
+        },
+        {
+          "item": "Suture Vicryl Polyglycolic USP (12)",
+          "program": "SUTURE",
+          "mos": 0.13,
+          "quantity": 20.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.14,
+          "quantity": 725.0,
+          "amc": 5000.0
+        },
+        {
+          "item": "Magnesium Sulphate 50% injection, 10ml vial (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.15,
+          "quantity": 75.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Needle Luer 23G x 1.5 Disposable (100)",
+          "program": "NEEDLE",
+          "mos": 0.19,
+          "quantity": 95.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Calcium Gluconate 10% injection, 10ml (1)",
+          "program": "EMERGENCY",
+          "mos": 0.2,
+          "quantity": 10.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.23,
+          "quantity": 45.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Omeprazole 20mg Capsule (1000)",
+          "program": "GIT",
+          "mos": 0.25,
+          "quantity": 50.0,
+          "amc": 200.0
+        }
+      ],
+      "stockoutItemCount": 26,
+      "lowStockItemCount": 53
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.6286,
+      "mos": 1.26,
+      "stockout": 26,
+      "nearCritical": 16,
+      "understocked": 15,
+      "accordingToPlan": 6,
+      "abovePlan": 7,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 52479.0,
+      "amc": 43370.1,
+      "riskRows": 57,
+      "stockoutRate": 0.3714,
+      "province": "COPPERBELT PROVINCE",
+      "district": "NDOLA",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 82.0,
+          "amc": 335.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 180.0,
+          "amc": 1395.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 66.0,
+          "amc": 134.6
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 30.0,
+          "amc": 196.0
+        },
+        {
+          "item": "Abacavir Sulphate/Lamivudine 60/30mg Tablet(60)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 31.0,
+          "amc": 246.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 152.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 30.0,
+          "amc": 170.3
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 70.0,
+          "amc": 145.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Benzyl Benzoate Lotion 25% 100ml (1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 0.5,
+          "quantity": 25.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.51,
+          "quantity": 1197.0,
+          "amc": 2342.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.57,
+          "quantity": 48.0,
+          "amc": 84.3
+        },
+        {
+          "item": "Zinc sulphate 20mg tablets (100)",
+          "program": "VITAMINS/MINERALS",
+          "mos": 0.57,
+          "quantity": 99.0,
+          "amc": 175.0
+        },
+        {
+          "item": "Ethinyloestradiol/Levonorgestrel 130mg/150mcg tablet, cycle (3)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.61,
+          "quantity": 331.0,
+          "amc": 539.0
+        },
+        {
+          "item": "Syringe Disposable 5ml (100)",
+          "program": "SYRINGES",
+          "mos": 0.62,
+          "quantity": 48.0,
+          "amc": 77.3
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.64,
+          "quantity": 730.0,
+          "amc": 1134.6
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.67,
+          "quantity": 3695.0,
+          "amc": 5540.0
+        }
+      ],
+      "stockoutItemCount": 26,
+      "lowStockItemCount": 31
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.6286,
+      "mos": 1.53,
+      "stockout": 26,
+      "nearCritical": 12,
+      "understocked": 13,
+      "accordingToPlan": 15,
+      "abovePlan": 4,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 6248.0,
+      "amc": 6569.0,
+      "riskRows": 51,
+      "stockoutRate": 0.3714,
+      "province": "WESTERN PROVINCE",
+      "district": "KAOMA DISTRICT",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 8.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 60.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1730.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 12.0,
+          "amc": 34.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 9.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 11.0,
+          "amc": 36.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 102.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 3.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.52,
+          "quantity": 11.0,
+          "amc": 21.0
+        },
+        {
+          "item": "Suture Chromic Catgut Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.57,
+          "quantity": 17.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.64,
+          "quantity": 9.0,
+          "amc": 14.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.67,
+          "quantity": 20.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Condoms Latex Male (144)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.7,
+          "quantity": 56.0,
+          "amc": 80.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.78,
+          "quantity": 56.0,
+          "amc": 72.0
+        },
+        {
+          "item": "Vaccine- Pneumococcal conjugate (PCV)",
+          "program": "VACCINES",
+          "mos": 0.78,
+          "quantity": 300.0,
+          "amc": 387.0
+        },
+        {
+          "item": "Silver Sulphadiazine 1% Cream 20g tube (1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 0.83,
+          "quantity": 15.0,
+          "amc": 18.0
+        }
+      ],
+      "stockoutItemCount": 26,
+      "lowStockItemCount": 25
+    },
+    {
+      "name": "Choma .G.Hospital",
+      "rows": 60,
+      "availability": 0.5667,
+      "mos": 2.98,
+      "stockout": 26,
+      "nearCritical": 8,
+      "understocked": 10,
+      "accordingToPlan": 5,
+      "abovePlan": 7,
+      "overstock": 4,
+      "dataGap": 0,
+      "quantity": 58368.0,
+      "amc": 19551.03,
+      "riskRows": 44,
+      "stockoutRate": 0.4333,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Choma",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 40.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 150.0,
+          "amc": 1200.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 80.0,
+          "amc": 800.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Catheter Foley FR16/ FR18 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.0,
+          "quantity": 22.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 12.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Gauze Absorbent 36cm x 50m Roll (1)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 11.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Glutaraldehyde Solution 2%(Cidex) 5L (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 9.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Labetalol HCL injection BP 5mg/20ml (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.5,
+          "quantity": 30.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.51,
+          "quantity": 760.0,
+          "amc": 1500.0
+        },
+        {
+          "item": "Artesunate 60mg injection (1)",
+          "program": "MALARIA",
+          "mos": 0.6,
+          "quantity": 300.0,
+          "amc": 500.0
+        },
+        {
+          "item": "POP (Plaster of Paris) 7cm x 5m(1)",
+          "program": "OTHER MS",
+          "mos": 0.62,
+          "quantity": 250.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.64,
+          "quantity": 64.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.75,
+          "quantity": 300.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.85,
+          "quantity": 85.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.89,
+          "quantity": 280.0,
+          "amc": 315.0
+        }
+      ],
+      "stockoutItemCount": 26,
+      "lowStockItemCount": 18
+    },
+    {
+      "name": "MBALA GENERAL HOSPITAL",
+      "rows": 60,
+      "availability": 0.5667,
+      "mos": 2.74,
+      "stockout": 26,
+      "nearCritical": 6,
+      "understocked": 8,
+      "accordingToPlan": 8,
+      "abovePlan": 12,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 75385.0,
+      "amc": 33330.0,
+      "riskRows": 40,
+      "stockoutRate": 0.4333,
+      "province": "NORTHERN PROVINCE",
+      "district": "MBALA",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 20.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Phytomenadione(Vit K) 10mg Injection,1ml(1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 22.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Lidocaine HCl 2% + Adrenaline Dental inj, 1.8ml (100)",
+          "program": "DENTAL",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 500.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Syringes 5mls/10mls/20mls (100)",
+          "program": "SYRINGES",
+          "mos": 0.5,
+          "quantity": 100.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.59,
+          "quantity": 590.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Abdominal Swabs X-Ray Detectable 8ply (5) X-Ray Detectable 8ply (5)",
+          "program": "IMAGING",
+          "mos": 0.6,
+          "quantity": 60.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Artesunate 60mg injection (1)",
+          "program": "MALARIA",
+          "mos": 0.6,
+          "quantity": 600.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Methylated Spirits 2.5L (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.65,
+          "quantity": 65.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.68,
+          "quantity": 680.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 1.07,
+          "quantity": 1610.0,
+          "amc": 1500.0
+        },
+        {
+          "item": "Suture Chromic Cutgut,2/0RB",
+          "program": "SUTURE",
+          "mos": 1.08,
+          "quantity": 54.0,
+          "amc": 50.0
+        }
+      ],
+      "stockoutItemCount": 26,
+      "lowStockItemCount": 14
+    },
+    {
+      "name": "Siavonga",
+      "rows": 50,
+      "availability": 0.48,
+      "mos": 4.35,
+      "stockout": 26,
+      "nearCritical": 8,
+      "understocked": 1,
+      "accordingToPlan": 6,
+      "abovePlan": 4,
+      "overstock": 5,
+      "dataGap": 0,
+      "quantity": 22763.5,
+      "amc": 4228.0,
+      "riskRows": 35,
+      "stockoutRate": 0.52,
+      "province": "SOUTHERN PROVINCE",
+      "district": "SIAVONGA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 15.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0.5,
+          "amc": 35.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 3.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 6.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 24.0,
+          "amc": 120.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Amiloride HCl + Hydrochlorothiazide 5/50mg Tablet (1000)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.5,
+          "quantity": 1.0,
+          "amc": 2.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.55,
+          "quantity": 110.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Co-Trimoxazole 480mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.58,
+          "quantity": 7.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Timolol 0.5% eye drops (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.6,
+          "quantity": 3.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Glibenclamide 5mg tab (100)",
+          "program": "ENDOCRINE",
+          "mos": 0.67,
+          "quantity": 2.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Aminophylline 25mg/ml injection, 10ml amp (1)",
+          "program": "OTHER EM",
+          "mos": 0.7,
+          "quantity": 14.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Suture Silk Non-Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.75,
+          "quantity": 3.0,
+          "amc": 4.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.94,
+          "quantity": 755.0,
+          "amc": 800.0
+        }
+      ],
+      "stockoutItemCount": 26,
+      "lowStockItemCount": 9
+    },
+    {
+      "name": "MPOROKOSO DH",
+      "rows": 50,
+      "availability": 0.48,
+      "mos": 2.32,
+      "stockout": 26,
+      "nearCritical": 6,
+      "understocked": 2,
+      "accordingToPlan": 4,
+      "abovePlan": 12,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 4827.0,
+      "amc": 2493.0,
+      "riskRows": 34,
+      "stockoutRate": 0.52,
+      "province": "NORTHERN PROVINCE",
+      "district": "MPOROKOSO",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 4.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 4.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 500.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 40.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 25.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Aminophylline 25mg/ml injection, 10ml amp (1)",
+          "program": "OTHER EM",
+          "mos": 0.5,
+          "quantity": 10.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Atropine sulphate 1ml/ml injection, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.6,
+          "quantity": 30.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.67,
+          "quantity": 400.0,
+          "amc": 600.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.68,
+          "quantity": 17.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Needle Luer 21G/23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.71,
+          "quantity": 5.0,
+          "amc": 7.0
+        },
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.86,
+          "quantity": 30.0,
+          "amc": 35.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 1.33,
+          "quantity": 200.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 1.4,
+          "quantity": 14.0,
+          "amc": 10.0
+        }
+      ],
+      "stockoutItemCount": 26,
+      "lowStockItemCount": 8
+    },
+    {
+      "name": "MUNGWI DH",
+      "rows": 50,
+      "availability": 0.48,
+      "mos": 2.32,
+      "stockout": 26,
+      "nearCritical": 6,
+      "understocked": 2,
+      "accordingToPlan": 4,
+      "abovePlan": 12,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 4827.0,
+      "amc": 2493.0,
+      "riskRows": 34,
+      "stockoutRate": 0.52,
+      "province": "NORTHERN PROVINCE",
+      "district": "MUNGWI",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 4.0,
+          "amc": 12.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 4.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 500.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 40.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 25.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Aminophylline 25mg/ml injection, 10ml amp (1)",
+          "program": "OTHER EM",
+          "mos": 0.5,
+          "quantity": 10.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Atropine sulphate 1ml/ml injection, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.6,
+          "quantity": 30.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.67,
+          "quantity": 400.0,
+          "amc": 600.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.68,
+          "quantity": 17.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Needle Luer 21G/23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.71,
+          "quantity": 5.0,
+          "amc": 7.0
+        },
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.86,
+          "quantity": 30.0,
+          "amc": 35.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 1.33,
+          "quantity": 200.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 1.4,
+          "quantity": 14.0,
+          "amc": 10.0
+        }
+      ],
+      "stockoutItemCount": 26,
+      "lowStockItemCount": 8
+    },
+    {
+      "name": "KASAMA GENERAL EYE CLINIC",
+      "rows": 35,
+      "availability": 0.2571,
+      "mos": 1.7,
+      "stockout": 26,
+      "nearCritical": 4,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 5,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 13157.0,
+      "amc": 11448.11,
+      "riskRows": 30,
+      "stockoutRate": 0.7429,
+      "province": "NORTHERN PROVINCE",
+      "district": "KASAMA",
+      "facilityLevel": "OPTHAMOLOGY UNITS",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 430.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 600.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 600.0,
+          "amc": 2600.0
+        },
+        {
+          "item": "Ceftazidime Injection",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        },
+        {
+          "item": "Vancomycin 1g Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Bevacizumab 400mg Injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Triamcinolone Injection",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 20.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Prednisolone Acetate 1% eye drops 5ml (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.5,
+          "quantity": 50.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 200mg/5ml suspension (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.6,
+          "quantity": 240.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.85,
+          "quantity": 1125.0,
+          "amc": 1328.0
+        },
+        {
+          "item": "Povidone iodine solution 10%, 1 Bottle (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.91,
+          "quantity": 163.0,
+          "amc": 180.0
+        }
+      ],
+      "stockoutItemCount": 26,
+      "lowStockItemCount": 4
+    },
+    {
+      "name": "MUKINGE MH",
+      "rows": 30,
+      "availability": 0.1333,
+      "mos": 0.22,
+      "stockout": 26,
+      "nearCritical": 0,
+      "understocked": 3,
+      "accordingToPlan": 1,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 81.0,
+      "amc": 88.0,
+      "riskRows": 29,
+      "stockoutRate": 0.8667,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "KASEMPA",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifapentine 300mg Tablet(100)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol 150/75/400/275mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 1.0,
+          "quantity": 10.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 75/50/150mg Tab(84)",
+          "program": "TB-DS",
+          "mos": 1.4,
+          "quantity": 7.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 1.8,
+          "quantity": 9.0,
+          "amc": 5.0
+        }
+      ],
+      "stockoutItemCount": 26,
+      "lowStockItemCount": 3
+    },
+    {
+      "name": "LUBWE M HOSP",
+      "rows": 50,
+      "availability": 0.48,
+      "mos": 2.78,
+      "stockout": 26,
+      "nearCritical": 2,
+      "understocked": 1,
+      "accordingToPlan": 10,
+      "abovePlan": 11,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 23063.0,
+      "amc": 4367.0,
+      "riskRows": 29,
+      "stockoutRate": 0.52,
+      "province": "LUAPULA PROVINCE",
+      "district": "CHIFUNABULI",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Acetylsalicylic acid 75mg tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 30.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.5,
+          "quantity": 5.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Insulin Lente (protaphane) 100IU/ml, 10ml vial (1)",
+          "program": "ENDOCRINE",
+          "mos": 0.75,
+          "quantity": 15.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Glibenclamide 5mg tab (100)",
+          "program": "ENDOCRINE",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        }
+      ],
+      "stockoutItemCount": 26,
+      "lowStockItemCount": 3
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.6429,
+      "mos": 1.74,
+      "stockout": 25,
+      "nearCritical": 14,
+      "understocked": 12,
+      "accordingToPlan": 10,
+      "abovePlan": 8,
+      "overstock": 1,
+      "dataGap": 0,
+      "quantity": 9123.0,
+      "amc": 9385.0,
+      "riskRows": 51,
+      "stockoutRate": 0.3571,
+      "province": "COPPERBELT PROVINCE",
+      "district": "NDOLA",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 13.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 348.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 8.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 26.0,
+          "amc": 70.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 20.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 34.0,
+          "amc": 106.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 100.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Clotrimazole, 20g Tube 1% Cream(1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 0.57,
+          "quantity": 100.0,
+          "amc": 176.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.6,
+          "quantity": 60.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Suture Chromic Catgut Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.6,
+          "quantity": 60.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.65,
+          "quantity": 24.0,
+          "amc": 37.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.68,
+          "quantity": 68.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.69,
+          "quantity": 90.0,
+          "amc": 130.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.69,
+          "quantity": 69.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Vaccine- Pneumococcal conjugate (PCV)",
+          "program": "VACCINES",
+          "mos": 0.76,
+          "quantity": 28.0,
+          "amc": 37.0
+        }
+      ],
+      "stockoutItemCount": 25,
+      "lowStockItemCount": 26
+    },
+    {
+      "name": "KAMUCHANGA DISTRICT HOSPITAL",
+      "rows": 50,
+      "availability": 0.5,
+      "mos": 3.68,
+      "stockout": 25,
+      "nearCritical": 4,
+      "understocked": 5,
+      "accordingToPlan": 4,
+      "abovePlan": 6,
+      "overstock": 6,
+      "dataGap": 0,
+      "quantity": 22213.0,
+      "amc": 9290.0,
+      "riskRows": 34,
+      "stockoutRate": 0.5,
+      "province": "COPPERBELT PROVINCE",
+      "district": "MUFULIRA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 63.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 9.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 12.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (125",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 30.0,
+          "amc": 400.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Syringes 5mls/10mls/20mls/50mls (100)",
+          "program": "SYRINGES",
+          "mos": 0.7,
+          "quantity": 42.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Salbutamol Inhaler 0.1mg 1, 2001s, (1)",
+          "program": "OTHER EM",
+          "mos": 0.75,
+          "quantity": 30.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.8,
+          "quantity": 80.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Oxytocin IV 10IU/ml injection 1ml amp (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.85,
+          "quantity": 203.0,
+          "amc": 240.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 1.0,
+          "quantity": 10.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Umbilical Cord Clamps (1)",
+          "program": "OTHER MS",
+          "mos": 1.35,
+          "quantity": 230.0,
+          "amc": 170.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 1.38,
+          "quantity": 138.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Needle Luer 21G/23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 1.45,
+          "quantity": 191.0,
+          "amc": 132.0
+        }
+      ],
+      "stockoutItemCount": 25,
+      "lowStockItemCount": 9
+    },
+    {
+      "name": "CHONGWE DISTRICT HOSPITAL",
+      "rows": 50,
+      "availability": 0.5,
+      "mos": 3.56,
+      "stockout": 25,
+      "nearCritical": 2,
+      "understocked": 3,
+      "accordingToPlan": 4,
+      "abovePlan": 16,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 107838.0,
+      "amc": 13389.0,
+      "riskRows": 30,
+      "stockoutRate": 0.5,
+      "province": "LUSAKA PROVINCE",
+      "district": "CHONGWE",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 300.0,
+          "amc": 800.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 45.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 350.0
+        },
+        {
+          "item": "Co-Trimoxazole 480mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 73.0,
+          "amc": 178.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 600.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 150.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 500.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 250.0,
+          "amc": 1000.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.5,
+          "quantity": 5.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.67,
+          "quantity": 32.0,
+          "amc": 48.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 1.18,
+          "quantity": 84.0,
+          "amc": 71.0
+        },
+        {
+          "item": "Metformin 500mg tablet (1000)",
+          "program": "ENDOCRINE",
+          "mos": 1.56,
+          "quantity": 28.0,
+          "amc": 18.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 1.78,
+          "quantity": 1560.0,
+          "amc": 875.0
+        }
+      ],
+      "stockoutItemCount": 25,
+      "lowStockItemCount": 5
+    },
+    {
+      "name": "SERENJE DISTRICT HOSPITAL",
+      "rows": 30,
+      "availability": 0.1667,
+      "mos": 0.26,
+      "stockout": 25,
+      "nearCritical": 2,
+      "understocked": 1,
+      "accordingToPlan": 2,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 18.0,
+      "amc": 42.0,
+      "riskRows": 28,
+      "stockoutRate": 0.8333,
+      "province": "CENTRAL PROVINCE",
+      "district": "SERENJE",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 6.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifapentine 300mg Tablet(100)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol 150/75/400/275mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.5,
+          "quantity": 2.0,
+          "amc": 4.0
+        },
+        {
+          "item": "Pyridoxine (Vitamin B6) 50mg Tablet(1000)",
+          "program": "VITAMINS/MINERALS",
+          "mos": 0.75,
+          "quantity": 3.0,
+          "amc": 4.0
+        },
+        {
+          "item": "Isoniazid, Tab 300mg (100)",
+          "program": "TB-MDR",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        }
+      ],
+      "stockoutItemCount": 25,
+      "lowStockItemCount": 3
+    },
+    {
+      "name": "SAMFYA DISTRICT HOSPITAL",
+      "rows": 30,
+      "availability": 0.1667,
+      "mos": 0.4,
+      "stockout": 25,
+      "nearCritical": 0,
+      "understocked": 3,
+      "accordingToPlan": 2,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 58.0,
+      "amc": 39.0,
+      "riskRows": 28,
+      "stockoutRate": 0.8333,
+      "province": "LUAPULA PROVINCE",
+      "district": "SAMFYA",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Isoniazid, Tab 300mg (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Rifapentine 300mg Tablet(100)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 1.4,
+          "quantity": 7.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 1.5,
+          "quantity": 12.0,
+          "amc": 8.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol 150/75/400/275mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 1.75,
+          "quantity": 7.0,
+          "amc": 4.0
+        }
+      ],
+      "stockoutItemCount": 25,
+      "lowStockItemCount": 3
+    },
+    {
+      "name": "LEVY MWANAWASA UTH",
+      "rows": 30,
+      "availability": 0.1667,
+      "mos": 0.86,
+      "stockout": 25,
+      "nearCritical": 0,
+      "understocked": 2,
+      "accordingToPlan": 1,
+      "abovePlan": 2,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 897.0,
+      "amc": 779.0,
+      "riskRows": 27,
+      "stockoutRate": 0.8333,
+      "province": "LUSAKA PROVINCE",
+      "district": "LUSAKA",
+      "facilityLevel": "DS0TB & MDR0TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 170.0
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 240.0
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 12.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 34.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Pyridoxine (Vitamin B6) 50mg Tablet(1000)",
+          "program": "VITAMINS/MINERALS",
+          "mos": 1.2,
+          "quantity": 60.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol 150/75/400/275mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 1.6,
+          "quantity": 40.0,
+          "amc": 25.0
+        }
+      ],
+      "stockoutItemCount": 25,
+      "lowStockItemCount": 2
+    },
+    {
+      "name": "Monze M.Hospital",
+      "rows": 35,
+      "availability": 0.2857,
+      "mos": 0.79,
+      "stockout": 25,
+      "nearCritical": 2,
+      "understocked": 0,
+      "accordingToPlan": 7,
+      "abovePlan": 1,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 7935.0,
+      "amc": 5528.11,
+      "riskRows": 27,
+      "stockoutRate": 0.7143,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Monze",
+      "facilityLevel": "OPTHAMOLOGY UNITS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 65.0,
+          "amc": 180.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 26.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 200mg/5ml suspension (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 21.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 150.0,
+          "amc": 2320.0
+        },
+        {
+          "item": "Ciprofloxacin HCl USP 0.3% eye drops 5ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 22.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 35.0
+        },
+        {
+          "item": "Bevacizumab 400mg Injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Tropicamide 0.5% eye drops (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.67,
+          "quantity": 2.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Triamcinolone Injection",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.9,
+          "quantity": 18.0,
+          "amc": 20.0
+        }
+      ],
+      "stockoutItemCount": 25,
+      "lowStockItemCount": 2
+    },
+    {
+      "name": "NDOLA TEACHING",
+      "rows": 35,
+      "availability": 0.2857,
+      "mos": 5.78,
+      "stockout": 25,
+      "nearCritical": 0,
+      "understocked": 1,
+      "accordingToPlan": 3,
+      "abovePlan": 1,
+      "overstock": 5,
+      "dataGap": 0,
+      "quantity": 69958.0,
+      "amc": 9166.0,
+      "riskRows": 26,
+      "stockoutRate": 0.7143,
+      "province": "COPPERBELT PROVINCE",
+      "district": "NDOLA",
+      "facilityLevel": "OPTHAMOLOGY UNITS",
+      "stockoutItems": [
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 910.0
+        },
+        {
+          "item": "Ceftazidime Injection",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Ciprofloxacin HCl USP 0.3% eye drops 5ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 150.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 20.0
+        },
+        {
+          "item": "Bevacizumab 400mg Injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 4.0
+        },
+        {
+          "item": "Triamcinolone Injection",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 4.0
+        },
+        {
+          "item": "Ethanol 500ml (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 4.0
+        },
+        {
+          "item": "Povidone iodine solution 10%, 1 Bottle (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 1.75,
+          "quantity": 280.0,
+          "amc": 160.0
+        }
+      ],
+      "stockoutItemCount": 25,
+      "lowStockItemCount": 1
+    },
+    {
+      "name": "MICHAEL CHILUFYA SATA GENERAL HOSPITAL",
+      "rows": 25,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 25,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 0.25,
+      "riskRows": 25,
+      "stockoutRate": 1.0,
+      "province": "MUCHINGA PROVINCE",
+      "district": "MPIKA",
+      "facilityLevel": "RENAL UNITS",
+      "stockoutItems": [
+        {
+          "item": "CAPD Disinfectant Cap SS (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Sodium Chloride 0.9% solution, 1000ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "A/V Set for Dialog with Rec. System (1)",
+          "program": "RENAL",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "AV Blood Line Set(Blood Tubing Set) 4008 (1)",
+          "program": "RENAL",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Citric Acid 50% 6L liquid (1)",
+          "program": "RENAL",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Diacan (Dialysis Fistula Needle) (1)",
+          "program": "RENAL",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Enoxaparin Injection 80mg/0.8ml Syringe(Pre-Fill)(1)",
+          "program": "RENAL",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Erythropoetin injection ,4000IU (1)",
+          "program": "RENAL",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 25,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "MICHAEL CHILUFYA SATA HOSPITAL",
+      "rows": 25,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 25,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 157.0,
+      "riskRows": 25,
+      "stockoutRate": 1.0,
+      "province": "MUCHINGA PROVINCE",
+      "district": "MPIKA",
+      "facilityLevel": "MENTAL HEALTH UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipramine 25mg Tablet (100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Carbamazepine 200mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Lorazepam 1mg tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Mirtazapine 30mg Tab (30)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Phenobarbitone 200mg/ml, injection 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Sodium DiValproex 500mg Tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 25,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "SOLWEZI GH",
+      "rows": 25,
+      "availability": 0.0,
+      "mos": 0.0,
+      "stockout": 25,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 0.0,
+      "amc": 0.25,
+      "riskRows": 25,
+      "stockoutRate": 1.0,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "SOLWEZI",
+      "facilityLevel": "MENTAL HEALTH UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipramine 25mg Tablet (100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Carbamazepine 200mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Lorazepam 1mg tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Mirtazapine 30mg Tab (30)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Phenobarbitone 200mg/ml, injection 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Sodium DiValproex 500mg Tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 25,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "KALULUSHI GENERAL",
+      "rows": 60,
+      "availability": 0.6,
+      "mos": 2.76,
+      "stockout": 24,
+      "nearCritical": 8,
+      "understocked": 15,
+      "accordingToPlan": 6,
+      "abovePlan": 5,
+      "overstock": 2,
+      "dataGap": 0,
+      "quantity": 25561.0,
+      "amc": 15908.0,
+      "riskRows": 47,
+      "stockoutRate": 0.4,
+      "province": "COPPERBELT PROVINCE",
+      "district": "KALULUSHI",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 175.0,
+          "amc": 450.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 48.0,
+          "amc": 250.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 4.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 13.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Gauze Absorbent 36cm x 50m Roll (1)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 19.0,
+          "amc": 100.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.5,
+          "quantity": 10.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Atropine sulphate 1ml/ml injection, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.52,
+          "quantity": 130.0,
+          "amc": 250.0
+        },
+        {
+          "item": "Dextrose 50% injection 20ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.54,
+          "quantity": 114.0,
+          "amc": 210.0
+        },
+        {
+          "item": "Catheter Foley FR16/ FR18 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.57,
+          "quantity": 230.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Phytomenadione(Vit K) 10mg Injection,1ml(1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.75,
+          "quantity": 120.0,
+          "amc": 160.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.95,
+          "quantity": 191.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Dexamethasone/Neomycin Sulphate,0.1%/0.35% eye drops 5ml (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.97,
+          "quantity": 145.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.99,
+          "quantity": 248.0,
+          "amc": 250.0
+        }
+      ],
+      "stockoutItemCount": 24,
+      "lowStockItemCount": 23
+    },
+    {
+      "name": "Namwianga",
+      "rows": 50,
+      "availability": 0.52,
+      "mos": 1.42,
+      "stockout": 24,
+      "nearCritical": 9,
+      "understocked": 7,
+      "accordingToPlan": 5,
+      "abovePlan": 4,
+      "overstock": 1,
+      "dataGap": 0,
+      "quantity": 10725.0,
+      "amc": 6909.01,
+      "riskRows": 40,
+      "stockoutRate": 0.48,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Kalomo",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 15.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 15.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Co-Trimoxazole 480mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 800.0
+        },
+        {
+          "item": "Acetylsalicylic acid 75mg tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Atropine sulphate 1ml/ml injection, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.5,
+          "quantity": 50.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Insulin Lente (protaphane) 100IU/ml, 10ml vial (1)",
+          "program": "ENDOCRINE",
+          "mos": 0.5,
+          "quantity": 50.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Artesunate 60mg injection (1)",
+          "program": "MALARIA",
+          "mos": 0.5,
+          "quantity": 20.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Syringes 5mls/10mls/20mls/50mls (100)",
+          "program": "SYRINGES",
+          "mos": 0.5,
+          "quantity": 50.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Lidocaine HCl 2% + Adrenaline Dental inj, 1.8ml (100)",
+          "program": "DENTAL",
+          "mos": 0.6,
+          "quantity": 6.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.71,
+          "quantity": 500.0,
+          "amc": 700.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.8,
+          "quantity": 16.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Bandage P.O.P 7.5cm X 2.7m(1)",
+          "program": "OTHER MS",
+          "mos": 0.8,
+          "quantity": 120.0,
+          "amc": 150.0
+        }
+      ],
+      "stockoutItemCount": 24,
+      "lowStockItemCount": 16
+    },
+    {
+      "name": "ROAN ANTELOPE GENERAL HOSPITAL",
+      "rows": 60,
+      "availability": 0.6,
+      "mos": 4.25,
+      "stockout": 24,
+      "nearCritical": 8,
+      "understocked": 6,
+      "accordingToPlan": 8,
+      "abovePlan": 6,
+      "overstock": 8,
+      "dataGap": 0,
+      "quantity": 66276.0,
+      "amc": 26525.0,
+      "riskRows": 38,
+      "stockoutRate": 0.4,
+      "province": "COPPERBELT PROVINCE",
+      "district": "LUANSHYA",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 283.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 600.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 3000.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 100.0,
+          "amc": 3000.0
+        },
+        {
+          "item": "Frusemide 10mg/ml injection, 2ml amp (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1500.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 467.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 12.0,
+          "amc": 60.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Atropine sulphate 1ml/ml injection, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.58,
+          "quantity": 350.0,
+          "amc": 600.0
+        },
+        {
+          "item": "Abdominal Swabs X-Ray Detectable 8ply (5) X-Ray Detectable 8ply (5)",
+          "program": "IMAGING",
+          "mos": 0.6,
+          "quantity": 50.0,
+          "amc": 84.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.67,
+          "quantity": 800.0,
+          "amc": 1200.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.67,
+          "quantity": 2.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Lidocaine HCl 2% + Adrenaline Dental inj, 1.8ml (100)",
+          "program": "DENTAL",
+          "mos": 0.67,
+          "quantity": 2.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Dextrose 10% solution 500ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.71,
+          "quantity": 570.0,
+          "amc": 800.0
+        },
+        {
+          "item": "Suture Chromic Catgut Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.93,
+          "quantity": 14.0,
+          "amc": 15.0
+        },
+        {
+          "item": "POP (Plaster of Paris) 7cm x 5m(1)",
+          "program": "OTHER MS",
+          "mos": 0.97,
+          "quantity": 424.0,
+          "amc": 436.0
+        }
+      ],
+      "stockoutItemCount": 24,
+      "lowStockItemCount": 14
+    },
+    {
+      "name": "Kazungula",
+      "rows": 50,
+      "availability": 0.52,
+      "mos": 6.88,
+      "stockout": 24,
+      "nearCritical": 6,
+      "understocked": 7,
+      "accordingToPlan": 6,
+      "abovePlan": 5,
+      "overstock": 2,
+      "dataGap": 0,
+      "quantity": 10352.0,
+      "amc": 3705.01,
+      "riskRows": 37,
+      "stockoutRate": 0.48,
+      "province": "SOUTHERN PROVINCE",
+      "district": "KAZUNGULA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 21.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 40.0,
+          "amc": 25.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.54,
+          "quantity": 150.0,
+          "amc": 280.0
+        },
+        {
+          "item": "Dextrose 50% injection 20ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.66,
+          "quantity": 53.0,
+          "amc": 80.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.76,
+          "quantity": 53.0,
+          "amc": 70.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.83,
+          "quantity": 250.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Adrenaline Acid Tartrate 1mg/ml inj, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.88,
+          "quantity": 35.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.9,
+          "quantity": 9.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Suture Silk Non-Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 1.0,
+          "quantity": 5.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Oral Rehydration Salts, WHO Formula, satchet (1)",
+          "program": "GIT",
+          "mos": 1.02,
+          "quantity": 410.0,
+          "amc": 400.0
+        }
+      ],
+      "stockoutItemCount": 24,
+      "lowStockItemCount": 13
+    },
+    {
+      "name": "MWINILUNGA DH",
+      "rows": 50,
+      "availability": 0.52,
+      "mos": 1.84,
+      "stockout": 24,
+      "nearCritical": 5,
+      "understocked": 7,
+      "accordingToPlan": 7,
+      "abovePlan": 7,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 4534.0,
+      "amc": 5439.3,
+      "riskRows": 36,
+      "stockoutRate": 0.48,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "MWINILUNGA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 100.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 135.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 350.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 25.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 8.3
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 48.0,
+          "amc": 250.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Oxytocin IV 10IU/ml injection 1ml amp (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.75,
+          "quantity": 300.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.86,
+          "quantity": 30.0,
+          "amc": 35.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.9,
+          "quantity": 180.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.93,
+          "quantity": 37.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Needle Luer 21G/23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.93,
+          "quantity": 14.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Lidocaine HCl 2% + Adrenaline Dental inj, 1.8ml (100)",
+          "program": "DENTAL",
+          "mos": 1.25,
+          "quantity": 25.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 1.3,
+          "quantity": 65.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Dextrose 50% injection 20ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 1.49,
+          "quantity": 112.0,
+          "amc": 75.0
+        }
+      ],
+      "stockoutItemCount": 24,
+      "lowStockItemCount": 12
+    },
+    {
+      "name": "Choma .G.Hospital",
+      "rows": 30,
+      "availability": 0.2,
+      "mos": 0.62,
+      "stockout": 24,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 4,
+      "abovePlan": 2,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 114.0,
+      "amc": 226.06,
+      "riskRows": 24,
+      "stockoutRate": 0.8,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Choma",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 120.0
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 4.0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol 150/75/400/275mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 10.0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 24,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.6714,
+      "mos": 2.58,
+      "stockout": 23,
+      "nearCritical": 11,
+      "understocked": 20,
+      "accordingToPlan": 10,
+      "abovePlan": 3,
+      "overstock": 3,
+      "dataGap": 0,
+      "quantity": 60911.0,
+      "amc": 31950.33,
+      "riskRows": 54,
+      "stockoutRate": 0.3286,
+      "province": "COPPERBELT PROVINCE",
+      "district": "LUANSHYA",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 175.0,
+          "amc": 1377.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 22.0,
+          "amc": 85.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 44.0,
+          "amc": 202.6
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 67.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 207.0,
+          "amc": 427.3
+        },
+        {
+          "item": "Amiloride HCl + Hydrochlorothiazide 5/50mg Tablet (1000)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 13.0,
+          "amc": 46.5
+        },
+        {
+          "item": "Gauze absorbent 91cm x 50m roll (1)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 106.0
+        },
+        {
+          "item": "Benzyl Benzoate Lotion 25% 100ml (1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 0.0,
+          "quantity": 6.0,
+          "amc": 38.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Condom Latex Female (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.54,
+          "quantity": 97.0,
+          "amc": 178.3
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 24's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.6,
+          "quantity": 137.0,
+          "amc": 228.3
+        },
+        {
+          "item": "Rapid Diagnostic Test for Malaria kit (25)",
+          "program": "TEST KITS",
+          "mos": 0.63,
+          "quantity": 124.0,
+          "amc": 198.3
+        },
+        {
+          "item": "Dextrose 50% injection 20ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.64,
+          "quantity": 82.0,
+          "amc": 128.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.74,
+          "quantity": 244.0,
+          "amc": 330.3
+        },
+        {
+          "item": "Clotrimazole, 20g Tube 1% Cream(1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 0.76,
+          "quantity": 49.0,
+          "amc": 64.6
+        },
+        {
+          "item": "Ringers Lactate solution 500ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.78,
+          "quantity": 1524.0,
+          "amc": 1966.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.83,
+          "quantity": 103.0,
+          "amc": 124.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 31
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.6714,
+      "mos": 2.55,
+      "stockout": 23,
+      "nearCritical": 7,
+      "understocked": 15,
+      "accordingToPlan": 14,
+      "abovePlan": 8,
+      "overstock": 3,
+      "dataGap": 0,
+      "quantity": 12665.0,
+      "amc": 6832.0,
+      "riskRows": 45,
+      "stockoutRate": 0.3286,
+      "province": "COPPERBELT PROVINCE",
+      "district": "MPONGWE",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 177.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 6.0,
+          "amc": 26.0
+        },
+        {
+          "item": "Abacavir Sulphate/Lamivudine 60/30mg Tablet(60)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 7.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 234.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 4.0
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 34.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 220.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.57,
+          "quantity": 71.0,
+          "amc": 125.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.66,
+          "quantity": 25.0,
+          "amc": 38.0
+        },
+        {
+          "item": "Oral Rehydration Salts, WHO Formula, satchet (1)",
+          "program": "GIT",
+          "mos": 0.72,
+          "quantity": 602.0,
+          "amc": 840.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.72,
+          "quantity": 48.0,
+          "amc": 67.0
+        },
+        {
+          "item": "Promethazine HCl 25mg/ml injection, 2ml amp (1)",
+          "program": "OTHER EM",
+          "mos": 0.74,
+          "quantity": 34.0,
+          "amc": 46.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.92,
+          "quantity": 152.0,
+          "amc": 165.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.94,
+          "quantity": 16.0,
+          "amc": 17.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 1.0,
+          "quantity": 22.0,
+          "amc": 26.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 22
+    },
+    {
+      "name": "NDOLA TEACHING",
+      "rows": 70,
+      "availability": 0.6714,
+      "mos": 7.76,
+      "stockout": 23,
+      "nearCritical": 7,
+      "understocked": 12,
+      "accordingToPlan": 9,
+      "abovePlan": 8,
+      "overstock": 11,
+      "dataGap": 0,
+      "quantity": 278519.0,
+      "amc": 64590.0,
+      "riskRows": 42,
+      "stockoutRate": 0.3286,
+      "province": "COPPERBELT PROVINCE",
+      "district": "NDOLA",
+      "facilityLevel": "LEVEL 3 ADULT HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 910.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 608.0,
+          "amc": 1700.0
+        },
+        {
+          "item": "Carbamazepine 200mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 537.0,
+          "amc": 1500.0
+        },
+        {
+          "item": "Sodium Valproate 200mg Tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 125.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Fluconazole infusion 2mg/ml, 100ml Bottle (1)",
+          "program": "ANTIFUNGAL",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 500.0
+        },
+        {
+          "item": "Catheter Foley FR16/ FR18 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.0,
+          "quantity": 285.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Lidocaine HCl 2% + Adrenaline Dental inj, 1.8ml (100)",
+          "program": "DENTAL",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 633.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Enalapril 10mg Tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.5,
+          "quantity": 50.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.6,
+          "quantity": 120.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Ciprofloxacin Infusion 2mg/ml 1 bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.61,
+          "quantity": 500.0,
+          "amc": 821.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 24's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.62,
+          "quantity": 60.0,
+          "amc": 96.0
+        },
+        {
+          "item": "Propofol 1% injection, 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.66,
+          "quantity": 150.0,
+          "amc": 226.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.74,
+          "quantity": 400.0,
+          "amc": 544.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml Injection(1)",
+          "program": "ANALGESIA",
+          "mos": 0.84,
+          "quantity": 2500.0,
+          "amc": 2990.0
+        },
+        {
+          "item": "Urine Collecting Bag sAdult 1000ml (1)",
+          "program": "OTHER MS",
+          "mos": 1.0,
+          "quantity": 1000.0,
+          "amc": 1000.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 19
+    },
+    {
+      "name": "SENANGA GENERAL HOSPITAL",
+      "rows": 59,
+      "availability": 0.6102,
+      "mos": 2.06,
+      "stockout": 23,
+      "nearCritical": 13,
+      "understocked": 5,
+      "accordingToPlan": 9,
+      "abovePlan": 9,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 23366.0,
+      "amc": 14021.0,
+      "riskRows": 41,
+      "stockoutRate": 0.3898,
+      "province": "WESTERN PROVINCE",
+      "district": "SENANGA",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS#7/",
+      "stockoutItems": [
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 650.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.02,
+          "quantity": 10.0,
+          "amc": 427.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 186.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.01,
+          "quantity": 9.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Labetalol HCL injection BP 5mg/20ml (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 8.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(1000)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.06,
+          "quantity": 18.0,
+          "amc": 300.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Frusemide 10mg/ml injection, 2ml amp (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.1,
+          "quantity": 10.0,
+          "amc": 97.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.15,
+          "quantity": 53.0,
+          "amc": 350.0
+        },
+        {
+          "item": "Timolol 0.5% eye drops (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.2,
+          "quantity": 5.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Misoprostol 0.2mg tablets (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.23,
+          "quantity": 100.0,
+          "amc": 432.0
+        },
+        {
+          "item": "Artesunate 60mg injection (1)",
+          "program": "MALARIA",
+          "mos": 0.35,
+          "quantity": 35.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Magnesium Sulphate 50% injection, 10ml vial (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.36,
+          "quantity": 244.0,
+          "amc": 680.0
+        },
+        {
+          "item": "Insulin Lente (protaphane) 100IU/ml, 10ml vial (1)",
+          "program": "ENDOCRINE",
+          "mos": 0.5,
+          "quantity": 10.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.52,
+          "quantity": 26.0,
+          "amc": 50.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 18
+    },
+    {
+      "name": "Monze M.Hospital",
+      "rows": 60,
+      "availability": 0.6167,
+      "mos": 4.88,
+      "stockout": 23,
+      "nearCritical": 4,
+      "understocked": 11,
+      "accordingToPlan": 8,
+      "abovePlan": 7,
+      "overstock": 7,
+      "dataGap": 0,
+      "quantity": 64072.0,
+      "amc": 16624.0,
+      "riskRows": 38,
+      "stockoutRate": 0.3833,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Monze",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 65.0,
+          "amc": 180.0
+        },
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 21.0,
+          "amc": 180.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 80.0,
+          "amc": 250.0
+        },
+        {
+          "item": "Frusemide 10mg/ml injection, 2ml amp (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 250.0,
+          "amc": 600.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 380.0
+        },
+        {
+          "item": "Catheter Foley FR16/ FR18 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.0,
+          "quantity": 40.0,
+          "amc": 350.0
+        },
+        {
+          "item": "Glutaraldehyde Solution 2%(Cidex) 5L (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.0,
+          "quantity": 4.0,
+          "amc": 16.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.53,
+          "quantity": 210.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Omeprazole 20mg Capsule (100)",
+          "program": "GIT",
+          "mos": 0.55,
+          "quantity": 60.0,
+          "amc": 110.0
+        },
+        {
+          "item": "Artesunate 60mg injection (1)",
+          "program": "MALARIA",
+          "mos": 0.56,
+          "quantity": 50.0,
+          "amc": 90.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.91,
+          "quantity": 200.0,
+          "amc": 220.0
+        },
+        {
+          "item": "X-RAY FILMS 30X40CM (BLUE SENSITIVE) NON INTERLEAV",
+          "program": "IMAGING",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        },
+        {
+          "item": "X-Ray Film 35x35cm (Blue Sensitive) Interleaved (100)",
+          "program": "IMAGING",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        },
+        {
+          "item": "Syringes 5mls/10mls/20mls/50mls (100)",
+          "program": "SYRINGES",
+          "mos": 1.01,
+          "quantity": 121.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 1.08,
+          "quantity": 13.0,
+          "amc": 12.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 15
+    },
+    {
+      "name": "CHAMBOLI LEVEL 1",
+      "rows": 50,
+      "availability": 0.54,
+      "mos": 1.93,
+      "stockout": 23,
+      "nearCritical": 6,
+      "understocked": 7,
+      "accordingToPlan": 9,
+      "abovePlan": 3,
+      "overstock": 2,
+      "dataGap": 0,
+      "quantity": 12982.0,
+      "amc": 12015.0,
+      "riskRows": 36,
+      "stockoutRate": 0.46,
+      "province": "COPPERBELT PROVINCE",
+      "district": "KITWE",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 800.0,
+          "amc": 2000.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 70.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Acetylsalicylic acid 75mg tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 60.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Amiloride HCl + Hydrochlorothiazide 5/50mg Tablet (1000)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 6.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 100.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 25.0,
+          "amc": 80.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.5,
+          "quantity": 1000.0,
+          "amc": 2000.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.6,
+          "quantity": 3.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Oxytocin IV 10IU/ml injection 1ml amp (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.62,
+          "quantity": 370.0,
+          "amc": 600.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.83,
+          "quantity": 250.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Insulin Soluble (Actrapid) 100iu/ml,10ml(1)",
+          "program": "ENDOCRINE",
+          "mos": 0.83,
+          "quantity": 25.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Co-Trimoxazole 480mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.9,
+          "quantity": 18.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.17,
+          "quantity": 350.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Gauze Swab X-Ray Detectable (100)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 1.2,
+          "quantity": 48.0,
+          "amc": 40.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 13
+    },
+    {
+      "name": "KANYAMA",
+      "rows": 50,
+      "availability": 0.54,
+      "mos": 3.28,
+      "stockout": 23,
+      "nearCritical": 5,
+      "understocked": 4,
+      "accordingToPlan": 5,
+      "abovePlan": 13,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 50900.0,
+      "amc": 33540.0,
+      "riskRows": 32,
+      "stockoutRate": 0.46,
+      "province": "LUSAKA PROVINCE",
+      "district": "LUSAKA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 170.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 200.0,
+          "amc": 800.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 300.0,
+          "amc": 3500.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 200.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 300.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 400.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 210.0,
+          "amc": 3000.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.5,
+          "quantity": 50.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Magnesium Sulphate 50% injection, 10ml vial (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.64,
+          "quantity": 320.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.65,
+          "quantity": 52.0,
+          "amc": 80.0
+        },
+        {
+          "item": "Suture Silk Non-Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.8,
+          "quantity": 80.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.98,
+          "quantity": 295.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 1.07,
+          "quantity": 800.0,
+          "amc": 750.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.4,
+          "quantity": 558.0,
+          "amc": 400.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.45,
+          "quantity": 580.0,
+          "amc": 400.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 9
+    },
+    {
+      "name": "CHINSALI GENERAL HOSPITAL",
+      "rows": 60,
+      "availability": 0.6167,
+      "mos": 4.14,
+      "stockout": 23,
+      "nearCritical": 4,
+      "understocked": 4,
+      "accordingToPlan": 8,
+      "abovePlan": 21,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 52758.0,
+      "amc": 9782.0,
+      "riskRows": 31,
+      "stockoutRate": 0.3833,
+      "province": "MUCHINGA PROVINCE",
+      "district": "CHINSALI",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 25.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 615.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 30.0,
+          "amc": 67.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 120.0,
+          "amc": 345.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Magnesium Sulphate 50% injection, 10ml vial (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.55,
+          "quantity": 17.0,
+          "amc": 31.0
+        },
+        {
+          "item": "Metoclopramide injection 5mg/ml, 2ml vial (1)",
+          "program": "GIT",
+          "mos": 0.6,
+          "quantity": 25.0,
+          "amc": 42.0
+        },
+        {
+          "item": "Suture Chromic Catgut Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.67,
+          "quantity": 4.0,
+          "amc": 6.0
+        },
+        {
+          "item": "Catheter Foley FR16/ FR18 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.8,
+          "quantity": 80.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Insulin Lente (protaphane) 100IU/ml, 10ml vial (1)",
+          "program": "ENDOCRINE",
+          "mos": 1.27,
+          "quantity": 19.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 1.32,
+          "quantity": 50.0,
+          "amc": 38.0
+        },
+        {
+          "item": "Povidone Iodine 10% 500ml Bottle (1)",
+          "program": "DISIFECTANT",
+          "mos": 1.54,
+          "quantity": 261.0,
+          "amc": 169.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 1.81,
+          "quantity": 635.0,
+          "amc": 350.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 8
+    },
+    {
+      "name": "Zimba",
+      "rows": 35,
+      "availability": 0.3429,
+      "mos": 2.01,
+      "stockout": 23,
+      "nearCritical": 0,
+      "understocked": 6,
+      "accordingToPlan": 2,
+      "abovePlan": 2,
+      "overstock": 2,
+      "dataGap": 0,
+      "quantity": 1143.0,
+      "amc": 277.01,
+      "riskRows": 29,
+      "stockoutRate": 0.6571,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Zimba",
+      "facilityLevel": "OPTHAMOLOGY UNITS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 200mg/5ml suspension (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Ceftazidime Injection",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Ciprofloxacin HCl USP 0.3% eye drops 5ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 1.0,
+          "quantity": 100.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Vancomycin 1g Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        },
+        {
+          "item": "Triamcinolone Injection",
+          "program": "CORTICOSTEROIDS",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        },
+        {
+          "item": "Ethanol 500ml (1)",
+          "program": "DISIFECTANT",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        },
+        {
+          "item": "Timolol 0.5% eye drops (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 1.0,
+          "quantity": 25.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 1.5,
+          "quantity": 3.0,
+          "amc": 2.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 6
+    },
+    {
+      "name": "KABOMPO DH",
+      "rows": 30,
+      "availability": 0.2333,
+      "mos": 0.76,
+      "stockout": 23,
+      "nearCritical": 1,
+      "understocked": 3,
+      "accordingToPlan": 1,
+      "abovePlan": 2,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 309.0,
+      "amc": 344.2,
+      "riskRows": 27,
+      "stockoutRate": 0.7667,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "KABOMPO",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 23.0,
+          "amc": 102.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Rifapentine 300mg Tablet(100)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 6.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Pyridoxine (Vitamin B6) 50mg Tablet(1000)",
+          "program": "VITAMINS/MINERALS",
+          "mos": 0.79,
+          "quantity": 100.0,
+          "amc": 127.0
+        },
+        {
+          "item": "Rifapentine/Isoniazid 300/300mg Tablet(36)",
+          "program": "TB-DS",
+          "mos": 1.34,
+          "quantity": 43.0,
+          "amc": 32.0
+        },
+        {
+          "item": "Isoniazid, Tab 300mg (100)",
+          "program": "TB-MDR",
+          "mos": 1.67,
+          "quantity": 25.0,
+          "amc": 15.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 1.8,
+          "quantity": 41.0,
+          "amc": 7.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 4
+    },
+    {
+      "name": "KABWE CENTRAL",
+      "rows": 35,
+      "availability": 0.3429,
+      "mos": 1.84,
+      "stockout": 23,
+      "nearCritical": 1,
+      "understocked": 3,
+      "accordingToPlan": 3,
+      "abovePlan": 5,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 23855.0,
+      "amc": 3383.0,
+      "riskRows": 27,
+      "stockoutRate": 0.6571,
+      "province": "CENTRAL PROVINCE",
+      "district": "KABWE",
+      "facilityLevel": "OPTHALMOLOGY UNITS",
+      "stockoutItems": [
+        {
+          "item": "Amoxycillin/Clavulanic acid 200mg/5ml suspension (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 227.0
+        },
+        {
+          "item": "Ceftazidime Injection",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Vancomycin 1g Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Bevacizumab 400mg Injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Triamcinolone Injection",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Ethanol 500ml (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Povidone iodine solution 10%, 1 Bottle (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Ciprofloxacin HCl USP 0.3% eye drops 5ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.67,
+          "quantity": 200.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.0,
+          "quantity": 200.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Acetazolamide Sodium Tablets, 250mg(100)",
+          "program": "OPTHAMOLOGY",
+          "mos": 1.0,
+          "quantity": 2.0,
+          "amc": 2.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.83,
+          "quantity": 550.0,
+          "amc": 300.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 4
+    },
+    {
+      "name": "MUKINGE MH",
+      "rows": 35,
+      "availability": 0.3429,
+      "mos": 2.0,
+      "stockout": 23,
+      "nearCritical": 4,
+      "understocked": 0,
+      "accordingToPlan": 2,
+      "abovePlan": 6,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 9384.0,
+      "amc": 1847.01,
+      "riskRows": 27,
+      "stockoutRate": 0.6571,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "KASEMPA",
+      "facilityLevel": "OPTHAMOLOGY UNITS",
+      "stockoutItems": [
+        {
+          "item": "Amoxycillin/Clavulanic acid 200mg/5ml suspension (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Ceftazidime Injection",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Ciprofloxacin HCl USP 0.3% eye drops 5ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 20.0
+        },
+        {
+          "item": "Bevacizumab 400mg Injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.54,
+          "quantity": 45.0,
+          "amc": 84.0
+        },
+        {
+          "item": "Povidone iodine solution 10%, 1 Bottle (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.64,
+          "quantity": 21.0,
+          "amc": 33.0
+        },
+        {
+          "item": "Acetazolamide Sodium Tablets, 250mg(100)",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.7,
+          "quantity": 35.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Tropicamide 0.5% eye drops (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.98,
+          "quantity": 49.0,
+          "amc": 50.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 4
+    },
+    {
+      "name": "CHILONGA MISSION GENERAL HOSPITAL",
+      "rows": 60,
+      "availability": 0.6167,
+      "mos": 4.92,
+      "stockout": 23,
+      "nearCritical": 2,
+      "understocked": 2,
+      "accordingToPlan": 7,
+      "abovePlan": 26,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 39297.0,
+      "amc": 6103.0,
+      "riskRows": 27,
+      "stockoutRate": 0.3833,
+      "province": "MUCHINGA PROVINCE",
+      "district": "MPIKA",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Ketamine HCl injection 50mg/ml, 10ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 130.0
+        },
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 42.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 40.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 120.0,
+          "amc": 245.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 23.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 115.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 75.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 230.0,
+          "amc": 1060.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.53,
+          "quantity": 24.0,
+          "amc": 45.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.88,
+          "quantity": 150.0,
+          "amc": 170.0
+        },
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 1.07,
+          "quantity": 160.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Povidone Iodine 10% 500ml Bottle (1)",
+          "program": "DISIFECTANT",
+          "mos": 1.5,
+          "quantity": 120.0,
+          "amc": 80.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 4
+    },
+    {
+      "name": "MBALA GENERAL HOSPITAL EYE CLINIC",
+      "rows": 35,
+      "availability": 0.3429,
+      "mos": 2.83,
+      "stockout": 23,
+      "nearCritical": 2,
+      "understocked": 0,
+      "accordingToPlan": 2,
+      "abovePlan": 8,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 29228.0,
+      "amc": 3061.16,
+      "riskRows": 25,
+      "stockoutRate": 0.6571,
+      "province": "NORTHERN PROVINCE",
+      "district": "MBALA",
+      "facilityLevel": "OPTHAMOLOGY UNITS",
+      "stockoutItems": [
+        {
+          "item": "Amoxycillin/Clavulanic acid 500mg/125mg cap(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 300.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 400.0,
+          "amc": 1500.0
+        },
+        {
+          "item": "Ceftazidime Injection",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Ciprofloxacin HCl USP 0.3% eye drops 5ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Vancomycin 1g Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Bevacizumab 400mg Injection (1)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Triamcinolone Injection",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Tropicamide 0.5% eye drops (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.5,
+          "quantity": 5.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Dexamethasone 0.1% w/v eye/ear drops, 5ml (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.7,
+          "quantity": 350.0,
+          "amc": 500.0
+        }
+      ],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 2
+    },
+    {
+      "name": "MANSA CENTRAL CLINIC",
+      "rows": 24,
+      "availability": 0.0417,
+      "mos": 0.1,
+      "stockout": 23,
+      "nearCritical": 0,
+      "understocked": 0,
+      "accordingToPlan": 1,
+      "abovePlan": 0,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 5.0,
+      "amc": 43.0,
+      "riskRows": 23,
+      "stockoutRate": 0.9583,
+      "province": "LUAPULA PROVINCE",
+      "district": "MANSA",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 75/50/150mg Tab(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol 150/75/400/275mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        }
+      ],
+      "lowStockItems": [],
+      "stockoutItemCount": 23,
+      "lowStockItemCount": 0
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.6857,
+      "mos": 1.33,
+      "stockout": 22,
+      "nearCritical": 23,
+      "understocked": 15,
+      "accordingToPlan": 5,
+      "abovePlan": 5,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 48310.0,
+      "amc": 46037.0,
+      "riskRows": 60,
+      "stockoutRate": 0.3143,
+      "province": "NORTHERN PROVINCE",
+      "district": "MUNGWI",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 300.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 230.0,
+          "amc": 600.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 300.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 25.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 22.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 400.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 130.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.5,
+          "quantity": 30.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Promethazine HCl 25mg/ml injection, 2ml amp (1)",
+          "program": "OTHER EM",
+          "mos": 0.53,
+          "quantity": 80.0,
+          "amc": 150.0
+        },
+        {
+          "item": "Chlorpheniramine Maleate 4mg Tablet(1000)",
+          "program": "OTHER EM",
+          "mos": 0.56,
+          "quantity": 56.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Suture Silk Non-Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.6,
+          "quantity": 120.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Standard Q HIV/Syphilis Combo(25)",
+          "program": "TEST KITS",
+          "mos": 0.65,
+          "quantity": 26.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.66,
+          "quantity": 300.0,
+          "amc": 452.0
+        },
+        {
+          "item": "Vaccine- Inactivated polio (IPV)",
+          "program": "VACCINES",
+          "mos": 0.67,
+          "quantity": 1000.0,
+          "amc": 1500.0
+        },
+        {
+          "item": "Vaccine- Tetanus/Deptheria (TD)",
+          "program": "VACCINES",
+          "mos": 0.67,
+          "quantity": 2000.0,
+          "amc": 3000.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 38
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.6857,
+      "mos": 2.0,
+      "stockout": 22,
+      "nearCritical": 16,
+      "understocked": 12,
+      "accordingToPlan": 9,
+      "abovePlan": 11,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 43539.0,
+      "amc": 20349.0,
+      "riskRows": 50,
+      "stockoutRate": 0.3143,
+      "province": "LUAPULA PROVINCE",
+      "district": "NCHELENGE",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 57.0,
+          "amc": 702.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 100.0,
+          "amc": 341.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 20.0,
+          "amc": 83.0
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 39.0
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 12.0,
+          "amc": 52.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 74.0,
+          "amc": 722.0
+        },
+        {
+          "item": "Gauze absorbent 91cm x 50m roll (1)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 7.0,
+          "amc": 89.0
+        },
+        {
+          "item": "Benzyl Benzoate Lotion 25% 100ml (1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 151.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.5,
+          "quantity": 27.0,
+          "amc": 54.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 24's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.61,
+          "quantity": 222.0,
+          "amc": 362.0
+        },
+        {
+          "item": "Clotrimazole, 20g Tube 1% Cream(1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 0.64,
+          "quantity": 56.0,
+          "amc": 88.0
+        },
+        {
+          "item": "Promethazine HCl 25mg/ml injection, 2ml amp (1)",
+          "program": "OTHER EM",
+          "mos": 0.64,
+          "quantity": 132.0,
+          "amc": 205.0
+        },
+        {
+          "item": "Vaccine- Inactivated polio (IPV)",
+          "program": "VACCINES",
+          "mos": 0.66,
+          "quantity": 377.0,
+          "amc": 575.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.68,
+          "quantity": 56.0,
+          "amc": 82.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.7,
+          "quantity": 406.0,
+          "amc": 576.0
+        },
+        {
+          "item": "Vaccine- Oral Poliovirus (OPV)",
+          "program": "VACCINES",
+          "mos": 0.71,
+          "quantity": 484.0,
+          "amc": 681.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 28
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.6857,
+      "mos": 1.86,
+      "stockout": 22,
+      "nearCritical": 9,
+      "understocked": 19,
+      "accordingToPlan": 10,
+      "abovePlan": 10,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 13511.0,
+      "amc": 8982.0,
+      "riskRows": 50,
+      "stockoutRate": 0.3143,
+      "province": "NORTHERN PROVINCE",
+      "district": "KAPUTA",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 82.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 650.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 40.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 27.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 17.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 24.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 145.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Suture Chromic Catgut Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 0.55,
+          "quantity": 6.0,
+          "amc": 11.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.67,
+          "quantity": 200.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.68,
+          "quantity": 45.0,
+          "amc": 66.0
+        },
+        {
+          "item": "Umbilical Cord Clamps (1)",
+          "program": "OTHER MS",
+          "mos": 0.68,
+          "quantity": 70.0,
+          "amc": 103.0
+        },
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.8,
+          "quantity": 400.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 6's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.81,
+          "quantity": 30.0,
+          "amc": 37.0
+        },
+        {
+          "item": "Vaccine- Pneumococcal conjugate (PCV)",
+          "program": "VACCINES",
+          "mos": 0.88,
+          "quantity": 325.0,
+          "amc": 370.0
+        },
+        {
+          "item": "Vaccine- Measles/Rubella (MR)",
+          "program": "VACCINES",
+          "mos": 0.93,
+          "quantity": 214.0,
+          "amc": 230.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 28
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.6857,
+      "mos": 1.77,
+      "stockout": 22,
+      "nearCritical": 11,
+      "understocked": 16,
+      "accordingToPlan": 11,
+      "abovePlan": 10,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 18955.0,
+      "amc": 10212.0,
+      "riskRows": 49,
+      "stockoutRate": 0.3143,
+      "province": "WESTERN PROVINCE",
+      "district": "MITETE DISTRICT",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 55.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 40.0,
+          "amc": 102.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 500.0
+        },
+        {
+          "item": "Abacavir Sulphate/Lamivudine Dispersable 120/60mg Tablet(60)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 20.0
+        },
+        {
+          "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 30.0,
+          "amc": 258.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 23.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 44.0
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.61,
+          "quantity": 49.0,
+          "amc": 80.0
+        },
+        {
+          "item": "Ethinyloestradiol/Levonorgestrel 130mg/150mcg tablet, cycle (3)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.61,
+          "quantity": 200.0,
+          "amc": 330.0
+        },
+        {
+          "item": "Benzyl Penicillin Sodium 5MU pwd for injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.62,
+          "quantity": 50.0,
+          "amc": 81.0
+        },
+        {
+          "item": "Syringe Disposable 5ml (100)",
+          "program": "SYRINGES",
+          "mos": 0.72,
+          "quantity": 174.0,
+          "amc": 243.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 18's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.75,
+          "quantity": 90.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Pregnancy Test (1)",
+          "program": "TEST KITS",
+          "mos": 0.75,
+          "quantity": 92.0,
+          "amc": 123.0
+        },
+        {
+          "item": "Chlorpheniramine Maleate 4mg Tablet(1000)",
+          "program": "OTHER EM",
+          "mos": 0.8,
+          "quantity": 32.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Ringers Lactate solution 500ml (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.81,
+          "quantity": 105.0,
+          "amc": 129.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 27
+    },
+    {
+      "name": "CHAVUMA MH",
+      "rows": 100,
+      "availability": 0.78,
+      "mos": 4.75,
+      "stockout": 22,
+      "nearCritical": 11,
+      "understocked": 10,
+      "accordingToPlan": 17,
+      "abovePlan": 40,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 26145.0,
+      "amc": 4307.32,
+      "riskRows": 43,
+      "stockoutRate": 0.22,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "CHAVUMA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 15.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 63.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 8.0,
+          "amc": 25.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 7.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 36.0,
+          "amc": 267.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.5,
+          "quantity": 2.0,
+          "amc": 4.0
+        },
+        {
+          "item": "Timolol 0.5% eye drops (1)",
+          "program": "OPTHAMOLOGY",
+          "mos": 0.5,
+          "quantity": 10.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.65,
+          "quantity": 26.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.7,
+          "quantity": 79.0,
+          "amc": 110.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.71,
+          "quantity": 10.0,
+          "amc": 14.0
+        },
+        {
+          "item": "Silver Sulphadiazine 1% Cream 20g tube (1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 0.75,
+          "quantity": 30.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 0.75,
+          "quantity": 80.0,
+          "amc": 106.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.78,
+          "quantity": 14.0,
+          "amc": 18.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 21
+    },
+    {
+      "name": "KAFUE GENERAL HOSPITAL",
+      "rows": 60,
+      "availability": 0.6333,
+      "mos": 2.52,
+      "stockout": 22,
+      "nearCritical": 12,
+      "understocked": 7,
+      "accordingToPlan": 5,
+      "abovePlan": 14,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 67336.0,
+      "amc": 30941.2,
+      "riskRows": 41,
+      "stockoutRate": 0.3667,
+      "province": "LUSAKA PROVINCE",
+      "district": "KAFUE",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Suxamethonium Chloride, 50mg/ml,2ml(1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 23.0
+        },
+        {
+          "item": "Diclofenac Sodium 75mg/3ml injection (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 145.0,
+          "amc": 3000.0
+        },
+        {
+          "item": "Pethidine HCl, IM inj 50mg/ml, 2ml amp (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 143.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 120.0,
+          "amc": 2000.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 116.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.1
+        },
+        {
+          "item": "Tranexamic Acid 100mg/ml, 5ml injection BP (1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 300.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 340.0,
+          "amc": 1000.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.53,
+          "quantity": 16.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Catheter Foley FR16/ FR18 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.54,
+          "quantity": 1075.0,
+          "amc": 2000.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.58,
+          "quantity": 58.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Labetalol HCL injection BP 5mg/20ml (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.6,
+          "quantity": 30.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.6,
+          "quantity": 151.0,
+          "amc": 250.0
+        },
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.62,
+          "quantity": 125.0,
+          "amc": 200.0
+        },
+        {
+          "item": "Frusemide 10mg/ml injection, 2ml amp (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.67,
+          "quantity": 210.0,
+          "amc": 315.0
+        },
+        {
+          "item": "Phytomenadione(Vit K) 10mg Injection,1ml(1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.7,
+          "quantity": 70.0,
+          "amc": 100.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 19
+    },
+    {
+      "name": "ALL",
+      "rows": 69,
+      "availability": 0.6812,
+      "mos": 1.83,
+      "stockout": 22,
+      "nearCritical": 5,
+      "understocked": 13,
+      "accordingToPlan": 23,
+      "abovePlan": 6,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 11328.0,
+      "amc": 9569.0,
+      "riskRows": 40,
+      "stockoutRate": 0.3188,
+      "province": "NORTHERN PROVINCE",
+      "district": "KAPUTA",
+      "facilityLevel": "HEALTH POST",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 33.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 32.0,
+          "amc": 81.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 600.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Doxycycline 100mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 7.0,
+          "amc": 19.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 29.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 12.0,
+          "amc": 140.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 27.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Chlorpheniramine Maleate 4mg Tablet(1000)",
+          "program": "OTHER EM",
+          "mos": 0.5,
+          "quantity": 30.0,
+          "amc": 60.0
+        },
+        {
+          "item": "Artesunate Rectal CAPSULE 100mg (2)",
+          "program": "MALARIA",
+          "mos": 0.56,
+          "quantity": 48.0,
+          "amc": 85.0
+        },
+        {
+          "item": "Umbilical Cord Clamps (1)",
+          "program": "OTHER MS",
+          "mos": 0.61,
+          "quantity": 200.0,
+          "amc": 328.0
+        },
+        {
+          "item": "Vaccine- Inactivated polio (IPV)",
+          "program": "VACCINES",
+          "mos": 0.67,
+          "quantity": 450.0,
+          "amc": 672.0
+        },
+        {
+          "item": "Vaccine- Measles/Rubella (MR)",
+          "program": "VACCINES",
+          "mos": 0.93,
+          "quantity": 325.0,
+          "amc": 348.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 6's tab (30)",
+          "program": "MALARIA",
+          "mos": 1.0,
+          "quantity": 50.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Gauze absorbent 91cm x 50m roll (1)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 1.04,
+          "quantity": 50.0,
+          "amc": 48.0
+        },
+        {
+          "item": "Vaccine- Oral Poliovirus (OPV)",
+          "program": "VACCINES",
+          "mos": 1.13,
+          "quantity": 365.0,
+          "amc": 323.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 18
+    },
+    {
+      "name": "PETAUKE DISTRICT HOSPITAL",
+      "rows": 50,
+      "availability": 0.56,
+      "mos": 1.61,
+      "stockout": 22,
+      "nearCritical": 11,
+      "understocked": 6,
+      "accordingToPlan": 6,
+      "abovePlan": 5,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 11536.0,
+      "amc": 11483.0,
+      "riskRows": 39,
+      "stockoutRate": 0.44,
+      "province": "EASTERN PROVINCE",
+      "district": "PETAUKE",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 100.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 400.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.1,
+          "quantity": 100.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Acetylsalicylic acid 75mg tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 400.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Aminophylline 25mg/ml injection, 10ml amp (1)",
+          "program": "OTHER EM",
+          "mos": 0.15,
+          "quantity": 15.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Needle Luer 21G/23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.16,
+          "quantity": 16.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Adrenaline Acid Tartrate 1mg/ml inj, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.3,
+          "quantity": 30.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.31,
+          "quantity": 31.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.32,
+          "quantity": 16.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.37,
+          "quantity": 37.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.4,
+          "quantity": 2.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 0.43,
+          "quantity": 300.0,
+          "amc": 700.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 17
+    },
+    {
+      "name": "Chikuni",
+      "rows": 50,
+      "availability": 0.56,
+      "mos": 3.03,
+      "stockout": 22,
+      "nearCritical": 4,
+      "understocked": 13,
+      "accordingToPlan": 3,
+      "abovePlan": 5,
+      "overstock": 3,
+      "dataGap": 0,
+      "quantity": 13282.0,
+      "amc": 4307.01,
+      "riskRows": 39,
+      "stockoutRate": 0.44,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Monze",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Lignocaine 2% injection 20ml vial (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 7.0,
+          "amc": 17.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 20.0,
+          "amc": 52.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 22.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 18.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 33.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 88.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 12.0,
+          "amc": 28.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 8.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Aminophylline 25mg/ml injection, 10ml amp (1)",
+          "program": "OTHER EM",
+          "mos": 0.54,
+          "quantity": 7.0,
+          "amc": 13.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.6,
+          "quantity": 30.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.8,
+          "quantity": 4.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 0.98,
+          "quantity": 450.0,
+          "amc": 460.0
+        },
+        {
+          "item": "Phenobarbitone 30mg Tablet (1000)",
+          "program": "ANTICONVULSANTS",
+          "mos": 1.0,
+          "quantity": 3.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Glibenclamide 5mg tab (100)",
+          "program": "ENDOCRINE",
+          "mos": 1.0,
+          "quantity": 4.0,
+          "amc": 4.0
+        },
+        {
+          "item": "Infusion Giving Set With AirInlet And Needle(1)",
+          "program": "OTHER MS",
+          "mos": 1.36,
+          "quantity": 75.0,
+          "amc": 55.0
+        },
+        {
+          "item": "Atropine sulphate 1ml/ml injection, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 1.38,
+          "quantity": 47.0,
+          "amc": 34.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 17
+    },
+    {
+      "name": "ALL",
+      "rows": 70,
+      "availability": 0.6857,
+      "mos": 3.37,
+      "stockout": 22,
+      "nearCritical": 6,
+      "understocked": 9,
+      "accordingToPlan": 13,
+      "abovePlan": 20,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 20049.0,
+      "amc": 11511.0,
+      "riskRows": 37,
+      "stockoutRate": 0.3143,
+      "province": "NORTHERN PROVINCE",
+      "district": "MPOROKOSO",
+      "facilityLevel": "HEALTH CENTRE",
+      "stockoutItems": [
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 21.0
+        },
+        {
+          "item": "Metronidazole 200mg tablet (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 27.0
+        },
+        {
+          "item": "Ferrous Sulphate 200mg Tablet(1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 11.0
+        },
+        {
+          "item": "Folic Acid 0.4mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Folic Acid 5mg Tablet (1000)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 58.0
+        },
+        {
+          "item": "Nifedipine Retard 20mg Tablet(100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 4.0,
+          "amc": 45.0
+        },
+        {
+          "item": "Gauze absorbent 91cm x 50m roll (1)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "Benzyl Benzoate Lotion 25% 100ml (1)",
+          "program": "CREAMS/LOTIONS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.58,
+          "quantity": 39.0,
+          "amc": 67.0
+        },
+        {
+          "item": "Syringe Disposable 5ml (100)",
+          "program": "SYRINGES",
+          "mos": 0.75,
+          "quantity": 3.0,
+          "amc": 4.0
+        },
+        {
+          "item": "Artemether + Lumefantrine 20/120mg 24's tab (30)",
+          "program": "MALARIA",
+          "mos": 0.83,
+          "quantity": 83.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.91,
+          "quantity": 100.0,
+          "amc": 110.0
+        },
+        {
+          "item": "Standard Q HIV/Syphilis Combo(25)",
+          "program": "TEST KITS",
+          "mos": 0.92,
+          "quantity": 154.0,
+          "amc": 167.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.93,
+          "quantity": 196.0,
+          "amc": 210.0
+        },
+        {
+          "item": "Benzathine Benzyl Penicillin 2.4MU pwd for inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.13,
+          "quantity": 51.0,
+          "amc": 45.0
+        },
+        {
+          "item": "Abacavir Sulphate/Lamivudine Dispersable 120/60mg Tablet(60)",
+          "program": "ART",
+          "mos": 1.14,
+          "quantity": 41.0,
+          "amc": 36.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 15
+    },
+    {
+      "name": "MUKINGE MH",
+      "rows": 60,
+      "availability": 0.6333,
+      "mos": 3.11,
+      "stockout": 22,
+      "nearCritical": 8,
+      "understocked": 6,
+      "accordingToPlan": 8,
+      "abovePlan": 16,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 48166.0,
+      "amc": 9521.0,
+      "riskRows": 36,
+      "stockoutRate": 0.3667,
+      "province": "NORTH-WESTERN PROVINCE",
+      "district": "KASEMPA",
+      "facilityLevel": "LEVEL 2 GENERAL HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 80.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 65.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 6.0
+        },
+        {
+          "item": "Cannulae I.V 24G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 10.0,
+          "amc": 31.0
+        },
+        {
+          "item": "Catheter Foley FR16/ FR18 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.0,
+          "quantity": 19.0,
+          "amc": 170.0
+        },
+        {
+          "item": "Glutaraldehyde Solution 2%(Cidex) 5L (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 400.0
+        },
+        {
+          "item": "Methylated Spirits 2.5L (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.0,
+          "quantity": 9.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Povidone Iodine 10% 500ml Bottle (1)",
+          "program": "DISIFECTANT",
+          "mos": 0.0,
+          "quantity": 8.0,
+          "amc": 33.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.54,
+          "quantity": 45.0,
+          "amc": 84.0
+        },
+        {
+          "item": "Cotton Wool absorbent Bp/EP 500g (1 roll)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.6,
+          "quantity": 24.0,
+          "amc": 40.0
+        },
+        {
+          "item": "Magnesium Sulphate 50% injection, 10ml vial (1)",
+          "program": "REPRODUCTIVE HEALTH",
+          "mos": 0.6,
+          "quantity": 50.0,
+          "amc": 84.0
+        },
+        {
+          "item": "Needle Luer 21G/23G x 1.5 Disposable(100)",
+          "program": "NEEDLE",
+          "mos": 0.62,
+          "quantity": 375.0,
+          "amc": 600.0
+        },
+        {
+          "item": "Phytomenadione(Vit K) 10mg Injection,1ml(1)",
+          "program": "BLOOD CONDITIONS",
+          "mos": 0.66,
+          "quantity": 40.0,
+          "amc": 61.0
+        },
+        {
+          "item": "Omeprazole 20mg Capsule (100)",
+          "program": "GIT",
+          "mos": 0.67,
+          "quantity": 18.0,
+          "amc": 27.0
+        },
+        {
+          "item": "Gauze Absorbent 36cm x 50m Roll (1)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.81,
+          "quantity": 81.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Diazepam inj BP 5mg/ml, 2ml amp (1)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.88,
+          "quantity": 105.0,
+          "amc": 120.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 14
+    },
+    {
+      "name": "UTH CHILDREN",
+      "rows": 55,
+      "availability": 0.6,
+      "mos": 2.73,
+      "stockout": 22,
+      "nearCritical": 8,
+      "understocked": 5,
+      "accordingToPlan": 9,
+      "abovePlan": 11,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 143401.0,
+      "amc": 42343.1,
+      "riskRows": 35,
+      "stockoutRate": 0.4,
+      "province": "LUSAKA PROVINCE",
+      "district": "LUSAKA",
+      "facilityLevel": "LEVEL 3 PAEDIATRICS HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Paracetamol syrup 120mg/5ml, 1 bottle (1)",
+          "program": "ANALGESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Amoxycillin trihydrate 125mg/5ml suspension, 100ml (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 200.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Gentamycin Sulphate 40mg/ml injection 2ml amp (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 360.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Dexamethasone sodium phosphate 4mg/ml injection, 1ml (1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 150.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Gauze Absorbent 36cm x 50m Roll (1)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 80.0
+        },
+        {
+          "item": "Calcium Gluconate 10% injection, 10ml (1)",
+          "program": "EMERGENCY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 10.0
+        },
+        {
+          "item": "Salbutamol 2.5mg Nebules (1)",
+          "program": "EMERGENCY",
+          "mos": 0.0,
+          "quantity": 750.0,
+          "amc": 2000.0
+        },
+        {
+          "item": "Insulin Lente (protaphane) 100IU/ml, 10ml vial (1)",
+          "program": "ENDOCRINE",
+          "mos": 0.0,
+          "quantity": 38.0,
+          "amc": 133.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Cephalexin 125mg/5ml suspension 100ml Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.58,
+          "quantity": 576.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Ciprofloxacin Infusion 2mg/ml 100ml bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.58,
+          "quantity": 576.0,
+          "amc": 1000.0
+        },
+        {
+          "item": "Fluconazole infusion 2mg/ml, 100ml Bottle (1)",
+          "program": "ANTIFUNGAL",
+          "mos": 0.6,
+          "quantity": 30.0,
+          "amc": 50.0
+        },
+        {
+          "item": "Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.64,
+          "quantity": 1920.0,
+          "amc": 3000.0
+        },
+        {
+          "item": "Insulin,Actrapid 100IU Injection 10ml vial(1)",
+          "program": "ENDOCRINE",
+          "mos": 0.68,
+          "quantity": 204.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Frusemide 10mg/ml injection, 2ml amp (1)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.72,
+          "quantity": 480.0,
+          "amc": 667.0
+        },
+        {
+          "item": "Catheter Foley FR10 Sterile, disposable (1)",
+          "program": "CATHETER",
+          "mos": 0.9,
+          "quantity": 90.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.93,
+          "quantity": 131.0,
+          "amc": 141.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 13
+    },
+    {
+      "name": "NYANJE HOSP",
+      "rows": 50,
+      "availability": 0.56,
+      "mos": 2.59,
+      "stockout": 22,
+      "nearCritical": 10,
+      "understocked": 1,
+      "accordingToPlan": 4,
+      "abovePlan": 13,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 12486.0,
+      "amc": 6009.0,
+      "riskRows": 33,
+      "stockoutRate": 0.44,
+      "province": "EASTERN PROVINCE",
+      "district": "SINDA",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 30.0
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.05,
+          "quantity": 1.0,
+          "amc": 20.0
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 8.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 50.0
+        },
+        {
+          "item": "Acetylsalicylic acid 75mg tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "Hydrocortisone Sodium Succinate Injection,IV/IM,100mg(1)",
+          "program": "CORTICOSTEROIDS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 150.0
+        },
+        {
+          "item": "Gauze Swab X-Ray Detectable (100)",
+          "program": "COTTON WOOL/SWABS/GAUZE",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 15.0
+        },
+        {
+          "item": "lidocain+adrenaline",
+          "program": "DENTAL",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 400.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.18,
+          "quantity": 390.0,
+          "amc": 2127.0
+        },
+        {
+          "item": "Atropine sulphate 1ml/ml injection, 1ml amp (1)",
+          "program": "EMERGENCY",
+          "mos": 0.33,
+          "quantity": 10.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Surgical Gloves Powder Free Latex (100)",
+          "program": "GLOVES",
+          "mos": 0.33,
+          "quantity": 10.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Insulin Lente (protaphane) 100IU/ml, 10ml vial (1)",
+          "program": "ENDOCRINE",
+          "mos": 0.4,
+          "quantity": 145.0,
+          "amc": 363.0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.47,
+          "quantity": 8.0,
+          "amc": 17.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 0.65,
+          "quantity": 300.0,
+          "amc": 463.0
+        },
+        {
+          "item": "Metformin 500mg tablet (1000)",
+          "program": "ENDOCRINE",
+          "mos": 0.66,
+          "quantity": 35.0,
+          "amc": 53.0
+        },
+        {
+          "item": "Insulin Soluble (Actrapid) 100iu/ml,10ml(1)",
+          "program": "ENDOCRINE",
+          "mos": 0.8,
+          "quantity": 20.0,
+          "amc": 25.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 11
+    },
+    {
+      "name": "MWENSE D HOSP",
+      "rows": 50,
+      "availability": 0.56,
+      "mos": 3.02,
+      "stockout": 22,
+      "nearCritical": 3,
+      "understocked": 6,
+      "accordingToPlan": 5,
+      "abovePlan": 14,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 14230.0,
+      "amc": 1899.37,
+      "riskRows": 31,
+      "stockoutRate": 0.44,
+      "province": "LUAPULA PROVINCE",
+      "district": "MWENSE",
+      "facilityLevel": "DISTRICT LEVEL 1 HOSPITALS",
+      "stockoutItems": [
+        {
+          "item": "Bupivacaine HCL 0.5% + Dextrose 8%,4ml Heavy Spinal 20ml (1)",
+          "program": "ANAESTHESIA",
+          "mos": 0.0,
+          "quantity": 430.0,
+          "amc": 1.65
+        },
+        {
+          "item": "Amoxicillin BP 500mg tablets (1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 60.0,
+          "amc": 0.67
+        },
+        {
+          "item": "Ceftriaxone Sodium 1g injection (1) / Cefotaxime sodium inj, 1g vial (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 15.0,
+          "amc": 0
+        },
+        {
+          "item": "Metronidazole 5mg/ml injection, 1 Bottle (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 72.0
+        },
+        {
+          "item": "Sodium Dichloroisocyanurate 2.75g tablet (100)",
+          "program": "ANTICONVULSANTS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 12.0
+        },
+        {
+          "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
+          "program": "ART",
+          "mos": 0.0,
+          "quantity": 5.0,
+          "amc": 120.0
+        },
+        {
+          "item": "Cannulae I.V 18G without fixation Wings (1)",
+          "program": "CANNULAE",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 0
+        },
+        {
+          "item": "Amiloride HCl + Hydrochlorothiazide 5/50mg Tablet (1000)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.0,
+          "quantity": 15.0,
+          "amc": 3.13
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Glibenclamide 5mg tab (100)",
+          "program": "ENDOCRINE",
+          "mos": 0.5,
+          "quantity": 1.0,
+          "amc": 2.0
+        },
+        {
+          "item": "Cephalexin 250mg Capsule(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.67,
+          "quantity": 2.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Acetylsalicylic acid 75mg tablet (100)",
+          "program": "CARDIOVASCULAR",
+          "mos": 0.67,
+          "quantity": 4.0,
+          "amc": 6.0
+        },
+        {
+          "item": "Suture Silk Non-Absorbable (12)",
+          "program": "SUTURE",
+          "mos": 1.0,
+          "quantity": 1.0,
+          "amc": 1.0
+        },
+        {
+          "item": "Paracetamol 500mg tablet (1000)",
+          "program": "ANALGESIA",
+          "mos": 1.11,
+          "quantity": 10.0,
+          "amc": 9.0
+        },
+        {
+          "item": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+          "program": "FLUIDS/SALTS",
+          "mos": 1.25,
+          "quantity": 300.0,
+          "amc": 240.0
+        },
+        {
+          "item": "Examination Gloves (Latex) Highly Powdered (100)",
+          "program": "GLOVES",
+          "mos": 1.26,
+          "quantity": 97.0,
+          "amc": 77.0
+        },
+        {
+          "item": "Ciprofloxacin Hydrochloride 250mg Tablet(1000)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.42,
+          "quantity": 15.0,
+          "amc": 10.53
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 9
+    },
+    {
+      "name": "KITWE TEACHING",
+      "rows": 30,
+      "availability": 0.2667,
+      "mos": 5.25,
+      "stockout": 22,
+      "nearCritical": 2,
+      "understocked": 3,
+      "accordingToPlan": 0,
+      "abovePlan": 1,
+      "overstock": 2,
+      "dataGap": 0,
+      "quantity": 772.0,
+      "amc": 1209.0,
+      "riskRows": 27,
+      "stockoutRate": 0.7333,
+      "province": "COPPERBELT PROVINCE",
+      "district": "KITWE",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 50.0,
+          "amc": 500.0
+        },
+        {
+          "item": "Moxifloxacin 400mg Tablet(100)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 9.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 3.0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 1.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 20.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 15.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.67,
+          "quantity": 200.0,
+          "amc": 300.0
+        },
+        {
+          "item": "Bedaquiline 100mg Tablet (188)",
+          "program": "TB-MDR",
+          "mos": 0.89,
+          "quantity": 16.0,
+          "amc": 18.0
+        },
+        {
+          "item": "Dapsone 100mg tab (100)",
+          "program": "TB-MDR",
+          "mos": 1.0,
+          "quantity": 10.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Pyrazinamide 500mg Tablet(672)",
+          "program": "TB-MDR",
+          "mos": 1.0,
+          "quantity": 3.0,
+          "amc": 3.0
+        },
+        {
+          "item": "Levofloxacin 250mg Tablet(100)",
+          "program": "TB-MDR",
+          "mos": 1.07,
+          "quantity": 43.0,
+          "amc": 40.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 5
+    },
+    {
+      "name": "Mazabuka G.Hospital",
+      "rows": 30,
+      "availability": 0.2667,
+      "mos": 53.56,
+      "stockout": 22,
+      "nearCritical": 0,
+      "understocked": 5,
+      "accordingToPlan": 0,
+      "abovePlan": 0,
+      "overstock": 3,
+      "dataGap": 0,
+      "quantity": 92.0,
+      "amc": 988.13,
+      "riskRows": 27,
+      "stockoutRate": 0.7333,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Mazabuka",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 13.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 15.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 75/50/150mg Tab(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 9.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Linezolid 600mg Tablet(100)",
+          "program": "TB-MDR",
+          "mos": 1.0,
+          "quantity": 5.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Rifapentine/Isoniazid 300/300mg Tablet(36)",
+          "program": "TB-DS",
+          "mos": 1.2,
+          "quantity": 36.0,
+          "amc": 30.0
+        },
+        {
+          "item": "Cycloserine 250mg Capsule(100)",
+          "program": "TB-MDR",
+          "mos": 1.2,
+          "quantity": 6.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Clofazimine 100mg Capsule/Tablet(100)",
+          "program": "TB-MDR",
+          "mos": 1.6,
+          "quantity": 8.0,
+          "amc": 5.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 1.8,
+          "quantity": 18.0,
+          "amc": 10.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 5
+    },
+    {
+      "name": "Monze M.Hospital",
+      "rows": 30,
+      "availability": 0.2667,
+      "mos": 0.89,
+      "stockout": 22,
+      "nearCritical": 2,
+      "understocked": 2,
+      "accordingToPlan": 2,
+      "abovePlan": 2,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 362.0,
+      "amc": 144.13,
+      "riskRows": 26,
+      "stockoutRate": 0.7333,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Monze",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 1.0,
+          "amc": 8.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 75/50/150mg Tab(84)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 3.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol 150/75/400/275mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 2.0,
+          "amc": 7.0
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+          "program": "TB-DS",
+          "mos": 0.5,
+          "quantity": 2.0,
+          "amc": 4.0
+        },
+        {
+          "item": "Isoniazid, Tab 300mg (100)",
+          "program": "TB-MDR",
+          "mos": 0.5,
+          "quantity": 5.0,
+          "amc": 10.0
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 1.06,
+          "quantity": 37.0,
+          "amc": 35.0
+        },
+        {
+          "item": "Levofloxacin 250mg Tablet(100)",
+          "program": "TB-MDR",
+          "mos": 1.5,
+          "quantity": 3.0,
+          "amc": 2.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 4
+    },
+    {
+      "name": "Livingstone UTH",
+      "rows": 30,
+      "availability": 0.2667,
+      "mos": 1.04,
+      "stockout": 22,
+      "nearCritical": 0,
+      "understocked": 2,
+      "accordingToPlan": 4,
+      "abovePlan": 2,
+      "overstock": 0,
+      "dataGap": 0,
+      "quantity": 372.0,
+      "amc": 213.14,
+      "riskRows": 24,
+      "stockoutRate": 0.7333,
+      "province": "SOUTHERN PROVINCE",
+      "district": "Livingstone",
+      "facilityLevel": "DS-TB & MDR-TB UNITS",
+      "stockoutItems": [
+        {
+          "item": "Imipenem/Cilastatin 500mg/500mg Inj (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Meropenem 1g Powder for Injection (1)",
+          "program": "ANTIBIOTIC",
+          "mos": 0.0,
+          "quantity": 30.0,
+          "amc": 100.0
+        },
+        {
+          "item": "Levofloxacin 100mg Dispersible Tablet(100)",
+          "program": "CANCER",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 5.0
+        },
+        {
+          "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "MDT PB Blister Adult (Rifampicin/Dapsone) 150/50mg Tablet(6)",
+          "program": "LEPROSY",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide 150/75/400mg Tab (672)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        },
+        {
+          "item": "Rifapentine 300mg Tablet(100)",
+          "program": "TB-DS",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 2.0
+        },
+        {
+          "item": "Amikacin Ampule Injection 500mg/2ml Ampoule (1)",
+          "program": "TB-MDR",
+          "mos": 0.0,
+          "quantity": 0,
+          "amc": 0.01
+        }
+      ],
+      "lowStockItems": [
+        {
+          "item": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol 150/75/400/275mg Tablet(672)",
+          "program": "TB-DS",
+          "mos": 1.12,
+          "quantity": 9.0,
+          "amc": 8.0
+        },
+        {
+          "item": "Bedaquiline 100mg Tablet (188)",
+          "program": "TB-MDR",
+          "mos": 1.5,
+          "quantity": 3.0,
+          "amc": 2.0
+        }
+      ],
+      "stockoutItemCount": 22,
+      "lowStockItemCount": 2
+    }
+  ],
   "facilityLevels": [
     {
       "name": "CANCER DISEASES UNITS",
