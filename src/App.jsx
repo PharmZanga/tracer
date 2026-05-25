@@ -492,15 +492,53 @@ function App() {
       const warehouseRows = latestWarehouseRows.filter((row) => row.category === item.zammsa);
       const warehouseRisk = warehouseRows.filter((row) => ["red", "amber"].includes(row.status.tone)).length;
       const warehouseStockouts = warehouseRows.filter((row) => row.status.tone === "red").length;
+      const warehouseAvailable = warehouseRows.filter((row) => !["red", "neutral"].includes(row.status.tone)).length;
+      const fieldStockoutRows = field?.stockout ?? 0;
+      const fieldLowStockRows = (field?.nearCritical ?? 0) + (field?.understocked ?? 0);
+      const fieldAvailability = field?.availability ?? null;
+      const centralAvailable = warehouseRows.length > 0 && warehouseAvailable / warehouseRows.length >= 0.75;
+      const centralAtRisk = warehouseStockouts > 0 || (warehouseRows.length > 0 && warehouseRisk / warehouseRows.length >= 0.25);
+      const fieldHasStockout = fieldStockoutRows > 0;
+      const fieldAtRisk = fieldAvailability !== null && fieldAvailability < 0.75;
+      let signal = "No major mismatch";
+      let signalTone = "green";
+      if (centralAvailable && fieldHasStockout) {
+        signal = "Distribution gap: central stock available, facilities stocked out";
+        signalTone = "red";
+      } else if (centralAtRisk && fieldAtRisk) {
+        signal = "Systemwide shortage: field and central both at risk";
+        signalTone = "red";
+      } else if (centralAtRisk && fieldAvailability !== null && fieldAvailability >= 0.75) {
+        signal = "Redistribution opportunity: field has some buffer, central at risk";
+        signalTone = "amber";
+      } else if (fieldAtRisk) {
+        signal = "Facility replenishment risk";
+        signalTone = "amber";
+      } else if (centralAtRisk) {
+        signal = "Central risk, monitor facilities";
+        signalTone = "amber";
+      }
       return {
         ...item,
         field,
         warehouseRows: warehouseRows.length,
         warehouseRisk,
         warehouseStockouts,
+        warehouseAvailable,
+        fieldStockoutRows,
+        fieldLowStockRows,
+        signal,
+        signalTone,
       };
     }).filter((item) => item.field || item.warehouseRows);
   }, [end]);
+  const mismatchSummary = useMemo(() => fieldToWarehouseComparison.reduce((acc, row) => {
+    if (row.signal.startsWith("Distribution gap")) acc.distributionGaps += 1;
+    if (row.signal.startsWith("Systemwide shortage")) acc.systemwideShortages += 1;
+    if (row.signal.startsWith("Redistribution opportunity")) acc.redistributionOpportunities += 1;
+    if (row.signalTone === "amber") acc.monitor += 1;
+    return acc;
+  }, { distributionGaps: 0, systemwideShortages: 0, redistributionOpportunities: 0, monitor: 0 }), [fieldToWarehouseComparison]);
 
   const filteredConcerns = useMemo(() => {
     if (statusFilter === "all" && categoryFilter === "all" && amiFilter === "all" && tbdFilter === "all" && sohFilter === "all" && !query) return managementConcerns;
@@ -628,6 +666,16 @@ function App() {
       const districts = weakestFieldDistricts.slice(0, 4).map((row) => `${row.name}, ${row.province} ${formatPercent(row.availability)}`).join("; ");
       const facilityText = criticalFacility ? ` Highest facility alert: ${criticalFacility.name}, ${criticalFacility.district}, ${criticalFacility.province} with ${criticalFacility.stockoutItemCount} stockout commodities and ${criticalFacility.lowStockItemCount} low-stock commodities.` : "";
       setAssistantAnswer(`End-to-end field view starts from facility commodity rows, rolls them to districts, provinces, and national. Weakest current districts are: ${districts}.${facilityText} Use the facility alerts panel to see exact stockout and low-stock commodities.`);
+      return;
+    }
+
+    if (lower.includes("distribution") || lower.includes("mismatch") || lower.includes("central") || lower.includes("warehouse")) {
+      const gaps = fieldToWarehouseComparison
+        .filter((row) => row.signal.startsWith("Distribution gap") || row.signal.startsWith("Systemwide shortage"))
+        .slice(0, 4)
+        .map((row) => `${row.label}: ${row.signal}`)
+        .join("; ");
+      setAssistantAnswer(`Central-to-facility comparison found ${mismatchSummary.distributionGaps} distribution gaps, ${mismatchSummary.systemwideShortages} systemwide shortage signals, and ${mismatchSummary.redistributionOpportunities} redistribution opportunities. Priority signals: ${gaps || "no red mismatch signals in the mapped programmes"}.`);
       return;
     }
 
@@ -812,6 +860,11 @@ function App() {
           <p className="eyebrow dark">ZAMMSA Comparison Layer</p>
           <h2>Compare field tracer demand signals with national inventory position</h2>
           <p>Field availability and MOS come from district/facility submissions. ZAMMSA risk uses the latest national stock extract and highlights whether warehouse stock risk aligns with field shortages.</p>
+          <div className="mismatch-cards">
+            <span><b>{mismatchSummary.distributionGaps}</b> distribution gaps</span>
+            <span><b>{mismatchSummary.systemwideShortages}</b> systemwide shortages</span>
+            <span><b>{mismatchSummary.redistributionOpportunities}</b> redistribution opportunities</span>
+          </div>
         </div>
         <div className="comparison-table-wrap">
           <table className="comparison-table">
@@ -820,29 +873,28 @@ function App() {
                 <th>Programme</th>
                 <th>Field availability</th>
                 <th>Field MOS</th>
-                <th>Field risk rows</th>
+                <th>Field stockout rows</th>
+                <th>Field low-stock rows</th>
                 <th>ZAMMSA category</th>
+                <th>ZAMMSA available lines</th>
                 <th>ZAMMSA risk lines</th>
                 <th>Signal</th>
               </tr>
             </thead>
             <tbody>
-              {fieldToWarehouseComparison.map((row) => {
-                const fieldRiskHigh = row.field && row.field.availability < 0.75;
-                const warehouseRiskHigh = row.warehouseRisk > 0;
-                const signal = fieldRiskHigh && warehouseRiskHigh ? "Field shortage and warehouse risk" : fieldRiskHigh ? "Field shortage, check distribution" : warehouseRiskHigh ? "Warehouse risk, monitor facilities" : "No major mismatch";
-                return (
-                  <tr key={`${row.tracer}-${row.zammsa}`}>
-                    <td>{row.label}</td>
-                    <td>{row.field ? formatPercent(row.field.availability) : "-"}</td>
-                    <td>{row.field?.mos ?? "-"}</td>
-                    <td>{row.field ? row.field.riskRows.toLocaleString() : "-"}</td>
-                    <td>{row.zammsa}</td>
-                    <td>{row.warehouseRisk} risk, {row.warehouseStockouts} stockout</td>
-                    <td><span className={`comparison-signal ${fieldRiskHigh && warehouseRiskHigh ? "red" : fieldRiskHigh || warehouseRiskHigh ? "amber" : "green"}`}>{signal}</span></td>
-                  </tr>
-                );
-              })}
+              {fieldToWarehouseComparison.map((row) => (
+                <tr key={`${row.tracer}-${row.zammsa}`}>
+                  <td>{row.label}</td>
+                  <td>{row.field ? formatPercent(row.field.availability) : "-"}</td>
+                  <td>{row.field?.mos ?? "-"}</td>
+                  <td>{row.fieldStockoutRows.toLocaleString()}</td>
+                  <td>{row.fieldLowStockRows.toLocaleString()}</td>
+                  <td>{row.zammsa}</td>
+                  <td>{row.warehouseAvailable}/{row.warehouseRows}</td>
+                  <td>{row.warehouseRisk} risk, {row.warehouseStockouts} stockout</td>
+                  <td><span className={`comparison-signal ${row.signalTone}`}>{row.signal}</span></td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

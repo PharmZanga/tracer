@@ -548,6 +548,32 @@ h1 {
   align-items: start;
 }
 
+.mismatch-cards {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.mismatch-cards span {
+  display: grid;
+  gap: 3px;
+  min-height: 66px;
+  align-content: center;
+  border: 1px solid #e1e9e4;
+  border-radius: 8px;
+  background: #fbfdfb;
+  color: #607168;
+  font-size: 12px;
+  line-height: 1.35;
+  padding: 10px 12px;
+}
+
+.mismatch-cards b {
+  color: #17211a;
+  font-size: 24px;
+  line-height: 1;
+}
+
 .comparison-table-wrap {
   overflow-x: auto;
   border: 1px solid #e1e9e4;
@@ -555,7 +581,7 @@ h1 {
 }
 
 .comparison-table {
-  min-width: 900px;
+  min-width: 1180px;
 }
 
 .comparison-table th {
