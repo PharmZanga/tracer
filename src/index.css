@@ -222,6 +222,229 @@ h1 {
   background: linear-gradient(90deg, #1f7a4d, #6fbf73);
 }
 
+.field-visibility,
+.warehouse-comparison {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid rgba(19, 43, 31, 0.09);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 30px rgba(18, 36, 25, 0.06);
+}
+
+.field-head,
+.warehouse-comparison {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.field-head {
+  display: grid;
+  gap: 16px;
+  align-items: end;
+}
+
+.field-head h2,
+.warehouse-comparison h2 {
+  margin-bottom: 6px;
+  font-size: 22px;
+}
+
+.field-head p,
+.warehouse-comparison p {
+  margin-bottom: 0;
+  color: #607168;
+  line-height: 1.55;
+}
+
+.field-scope-tabs {
+  display: inline-grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid #dce7df;
+  border-radius: 8px;
+  background: #f7faf8;
+}
+
+.field-scope-tabs button {
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #52665b;
+  cursor: pointer;
+  padding: 8px 10px;
+  text-transform: capitalize;
+}
+
+.field-scope-tabs button.active {
+  background: #1f7a4d;
+  color: #fff;
+  font-weight: 760;
+}
+
+.field-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.field-kpis div,
+.field-table-panel,
+.field-commodity-panel {
+  border: 1px solid #dce7df;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.field-kpis div {
+  display: grid;
+  gap: 6px;
+  min-height: 116px;
+  padding: 14px;
+}
+
+.field-kpis span,
+.field-kpis small {
+  color: #607168;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.field-kpis strong {
+  color: #17211a;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.field-table-panel,
+.field-commodity-panel {
+  overflow: hidden;
+}
+
+.field-table-panel h3,
+.field-commodity-panel h3 {
+  margin: 0;
+  padding: 14px;
+  border-bottom: 1px solid #e1e9e4;
+  font-size: 16px;
+}
+
+.field-rollup-list {
+  display: grid;
+}
+
+.field-rollup-list button {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(90px, 0.8fr) 58px 82px;
+  gap: 10px;
+  align-items: center;
+  min-height: 54px;
+  border: 0;
+  border-bottom: 1px solid #eef3ef;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.field-rollup-list button:hover {
+  background: #f7faf8;
+}
+
+.field-rollup-list b,
+.field-commodity-list span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.field-rollup-list small,
+.field-commodity-list small {
+  color: #607168;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.availability-track.compact {
+  height: 8px;
+}
+
+.field-commodity-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field-commodity-list div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 70px;
+  gap: 6px 10px;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid #eef3ef;
+}
+
+.field-commodity-list b {
+  color: #b42318;
+  text-align: right;
+}
+
+.field-commodity-list small {
+  grid-column: 1 / -1;
+}
+
+.warehouse-comparison {
+  grid-template-columns: 320px minmax(0, 1fr);
+  align-items: start;
+}
+
+.comparison-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e1e9e4;
+  border-radius: 8px;
+}
+
+.comparison-table {
+  min-width: 900px;
+}
+
+.comparison-table th {
+  background: #f2f7f3;
+}
+
+.comparison-signal {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 760;
+  white-space: nowrap;
+}
+
+.comparison-signal.red {
+  background: #fde8e4;
+  color: #b42318;
+}
+
+.comparison-signal.amber {
+  background: #fff3d6;
+  color: #925200;
+}
+
+.comparison-signal.green {
+  background: #e7f5ed;
+  color: #1f7a4d;
+}
+
 .forecast-section {
   display: grid;
   gap: 14px;
@@ -1485,6 +1708,11 @@ td.neutral {
   .tracer-overview,
   .tracer-metrics,
   .tracer-baskets,
+  .field-head,
+  .field-kpis,
+  .field-grid,
+  .field-commodity-list,
+  .warehouse-comparison,
   .forecast-head,
   .forecast-cards,
   .workspace-grid,
@@ -1510,6 +1738,14 @@ td.neutral {
 
   .tracer-lead {
     padding-right: 0;
+  }
+
+  .field-scope-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .field-rollup-list button {
+    grid-template-columns: 1fr;
   }
 
   .span-2 {

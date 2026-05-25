@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { categories, managementConcerns, programmePressure, reports, trend } from "./zammsaData.js";
+import { tracerFacilityData } from "./tracerFacilityData.js";
 import { weeklyAvailability } from "./weeklyAvailability.js";
 import { stockHistory } from "./zammsaHistory.js";
 
@@ -46,6 +47,19 @@ const tracerBaskets = [
   { label: "Reproductive health", categories: ["Reproductive Health"] },
   { label: "Anaesthesia and theatre", categories: ["Anaesthetics", "Medical/Surgical", "IV Fluids"] },
   { label: "Laboratory", categories: ["Laboratory"] },
+];
+
+const programmeWarehouseMap = [
+  { tracer: "ART", zammsa: "ARV", label: "HIV / ART" },
+  { tracer: "MALARIA", zammsa: "Anti-malarials", label: "Malaria" },
+  { tracer: "TB-DS", zammsa: "Anti-TB", label: "Drug-sensitive TB" },
+  { tracer: "TB-MDR", zammsa: "Anti-TB", label: "MDR-TB" },
+  { tracer: "ANTIBIOTIC", zammsa: "Anti-infective", label: "Antibiotics" },
+  { tracer: "REPRODUCTIVE HEALTH", zammsa: "Reproductive Health", label: "Reproductive health" },
+  { tracer: "ANAESTHESIA", zammsa: "Anaesthetics", label: "Anaesthesia" },
+  { tracer: "RENAL", zammsa: "Renal", label: "Renal" },
+  { tracer: "CARDIOVASCULAR", zammsa: "Cardiovascular", label: "Cardiovascular" },
+  { tracer: "CANCER", zammsa: "Anti-cancer", label: "Cancer" },
 ];
 
 function classify(mos) {
@@ -283,6 +297,29 @@ function ForecastFlagPill({ flag }) {
   return <span className={`forecast-pill forecast-${flag.tone}`}>{flag.label}</span>;
 }
 
+function TracerRollupTable({ title, rows, subLabel = "rows", onSelect }) {
+  return (
+    <div className="field-table-panel">
+      <h3>{title}</h3>
+      <div className="field-rollup-list">
+        {rows.map((row) => (
+          <button type="button" key={`${row.province || ""}-${row.name}`} onClick={() => onSelect?.(row)}>
+            <span>
+              <b>{row.name}</b>
+              {row.province ? <small>{row.province}</small> : null}
+            </span>
+            <div className="availability-track compact">
+              <div className={row.availability < 0.5 ? "red" : row.availability < 0.75 ? "amber" : "green"} style={{ width: `${row.availability * 100}%` }} />
+            </div>
+            <strong>{formatPercent(row.availability)}</strong>
+            <small>{row.riskRows.toLocaleString()} risk {subLabel}</small>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function CommodityModal({ item, onClose }) {
   if (!item) return null;
   const status = classify(item.mos.at(-1));
@@ -343,6 +380,7 @@ function App() {
     .map(([category, available, total, availability]) => ({ category, available, total, availability }))
     .sort((a, b) => a.availability - b.availability);
   const weeklyChange = weeklyAvailability.changesByProgramme?.[weeklyProgramme]?.at(-1) || weeklyAvailability.changes;
+  const [fieldScope, setFieldScope] = useState("national");
 
   const filteredTrend = useMemo(() => {
     const q = query.toLowerCase();
@@ -435,6 +473,30 @@ function App() {
       return acc;
     }, { now: 0, days30: 0, days60: 0, days90: 0 });
   }, [end, latestTracerRows]);
+
+  const fieldKpis = tracerFacilityData.national;
+  const weakestFieldProvinces = tracerFacilityData.provinces.slice(0, 8);
+  const weakestFieldDistricts = tracerFacilityData.districts.slice(0, 8);
+  const weakestFieldProgrammes = tracerFacilityData.programmes.slice(0, 8);
+  const weakestFieldCommodities = tracerFacilityData.commodities.slice(0, 10);
+  const fieldToWarehouseComparison = useMemo(() => {
+    const latestWarehouseRows = fullCommodityHistory
+      .map((item) => ({ ...item, status: classify(item.mos[end]) }))
+      .filter((item) => item.present[end]);
+    return programmeWarehouseMap.map((item) => {
+      const field = tracerFacilityData.programmes.find((programmeItem) => programmeItem.name === item.tracer);
+      const warehouseRows = latestWarehouseRows.filter((row) => row.category === item.zammsa);
+      const warehouseRisk = warehouseRows.filter((row) => ["red", "amber"].includes(row.status.tone)).length;
+      const warehouseStockouts = warehouseRows.filter((row) => row.status.tone === "red").length;
+      return {
+        ...item,
+        field,
+        warehouseRows: warehouseRows.length,
+        warehouseRisk,
+        warehouseStockouts,
+      };
+    }).filter((item) => item.field || item.warehouseRows);
+  }, [end]);
 
   const filteredConcerns = useMemo(() => {
     if (statusFilter === "all" && categoryFilter === "all" && amiFilter === "all" && tbdFilter === "all" && sohFilter === "all" && !query) return managementConcerns;
@@ -553,8 +615,14 @@ function App() {
     }
 
     if (lower.includes("national") || lower.includes("tracer") || lower.includes("availability")) {
-      const weakestBaskets = tracerBasketSummaries.slice(0, 3).map((basket) => `${basket.label} ${availabilityPercent(basket.serviceAvailable, basket.classifiable)}`).join(", ");
-      setAssistantAnswer(`National tracer availability for ${selectedMeta.label} is ${formatPercent(nationalTracer.serviceRate)} among rows with classifiable MOS. Adequate cover is ${formatPercent(nationalTracer.adequateRate)}. There are ${nationalTracer.stockouts} stockouts, ${nationalTracer.near} near-critical items, and ${nationalTracer.gaps} data gaps. Weakest tracer baskets: ${weakestBaskets}.`);
+      const weakest = weakestFieldProvinces.slice(0, 3).map((row) => `${row.name} ${formatPercent(row.availability)}`).join(", ");
+      setAssistantAnswer(`The weekly provincial tracer submission for ${tracerFacilityData.reportDate} contains ${tracerFacilityData.counts.rows.toLocaleString()} facility commodity rows from ${tracerFacilityData.counts.provinces} provinces, ${tracerFacilityData.counts.districts} districts, and ${tracerFacilityData.counts.facilityUnits} facility reporting units. Field availability is ${formatPercent(fieldKpis.availability)} with average MOS ${fieldKpis.mos}. Weakest provinces are ${weakest}.`);
+      return;
+    }
+
+    if (lower.includes("district") || lower.includes("facility") || lower.includes("province")) {
+      const districts = weakestFieldDistricts.slice(0, 4).map((row) => `${row.name}, ${row.province} ${formatPercent(row.availability)}`).join("; ");
+      setAssistantAnswer(`End-to-end field view starts from facility commodity rows, rolls them to districts, provinces, and national. Weakest current districts are: ${districts}. Use the field visibility panel to scan province, district, facility-level, programme, and commodity pressure before comparing to ZAMMSA inventory.`);
       return;
     }
 
@@ -622,24 +690,119 @@ function App() {
       <section className="hero">
         <div>
           <p className="eyebrow">National Tracer Drug Availability</p>
-          <h1>Zambia tracer medicines command center</h1>
-          <p className="lede">Track national service availability, adequate cover, programme pressure, and commodity-level stock risk from the latest ZAMMSA report extracts.</p>
+          <h1>Facility-to-warehouse tracer visibility</h1>
+          <p className="lede">Start with weekly provincial tracer submissions from health posts, health centres, and hospitals, then roll up district, province, and national risk before comparing against ZAMMSA inventory.</p>
         </div>
         <div className="report-card">
-          <span>Analysis window</span>
-          <strong>{reports[start].short} - {reports[end].short}</strong>
-          <small>{selectedTrend.total.toLocaleString()} extracted commodity rows in the latest selected report.</small>
-          <small>Tracer service availability: {formatPercent(nationalTracer.serviceRate)}</small>
-          <small>Data status: static report extracts, updated {selectedMeta.label}</small>
+          <span>Weekly tracer submission</span>
+          <strong>{tracerFacilityData.reportDate}</strong>
+          <small>{tracerFacilityData.counts.rows.toLocaleString()} facility commodity rows across {tracerFacilityData.counts.provinces} provinces.</small>
+          <small>Field availability: {formatPercent(fieldKpis.availability)} | Average MOS: {fieldKpis.mos}</small>
+          <small>ZAMMSA comparison extract: {selectedMeta.label}</small>
           <button className="hero-export" type="button" onClick={exportCsv}>Export current CSV</button>
+        </div>
+      </section>
+
+      <section className="field-visibility">
+        <div className="field-head">
+          <div>
+            <p className="eyebrow dark">End-To-End Field Visibility</p>
+            <h2>Weekly tracer rollup from facilities to national supply risk</h2>
+            <p>This is based on the provincial tracer summary workbook: facility rows roll into districts, provinces, programmes, and national commodity pressure.</p>
+          </div>
+          <div className="field-scope-tabs">
+            {["national", "province", "district", "programme"].map((scope) => (
+              <button className={fieldScope === scope ? "active" : ""} type="button" key={scope} onClick={() => setFieldScope(scope)}>{scope}</button>
+            ))}
+          </div>
+        </div>
+        <div className="field-kpis">
+          <div>
+            <span>Field availability</span>
+            <strong>{formatPercent(fieldKpis.availability)}</strong>
+            <small>{fieldKpis.rows.toLocaleString()} submitted commodity rows</small>
+          </div>
+          <div>
+            <span>Average field MOS</span>
+            <strong>{fieldKpis.mos}</strong>
+            <small>{fieldKpis.quantity.toLocaleString()} SOH across submissions</small>
+          </div>
+          <div>
+            <span>Facility risk rows</span>
+            <strong>{fieldKpis.riskRows.toLocaleString()}</strong>
+            <small>Stockout, near-critical, or understocked</small>
+          </div>
+          <div>
+            <span>Reporting footprint</span>
+            <strong>{tracerFacilityData.counts.districts}</strong>
+            <small>{tracerFacilityData.counts.facilityUnits} facility reporting units</small>
+          </div>
+        </div>
+        <div className="field-grid">
+          <TracerRollupTable title="Lowest province availability" rows={weakestFieldProvinces} onSelect={(row) => setQuery(row.name)} />
+          <TracerRollupTable title="Districts needing attention" rows={weakestFieldDistricts} subLabel="rows" onSelect={(row) => setQuery(row.name)} />
+          <TracerRollupTable title="Programme pressure from facilities" rows={weakestFieldProgrammes} onSelect={(row) => setQuery(row.name)} />
+        </div>
+        <div className="field-commodity-panel">
+          <h3>Facility commodities driving risk</h3>
+          <div className="field-commodity-list">
+            {weakestFieldCommodities.map((item) => (
+              <div key={item.name}>
+                <span>{item.name}</span>
+                <b>{formatPercent(item.availability)}</b>
+                <small>{item.stockout.toLocaleString()} stockout rows | MOS {item.mos}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="warehouse-comparison">
+        <div>
+          <p className="eyebrow dark">ZAMMSA Comparison Layer</p>
+          <h2>Compare field tracer demand signals with national inventory position</h2>
+          <p>Field availability and MOS come from district/facility submissions. ZAMMSA risk uses the latest national stock extract and highlights whether warehouse stock risk aligns with field shortages.</p>
+        </div>
+        <div className="comparison-table-wrap">
+          <table className="comparison-table">
+            <thead>
+              <tr>
+                <th>Programme</th>
+                <th>Field availability</th>
+                <th>Field MOS</th>
+                <th>Field risk rows</th>
+                <th>ZAMMSA category</th>
+                <th>ZAMMSA risk lines</th>
+                <th>Signal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fieldToWarehouseComparison.map((row) => {
+                const fieldRiskHigh = row.field && row.field.availability < 0.75;
+                const warehouseRiskHigh = row.warehouseRisk > 0;
+                const signal = fieldRiskHigh && warehouseRiskHigh ? "Field shortage and warehouse risk" : fieldRiskHigh ? "Field shortage, check distribution" : warehouseRiskHigh ? "Warehouse risk, monitor facilities" : "No major mismatch";
+                return (
+                  <tr key={`${row.tracer}-${row.zammsa}`}>
+                    <td>{row.label}</td>
+                    <td>{row.field ? formatPercent(row.field.availability) : "-"}</td>
+                    <td>{row.field?.mos ?? "-"}</td>
+                    <td>{row.field ? row.field.riskRows.toLocaleString() : "-"}</td>
+                    <td>{row.zammsa}</td>
+                    <td>{row.warehouseRisk} risk, {row.warehouseStockouts} stockout</td>
+                    <td><span className={`comparison-signal ${fieldRiskHigh && warehouseRiskHigh ? "red" : fieldRiskHigh || warehouseRiskHigh ? "amber" : "green"}`}>{signal}</span></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </section>
 
       <section className="tracer-overview" aria-label="National tracer availability overview">
         <div className="tracer-lead">
-          <p className="eyebrow dark">National Signal</p>
-          <h2>{formatPercent(nationalTracer.serviceRate)} tracer service availability</h2>
-          <p>Service availability counts classifiable commodities that are not stocked out. Adequate cover counts commodities at or above 1 month of stock.</p>
+          <p className="eyebrow dark">Warehouse Inventory Signal</p>
+          <h2>{formatPercent(nationalTracer.serviceRate)} ZAMMSA service availability</h2>
+          <p>This secondary layer uses the ZAMMSA stock extract to show national inventory cover, stockout burden, near-critical items, and data gaps.</p>
         </div>
         <div className="tracer-metrics">
           <div>
