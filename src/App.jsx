@@ -39,6 +39,17 @@ const suggestedQuestions = [
   "What should management do next?",
 ];
 
+const dashboardPages = [
+  { id: "executive", short: "EX", label: "Executive Summary" },
+  { id: "national", short: "NS", label: "National Stock Status" },
+  { id: "provincial", short: "PP", label: "Provincial Performance" },
+  { id: "facilities", short: "FA", label: "Facility Alerts" },
+  { id: "commodities", short: "CI", label: "Commodity Intelligence" },
+  { id: "programmes", short: "PR", label: "Programme Performance" },
+  { id: "quality", short: "DQ", label: "Data Quality" },
+  { id: "actions", short: "AT", label: "Control Tower Actions" },
+];
+
 const tracerBaskets = [
   { label: "Essential medicines", categories: ["Essential Medicines", "Anti-infective", "Gastrointestinal", "Cardiovascular", "Diabetes"] },
   { label: "Malaria", categories: ["Anti-malarials"] },
@@ -351,6 +362,7 @@ function CommodityModal({ item, onClose }) {
 }
 
 function App() {
+  const [activePage, setActivePage] = useState("executive");
   const [rangeStart, setRangeStart] = useState(0);
   const [rangeEnd, setRangeEnd] = useState(reports.length - 1);
   const [view, setView] = useState("latest");
@@ -365,6 +377,12 @@ function App() {
   const [assistantQuestion, setAssistantQuestion] = useState("");
   const [assistantAnswer, setAssistantAnswer] = useState("Ask about stockouts, programme pressure, overstock, data gaps, or recommended actions. I will answer from the loaded ZAMMSA report data.");
   const [weeklyProgramme, setWeeklyProgramme] = useState("EMMS");
+  const [actions, setActions] = useState([
+    { id: 1, issue: "Facility stockouts in the highest-risk reporting units", action: "Validate counts and initiate emergency redistribution", owner: "Provincial Pharmacists", status: "In progress" },
+    { id: 2, issue: "Central stock available while facilities report stockouts", action: "Review allocation, dispatch, and last-mile delivery", owner: "ZAMMSA", status: "Open" },
+    { id: 3, issue: "Commodities forecast to finish within 30 days", action: "Confirm orders and prioritize replenishment", owner: "Control Tower", status: "Open" },
+    { id: 4, issue: "Missing AMI and unconfirmed MOS records", action: "Return data-quality queries to reporting teams", owner: "NSCCU", status: "In progress" },
+  ]);
 
   const start = Math.min(rangeStart, rangeEnd);
   const end = Math.max(rangeStart, rangeEnd);
@@ -630,6 +648,10 @@ function App() {
     window.print();
   }
 
+  function updateActionStatus(id, status) {
+    setActions((current) => current.map((item) => (item.id === id ? { ...item, status } : item)));
+  }
+
   function answerQuestion(question) {
     const text = question.trim();
     if (!text) return;
@@ -738,8 +760,53 @@ function App() {
     setAssistantAnswer(`For ${selectedMeta.label}: ${kpiTrend.critical} stockouts, ${kpiTrend.near} near-critical items, ${kpiTrend.over} overstocked items, ${kpiTrend.amiMissing ?? kpiTrend.gaps} missing AMI rows, and ${kpiTrend.tbdMos ?? kpiTrend.gaps} TBD MOS rows. Try asking about a programme, stockouts, overstock, or recommended actions.`);
   }
 
+  const activePageLabel = dashboardPages.find((page) => page.id === activePage)?.label;
+  const bestProvince = [...tracerFacilityData.provinces].sort((a, b) => b.availability - a.availability)[0];
+  const worstProvince = tracerFacilityData.provinces[0];
+
   return (
-    <main className="app-shell">
+    <div className="control-tower-app">
+      <aside className="dashboard-sidebar">
+        <div className="sidebar-brand">
+          <span>MOH</span>
+          <div>
+            <strong>Tracer Control Tower</strong>
+            <small>National supply visibility</small>
+          </div>
+        </div>
+        <nav aria-label="Dashboard pages">
+          {dashboardPages.map((page) => (
+            <button
+              className={activePage === page.id ? "active" : ""}
+              type="button"
+              key={page.id}
+              onClick={() => setActivePage(page.id)}
+            >
+              <span>{page.short}</span>
+              {page.label}
+            </button>
+          ))}
+        </nav>
+        <div className="sidebar-data">
+          <span>Weekly submission</span>
+          <strong>{tracerFacilityData.reportDate}</strong>
+          <small>{tracerFacilityData.counts.facilityUnits} reporting units</small>
+          <small>{tracerFacilityData.counts.rows.toLocaleString()} commodity rows</small>
+        </div>
+      </aside>
+      <main className={`app-shell dashboard-page page-${activePage}`}>
+      <header className="dashboard-topbar">
+        <div>
+          <span>National Tracer Drug Availability</span>
+          <strong>{activePageLabel}</strong>
+        </div>
+        <div>
+          <span>Field report</span>
+          <b>{tracerFacilityData.reportDate}</b>
+          <span>ZAMMSA extract</span>
+          <b>{selectedMeta.label}</b>
+        </div>
+      </header>
       <section className="hero">
         <div>
           <p className="eyebrow">National Tracer Drug Availability</p>
@@ -753,6 +820,22 @@ function App() {
           <small>Field availability: {formatPercent(fieldKpis.availability)} | Average MOS: {fieldKpis.mos}</small>
           <small>ZAMMSA comparison extract: {selectedMeta.label}</small>
           <button className="hero-export" type="button" onClick={exportCsv}>Export current CSV</button>
+        </div>
+      </section>
+
+      <section className="executive-brief">
+        <div className="executive-statement">
+          <p className="eyebrow dark">Leadership Brief</p>
+          <h2>National availability is {formatPercent(fieldKpis.availability)}, with {fieldKpis.riskRows.toLocaleString()} submitted commodity rows requiring attention.</h2>
+          <p>{bestProvince?.name} has the strongest reported availability at {formatPercent(bestProvince?.availability ?? 0)}, while {worstProvince?.name} is lowest at {formatPercent(worstProvince?.availability ?? 0)}. There are {stockoutFacilityCount} reporting units with at least one stockout and {forecastSummary.days30} ZAMMSA commodity lines forecast to finish within 30 days.</p>
+        </div>
+        <div className="executive-kpis">
+          <div><span>National availability</span><strong>{formatPercent(fieldKpis.availability)}</strong><small>Weekly facility submissions</small></div>
+          <div><span>National average MOS</span><strong>{fieldKpis.mos}</strong><small>Submitted field stock</small></div>
+          <div><span>Reporting footprint</span><strong>{tracerFacilityData.counts.facilityUnits}</strong><small>Expected denominator not loaded</small></div>
+          <div><span>Facilities with stockouts</span><strong>{stockoutFacilityCount}</strong><small>At least one stockout item</small></div>
+          <div><span>Distribution gaps</span><strong>{mismatchSummary.distributionGaps}</strong><small>Central available, field stockout</small></div>
+          <div><span>Finish within 30 days</span><strong>{forecastSummary.days30}</strong><small>ZAMMSA MOS forecast</small></div>
         </div>
       </section>
 
@@ -1251,8 +1334,47 @@ function App() {
           </table>
         </div>
       </section>
+
+      <section className="action-tracker">
+        <div className="action-tracker-head">
+          <div>
+            <p className="eyebrow dark">Control Tower Action Tracker</p>
+            <h2>Move priority supply issues from alert to resolution</h2>
+            <p>Owners can update the working status during the weekly Control Tower review. Actions are held in this browser session.</p>
+          </div>
+          <div className="action-summary">
+            <span><b>{actions.filter((item) => item.status === "Open").length}</b> open</span>
+            <span><b>{actions.filter((item) => item.status === "In progress").length}</b> in progress</span>
+            <span><b>{actions.filter((item) => item.status === "Completed").length}</b> completed</span>
+          </div>
+        </div>
+        <div className="action-table-wrap">
+          <table>
+            <thead>
+              <tr><th>Issue</th><th>Action</th><th>Owner</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              {actions.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.issue}</td>
+                  <td>{item.action}</td>
+                  <td>{item.owner}</td>
+                  <td>
+                    <select value={item.status} onChange={(event) => updateActionStatus(item.id, event.target.value)}>
+                      <option>Open</option>
+                      <option>In progress</option>
+                      <option>Completed</option>
+                    </select>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
       <CommodityModal item={selectedCommodity} onClose={() => setSelectedCommodity(null)} />
-    </main>
+      </main>
+    </div>
   );
 }
 
