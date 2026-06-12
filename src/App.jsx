@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { categories, managementConcerns, programmePressure, reports, trend } from "./zammsaData.js";
-import { tracerFacilityData } from "./tracerFacilityData.js";
+import { tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyAvailability } from "./weeklyAvailability.js";
 import { stockHistory } from "./zammsaHistory.js";
 
@@ -120,6 +120,24 @@ function formatPercent(value) {
 function availabilityPercent(numerator, denominator) {
   if (!denominator) return "0.0%";
   return formatPercent(numerator / denominator);
+}
+
+function combineRollups(rows, fallback) {
+  if (!rows.length) return fallback;
+  const totalRows = rows.reduce((sum, row) => sum + row.rows, 0);
+  const weighted = (key) => totalRows ? rows.reduce((sum, row) => sum + (row[key] || 0) * row.rows, 0) / totalRows : 0;
+  return {
+    ...fallback,
+    rows: totalRows,
+    availability: weighted("availability"),
+    mos: Number(weighted("mos").toFixed(2)),
+    stockout: rows.reduce((sum, row) => sum + row.stockout, 0),
+    nearCritical: rows.reduce((sum, row) => sum + row.nearCritical, 0),
+    understocked: rows.reduce((sum, row) => sum + row.understocked, 0),
+    riskRows: rows.reduce((sum, row) => sum + row.riskRows, 0),
+    quantity: rows.reduce((sum, row) => sum + row.quantity, 0),
+    amc: rows.reduce((sum, row) => sum + row.amc, 0),
+  };
 }
 
 function addDays(dateKey, days) {
@@ -363,6 +381,11 @@ function CommodityModal({ item, onClose }) {
 
 function App() {
   const [activePage, setActivePage] = useState("executive");
+  const [fieldPeriodId, setFieldPeriodId] = useState(tracerReportingPeriods.at(-1).id);
+  const [selectedProvince, setSelectedProvince] = useState("all");
+  const [selectedDistrict, setSelectedDistrict] = useState("all");
+  const [selectedFacilityLevel, setSelectedFacilityLevel] = useState("all");
+  const [selectedFacility, setSelectedFacility] = useState("all");
   const [rangeStart, setRangeStart] = useState(0);
   const [rangeEnd, setRangeEnd] = useState(reports.length - 1);
   const [view, setView] = useState("latest");
@@ -399,6 +422,51 @@ function App() {
     .sort((a, b) => a.availability - b.availability);
   const weeklyChange = weeklyAvailability.changesByProgramme?.[weeklyProgramme]?.at(-1) || weeklyAvailability.changes;
   const [fieldScope, setFieldScope] = useState("national");
+  const fieldData = tracerReportingPeriods.find((period) => period.id === fieldPeriodId) || tracerReportingPeriods.at(-1);
+  const fieldMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))];
+  const selectedMonth = fieldData.month;
+  const weeksInMonth = tracerReportingPeriods.filter((period) => period.month === selectedMonth);
+  const provinceOptions = fieldData.provinces.map((province) => province.name).sort();
+  const districtOptions = [...new Set(fieldData.districts
+    .filter((district) => selectedProvince === "all" || district.province === selectedProvince)
+    .map((district) => district.name))].sort();
+  const facilityLevelOptions = [...new Set(fieldData.facilities
+    .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
+    .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict)
+    .map((facility) => facility.facilityLevel))].sort();
+  const facilityOptions = selectedDistrict === "all" ? [] : fieldData.facilities
+    .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
+    .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict)
+    .filter((facility) => selectedFacilityLevel === "all" || facility.facilityLevel === selectedFacilityLevel)
+    .map((facility) => `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}`)
+    .sort();
+
+  function changeMonth(month) {
+    const latestInMonth = tracerReportingPeriods.filter((period) => period.month === month).at(-1);
+    setFieldPeriodId(latestInMonth.id);
+    resetFieldHierarchy();
+  }
+
+  function resetFieldHierarchy() {
+    setSelectedProvince("all");
+    setSelectedDistrict("all");
+    setSelectedFacilityLevel("all");
+    setSelectedFacility("all");
+  }
+
+  function selectProvince(province) {
+    setSelectedProvince(province);
+    setSelectedDistrict("all");
+    setSelectedFacilityLevel("all");
+    setSelectedFacility("all");
+    setActivePage("provincial");
+  }
+
+  function selectDistrict(district) {
+    setSelectedDistrict(district);
+    setSelectedFacilityLevel("all");
+    setSelectedFacility("all");
+  }
 
   const filteredTrend = useMemo(() => {
     const q = query.toLowerCase();
@@ -492,21 +560,28 @@ function App() {
     }, { now: 0, days30: 0, days60: 0, days90: 0 });
   }, [end, latestTracerRows]);
 
-  const fieldKpis = tracerFacilityData.national;
-  const weakestFieldProvinces = tracerFacilityData.provinces.slice(0, 8);
-  const weakestFieldDistricts = tracerFacilityData.districts.slice(0, 8);
-  const weakestFieldProgrammes = tracerFacilityData.programmes.slice(0, 8);
-  const weakestFieldCommodities = tracerFacilityData.commodities.slice(0, 10);
-  const facilityAlerts = tracerFacilityData.facilities.slice(0, 18);
-  const stockoutFacilityCount = tracerFacilityData.facilities.filter((facility) => facility.stockoutItemCount > 0).length;
-  const lowStockFacilityCount = tracerFacilityData.facilities.filter((facility) => facility.lowStockItemCount > 0).length;
+  const weakestFieldProvinces = fieldData.provinces.slice(0, 10);
+  const districtsInScope = fieldData.districts
+    .filter((district) => selectedProvince === "all" || district.province === selectedProvince);
+  const weakestFieldDistricts = districtsInScope.slice(0, 12);
+  const weakestFieldProgrammes = fieldData.programmes.slice(0, 10);
+  const weakestFieldCommodities = fieldData.commodities.slice(0, 12);
+  const filteredFacilities = fieldData.facilities
+    .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
+    .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict)
+    .filter((facility) => selectedFacilityLevel === "all" || facility.facilityLevel === selectedFacilityLevel)
+    .filter((facility) => selectedFacility === "all" || `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}` === selectedFacility);
+  const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
+  const facilityAlerts = filteredFacilities.slice(0, 36);
+  const stockoutFacilityCount = filteredFacilities.filter((facility) => facility.stockoutItemCount > 0).length;
+  const lowStockFacilityCount = filteredFacilities.filter((facility) => facility.lowStockItemCount > 0).length;
   const criticalFacility = facilityAlerts[0];
   const fieldToWarehouseComparison = useMemo(() => {
     const latestWarehouseRows = fullCommodityHistory
       .map((item) => ({ ...item, status: classify(item.mos[end]) }))
       .filter((item) => item.present[end]);
     return programmeWarehouseMap.map((item) => {
-      const field = tracerFacilityData.programmes.find((programmeItem) => programmeItem.name === item.tracer);
+      const field = fieldData.programmes.find((programmeItem) => programmeItem.name === item.tracer);
       const warehouseRows = latestWarehouseRows.filter((row) => row.category === item.zammsa);
       const warehouseRisk = warehouseRows.filter((row) => ["red", "amber"].includes(row.status.tone)).length;
       const warehouseStockouts = warehouseRows.filter((row) => row.status.tone === "red").length;
@@ -549,7 +624,7 @@ function App() {
         signalTone,
       };
     }).filter((item) => item.field || item.warehouseRows);
-  }, [end]);
+  }, [end, fieldData]);
   const mismatchSummary = useMemo(() => fieldToWarehouseComparison.reduce((acc, row) => {
     if (row.signal.startsWith("Distribution gap")) acc.distributionGaps += 1;
     if (row.signal.startsWith("Systemwide shortage")) acc.systemwideShortages += 1;
@@ -680,7 +755,7 @@ function App() {
 
     if (lower.includes("national") || lower.includes("tracer") || lower.includes("availability")) {
       const weakest = weakestFieldProvinces.slice(0, 3).map((row) => `${row.name} ${formatPercent(row.availability)}`).join(", ");
-      setAssistantAnswer(`The weekly provincial tracer submission for ${tracerFacilityData.reportDate} contains ${tracerFacilityData.counts.rows.toLocaleString()} facility commodity rows from ${tracerFacilityData.counts.provinces} provinces, ${tracerFacilityData.counts.districts} districts, and ${tracerFacilityData.counts.facilityUnits} facility reporting units. Field availability is ${formatPercent(fieldKpis.availability)} with average MOS ${fieldKpis.mos}. Weakest provinces are ${weakest}.`);
+      setAssistantAnswer(`The weekly provincial tracer submission for ${fieldData.reportDate} contains ${fieldData.counts.rows.toLocaleString()} facility commodity rows from ${fieldData.counts.provinces} provinces, ${fieldData.counts.districts} districts, and ${fieldData.counts.facilityUnits} reporting units. Field availability is ${formatPercent(fieldKpis.availability)} with average MOS ${fieldKpis.mos}. Weakest provinces are ${weakest}.`);
       return;
     }
 
@@ -761,11 +836,31 @@ function App() {
   }
 
   const activePageLabel = dashboardPages.find((page) => page.id === activePage)?.label;
-  const bestProvince = [...tracerFacilityData.provinces].sort((a, b) => b.availability - a.availability)[0];
-  const worstProvince = tracerFacilityData.provinces[0];
+  const bestProvince = [...fieldData.provinces].sort((a, b) => b.availability - a.availability)[0];
+  const worstProvince = fieldData.provinces[0];
 
   return (
     <div className="control-tower-app">
+      <header className="national-header">
+        <div className="national-brand moh-brand">
+          <img src="./zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms" />
+          <div>
+            <span>Republic of Zambia</span>
+            <strong>Ministry of Health</strong>
+          </div>
+        </div>
+        <div className="national-title">
+          <span>National Tracer Drug Availability</span>
+          <strong>Supply Chain Control Tower</strong>
+        </div>
+        <div className="national-brand control-tower-brand">
+          <img src="./control-tower-logo.svg" alt="Control Tower logo" />
+          <div>
+            <span>Control Tower</span>
+            <strong>National Supply Chain Coordinating Unit</strong>
+          </div>
+        </div>
+      </header>
       <aside className="dashboard-sidebar">
         <div className="sidebar-brand">
           <span>MOH</span>
@@ -789,9 +884,9 @@ function App() {
         </nav>
         <div className="sidebar-data">
           <span>Weekly submission</span>
-          <strong>{tracerFacilityData.reportDate}</strong>
-          <small>{tracerFacilityData.counts.facilityUnits} reporting units</small>
-          <small>{tracerFacilityData.counts.rows.toLocaleString()} commodity rows</small>
+          <strong>{fieldData.label}</strong>
+          <small>{fieldData.counts.facilityUnits} reporting units</small>
+          <small>{fieldData.counts.rows.toLocaleString()} commodity rows</small>
         </div>
       </aside>
       <main className={`app-shell dashboard-page page-${activePage}`}>
@@ -800,11 +895,60 @@ function App() {
           <span>National Tracer Drug Availability</span>
           <strong>{activePageLabel}</strong>
         </div>
-        <div>
-          <span>Field report</span>
-          <b>{tracerFacilityData.reportDate}</b>
-          <span>ZAMMSA extract</span>
-          <b>{selectedMeta.label}</b>
+        <div className="global-filter-bar">
+          <label>
+            <span>Month</span>
+            <select value={selectedMonth} onChange={(event) => changeMonth(event.target.value)}>
+              {fieldMonths.map((month) => (
+                <option value={month} key={month}>{new Date(`${month}-01T00:00:00`).toLocaleDateString(undefined, { month: "long", year: "numeric" })}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>Week</span>
+            <select value={fieldPeriodId} onChange={(event) => {
+              setFieldPeriodId(event.target.value);
+              resetFieldHierarchy();
+            }}>
+              {weeksInMonth.map((period) => <option value={period.id} key={period.id}>{period.week} - {period.reportDate}</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Province</span>
+            <select value={selectedProvince} onChange={(event) => selectProvince(event.target.value)}>
+              <option value="all">All provinces</option>
+              {provinceOptions.map((province) => <option value={province} key={province}>{province}</option>)}
+            </select>
+          </label>
+          <label>
+            <span>District</span>
+            <select value={selectedDistrict} onChange={(event) => selectDistrict(event.target.value)}>
+              <option value="all">All districts</option>
+              {districtOptions.map((district) => <option value={district} key={district}>{district}</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Facility level</span>
+            <select value={selectedFacilityLevel} onChange={(event) => {
+              setSelectedFacilityLevel(event.target.value);
+              setSelectedFacility("all");
+            }}>
+              <option value="all">All levels</option>
+              {facilityLevelOptions.map((level) => <option value={level} key={level}>{level}</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Reporting unit</span>
+            <select disabled={selectedDistrict === "all"} value={selectedFacility} onChange={(event) => setSelectedFacility(event.target.value)}>
+              <option value="all">{selectedDistrict === "all" ? "Select district first" : "All reporting units"}</option>
+              {facilityOptions.map((facility) => {
+                const [province, district, level, name] = facility.split("|");
+                const location = selectedDistrict === "all" ? ` - ${district}` : "";
+                return <option value={facility} key={facility}>{name === "ALL" ? `All ${level.toLowerCase()} facilities${location}` : `${name}${location}`}</option>;
+              })}
+            </select>
+          </label>
+          <button type="button" onClick={resetFieldHierarchy}>Clear</button>
         </div>
       </header>
       <section className="hero">
@@ -815,8 +959,8 @@ function App() {
         </div>
         <div className="report-card">
           <span>Weekly tracer submission</span>
-          <strong>{tracerFacilityData.reportDate}</strong>
-          <small>{tracerFacilityData.counts.rows.toLocaleString()} facility commodity rows across {tracerFacilityData.counts.provinces} provinces.</small>
+          <strong>{fieldData.reportDate}</strong>
+          <small>{fieldData.counts.rows.toLocaleString()} facility commodity rows across {fieldData.counts.provinces} provinces.</small>
           <small>Field availability: {formatPercent(fieldKpis.availability)} | Average MOS: {fieldKpis.mos}</small>
           <small>ZAMMSA comparison extract: {selectedMeta.label}</small>
           <button className="hero-export" type="button" onClick={exportCsv}>Export current CSV</button>
@@ -832,7 +976,7 @@ function App() {
         <div className="executive-kpis">
           <div><span>National availability</span><strong>{formatPercent(fieldKpis.availability)}</strong><small>Weekly facility submissions</small></div>
           <div><span>National average MOS</span><strong>{fieldKpis.mos}</strong><small>Submitted field stock</small></div>
-          <div><span>Reporting footprint</span><strong>{tracerFacilityData.counts.facilityUnits}</strong><small>Expected denominator not loaded</small></div>
+          <div><span>Reporting footprint</span><strong>{fieldData.counts.facilityUnits}</strong><small>Expected denominator not loaded</small></div>
           <div><span>Facilities with stockouts</span><strong>{stockoutFacilityCount}</strong><small>At least one stockout item</small></div>
           <div><span>Distribution gaps</span><strong>{mismatchSummary.distributionGaps}</strong><small>Central available, field stockout</small></div>
           <div><span>Finish within 30 days</span><strong>{forecastSummary.days30}</strong><small>ZAMMSA MOS forecast</small></div>
@@ -870,16 +1014,16 @@ function App() {
           </div>
           <div>
             <span>Reporting footprint</span>
-            <strong>{tracerFacilityData.counts.districts}</strong>
-            <small>{tracerFacilityData.counts.facilityUnits} facility reporting units</small>
+            <strong>{selectedDistrict !== "all" ? filteredFacilities.length : selectedProvince !== "all" ? districtsInScope.length : fieldData.counts.districts}</strong>
+            <small>{selectedDistrict !== "all" ? "reporting units in selected district" : selectedProvince !== "all" ? "districts in selected province" : `${fieldData.counts.facilityUnits} facility reporting units`}</small>
           </div>
         </div>
         <div className="facility-alerts">
           <div className="facility-alert-summary">
             <div>
               <p className="eyebrow dark">Weekly Facility Alerts</p>
-              <h3>Facilities with stockouts and low stock</h3>
-              <p>Stockout flags are submitted commodities at or near zero MOS. Low stock flags are commodities below 2 MOS but not yet stocked out.</p>
+              <h3>{selectedDistrict !== "all" ? `${selectedDistrict} reporting units` : selectedProvince !== "all" ? `${selectedProvince} districts and facilities` : "Facilities with stockouts and low stock"}</h3>
+              <p>Stockout flags are submitted commodities at or near zero MOS. “All” rows are district-level aggregates for that facility type, while named hospitals and units are shown individually.</p>
             </div>
             <div className="facility-alert-kpis">
               <span><b>{stockoutFacilityCount}</b> facilities with stockouts</span>
@@ -891,7 +1035,7 @@ function App() {
               <article key={`${facility.province}-${facility.district}-${facility.facilityLevel}-${facility.name}`}>
                 <div className="facility-alert-head">
                   <div>
-                    <h4>{facility.name}</h4>
+                    <h4>{facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name}</h4>
                     <span>{facility.district} | {facility.province} | {facility.facilityLevel}</span>
                   </div>
                   <div className="facility-alert-counts">
@@ -904,14 +1048,14 @@ function App() {
                 <div className="facility-alert-items">
                   <div>
                     <strong>Stockout commodities</strong>
-                    {facility.stockoutItems.length ? facility.stockoutItems.slice(0, 4).map((item) => (
-                      <span key={`${facility.name}-stockout-${item.program}-${item.item}`}>{item.item} <small>{item.program}</small></span>
+                    {facility.stockoutItems.length ? facility.stockoutItems.slice(0, 4).map((item, index) => (
+                      <span key={`${facility.province}-${facility.district}-${facility.name}-stockout-${item.program}-${item.item}-${index}`}>{item.item} <small>{item.program}</small></span>
                     )) : <span>No stockouts submitted</span>}
                   </div>
                   <div>
                     <strong>Low-stock commodities</strong>
-                    {facility.lowStockItems.length ? facility.lowStockItems.slice(0, 4).map((item) => (
-                      <span key={`${facility.name}-low-${item.program}-${item.item}`}>{item.item} <small>{item.program} | MOS {item.mos}</small></span>
+                    {facility.lowStockItems.length ? facility.lowStockItems.slice(0, 4).map((item, index) => (
+                      <span key={`${facility.province}-${facility.district}-${facility.name}-low-${item.program}-${item.item}-${index}`}>{item.item} <small>{item.program} | MOS {item.mos}</small></span>
                     )) : <span>No low-stock items submitted</span>}
                   </div>
                 </div>
@@ -920,9 +1064,17 @@ function App() {
           </div>
         </div>
         <div className="field-grid">
-          <TracerRollupTable title="Lowest province availability" rows={weakestFieldProvinces} onSelect={(row) => setQuery(row.name)} />
-          <TracerRollupTable title="Districts needing attention" rows={weakestFieldDistricts} subLabel="rows" onSelect={(row) => setQuery(row.name)} />
+          <TracerRollupTable title="Province availability" rows={weakestFieldProvinces} onSelect={(row) => selectProvince(row.name)} />
+          <TracerRollupTable title={selectedProvince === "all" ? "Districts needing attention" : `Districts in ${selectedProvince}`} rows={weakestFieldDistricts} subLabel="rows" onSelect={(row) => selectDistrict(row.name)} />
           <TracerRollupTable title="Programme pressure from facilities" rows={weakestFieldProgrammes} onSelect={(row) => setQuery(row.name)} />
+        </div>
+        <div className="hierarchy-path">
+          <button type="button" onClick={resetFieldHierarchy}>Zambia</button>
+          <span>/</span>
+          <button type="button" disabled={selectedProvince === "all"} onClick={() => selectProvince(selectedProvince)}>{selectedProvince === "all" ? "Select a province" : selectedProvince}</button>
+          <span>/</span>
+          <button type="button" disabled={selectedDistrict === "all"}>{selectedDistrict === "all" ? "Select a district" : selectedDistrict}</button>
+          <b>{filteredFacilities.length} reporting units in current selection</b>
         </div>
         <div className="field-commodity-panel">
           <h3>Facility commodities driving risk</h3>

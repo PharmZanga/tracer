@@ -7,7 +7,20 @@ from pathlib import Path
 import openpyxl
 
 
-WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\analysed summery reports\may\16.05.26\tracer summary 17.05.26.xlsx")
+WORKBOOKS = [
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\feb\week one 08.02.2026 Summary tracer Reports.xlsx"),
+        "label": "Week 1 - 8 February 2026",
+        "month": "2026-02",
+        "week": "Week 1",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\analysed summery reports\may\16.05.26\tracer summary 17.05.26.xlsx"),
+        "label": "Week 3 - 17 May 2026",
+        "month": "2026-05",
+        "week": "Week 3",
+    },
+]
 OUT = Path(r"C:\Users\Zanga Musakuzi\Desktop\DASH BOARD IDEAS\hospital dash board\src\tracerFacilityData.js")
 
 
@@ -27,11 +40,12 @@ def norm_text(value):
 
 
 def normalize_province(value):
-    text = clean(value) or "Unknown"
-    upper = text.upper()
-    if upper == "EASTERN":
-        return "EASTERN PROVINCE"
-    return upper
+    text = (clean(value) or "Unknown").upper()
+    aliases = {
+        "EASTERN": "EASTERN PROVINCE",
+        "NORTHWESTERN PROVINCE": "NORTH-WESTERN PROVINCE",
+    }
+    return aliases.get(text, text)
 
 
 def num(value):
@@ -41,9 +55,7 @@ def num(value):
         value = float(value)
     except (TypeError, ValueError):
         return None
-    if math.isnan(value):
-        return None
-    return value
+    return None if math.isnan(value) else value
 
 
 def status_from_mos(mos):
@@ -64,32 +76,20 @@ def status_from_mos(mos):
 
 def make_bucket():
     return {
-        "rows": 0,
-        "availableRows": 0,
-        "availabilitySum": 0.0,
-        "availabilityCount": 0,
-        "mosSum": 0.0,
-        "mosCount": 0,
-        "stockout": 0,
-        "nearCritical": 0,
-        "understocked": 0,
-        "accordingToPlan": 0,
-        "abovePlan": 0,
-        "overstock": 0,
-        "dataGap": 0,
-        "quantity": 0.0,
-        "amc": 0.0,
+        "rows": 0, "availableRows": 0, "availabilitySum": 0.0,
+        "availabilityCount": 0, "mosSum": 0.0, "mosCount": 0,
+        "stockout": 0, "nearCritical": 0, "understocked": 0,
+        "accordingToPlan": 0, "abovePlan": 0, "overstock": 0,
+        "dataGap": 0, "quantity": 0.0, "amc": 0.0,
     }
 
 
 def add(bucket, row):
     mos = num(row.get("MOS"))
     availability = num(row.get("AVAILABILITY"))
-    quantity = num(row.get("QUANTITY")) or 0
-    amc = num(row.get("AMC")) or 0
     bucket["rows"] += 1
-    bucket["quantity"] += quantity
-    bucket["amc"] += amc
+    bucket["quantity"] += num(row.get("QUANTITY")) or 0
+    bucket["amc"] += num(row.get("AMC")) or 0
     if availability is not None:
         bucket["availabilitySum"] += availability
         bucket["availabilityCount"] += 1
@@ -103,7 +103,7 @@ def add(bucket, row):
 
 def finalize(name, bucket, extra=None):
     rows = bucket["rows"]
-    out = {
+    result = {
         "name": name,
         "rows": rows,
         "availability": round(bucket["availabilitySum"] / bucket["availabilityCount"], 4) if bucket["availabilityCount"] else 0,
@@ -121,14 +121,15 @@ def finalize(name, bucket, extra=None):
         "stockoutRate": round(bucket["stockout"] / rows, 4) if rows else 0,
     }
     if extra:
-        out.update(extra)
-    return out
+        result.update(extra)
+    return result
 
 
-def main():
-    wb = openpyxl.load_workbook(WORKBOOK, read_only=True, data_only=True)
-    ws = wb["Sheet1"]
-    headers = [clean(c) or "" for c in next(ws.iter_rows(min_row=1, max_row=1, values_only=True))]
+def summarize(config):
+    workbook_path = config["path"]
+    wb = openpyxl.load_workbook(workbook_path, read_only=True, data_only=True)
+    ws = wb[wb.sheetnames[0]]
+    headers = [clean(cell) or "" for cell in next(ws.iter_rows(min_row=1, max_row=1, values_only=True))]
 
     national = make_bucket()
     by_province = defaultdict(make_bucket)
@@ -138,21 +139,20 @@ def main():
     by_program = defaultdict(make_bucket)
     by_item = defaultdict(make_bucket)
     facility_items = defaultdict(lambda: {"stockout": [], "lowStock": []})
-    facility_units = set()
-    district_units = set()
-    province_names = set()
-    item_names = set()
-    program_names = set()
     comments = []
+    province_names, district_units, facility_units, item_names, program_names = set(), set(), set(), set(), set()
+    report_date = None
 
     for row_values in ws.iter_rows(min_row=2, values_only=True):
         row = {key: clean(value) for key, value in zip(headers, row_values)}
         province = normalize_province(row.get("PROVINCE"))
-        district = clean(row.get("DISTRICT")) or "Unknown district"
-        facility = clean(row.get("FACILITY NAME")) or "Unknown facility"
-        facility_level = clean(row.get("FACILITY LEVEL")) or "Unknown facility level"
+        district = (clean(row.get("DISTRICT")) or "Unknown district").upper()
+        facility = clean(row.get("FACILITY NAME")) or "Unknown reporting unit"
+        facility_level = (clean(row.get("FACILITY LEVEL")) or "Unknown facility level").upper()
         program = clean(row.get("PROGRAM")) or "Unknown programme"
         item = clean(row.get("DESCRIPTION OF ITEM")) or "Unknown commodity"
+        if report_date is None:
+            report_date = row.get("DATE")
 
         province_names.add(province)
         district_units.add((province, district))
@@ -160,93 +160,72 @@ def main():
         item_names.add(item)
         program_names.add(program)
 
-        add(national, row)
-        add(by_province[province], row)
-        add(by_district[(province, district)], row)
-        add(by_facility_level[facility_level], row)
-        add(by_facility[(province, district, facility_level, facility)], row)
-        add(by_program[program], row)
-        add(by_item[item], row)
+        for bucket in (
+            national, by_province[province], by_district[(province, district)],
+            by_facility_level[facility_level],
+            by_facility[(province, district, facility_level, facility)],
+            by_program[program], by_item[item],
+        ):
+            add(bucket, row)
+
         mos = num(row.get("MOS"))
-        quantity = num(row.get("QUANTITY")) or 0
-        amc = num(row.get("AMC")) or 0
         alert_item = {
             "item": item,
             "program": program,
             "mos": round(mos, 2) if mos is not None else None,
-            "quantity": round(quantity, 2),
-            "amc": round(amc, 2),
+            "quantity": round(num(row.get("QUANTITY")) or 0, 2),
+            "amc": round(num(row.get("AMC")) or 0, 2),
         }
-        if mos is None:
-            pass
-        elif mos <= 0.1:
-            facility_items[(province, district, facility_level, facility)]["stockout"].append(alert_item)
-        elif mos < 2:
-            facility_items[(province, district, facility_level, facility)]["lowStock"].append(alert_item)
+        key = (province, district, facility_level, facility)
+        if mos is not None and mos <= 0.1:
+            facility_items[key]["stockout"].append(alert_item)
+        elif mos is not None and mos < 2:
+            facility_items[key]["lowStock"].append(alert_item)
 
-    comments_ws = wb["comments "]
-    for row in comments_ws.iter_rows(values_only=True):
-        province = clean(row[1]) if len(row) > 1 else None
-        note = clean(row[2]) if len(row) > 2 else None
-        if province or note:
+        note = clean(row.get("COMMENT"))
+        if note and note not in {"#NAME?", "STOCKED ACCORDING TO PLAN", "UNDERSTOCKED", "OVERSTOCKED"}:
             comments.append({"province": province, "note": note})
 
-    provinces = [
-        finalize(name, bucket)
-        for name, bucket in by_province.items()
-    ]
-    provinces.sort(key=lambda x: (x["availability"], -x["riskRows"]))
-
+    provinces = [finalize(name, bucket) for name, bucket in by_province.items()]
+    provinces.sort(key=lambda item: (item["availability"], -item["riskRows"]))
     districts = [
         finalize(district, bucket, {"province": province})
         for (province, district), bucket in by_district.items()
     ]
-    districts.sort(key=lambda x: (x["availability"], -x["riskRows"]))
-
-    facility_levels = [
-        finalize(name, bucket)
-        for name, bucket in by_facility_level.items()
-    ]
-    facility_levels.sort(key=lambda x: (x["availability"], -x["riskRows"]))
+    districts.sort(key=lambda item: (item["availability"], -item["riskRows"]))
+    facility_levels = [finalize(name, bucket) for name, bucket in by_facility_level.items()]
+    facility_levels.sort(key=lambda item: (item["availability"], -item["riskRows"]))
 
     facilities = []
-    for (province, district, facility_level, facility), bucket in by_facility.items():
-        item_alerts = facility_items[(province, district, facility_level, facility)]
-        stockout_items = sorted(item_alerts["stockout"], key=lambda x: (x["program"], x["item"]))[:8]
-        low_stock_items = sorted(item_alerts["lowStock"], key=lambda x: (x["mos"] if x["mos"] is not None else 99, x["program"], x["item"]))[:8]
+    for key, bucket in by_facility.items():
+        province, district, facility_level, facility = key
+        alerts = facility_items[key]
         facilities.append(finalize(facility, bucket, {
             "province": province,
             "district": district,
             "facilityLevel": facility_level,
-            "stockoutItems": stockout_items,
-            "lowStockItems": low_stock_items,
-            "stockoutItemCount": len(item_alerts["stockout"]),
-            "lowStockItemCount": len(item_alerts["lowStock"]),
+            "isAggregate": facility.upper() == "ALL",
+            "stockoutItems": sorted(alerts["stockout"], key=lambda item: (item["program"], item["item"]))[:12],
+            "lowStockItems": sorted(alerts["lowStock"], key=lambda item: (item["mos"] if item["mos"] is not None else 99, item["program"], item["item"]))[:12],
+            "stockoutItemCount": len(alerts["stockout"]),
+            "lowStockItemCount": len(alerts["lowStock"]),
         }))
-    facilities.sort(key=lambda x: (-x["stockoutItemCount"], -x["lowStockItemCount"], x["availability"], x["province"], x["district"], x["name"]))
+    facilities.sort(key=lambda item: (-item["stockoutItemCount"], -item["lowStockItemCount"], item["availability"], item["province"], item["district"], item["name"]))
 
-    programs = [
-        finalize(name, bucket)
-        for name, bucket in by_program.items()
-    ]
-    programs.sort(key=lambda x: (x["availability"], -x["riskRows"]))
+    programs = [finalize(name, bucket) for name, bucket in by_program.items()]
+    programs.sort(key=lambda item: (item["availability"], -item["riskRows"]))
+    items = [finalize(name, bucket, {"normalized": norm_text(name)}) for name, bucket in by_item.items()]
+    items.sort(key=lambda item: (-item["riskRows"], item["availability"], item["name"]))
 
-    items = [
-        finalize(name, bucket, {"normalized": norm_text(name)})
-        for name, bucket in by_item.items()
-    ]
-    items.sort(key=lambda x: (-x["riskRows"], x["availability"], x["name"]))
-
-    report_date = None
-    for row_values in ws.iter_rows(min_row=2, max_row=2, values_only=True):
-        row = {key: clean(value) for key, value in zip(headers, row_values)}
-        report_date = row.get("DATE")
     if hasattr(report_date, "strftime"):
         report_date = report_date.strftime("%Y-%m-%d")
-
-    payload = {
+    return {
+        "id": report_date,
         "reportDate": report_date,
-        "source": "tracer summary 17.05.26.xlsx",
+        "label": config["label"],
+        "month": config["month"],
+        "week": config["week"],
+        "source": workbook_path.name,
         "counts": {
             "rows": national["rows"],
             "provinces": len(province_names),
@@ -257,15 +236,25 @@ def main():
         },
         "national": finalize("Zambia", national),
         "provinces": provinces,
-        "districts": districts[:80],
-        "facilities": facilities[:120],
+        "districts": districts,
+        "facilities": facilities,
         "facilityLevels": facility_levels,
         "programmes": programs,
-        "commodities": items[:160],
-        "comments": comments,
+        "commodities": items,
+        "comments": comments[:100],
     }
 
-    OUT.write_text("export const tracerFacilityData = " + json.dumps(payload, indent=2) + ";\n", encoding="utf-8")
+
+def main():
+    periods = [summarize(config) for config in WORKBOOKS]
+    periods.sort(key=lambda item: item["reportDate"])
+    output = (
+        "export const tracerReportingPeriods = "
+        + json.dumps(periods, indent=2)
+        + ";\n\nexport const tracerFacilityData = tracerReportingPeriods.at(-1);\n"
+    )
+    OUT.write_text(output, encoding="utf-8")
+    print([(item["label"], item["counts"]) for item in periods])
 
 
 if __name__ == "__main__":
