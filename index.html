@@ -407,6 +407,29 @@
       margin-bottom: 12px;
       align-items: center;
     }
+    .subtabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+    .subtab {
+      border: 1px solid #c8d6d0;
+      background: #fff;
+      color: #40534c;
+      border-radius: 999px;
+      padding: 8px 11px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .subtab.active {
+      background: var(--blue-soft);
+      border-color: #9fc7e1;
+      color: #0d4772;
+    }
+    .subpanel { display: none; }
+    .subpanel.active { display: block; }
     select, input {
       border: 1px solid #c8d6d0;
       background: #fff;
@@ -970,6 +993,7 @@
     function renderTracerStatus() {
       const provinces = [...new Set(DATA.facilities.map(item => item.province))].sort();
       const levels = [...new Set(DATA.facilities.map(item => item.facilityLevel))].filter(Boolean).sort();
+      const reportingUnits = [...new Set(DATA.facilityProgrammes.map(item => item.programme))].sort();
       document.getElementById("tracerStatus").innerHTML = `
         <section class="section">
           <div class="section-head">
@@ -977,27 +1001,72 @@
             <div class="toolbar"><button class="pill blue" id="exportFacilities">Export CSV</button><button class="pill gray" onclick="window.print()">Export PDF</button></div>
           </div>
           <div class="toolbar">
+            <select id="tracerMonth"><option>March 2026</option></select>
+            <select id="tracerWeek">${DATA.national.availablePeriods.map(period => `<option value="${period.week}" ${period.loaded ? "selected" : ""}>${period.week}${period.loaded ? " · Loaded" : " · Pending"}</option>`).join("")}</select>
             <select id="facilityProvince"><option value="all">All provinces</option>${provinces.map(p => `<option>${p}</option>`).join("")}</select>
             <select id="facilityDistrict"><option value="all">All districts</option></select>
             <select id="facilityLevel"><option value="all">All facility levels</option>${levels.map(level => `<option>${level}</option>`).join("")}</select>
+            <select id="reportingUnit"><option value="all">All reporting units</option>${reportingUnits.map(unit => `<option>${unit}</option>`).join("")}</select>
             <input id="facilitySearch" placeholder="Search facility">
           </div>
-          <div id="facilityKpis" class="grid kpi-grid"></div>
-          <table style="margin-top:14px"><thead><tr><th>Facility</th><th>Province</th><th>District</th><th>Level</th><th class="right">Availability</th><th class="right">MOS</th><th class="right">Stock Outs</th><th class="right">Low Stock</th><th>Status</th></tr></thead><tbody id="facilityTable"></tbody></table>
+          <div class="subtabs">
+            <button class="subtab active" data-tracer-tab="tracerReporting">Tracer Reporting</button>
+            <button class="subtab" data-tracer-tab="facilityAlertsPanel">Facility Alerts</button>
+            <button class="subtab" data-tracer-tab="commodityWatchlistPanel">Commodity Watchlist</button>
+            <button class="subtab" data-tracer-tab="redistributionPanel">Redistribution Opportunities</button>
+            <button class="subtab" data-tracer-tab="reportingTrendsPanel">Reporting Trends</button>
+            <button class="subtab" data-tracer-tab="districtComparisonPanel">District Comparison</button>
+          </div>
+          <div class="subpanel active" id="tracerReporting">
+            <h2 style="font-size:18px;margin:14px 0 10px">Tracer Reporting</h2>
+            <div id="facilityKpis" class="grid kpi-grid"></div>
+            <table style="margin-top:14px"><thead><tr><th>Facility</th><th>Availability</th><th>MOS</th><th class="right">Stock Outs</th><th class="right">Low Stock Commodities</th><th>Report Status</th></tr></thead><tbody id="facilityTable"></tbody></table>
+            <div id="facilityDrilldown" class="section" style="margin-top:14px;display:none"></div>
+          </div>
+          <div class="subpanel" id="facilityAlertsPanel">
+            <h2 style="font-size:18px;margin:14px 0 10px">Facility Alerts</h2>
+            <table><thead><tr><th>Facility</th><th>Commodity</th><th class="right">MOS</th><th>Risk Category</th></tr></thead><tbody id="facilityAlertTable"></tbody></table>
+          </div>
+          <div class="subpanel" id="commodityWatchlistPanel">
+            <div class="section-head"><div><h2>Commodity Watchlist</h2><p class="section-subtitle">High-risk commodities causing supply pressure in the selected scope.</p></div><select id="watchlistSort"><option value="risk">Sort by risk</option><option value="availability">Sort by availability</option><option value="facilitiesAffected">Sort by facilities affected</option></select></div>
+            <div class="grid two-col">
+              <div><h2 style="font-size:18px">Top 10 High Risk Commodities</h2><table><thead><tr><th>Commodity</th><th class="right">Availability</th><th class="right">MOS</th><th class="right">Facilities Affected</th><th>Trend</th></tr></thead><tbody id="highRiskCommodityTable"></tbody></table></div>
+              <div><h2 style="font-size:18px">Top 10 Improving Commodities</h2><table><thead><tr><th>Commodity</th><th class="right">Availability</th><th class="right">MOS</th><th class="right">Facilities Affected</th><th>Trend</th></tr></thead><tbody id="improvingCommodityTable"></tbody></table></div>
+            </div>
+          </div>
+          <div class="subpanel" id="redistributionPanel">
+            <h2 style="font-size:18px;margin:14px 0 10px">Redistribution Opportunities</h2>
+            <table><thead><tr><th>Commodity</th><th>Source Facility</th><th>Destination Facility</th><th class="right">Excess Quantity</th><th class="right">Required Quantity</th><th>Recommendation</th></tr></thead><tbody id="tracerRedistributionTable"></tbody></table>
+          </div>
+          <div class="subpanel" id="reportingTrendsPanel">
+            <div class="section-head"><div><h2>Reporting Trends</h2><p class="section-subtitle">Last 12 weeks framework for province, district and facility performance monitoring.</p></div><select><option>Last 12 Weeks</option></select></div>
+            <div class="grid three-col">
+              <div class="mini-chart"><strong>Availability Trend</strong><div class="spark" id="tracerAvailabilityTrend"></div><p class="muted" id="tracerAvailabilityTrendText"></p></div>
+              <div class="mini-chart"><strong>MOS Trend</strong><div class="spark" id="tracerMosTrend"></div><p class="muted">Stable until additional weekly reports are loaded.</p></div>
+              <div class="mini-chart"><strong>Reporting Trend</strong><div class="spark" id="tracerReportingTrend"></div><p class="muted">100% district reporting for March Week 1.</p></div>
+            </div>
+            <div class="grid three-col" id="facilityTrendInsights" style="margin-top:14px"></div>
+          </div>
+          <div class="subpanel" id="districtComparisonPanel">
+            <div class="section-head"><div><h2>District Comparison</h2><p class="section-subtitle">Benchmark districts within the selected province.</p></div><button class="pill blue" id="exportDistricts">Export CSV</button></div>
+            <input id="districtSearch" placeholder="Search district" style="margin-bottom:12px">
+            <div class="grid two-col">
+              <div><h2 style="font-size:18px">Top Performing Districts</h2><table><thead><tr><th>District</th><th class="right">Availability</th><th class="right">MOS</th><th class="right">Reporting Rate</th><th class="right">Risk Facilities</th></tr></thead><tbody id="topDistrictRows"></tbody></table></div>
+              <div><h2 style="font-size:18px">Bottom Performing Districts</h2><table><thead><tr><th>District</th><th class="right">Availability</th><th class="right">MOS</th><th class="right">Reporting Rate</th><th class="right">Risk Facilities</th></tr></thead><tbody id="bottomDistrictRows"></tbody></table></div>
+            </div>
+            <h2 style="font-size:18px;margin-top:14px">District Ranking Table</h2>
+            <table><thead><tr><th>Rank</th><th>District</th><th class="right">Availability</th><th class="right">MOS</th><th class="right">Reporting Rate</th><th class="right">Risk Facilities</th><th>Trend</th></tr></thead><tbody id="districtComparison"></tbody></table>
+          </div>
         </section>
-        <div class="grid two-col">
-          <section class="section"><h2>Facility Alerts</h2><p class="section-subtitle">Immediate action list by facility stock pressure</p><div id="facilityAlerts"></div></section>
-          <section class="section"><h2>Commodity Watchlist</h2><p class="section-subtitle">Programmes causing national supply pressure</p>${riskProgrammeList(DATA.bottomProgrammes, 8)}</section>
-        </div>
-        <section class="section"><h2>District Comparison</h2><p class="section-subtitle">District benchmark within the selected province</p><table><thead><tr><th>District</th><th class="right">Availability</th><th class="right">MOS</th><th class="right">Risk</th></tr></thead><tbody id="districtComparison"></tbody></table></section>
-        <section class="section"><h2>Action Tracker</h2><p class="section-subtitle">Follow-up actions generated from current tracer risks</p><table><thead><tr><th>Issue</th><th>Assigned To</th><th>Status</th><th>Evidence</th></tr></thead><tbody>${DATA.actionTracker.map(row => `<tr><td>${row.action}</td><td>${row.owner}</td><td><span class="pill ${row.status === "In Progress" ? "yellow" : "gray"}">${row.status}</span></td><td>${row.evidence}</td></tr>`).join("")}</tbody></table></section>
       `;
 
-      const state = { rows: [] };
+      const state = { rows: [], districts: [] };
       const provinceSelect = document.getElementById("facilityProvince");
       const districtSelect = document.getElementById("facilityDistrict");
       const levelSelect = document.getElementById("facilityLevel");
+      const unitSelect = document.getElementById("reportingUnit");
       const searchInput = document.getElementById("facilitySearch");
+      const districtSearch = document.getElementById("districtSearch");
 
       function updateDistricts() {
         const selectedProvince = provinceSelect.value;
@@ -1005,17 +1074,30 @@
         districtSelect.innerHTML = `<option value="all">All districts</option>${districts.map(d => `<option>${d}</option>`).join("")}`;
       }
 
-      function updateFacilityView() {
+      function facilityRows() {
         const selectedProvince = provinceSelect.value;
         const selectedDistrict = districtSelect.value;
         const selectedLevel = levelSelect.value;
         const search = searchInput.value.toLowerCase();
-        const rows = DATA.facilities
+        const selectedUnit = unitSelect.value;
+        const base = selectedUnit === "all" ? DATA.facilities : DATA.facilityProgrammes.filter(row => row.programme === selectedUnit);
+        return base
           .filter(row => selectedProvince === "all" || row.province === selectedProvince)
           .filter(row => selectedDistrict === "all" || row.district === selectedDistrict)
           .filter(row => selectedLevel === "all" || row.facilityLevel === selectedLevel)
           .filter(row => row.facility.toLowerCase().includes(search))
           .sort((a, b) => a.availability - b.availability || a.mos - b.mos);
+      }
+
+      function riskLabel(row) {
+        if ((row.stockOuts || 0) > 0 || (row.mos || 0) <= 0.1) return ["Critical", "red"];
+        if ((row.emergency || 0) > 0 || (row.mos || 0) <= 0.5) return ["High Risk", "yellow"];
+        if ((row.lowStock || 0) > 0 || (row.mos || 0) < 2) return ["Low Stock", "yellow"];
+        return ["Stable", "green"];
+      }
+
+      function updateFacilityView() {
+        const rows = facilityRows();
         state.rows = rows;
         const total = rows.length || 1;
         const avgAvailability = rows.reduce((sum, row) => sum + (row.availability || 0), 0) / total;
@@ -1029,22 +1111,100 @@
           <article class="kpi-card"><div class="kpi-label">With Stock Outs</div><div class="kpi-value">${stockOutFacilities}</div><div class="kpi-prev">At least one stocked-out tracer</div></article>
           <article class="kpi-card"><div class="kpi-label">With Low Stock</div><div class="kpi-value">${lowStockFacilities}</div><div class="kpi-prev">At least one commodity under 2 MOS</div></article>
         `;
-        document.getElementById("facilityTable").innerHTML = rows.slice(0, 80).map(row => `<tr><td>${row.facility}</td><td>${row.province}</td><td>${row.district}</td><td>${row.facilityLevel}</td><td class="right"><span class="pill ${riskClass(row.risk)}">${fmtPct(row.availability)}</span></td><td class="right">${fmtNum(row.mos)}</td><td class="right">${row.stockOuts}</td><td class="right">${row.lowStock}</td><td>${row.reportStatus}</td></tr>`).join("");
-        const alertRows = rows.filter(row => row.stockOuts > 0 || row.emergency > 0 || row.excess > 0).slice(0, 8);
-        document.getElementById("facilityAlerts").innerHTML = alertRows.map(row => `<article class="alert-item"><div class="risk-row"><strong>${row.facility}</strong><span class="pill ${row.stockOuts > 0 ? "red" : row.emergency > 0 ? "yellow" : "blue"}">${row.stockOuts > 0 ? "Stock Out" : row.emergency > 0 ? "Emergency" : "Excess"}</span></div><div class="muted">${row.district}, ${row.province} · ${row.stockOuts} stock outs · ${row.lowStock} low-stock commodities · ${row.excess} excess-stock items</div></article>`).join("");
+        document.getElementById("facilityTable").innerHTML = rows.slice(0, 100).map((row, idx) => `<tr data-facility-index="${idx}" style="cursor:pointer"><td>${row.facility}</td><td class="right"><span class="pill ${riskClass(row.risk)}">${fmtPct(row.availability)}</span></td><td class="right">${fmtNum(row.mos)}</td><td class="right">${row.stockOuts || 0}</td><td class="right">${row.lowStock || 0}</td><td>${row.reportStatus || "Reported"}</td></tr>`).join("");
+        document.querySelectorAll("[data-facility-index]").forEach(rowEl => {
+          rowEl.addEventListener("click", () => {
+            const row = rows[Number(rowEl.dataset.facilityIndex)];
+            const panel = document.getElementById("facilityDrilldown");
+            panel.style.display = "block";
+            panel.innerHTML = `<h2>${row.facility}</h2><p class="section-subtitle">${row.district}, ${row.province} · ${row.facilityLevel || "Facility"}</p><div class="grid three-col"><div><strong>Availability</strong><br><span class="pill ${riskClass(row.risk)}">${fmtPct(row.availability)}</span></div><div><strong>MOS</strong><br>${fmtNum(row.mos)}</div><div><strong>Risk signals</strong><br>${row.stockOuts || 0} stock outs · ${row.lowStock || 0} low stock · ${row.emergency || 0} emergency</div></div>`;
+          });
+        });
+
+        const alertRows = rows.filter(row => (row.stockOuts || 0) > 0 || (row.emergency || 0) > 0 || (row.lowStock || 0) > 0 || (row.excess || 0) > 0).slice(0, 80);
+        document.getElementById("facilityAlertTable").innerHTML = alertRows.map(row => {
+          const [label, color] = riskLabel(row);
+          return `<tr><td>${row.facility}<br><span class="muted">${row.district}, ${row.province}</span></td><td>${row.programme || "Multiple tracer commodities"}</td><td class="right">${fmtNum(row.mos)}</td><td><span class="pill ${color}">${label}</span></td></tr>`;
+        }).join("");
+
+        const commodityMap = new Map();
+        DATA.facilityProgrammes
+          .filter(row => provinceSelect.value === "all" || row.province === provinceSelect.value)
+          .filter(row => districtSelect.value === "all" || row.district === districtSelect.value)
+          .filter(row => levelSelect.value === "all" || row.facilityLevel === levelSelect.value)
+          .filter(row => unitSelect.value === "all" || row.programme === unitSelect.value)
+          .forEach(row => {
+            const item = commodityMap.get(row.programme) || { commodity: row.programme, availabilitySum: 0, mosSum: 0, count: 0, facilitiesAffected: 0, risk: 0 };
+            item.availabilitySum += row.availability || 0;
+            item.mosSum += row.mos || 0;
+            item.count += 1;
+            if ((row.stockOuts || 0) > 0 || (row.emergency || 0) > 0 || (row.lowStock || 0) > 0) item.facilitiesAffected += 1;
+            item.risk += (row.stockOuts || 0) * 3 + (row.emergency || 0) * 2 + (row.lowStock || 0);
+            commodityMap.set(row.programme, item);
+          });
+        const commodities = [...commodityMap.values()].map(item => ({ ...item, availability: item.availabilitySum / item.count, mos: item.mosSum / item.count }));
+        const sortMode = document.getElementById("watchlistSort").value;
+        const highRisk = [...commodities].sort((a, b) => sortMode === "availability" ? a.availability - b.availability : sortMode === "facilitiesAffected" ? b.facilitiesAffected - a.facilitiesAffected : b.risk - a.risk).slice(0, 10);
+        document.getElementById("highRiskCommodityTable").innerHTML = highRisk.map(item => `<tr><td>${item.commodity}</td><td class="right">${fmtPct(item.availability)}</td><td class="right">${fmtNum(item.mos)}</td><td class="right">${item.facilitiesAffected}</td><td>Monitor</td></tr>`).join("");
+        document.getElementById("improvingCommodityTable").innerHTML = [...commodities].sort((a, b) => b.availability - a.availability).slice(0, 10).map(item => `<tr><td>${item.commodity}</td><td class="right">${fmtPct(item.availability)}</td><td class="right">${fmtNum(item.mos)}</td><td class="right">${item.facilitiesAffected}</td><td>Improving</td></tr>`).join("");
+
+        document.getElementById("tracerRedistributionTable").innerHTML = DATA.redistributionRecommendations
+          .filter(row => provinceSelect.value === "all" || row.sourceProvince === provinceSelect.value || row.destinationProvince === provinceSelect.value)
+          .filter(row => unitSelect.value === "all" || row.programme === unitSelect.value)
+          .slice(0, 30)
+          .map(row => `<tr><td>${row.commodity}</td><td>${row.sourceFacility}<br><span class="muted">${row.sourceProvince}</span></td><td>${row.destinationFacility}<br><span class="muted">${row.destinationProvince}</span></td><td class="right">${Math.round(row.excessQuantity).toLocaleString()}</td><td class="right">${Math.round(row.requiredQuantity).toLocaleString()}</td><td>${row.recommendation}</td></tr>`).join("");
+
+        document.getElementById("tracerAvailabilityTrend").innerHTML = `<div style="height:${Math.max(4, (avgAvailability - 0.027) * 54)}px"></div><div style="height:${Math.max(4, avgAvailability * 54)}px"></div>`;
+        document.getElementById("tracerMosTrend").innerHTML = `<div style="height:${Math.max(4, avgMos / 6 * 54)}px"></div><div style="height:${Math.max(4, avgMos / 6 * 54)}px"></div>`;
+        document.getElementById("tracerReportingTrend").innerHTML = `<div style="height:54px"></div><div style="height:54px"></div>`;
+        document.getElementById("tracerAvailabilityTrendText").textContent = avgAvailability >= 0.856 ? "Improving facilities are lifting availability." : "Monitor: filtered scope is below national current baseline.";
+        const improving = [...rows].sort((a, b) => b.availability - a.availability).slice(0, 3);
+        const declining = [...rows].sort((a, b) => a.availability - b.availability).slice(0, 3);
+        const chronic = rows.filter(row => (row.stockOuts || 0) > 0 || (row.lowStock || 0) > 0).sort((a, b) => (b.stockOuts + b.lowStock) - (a.stockOuts + a.lowStock)).slice(0, 3);
+        document.getElementById("facilityTrendInsights").innerHTML = `
+          <article class="risk-item"><span class="pill green">Improving Facilities</span><div class="muted">${improving.map(row => row.facility).join(", ") || "TBD"}</div></article>
+          <article class="risk-item"><span class="pill yellow">Declining Facilities</span><div class="muted">${declining.map(row => row.facility).join(", ") || "TBD"}</div></article>
+          <article class="risk-item"><span class="pill red">Chronic Poor Performers</span><div class="muted">${chronic.map(row => row.facility).join(", ") || "TBD"}</div></article>
+        `;
+
+        const selectedProvince = provinceSelect.value;
+        const districtFilter = (districtSearch.value || "").toLowerCase();
+        const districtRisk = {};
+        rows.forEach(row => {
+          if ((row.stockOuts || 0) > 0 || (row.emergency || 0) > 0 || (row.lowStock || 0) > 0) districtRisk[row.district] = (districtRisk[row.district] || 0) + 1;
+        });
         const districts = DATA.districts
           .filter(row => selectedProvince === "all" || row.province === selectedProvince)
+          .filter(row => row.district.toLowerCase().includes(districtFilter))
           .sort((a, b) => a.availability - b.availability)
-          .slice(0, 20);
-        document.getElementById("districtComparison").innerHTML = districts.map(row => `<tr><td>${row.district}</td><td class="right"><span class="pill ${riskClass(row.risk)}">${fmtPct(row.availability)}</span></td><td class="right">${fmtNum(row.mos)}</td><td class="right">${row.risk === "red" ? "Action Required" : row.risk === "yellow" ? "Monitor" : "Stable"}</td></tr>`).join("");
+          .map(row => ({ ...row, riskFacilities: districtRisk[row.district] || 0 }));
+        state.districts = districts;
+        const topDistricts = [...districts].sort((a, b) => b.availability - a.availability).slice(0, 5);
+        const bottomDistricts = [...districts].sort((a, b) => a.availability - b.availability).slice(0, 5);
+        const districtRow = row => `<tr><td>${row.district}</td><td class="right"><span class="pill ${riskClass(row.risk)}">${fmtPct(row.availability)}</span></td><td class="right">${fmtNum(row.mos)}</td><td class="right">100%</td><td class="right">${row.riskFacilities}</td></tr>`;
+        document.getElementById("topDistrictRows").innerHTML = topDistricts.map(districtRow).join("");
+        document.getElementById("bottomDistrictRows").innerHTML = bottomDistricts.map(districtRow).join("");
+        document.getElementById("districtComparison").innerHTML = districts.map((row, idx) => `<tr><td>${idx + 1}</td><td>${row.district}</td><td class="right"><span class="pill ${riskClass(row.risk)}">${fmtPct(row.availability)}</span></td><td class="right">${fmtNum(row.mos)}</td><td class="right">100%</td><td class="right">${row.riskFacilities}</td><td>${idx < 3 ? "Highest Risk" : row.risk === "green" ? "Stable" : "Monitor"}</td></tr>`).join("");
       }
 
+      document.querySelectorAll("[data-tracer-tab]").forEach(button => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll("[data-tracer-tab]").forEach(item => item.classList.toggle("active", item === button));
+          document.querySelectorAll("#tracerStatus .subpanel").forEach(panel => panel.classList.toggle("active", panel.id === button.dataset.tracerTab));
+        });
+      });
       provinceSelect.addEventListener("change", () => { updateDistricts(); updateFacilityView(); });
       districtSelect.addEventListener("change", updateFacilityView);
       levelSelect.addEventListener("change", updateFacilityView);
+      unitSelect.addEventListener("change", updateFacilityView);
       searchInput.addEventListener("input", updateFacilityView);
+      districtSearch.addEventListener("input", updateFacilityView);
+      document.getElementById("watchlistSort").addEventListener("change", updateFacilityView);
       document.getElementById("exportFacilities").addEventListener("click", () => {
         downloadCsv("tracer-facility-submissions.csv", ["facility", "province", "district", "facilityLevel", "availability", "mos", "stockOuts", "lowStock", "reportStatus"], state.rows);
+      });
+      document.getElementById("exportDistricts").addEventListener("click", () => {
+        downloadCsv("tracer-district-comparison.csv", ["district", "availability", "mos", "riskFacilities"], state.districts);
       });
       updateDistricts();
       updateFacilityView();
