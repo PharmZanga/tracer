@@ -505,12 +505,12 @@
       <div class="sidebar-section">
         <button class="tab-button active" data-tab="overview">Executive</button>
         <div class="sidebar-submenu">
-          <a href="#national-risk-summary" data-exec-link>▼ National Risk Summary</a>
-          <a href="#provincial-ranking" data-exec-link>▼ Provincial Ranking</a>
-          <a href="#national-map" data-exec-link>▼ National Map</a>
-          <a href="#national-trend-analysis" data-exec-link>▼ National Trend Analysis</a>
-          <a href="#executive-alerts" data-exec-link>▼ Executive Alerts</a>
-          <a href="#weekly-reports" data-exec-link>▼ Weekly Reports</a>
+          <a href="./#national-risk-summary" target="_blank" rel="noopener">▼ National Risk Summary</a>
+          <a href="./#provincial-ranking" target="_blank" rel="noopener">▼ Provincial Ranking</a>
+          <a href="./#national-map" target="_blank" rel="noopener">▼ National Map</a>
+          <a href="./#national-trend-analysis" target="_blank" rel="noopener">▼ National Trend Analysis</a>
+          <a href="./#executive-alerts" target="_blank" rel="noopener">▼ Executive Alerts</a>
+          <a href="./#weekly-reports" target="_blank" rel="noopener">▼ Weekly Reports</a>
         </div>
       </div>
       <button class="tab-button" data-tab="provinces">Provincial Performance</button>
@@ -965,16 +965,6 @@
         button.addEventListener("click", () => {
           buttons.forEach(item => item.classList.toggle("active", item === button));
           panels.forEach(panel => panel.classList.toggle("active", panel.id === button.dataset.tab));
-        });
-      });
-      document.querySelectorAll("[data-exec-link]").forEach(link => {
-        link.addEventListener("click", event => {
-          event.preventDefault();
-          document.querySelector('[data-tab="overview"]').click();
-          const target = document.querySelector(link.getAttribute("href"));
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
         });
       });
     }
