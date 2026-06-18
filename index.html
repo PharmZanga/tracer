@@ -171,6 +171,38 @@
       font-size: 13px;
       line-height: 1.45;
     }
+    .sidebar-section {
+      border: 1px solid #c5dded;
+      background: #f7fbfe;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+    .sidebar-section-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #0d4772;
+      font-weight: 900;
+      padding: 8px 8px 6px;
+    }
+    .sidebar-submenu {
+      display: grid;
+      gap: 2px;
+      padding: 2px 0 0 14px;
+    }
+    .sidebar-submenu a {
+      color: #40534c;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 7px 8px;
+      border-radius: 6px;
+    }
+    .sidebar-submenu a:hover {
+      background: #e8f3fb;
+      color: #0d4772;
+    }
     main {
       padding: 24px 28px 48px;
       max-width: 1500px;
@@ -470,7 +502,17 @@
   <div class="shell">
     <aside class="sidebar">
       <p class="side-label">Tracer navigation</p>
-      <button class="tab-button active" data-tab="overview">Executive Dashboard</button>
+      <div class="sidebar-section">
+        <button class="tab-button active" data-tab="overview">Executive</button>
+        <div class="sidebar-submenu">
+          <a href="#national-risk-summary" data-exec-link>▼ National Risk Summary</a>
+          <a href="#provincial-ranking" data-exec-link>▼ Provincial Ranking</a>
+          <a href="#national-map" data-exec-link>▼ National Map</a>
+          <a href="#national-trend-analysis" data-exec-link>▼ National Trend Analysis</a>
+          <a href="#executive-alerts" data-exec-link>▼ Executive Alerts</a>
+          <a href="#weekly-reports" data-exec-link>▼ Weekly Reports</a>
+        </div>
+      </div>
       <button class="tab-button" data-tab="provinces">Provincial Performance</button>
       <button class="tab-button" data-tab="tracerStatus">Provincial Tracer Status</button>
       <button class="tab-button" data-tab="commodities">Commodity Analytics</button>
@@ -923,6 +965,16 @@
         button.addEventListener("click", () => {
           buttons.forEach(item => item.classList.toggle("active", item === button));
           panels.forEach(panel => panel.classList.toggle("active", panel.id === button.dataset.tab));
+        });
+      });
+      document.querySelectorAll("[data-exec-link]").forEach(link => {
+        link.addEventListener("click", event => {
+          event.preventDefault();
+          document.querySelector('[data-tab="overview"]').click();
+          const target = document.querySelector(link.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
         });
       });
     }
