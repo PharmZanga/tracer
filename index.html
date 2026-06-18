@@ -258,6 +258,13 @@
       margin-bottom: 16px;
       flex-wrap: wrap;
     }
+    .global-filter-panel {
+      position: sticky;
+      top: 167px;
+      z-index: 12;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(8px);
+    }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
     .grid {
@@ -556,6 +563,7 @@
       </div>
     </aside>
     <main>
+      <section class="section global-filter-panel" id="globalFilters"></section>
       <section class="tab-panel active" id="overview"></section>
       <section class="tab-panel" id="provinces"></section>
       <section class="tab-panel" id="tracerStatus"></section>
@@ -594,6 +602,121 @@
           <div class="trend ${trendClass(kpi)}">${trendSymbol(kpi.trend)} ${kpi.trend === "flat" ? "No change" : kpi.trend === "up" ? "Improving" : "Reducing"}</div>
         </article>
       `).join("")}</div>`;
+    }
+
+    function uniqueSorted(values) {
+      return [...new Set(values.filter(Boolean))].sort();
+    }
+
+    function renderGlobalFilters() {
+      const provinces = uniqueSorted(DATA.facilities.map(item => item.province));
+      const levels = uniqueSorted(DATA.facilities.map(item => item.facilityLevel));
+      document.getElementById("globalFilters").innerHTML = `
+        <div class="section-head">
+          <div>
+            <h2>National Drill Filters</h2>
+            <p class="section-subtitle">Start with the national picture, then narrow to province, district, facility level, and reporting facility.</p>
+          </div>
+          <span class="pill blue" id="globalScopeLabel">National view</span>
+        </div>
+        <div class="toolbar">
+          <select id="globalMonth"><option>March 2026</option></select>
+          <select id="globalWeek">${DATA.national.availablePeriods.map(period => `<option value="${period.week}" ${period.loaded ? "selected" : ""}>${period.week}${period.loaded ? " · Loaded" : " · Pending"}</option>`).join("")}</select>
+          <select id="globalProvince"><option value="all">All provinces</option>${provinces.map(value => `<option>${value}</option>`).join("")}</select>
+          <select id="globalDistrict"><option value="all">All districts</option></select>
+          <select id="globalFacilityLevel"><option value="all">All facility levels</option>${levels.map(value => `<option>${value}</option>`).join("")}</select>
+          <select id="globalFacility"><option value="all">All reporting facilities</option></select>
+        </div>
+      `;
+      updateGlobalDistricts();
+      updateGlobalFacilities();
+      ["globalWeek", "globalProvince", "globalDistrict", "globalFacilityLevel", "globalFacility"].forEach(id => {
+        document.getElementById(id).addEventListener("change", () => {
+          if (id === "globalProvince") {
+            updateGlobalDistricts();
+            updateGlobalFacilities();
+          }
+          if (id === "globalDistrict" || id === "globalFacilityLevel") {
+            updateGlobalFacilities();
+          }
+          updateGlobalScopeLabel();
+          applyGlobalFiltersToActivePage();
+        });
+      });
+      updateGlobalScopeLabel();
+    }
+
+    function globalFilterState() {
+      return {
+        week: document.getElementById("globalWeek")?.value || "Week 1",
+        province: document.getElementById("globalProvince")?.value || "all",
+        district: document.getElementById("globalDistrict")?.value || "all",
+        facilityLevel: document.getElementById("globalFacilityLevel")?.value || "all",
+        facility: document.getElementById("globalFacility")?.value || "all",
+      };
+    }
+
+    function updateGlobalDistricts() {
+      const province = document.getElementById("globalProvince").value;
+      const districtSelect = document.getElementById("globalDistrict");
+      const previous = districtSelect.value;
+      const districts = uniqueSorted(DATA.facilities.filter(row => province === "all" || row.province === province).map(row => row.district));
+      districtSelect.innerHTML = `<option value="all">All districts</option>${districts.map(value => `<option>${value}</option>`).join("")}`;
+      if (districts.includes(previous)) districtSelect.value = previous;
+    }
+
+    function updateGlobalFacilities() {
+      const state = globalFilterState();
+      const facilitySelect = document.getElementById("globalFacility");
+      const previous = facilitySelect.value;
+      const facilities = uniqueSorted(DATA.facilities
+        .filter(row => state.province === "all" || row.province === state.province)
+        .filter(row => state.district === "all" || row.district === state.district)
+        .filter(row => state.facilityLevel === "all" || row.facilityLevel === state.facilityLevel)
+        .map(row => row.facility));
+      facilitySelect.innerHTML = `<option value="all">All reporting facilities</option>${facilities.map(value => `<option>${value}</option>`).join("")}`;
+      if (facilities.includes(previous)) facilitySelect.value = previous;
+    }
+
+    function updateGlobalScopeLabel() {
+      const state = globalFilterState();
+      const parts = ["March 2026", state.week];
+      if (state.province !== "all") parts.push(state.province.replace(" Province", ""));
+      if (state.district !== "all") parts.push(state.district);
+      if (state.facility !== "all") parts.push(state.facility);
+      document.getElementById("globalScopeLabel").textContent = parts.join(" · ");
+    }
+
+    function setControlValue(id, value, eventName = "change") {
+      const control = document.getElementById(id);
+      if (!control) return false;
+      const optionValues = [...control.options || []].map(option => option.value);
+      if (optionValues.length && !optionValues.includes(value)) return false;
+      control.value = value;
+      control.dispatchEvent(new Event(eventName, { bubbles: true }));
+      return true;
+    }
+
+    function applyGlobalFiltersToActivePage() {
+      const state = globalFilterState();
+      const activePanel = document.querySelector(".tab-panel.active")?.id;
+      if (activePanel === "provinces") {
+        setControlValue("provinceWeek", state.week);
+        setControlValue("provinceFilter", state.province);
+      }
+      if (activePanel === "tracerStatus") {
+        setControlValue("tracerWeek", state.week);
+        setControlValue("facilityProvince", state.province);
+        setTimeout(() => {
+          setControlValue("facilityDistrict", state.district);
+          setControlValue("facilityLevel", state.facilityLevel);
+          const search = document.getElementById("facilitySearch");
+          if (search) {
+            search.value = state.facility === "all" ? "" : state.facility;
+            search.dispatchEvent(new Event("input", { bubbles: true }));
+          }
+        }, 0);
+      }
     }
 
     function riskProgrammeList(items, limit = 5) {
@@ -1289,11 +1412,13 @@
         button.addEventListener("click", () => {
           buttons.forEach(item => item.classList.toggle("active", item === button));
           panels.forEach(panel => panel.classList.toggle("active", panel.id === button.dataset.tab));
+          applyGlobalFiltersToActivePage();
         });
       });
     }
 
     renderTicker();
+    renderGlobalFilters();
     renderOverview();
     renderProvinces();
     renderTracerStatus();
