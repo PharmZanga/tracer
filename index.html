@@ -1,13 +1,724 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>National Tracer Drug Availability</title>
-    <script type="module" crossorigin src="./assets/index-aWtD7j1N.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DJLSWuGn.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>National Supply Chain Executive Dashboard</title>
+  <style>
+    :root {
+      --bg: #f5f7f6;
+      --surface: #ffffff;
+      --line: #d9e2de;
+      --text: #14231e;
+      --muted: #62716b;
+      --green: #147a46;
+      --green-soft: #dff3e8;
+      --yellow: #a96e00;
+      --yellow-soft: #fff0c7;
+      --red: #b42318;
+      --red-soft: #ffe1dd;
+      --blue: #195e8f;
+      --blue-soft: #e3f0fa;
+      --gray-soft: #edf1ef;
+      --header: #053429;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    button, input, select { font: inherit; }
+    .masthead {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background:
+        linear-gradient(90deg, rgba(5, 52, 41, 0.96), rgba(5, 52, 41, 0.82)),
+        url("https://images.unsplash.com/photo-1581093458791-9f3c3900df7b?auto=format&fit=crop&w=1800&q=70");
+      background-size: cover;
+      background-position: center;
+      border-bottom: 1px solid rgba(255,255,255,0.18);
+      color: #fff;
+    }
+    .brand-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 24px;
+      align-items: center;
+      min-height: 96px;
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 14px 28px;
+      background: rgba(3, 35, 27, 0.18);
+      backdrop-filter: blur(3px);
+    }
+    .brand-side {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-side.right { justify-content: flex-end; text-align: right; }
+    .crest, .tower-mark {
+      width: 58px;
+      height: 58px;
+      border: 1px solid rgba(255,255,255,0.35);
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.12);
+      border-radius: 4px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    .crest img, .tower-mark img {
+      max-width: 52px;
+      max-height: 52px;
+      object-fit: contain;
+    }
+    .tower-mark { color: #55e1e6; font-size: 26px; }
+    .brand-eyebrow {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.78;
+      font-weight: 700;
+    }
+    .brand-title {
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+    .hero-title {
+      text-align: center;
+      min-width: 320px;
+    }
+    .hero-title h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+    .hero-title p {
+      margin: 8px 0 0;
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+    }
+    .ticker {
+      overflow: hidden;
+      border-top: 1px solid rgba(255,255,255,0.16);
+      background: rgba(4, 42, 33, 0.72);
+      white-space: nowrap;
+    }
+    .ticker-track {
+      display: inline-block;
+      padding: 10px 0;
+      animation: ticker 32s linear infinite;
+      color: #dff8ee;
+      font-weight: 700;
+    }
+    .ticker-track span { margin-right: 42px; }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .shell {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 137px);
+    }
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: #fff;
+      padding: 22px 16px;
+      position: sticky;
+      top: 137px;
+      height: calc(100vh - 137px);
+      overflow: auto;
+    }
+    .side-label {
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      margin: 0 0 10px;
+    }
+    .tab-button {
+      width: 100%;
+      text-align: left;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text);
+      padding: 11px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+    .tab-button.active {
+      background: var(--blue-soft);
+      color: #0d4772;
+      border-color: #b6d4ea;
+    }
+    .sidebar-card {
+      margin-top: 22px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fafcfb;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    main {
+      padding: 24px 28px 48px;
+      max-width: 1500px;
+      width: 100%;
+    }
+    .executive-summary {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 18px;
+      line-height: 1.55;
+    }
+    .executive-summary h2,
+    .section h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+    .executive-summary p { margin: 0; color: #41514b; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+    .kpi-grid { grid-template-columns: repeat(6, minmax(150px, 1fr)); }
+    .two-col { grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr); }
+    .three-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .section {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .section-subtitle { margin: 4px 0 0; color: var(--muted); }
+    .kpi-card {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 15px;
+      min-height: 132px;
+    }
+    .kpi-label { color: var(--muted); font-size: 13px; font-weight: 800; }
+    .kpi-value { font-size: 32px; line-height: 1.1; margin: 12px 0 6px; font-weight: 850; }
+    .kpi-prev { color: var(--muted); font-size: 12px; }
+    .trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 900;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .trend.good { color: var(--green); }
+    .trend.warn { color: var(--yellow); }
+    .trend.bad { color: var(--red); }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid transparent;
+    }
+    .pill.red { color: #7a1510; background: var(--red-soft); border-color: #ffc1b9; }
+    .pill.yellow { color: #744800; background: var(--yellow-soft); border-color: #ffd975; }
+    .pill.green { color: #0d5d35; background: var(--green-soft); border-color: #b9e7cc; }
+    .pill.blue { color: #0d4772; background: var(--blue-soft); border-color: #c5dded; }
+    .pill.gray { color: #52615b; background: var(--gray-soft); border-color: #dce4e0; }
+    .risk-list, .alert-list { display: grid; gap: 10px; }
+    .risk-item, .alert-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      display: grid;
+      gap: 7px;
+      background: #fff;
+    }
+    .risk-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .risk-title { font-weight: 850; }
+    .muted { color: var(--muted); }
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(160px, 1fr) minmax(140px, 3fr) 70px;
+      gap: 12px;
+      align-items: center;
+      margin: 10px 0;
+      font-size: 13px;
+    }
+    .bar-track {
+      height: 13px;
+      background: #e9efec;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      width: var(--value);
+      background: var(--green);
+    }
+    .bar-fill.red { background: var(--red); }
+    .bar-fill.yellow { background: var(--yellow); }
+    .bar-fill.blue { background: var(--blue); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      color: #3e5049;
+      background: #f4f7f5;
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      position: sticky;
+      top: 137px;
+      z-index: 5;
+    }
+    td {
+      border-bottom: 1px solid #edf1ef;
+      padding: 10px;
+      vertical-align: top;
+    }
+    tr:hover td { background: #f8fbfa; }
+    .right { text-align: right; }
+    .province-map {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 10px;
+    }
+    .province-tile {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 12px;
+      cursor: pointer;
+      min-height: 98px;
+      text-align: left;
+    }
+    .province-tile.active {
+      outline: 3px solid #2f7db2;
+      outline-offset: 1px;
+    }
+    .province-tile.red { border-color: #f4aaa2; background: #fff5f3; }
+    .province-tile.yellow { border-color: #f4d47c; background: #fffbec; }
+    .province-tile.green { border-color: #a8dfbe; background: #f2fbf5; }
+    .province-name { font-weight: 850; margin-bottom: 8px; }
+    .province-metric { color: var(--muted); font-size: 12px; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    select, input {
+      border: 1px solid #c8d6d0;
+      background: #fff;
+      border-radius: 6px;
+      padding: 9px 10px;
+      min-height: 40px;
+    }
+    .mini-chart {
+      width: 100%;
+      min-height: 180px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 16px;
+    }
+    .trend-lines {
+      display: grid;
+      gap: 14px;
+    }
+    .trend-line {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+    .spark {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      height: 54px;
+      border-bottom: 1px solid var(--line);
+      padding: 0 0 5px;
+    }
+    .spark div {
+      flex: 1;
+      background: var(--blue);
+      min-height: 4px;
+      border-radius: 4px 4px 0 0;
+    }
+    .action-status {
+      min-width: 96px;
+      justify-content: center;
+    }
+    @media (max-width: 1100px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar {
+        position: static;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .tab-button { width: auto; display: inline-flex; }
+      .kpi-grid, .two-col, .three-col { grid-template-columns: 1fr 1fr; }
+      .brand-row { grid-template-columns: 1fr; text-align: center; }
+      .brand-side, .brand-side.right { justify-content: center; text-align: center; }
+      th { top: 0; }
+    }
+    @media (max-width: 720px) {
+      main { padding: 16px; }
+      .kpi-grid, .two-col, .three-col { grid-template-columns: 1fr; }
+      .province-map { grid-template-columns: 1fr 1fr; }
+      .bar-row { grid-template-columns: 1fr; gap: 6px; }
+      .hero-title h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="brand-row">
+      <div class="brand-side">
+        <div class="crest"><img src="zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms"></div>
+        <div>
+          <div class="brand-eyebrow">Republic of Zambia</div>
+          <div class="brand-title">Ministry of Health</div>
+        </div>
+      </div>
+      <div class="hero-title">
+        <h1>National Supply Chain Executive Dashboard</h1>
+        <p>March tracer report · Week ending 8 March 2026</p>
+      </div>
+      <div class="brand-side right">
+        <div>
+          <div class="brand-eyebrow">Control Tower</div>
+          <div class="brand-title">National Supply Chain Coordinating Unit</div>
+        </div>
+        <div class="tower-mark"><img src="control-tower-logo.svg" alt="Control Tower logo"></div>
+      </div>
+    </div>
+    <div class="ticker">
+      <div class="ticker-track" id="tickerTrack"></div>
+    </div>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <p class="side-label">Executive tabs</p>
+      <button class="tab-button active" data-tab="overview">National Overview</button>
+      <button class="tab-button" data-tab="risks">National Risks</button>
+      <button class="tab-button" data-tab="provinces">Provincial Performance</button>
+      <button class="tab-button" data-tab="commodities">Commodity Performance</button>
+      <button class="tab-button" data-tab="quality">Data Quality</button>
+      <button class="tab-button" data-tab="actions">Action Tracker</button>
+      <div class="sidebar-card">
+        <strong>Audience focus</strong><br>
+        Built for MoH leadership, ZAMMSA management, cooperating partners, and Provincial Health Directors. Operational detail stays one click below the executive risk signal.
+      </div>
+    </aside>
+    <main>
+      <section class="executive-summary">
+        <h2>Executive Summary</h2>
+        <p>The Zambia Medicines and Medical Supplies Agency Drug Status Dashboard provides visibility of medicine availability across the national health supply chain, supporting timely decision-making, ordering, redistribution, and supply planning. By integrating stock status from central warehouses to service delivery points, the dashboard promotes end-to-end visibility, enabling early identification of stock-outs, overstocks, and short-dated commodities. This enhances commodity security, reduces wastage, improves resource utilization, and supports uninterrupted access to essential medicines for patients across Zambia.</p>
+      </section>
+
+      <section class="tab-panel active" id="overview"></section>
+      <section class="tab-panel" id="risks"></section>
+      <section class="tab-panel" id="provinces"></section>
+      <section class="tab-panel" id="commodities"></section>
+      <section class="tab-panel" id="quality"></section>
+      <section class="tab-panel" id="actions"></section>
+    </main>
+  </div>
+  <script>
+    const DATA = {"national": {"period": "Week ending 8 March 2026", "reportPeriod": "2-7 March 2026", "sourceFile": "summery r_ 8.3.26.xlsx", "kpis": [{"label": "Availability", "current": 0.856, "currentLabel": "85.6%", "previous": 0.829, "previousLabel": "82.9%", "trend": "up", "goodDirection": "up"}, {"label": "Average MOS", "current": 3.3, "currentLabel": "3.3", "previous": 3.3, "previousLabel": "3.3", "trend": "flat", "goodDirection": "up"}, {"label": "Reporting Rate", "current": 1.0, "currentLabel": "100%", "previous": 1.0, "previousLabel": "100%", "trend": "flat", "goodDirection": "up"}, {"label": "Stock Out Rate", "current": 0.16, "currentLabel": "16.0%", "previous": 0.182, "previousLabel": "18.2%", "trend": "down", "goodDirection": "down"}, {"label": "Emergency Stock", "current": 0.108, "currentLabel": "10.8%", "previous": 0.114, "previousLabel": "11.4%", "trend": "down", "goodDirection": "down"}, {"label": "Facilities Reporting", "current": 116, "currentLabel": "116/116", "previous": 116, "previousLabel": "116/116", "trend": "flat", "goodDirection": "up"}], "indicators": {"Provinces Reporting": "10 / 10 (100%)", "Districts Reporting": "116 / 116 (100%)", "National Availability": "85.6% (↑ from 82.9%)", "Average MOS": "3.3 months", "Provinces with Data Issues": "8 provinces", "Facilities with Reporting Issues": "10+ facilities/programs identified"}, "trend": [{"week": "28 Feb", "availability": 0.829, "mos": 3.3, "stockOut": 0.182}, {"week": "8 Mar", "availability": 0.856, "mos": 3.3, "stockOut": 0.16}]}, "provinces": [{"province": "Central Province", "availability": 0.912011173184358, "mos": 3.96806943376367, "accordingToPlan": 0.25, "emergency": 0.04, "overstock12": 0.12, "overstock4to12": 0.24, "stockedOut": 0.12, "understocked": 0.23, "risk": "green"}, {"province": "Eastern Province", "availability": 0.883155792276964, "mos": 2.95198653656215, "accordingToPlan": 0.23, "emergency": 0.1, "overstock12": 0.06, "overstock4to12": 0.18, "stockedOut": 0.11, "understocked": 0.32, "risk": "red"}, {"province": "North-Western Province", "availability": 0.862396204033215, "mos": 4.23447190248227, "accordingToPlan": 0.19, "emergency": 0.03, "overstock12": 0.16, "overstock4to12": 0.23, "stockedOut": 0.22, "understocked": 0.17, "risk": "yellow"}, {"province": "Luapula Province", "availability": 0.862362971985384, "mos": 3.39730776552531, "accordingToPlan": 0.21, "emergency": 0.1, "overstock12": 0.11, "overstock4to12": 0.2, "stockedOut": 0.13, "understocked": 0.26, "risk": "yellow"}, {"province": "Western Province", "availability": 0.849744463373084, "mos": 2.78446265295166, "accordingToPlan": 0.17, "emergency": 0.15, "overstock12": 0.05, "overstock4to12": 0.13, "stockedOut": 0.17, "understocked": 0.33, "risk": "red"}, {"province": "Southern Province", "availability": 0.84954128440367, "mos": 3.39499965469985, "accordingToPlan": 0.17, "emergency": 0.11, "overstock12": 0.12, "overstock4to12": 0.18, "stockedOut": 0.17, "understocked": 0.24, "risk": "yellow"}, {"province": "Muchinga Province", "availability": 0.841425937307929, "mos": 3.32844592020239, "accordingToPlan": 0.22, "emergency": 0.04, "overstock12": 0.12, "overstock4to12": 0.25, "stockedOut": 0.21, "understocked": 0.16, "risk": "yellow"}, {"province": "Copperbelt Province", "availability": 0.835929011227816, "mos": 2.89163296608345, "accordingToPlan": 0.16, "emergency": 0.15, "overstock12": 0.1, "overstock4to12": 0.18, "stockedOut": 0.16, "understocked": 0.24, "risk": "red"}, {"province": "Northern Province", "availability": 0.834882691456397, "mos": 3.1417336556435, "accordingToPlan": 0.16, "emergency": 0.14, "overstock12": 0.1, "overstock4to12": 0.17, "stockedOut": 0.16, "understocked": 0.26, "risk": "red"}, {"province": "Lusaka Province", "availability": 0.822383073496659, "mos": 3.2417530052299, "accordingToPlan": 0.17, "emergency": 0.04, "overstock12": 0.11, "overstock4to12": 0.18, "stockedOut": 0.32, "understocked": 0.18, "risk": "red"}], "programmes": [{"programme": "Fluids/Salts", "key": "FLUIDS/SALTS", "mos": 5.00308936297381, "availability": 0.91683569979716, "accordingToPlan": 0.2, "emergency": 0.06, "overstock12": 0.22, "overstock4to12": 0.29, "stockedOut": 0.07, "understocked": 0.17, "risk": "green"}, {"programme": "GIT", "key": "GIT", "mos": 4.87990862785857, "availability": 0.904076738609113, "accordingToPlan": 0.14, "emergency": 0.12, "overstock12": 0.06, "overstock4to12": 0.09, "stockedOut": 0.37, "understocked": 0.22, "risk": "green"}, {"programme": "Cannulae", "key": "CANNULAE", "mos": 4.86796077483837, "availability": 0.905053598774885, "accordingToPlan": 0.19, "emergency": 0.08, "overstock12": 0.19, "overstock4to12": 0.22, "stockedOut": 0.11, "understocked": 0.21, "risk": "green"}, {"programme": "Endocrine", "key": "ENDOCRINE", "mos": 4.81391661706713, "availability": 0.823204419889503, "accordingToPlan": 0.18, "emergency": 0.07, "overstock12": 0.18, "overstock4to12": 0.21, "stockedOut": 0.2, "understocked": 0.17, "risk": "red"}, {"programme": "Other MS", "key": "OTHERMS", "mos": 4.79590342590705, "availability": 0.912408759124088, "accordingToPlan": 0.18, "emergency": 0.09, "overstock12": 0.2, "overstock4to12": 0.23, "stockedOut": 0.11, "understocked": 0.2, "risk": "green"}, {"programme": "Dental", "key": "DENTAL", "mos": 4.79517304552718, "availability": 0.788321167883212, "accordingToPlan": 0.09, "emergency": 0.11, "overstock12": 0.25, "overstock4to12": 0.09, "stockedOut": 0.26, "understocked": 0.21, "risk": "red"}, {"programme": "Mental Health", "key": "MENTALHEALTH", "mos": 4.5926758115741, "availability": 0.626086956521739, "accordingToPlan": 0.12, "emergency": 0.05, "overstock12": 0.15, "overstock4to12": 0.18, "stockedOut": 0.41, "understocked": 0.1, "risk": "red"}, {"programme": "Syringes", "key": "SYRINGES", "mos": 4.10134596502535, "availability": 0.964110929853181, "accordingToPlan": 0.23, "emergency": 0.09, "overstock12": 0.09, "overstock4to12": 0.26, "stockedOut": 0.07, "understocked": 0.26, "risk": "green"}, {"programme": "Anticonvulsants", "key": "ANTICONVULSANTS", "mos": 3.84843452412626, "availability": 0.807692307692308, "accordingToPlan": 0.19, "emergency": 0.07, "overstock12": 0.2, "overstock4to12": 0.24, "stockedOut": 0.15, "understocked": 0.15, "risk": "red"}, {"programme": "Reproductive Health", "key": "REPRODUCTIVEHEALTH", "mos": 3.83562052079422, "availability": 0.89990089197225, "accordingToPlan": 0.2, "emergency": 0.09, "overstock12": 0.13, "overstock4to12": 0.19, "stockedOut": 0.14, "understocked": 0.24, "risk": "green"}, {"programme": "Ophthalmology", "key": "OPTHAMOLOGY", "mos": 3.78831986277599, "availability": 0.648475120385233, "risk": "red"}, {"programme": "Vitamins/minerals", "key": "VITAMINS/MINERALS", "mos": 3.64943600219681, "availability": 0.964, "accordingToPlan": 0.22, "emergency": 0.07, "overstock12": 0.14, "overstock4to12": 0.23, "stockedOut": 0.07, "understocked": 0.27, "risk": "green"}, {"programme": "Needle", "key": "NEEDLE", "mos": 3.3364677025327, "availability": 0.942244224422442, "accordingToPlan": 0.21, "emergency": 0.1, "overstock12": 0.12, "overstock4to12": 0.16, "stockedOut": 0.1, "understocked": 0.31, "risk": "green"}, {"programme": "ART", "key": "ART", "mos": 3.19488422760593, "availability": 0.932762836185819, "accordingToPlan": 0.21, "emergency": 0.12, "overstock12": 0.09, "overstock4to12": 0.15, "stockedOut": 0.11, "understocked": 0.33, "risk": "green"}, {"programme": "Analgesia", "key": "ANALGESIA", "mos": 3.10319441982674, "availability": 0.890274314214464, "accordingToPlan": 0.21, "emergency": 0.12, "overstock12": 0.09, "overstock4to12": 0.2, "stockedOut": 0.15, "understocked": 0.24, "risk": "green"}, {"programme": "Corticosteroids", "key": "CORTICOSTEROIDS", "mos": 3.06136536822379, "availability": 0.838164251207729, "accordingToPlan": 0.16, "emergency": 0.1, "overstock12": 0.14, "overstock4to12": 0.22, "stockedOut": 0.11, "understocked": 0.27, "risk": "red"}, {"programme": "Suture", "key": "SUTURE", "mos": 3.05374473693772, "availability": 0.903426791277259, "accordingToPlan": 0.23, "emergency": 0.1, "overstock12": 0.08, "overstock4to12": 0.19, "stockedOut": 0.12, "understocked": 0.28, "risk": "green"}, {"programme": "Cardiovascular", "key": "CARDIOVASCULAR", "mos": 3.01538557910203, "availability": 0.819654427645788, "accordingToPlan": 0.14, "emergency": 0.16, "overstock12": 0.07, "overstock4to12": 0.13, "stockedOut": 0.23, "understocked": 0.26, "risk": "red"}, {"programme": "Vaccines", "key": "VACCINES", "mos": 2.95910526038094, "availability": 0.996212121212121, "accordingToPlan": 0.29, "emergency": 0.07, "overstock12": 0.05, "overstock4to12": 0.14, "stockedOut": 0.02, "understocked": 0.44, "risk": "red"}, {"programme": "Malaria", "key": "MALARIA", "mos": 2.95868387890799, "availability": 0.873005319148936, "accordingToPlan": 0.19, "emergency": 0.11, "overstock12": 0.1, "overstock4to12": 0.19, "stockedOut": 0.11, "understocked": 0.3, "risk": "red"}, {"programme": "Test Kits", "key": "TESTKITS", "mos": 2.88939537900402, "availability": 0.929496402877698, "accordingToPlan": 0.22, "emergency": 0.14, "overstock12": 0.05, "overstock4to12": 0.14, "stockedOut": 0.11, "understocked": 0.33, "risk": "red"}, {"programme": "Antibiotic", "key": "ANTIBIOTIC", "mos": 2.88210768208457, "availability": 0.782832278481013, "accordingToPlan": 0.16, "emergency": 0.12, "overstock12": 0.08, "overstock4to12": 0.16, "stockedOut": 0.22, "understocked": 0.25, "risk": "red"}, {"programme": "Anaesthesia", "key": "ANAESTHESIA", "mos": 2.87974361204828, "availability": 0.846551724137931, "accordingToPlan": 0.15, "emergency": 0.15, "overstock12": 0.08, "overstock4to12": 0.13, "stockedOut": 0.18, "understocked": 0.32, "risk": "red"}, {"programme": "Emergency", "key": "EMERGENCY", "mos": 2.76269543982349, "availability": 0.7828418230563, "accordingToPlan": 0.13, "emergency": 0.21, "overstock12": 0.03, "overstock4to12": 0.1, "stockedOut": 0.28, "understocked": 0.26, "risk": "red"}, {"programme": "Cotton Wool/swabs/gauze", "key": "COTTONWOOL/SWABS/GAUZE", "mos": 2.62655635557103, "availability": 0.823448275862069, "accordingToPlan": 0.17, "emergency": 0.15, "overstock12": 0.07, "overstock4to12": 0.18, "stockedOut": 0.17, "understocked": 0.26, "risk": "red"}, {"programme": "Other EM", "key": "OTHEREM", "mos": 2.55857944275743, "availability": 0.86096256684492, "accordingToPlan": 0.2, "emergency": 0.14, "overstock12": 0.07, "overstock4to12": 0.19, "stockedOut": 0.13, "understocked": 0.27, "risk": "red"}, {"programme": "TB-DS", "key": "TB-DS", "mos": 2.10555555555556, "availability": 0.388888888888889, "accordingToPlan": 0.18, "emergency": 0.07, "overstock12": 0.09, "overstock4to12": 0.19, "stockedOut": 0.34, "understocked": 0.13, "risk": "red"}, {"programme": "TB-MDR", "key": "TB-MDR", "mos": 1.53275261324042, "availability": 0.317073170731707, "accordingToPlan": 0.08, "emergency": 0.08, "overstock12": 0.16, "overstock4to12": 0.15, "stockedOut": 0.38, "understocked": 0.15, "risk": "red"}, {"programme": "Gloves", "key": "GLOVES", "mos": 2.445809083287, "availability": 0.884154460719041, "accordingToPlan": 0.19, "emergency": 0.12, "overstock12": 0.07, "overstock4to12": 0.18, "stockedOut": 0.12, "understocked": 0.32, "risk": "red"}, {"programme": "Creams/lotions", "key": "CREAMS/LOTIONS", "mos": 2.20606480490333, "availability": 0.777445109780439, "accordingToPlan": 0.2, "emergency": 0.12, "overstock12": 0.02, "overstock4to12": 0.15, "stockedOut": 0.2, "understocked": 0.3, "risk": "red"}, {"programme": "Antifungal", "key": "ANTIFUNGAL", "mos": 2.13233585800325, "availability": 0.566666666666667, "accordingToPlan": 0.02, "emergency": 0.14, "overstock12": 0.05, "overstock4to12": 0.09, "stockedOut": 0.57, "understocked": 0.14, "risk": "red"}, {"programme": "Disinfectant", "key": "DISIFECTANT", "mos": 1.90505331700249, "availability": 0.758620689655172, "risk": "red"}, {"programme": "Blood Conditions", "key": "BLOODCONDITIONS", "mos": 1.88987626314311, "availability": 0.768324607329843, "accordingToPlan": 0.16, "emergency": 0.14, "overstock12": 0.04, "overstock4to12": 0.09, "stockedOut": 0.26, "understocked": 0.31, "risk": "red"}, {"programme": "Leprosy", "key": "LEPROSY", "mos": 1.45238095238095, "availability": 0.428571428571429, "accordingToPlan": 0.2, "emergency": 0.0, "overstock12": 0.0, "overstock4to12": 0.07, "stockedOut": 0.73, "understocked": 0.0, "risk": "red"}, {"programme": "Cancer", "key": "CANCER", "mos": 1.18744797178131, "availability": 0.555555555555556, "accordingToPlan": 0.03, "emergency": 0.07, "overstock12": 0.07, "overstock4to12": 0.17, "stockedOut": 0.55, "understocked": 0.1, "risk": "red"}, {"programme": "Catheter", "key": "CATHETER", "mos": 1.14048878346825, "availability": 0.645833333333333, "accordingToPlan": 0.11, "emergency": 0.2, "overstock12": 0.07, "overstock4to12": 0.02, "stockedOut": 0.4, "understocked": 0.2, "risk": "red"}, {"programme": "Renal", "key": "RENAL", "mos": 1.07098076395437, "availability": 0.396946564885496, "accordingToPlan": 0.02, "emergency": 0.1, "overstock12": 0.02, "overstock4to12": 0.03, "stockedOut": 0.69, "understocked": 0.15, "risk": "red"}, {"programme": "Imaging", "key": "IMAGING", "mos": 0.747591691563523, "availability": 0.535211267605634, "accordingToPlan": 0.05, "emergency": 0.03, "overstock12": 0.18, "overstock4to12": 0.0, "stockedOut": 0.63, "understocked": 0.11, "risk": "red"}], "criticalProgrammes": [{"programme": "TB-MDR", "key": "TB-MDR", "mos": 1.53275261324042, "availability": 0.317073170731707, "accordingToPlan": 0.08, "emergency": 0.08, "overstock12": 0.16, "overstock4to12": 0.15, "stockedOut": 0.38, "understocked": 0.15, "risk": "red"}, {"programme": "TB-DS", "key": "TB-DS", "mos": 2.10555555555556, "availability": 0.388888888888889, "accordingToPlan": 0.18, "emergency": 0.07, "overstock12": 0.09, "overstock4to12": 0.19, "stockedOut": 0.34, "understocked": 0.13, "risk": "red"}, {"programme": "Renal", "key": "RENAL", "mos": 1.07098076395437, "availability": 0.396946564885496, "accordingToPlan": 0.02, "emergency": 0.1, "overstock12": 0.02, "overstock4to12": 0.03, "stockedOut": 0.69, "understocked": 0.15, "risk": "red"}, {"programme": "Leprosy", "key": "LEPROSY", "mos": 1.45238095238095, "availability": 0.428571428571429, "accordingToPlan": 0.2, "emergency": 0.0, "overstock12": 0.0, "overstock4to12": 0.07, "stockedOut": 0.73, "understocked": 0.0, "risk": "red"}, {"programme": "Imaging", "key": "IMAGING", "mos": 0.747591691563523, "availability": 0.535211267605634, "accordingToPlan": 0.05, "emergency": 0.03, "overstock12": 0.18, "overstock4to12": 0.0, "stockedOut": 0.63, "understocked": 0.11, "risk": "red"}, {"programme": "Cancer", "key": "CANCER", "mos": 1.18744797178131, "availability": 0.555555555555556, "accordingToPlan": 0.03, "emergency": 0.07, "overstock12": 0.07, "overstock4to12": 0.17, "stockedOut": 0.55, "understocked": 0.1, "risk": "red"}, {"programme": "Antifungal", "key": "ANTIFUNGAL", "mos": 2.13233585800325, "availability": 0.566666666666667, "accordingToPlan": 0.02, "emergency": 0.14, "overstock12": 0.05, "overstock4to12": 0.09, "stockedOut": 0.57, "understocked": 0.14, "risk": "red"}], "topStockoutProgrammes": [{"programme": "Leprosy", "key": "LEPROSY", "mos": 1.45238095238095, "availability": 0.428571428571429, "accordingToPlan": 0.2, "emergency": 0.0, "overstock12": 0.0, "overstock4to12": 0.07, "stockedOut": 0.73, "understocked": 0.0, "risk": "red"}, {"programme": "Renal", "key": "RENAL", "mos": 1.07098076395437, "availability": 0.396946564885496, "accordingToPlan": 0.02, "emergency": 0.1, "overstock12": 0.02, "overstock4to12": 0.03, "stockedOut": 0.69, "understocked": 0.15, "risk": "red"}, {"programme": "Imaging", "key": "IMAGING", "mos": 0.747591691563523, "availability": 0.535211267605634, "accordingToPlan": 0.05, "emergency": 0.03, "overstock12": 0.18, "overstock4to12": 0.0, "stockedOut": 0.63, "understocked": 0.11, "risk": "red"}, {"programme": "Antifungal", "key": "ANTIFUNGAL", "mos": 2.13233585800325, "availability": 0.566666666666667, "accordingToPlan": 0.02, "emergency": 0.14, "overstock12": 0.05, "overstock4to12": 0.09, "stockedOut": 0.57, "understocked": 0.14, "risk": "red"}, {"programme": "Cancer", "key": "CANCER", "mos": 1.18744797178131, "availability": 0.555555555555556, "accordingToPlan": 0.03, "emergency": 0.07, "overstock12": 0.07, "overstock4to12": 0.17, "stockedOut": 0.55, "understocked": 0.1, "risk": "red"}, {"programme": "Mental Health", "key": "MENTALHEALTH", "mos": 4.5926758115741, "availability": 0.626086956521739, "accordingToPlan": 0.12, "emergency": 0.05, "overstock12": 0.15, "overstock4to12": 0.18, "stockedOut": 0.41, "understocked": 0.1, "risk": "red"}, {"programme": "Catheter", "key": "CATHETER", "mos": 1.14048878346825, "availability": 0.645833333333333, "accordingToPlan": 0.11, "emergency": 0.2, "overstock12": 0.07, "overstock4to12": 0.02, "stockedOut": 0.4, "understocked": 0.2, "risk": "red"}, {"programme": "TB-MDR", "key": "TB-MDR", "mos": 1.53275261324042, "availability": 0.317073170731707, "accordingToPlan": 0.08, "emergency": 0.08, "overstock12": 0.16, "overstock4to12": 0.15, "stockedOut": 0.38, "understocked": 0.15, "risk": "red"}, {"programme": "GIT", "key": "GIT", "mos": 4.87990862785857, "availability": 0.904076738609113, "accordingToPlan": 0.14, "emergency": 0.12, "overstock12": 0.06, "overstock4to12": 0.09, "stockedOut": 0.37, "understocked": 0.22, "risk": "green"}, {"programme": "TB-DS", "key": "TB-DS", "mos": 2.10555555555556, "availability": 0.388888888888889, "accordingToPlan": 0.18, "emergency": 0.07, "overstock12": 0.09, "overstock4to12": 0.19, "stockedOut": 0.34, "understocked": 0.13, "risk": "red"}], "bottomProgrammes": [{"programme": "TB-MDR", "key": "TB-MDR", "mos": 1.53275261324042, "availability": 0.317073170731707, "accordingToPlan": 0.08, "emergency": 0.08, "overstock12": 0.16, "overstock4to12": 0.15, "stockedOut": 0.38, "understocked": 0.15, "risk": "red"}, {"programme": "TB-DS", "key": "TB-DS", "mos": 2.10555555555556, "availability": 0.388888888888889, "accordingToPlan": 0.18, "emergency": 0.07, "overstock12": 0.09, "overstock4to12": 0.19, "stockedOut": 0.34, "understocked": 0.13, "risk": "red"}, {"programme": "Renal", "key": "RENAL", "mos": 1.07098076395437, "availability": 0.396946564885496, "accordingToPlan": 0.02, "emergency": 0.1, "overstock12": 0.02, "overstock4to12": 0.03, "stockedOut": 0.69, "understocked": 0.15, "risk": "red"}, {"programme": "Leprosy", "key": "LEPROSY", "mos": 1.45238095238095, "availability": 0.428571428571429, "accordingToPlan": 0.2, "emergency": 0.0, "overstock12": 0.0, "overstock4to12": 0.07, "stockedOut": 0.73, "understocked": 0.0, "risk": "red"}, {"programme": "Imaging", "key": "IMAGING", "mos": 0.747591691563523, "availability": 0.535211267605634, "accordingToPlan": 0.05, "emergency": 0.03, "overstock12": 0.18, "overstock4to12": 0.0, "stockedOut": 0.63, "understocked": 0.11, "risk": "red"}, {"programme": "Cancer", "key": "CANCER", "mos": 1.18744797178131, "availability": 0.555555555555556, "accordingToPlan": 0.03, "emergency": 0.07, "overstock12": 0.07, "overstock4to12": 0.17, "stockedOut": 0.55, "understocked": 0.1, "risk": "red"}, {"programme": "Antifungal", "key": "ANTIFUNGAL", "mos": 2.13233585800325, "availability": 0.566666666666667, "accordingToPlan": 0.02, "emergency": 0.14, "overstock12": 0.05, "overstock4to12": 0.09, "stockedOut": 0.57, "understocked": 0.14, "risk": "red"}, {"programme": "Mental Health", "key": "MENTALHEALTH", "mos": 4.5926758115741, "availability": 0.626086956521739, "accordingToPlan": 0.12, "emergency": 0.05, "overstock12": 0.15, "overstock4to12": 0.18, "stockedOut": 0.41, "understocked": 0.1, "risk": "red"}, {"programme": "Catheter", "key": "CATHETER", "mos": 1.14048878346825, "availability": 0.645833333333333, "accordingToPlan": 0.11, "emergency": 0.2, "overstock12": 0.07, "overstock4to12": 0.02, "stockedOut": 0.4, "understocked": 0.2, "risk": "red"}, {"programme": "Ophthalmology", "key": "OPTHAMOLOGY", "mos": 3.78831986277599, "availability": 0.648475120385233, "risk": "red"}], "districts": [{"province": "Luapula Province", "district": "Chembe", "availability": 0.9714285714285714, "mos": 4.200237946725949, "rows": 140, "risk": "green"}, {"province": "Luapula Province", "district": "Chienge", "availability": 0.9052631578947369, "mos": 3.648367151867751, "rows": 190, "risk": "green"}, {"province": "Luapula Province", "district": "Chipili", "availability": 0.9928571428571429, "mos": 7.111700005373299, "rows": 140, "risk": "green"}, {"province": "Luapula Province", "district": "Chifunabuli", "availability": 0.85, "mos": 2.686488302449982, "rows": 240, "risk": "red"}, {"province": "Luapula Province", "district": "Kawambwa", "availability": 0.7165775401069518, "mos": 1.328942422652104, "rows": 187, "risk": "red"}, {"province": "Luapula Province", "district": "Lunga", "availability": 0.9857142857142858, "mos": 2.295678827357288, "rows": 140, "risk": "red"}, {"province": "Luapula Province", "district": "Mansa", "availability": 0.8402203856749312, "mos": 3.1034925891193548, "rows": 363, "risk": "yellow"}, {"province": "Luapula Province", "district": "Mwense", "availability": 0.9458333333333333, "mos": 4.891063645692537, "rows": 240, "risk": "green"}, {"province": "Luapula Province", "district": "Mwansabombwe", "availability": 0.9234042553191489, "mos": 3.1381079685217634, "rows": 235, "risk": "green"}, {"province": "Luapula Province", "district": "Milenge", "availability": 0.9210526315789473, "mos": 3.2372189159801033, "rows": 190, "risk": "green"}, {"province": "Luapula Province", "district": "Nchelenge", "availability": 0.9196787148594378, "mos": 2.4756452957706467, "rows": 249, "risk": "red"}, {"province": "Luapula Province", "district": "Samfya", "availability": 0.9932885906040269, "mos": 4.08717798409906, "rows": 149, "risk": "green"}, {"province": "Central Province", "district": "Chibombo", "availability": 0.9473684210526315, "mos": 4.10367878017115, "rows": 190, "risk": "green"}, {"province": "Central Province", "district": "Chisamba", "availability": 0.9263157894736842, "mos": 4.761208268349906, "rows": 190, "risk": "green"}, {"province": "Central Province", "district": "Chitambo", "availability": 0.968421052631579, "mos": 2.6223511543329656, "rows": 190, "risk": "red"}, {"province": "Central Province", "district": "Luano", "availability": 0.9042553191489362, "mos": 3.0936417886393364, "rows": 188, "risk": "green"}, {"province": "Central Province", "district": "Kabwe", "availability": 0.8142857142857143, "mos": 3.7308964509618296, "rows": 350, "risk": "red"}, {"province": "Central Province", "district": "Kapiri", "availability": 0.9629629629629629, "mos": 3.8378968457440057, "rows": 189, "risk": "green"}, {"province": "Central Province", "district": "Mkushi", "availability": 0.9473684210526315, "mos": 4.31012571661876, "rows": 190, "risk": "green"}, {"province": "Central Province", "district": "Mumbwa", "availability": 0.9736842105263158, "mos": 3.667237951304559, "rows": 190, "risk": "green"}, {"province": "Central Province", "district": "Ngabwe", "availability": 0.9856115107913669, "mos": 4.072332651428534, "rows": 139, "risk": "green"}, {"province": "Central Province", "district": "Serenje", "availability": 0.9693877551020408, "mos": 5.388447742733456, "rows": 196, "risk": "green"}, {"province": "Central Province", "district": "Shibuyunji", "availability": 0.9852941176470589, "mos": 4.345707030861274, "rows": 136, "risk": "green"}, {"province": "Northern Province", "district": "Senga", "availability": 0.8449197860962567, "mos": 2.284495607199381, "rows": 187, "risk": "red"}, {"province": "Northern Province", "district": "Kasama", "availability": 0.819620253164557, "mos": 3.289473906024187, "rows": 316, "risk": "red"}, {"province": "Northern Province", "district": "Mungwi", "availability": 0.8172043010752689, "mos": 1.7180533068859842, "rows": 186, "risk": "red"}, {"province": "Northern Province", "district": "Mbala", "availability": 0.8701298701298701, "mos": 3.489217095574895, "rows": 231, "risk": "yellow"}, {"province": "Northern Province", "district": "Mpulungu", "availability": 0.875, "mos": 1.7907193624575783, "rows": 184, "risk": "red"}, {"province": "Northern Province", "district": "Lunte", "availability": 0.9640287769784173, "mos": 5.930525938858347, "rows": 139, "risk": "green"}, {"province": "Northern Province", "district": "Luwingu", "availability": 0.9842105263157894, "mos": 3.4434616287400517, "rows": 190, "risk": "green"}, {"province": "Northern Province", "district": "Lupososhi", "availability": 1.0, "mos": 2.060773792598432, "rows": 140, "risk": "red"}, {"province": "Northern Province", "district": "Chilubi", "availability": 0.9050279329608939, "mos": 3.8816898813168255, "rows": 179, "risk": "green"}, {"province": "Northern Province", "district": "Nsama", "availability": 0.8913043478260869, "mos": 4.447843949922588, "rows": 138, "risk": "green"}, {"province": "Northern Province", "district": "Mporokoso", "availability": 0.850828729281768, "mos": 4.174911338158261, "rows": 181, "risk": "yellow"}, {"province": "Northern Province", "district": "Kaputa", "availability": 0.851063829787234, "mos": 1.8373763661193412, "rows": 188, "risk": "red"}, {"province": "North-Western Province", "district": "Chavuma", "availability": 0.8243727598566308, "mos": 4.957543908073024, "rows": 279, "risk": "red"}, {"province": "North-Western Province", "district": "Zambezi", "availability": 0.9112627986348123, "mos": 4.695977558880802, "rows": 293, "risk": "green"}, {"province": "North-Western Province", "district": "Kabompo", "availability": 0.8921161825726142, "mos": 3.9885027381243985, "rows": 241, "risk": "green"}, {"province": "North-Western Province", "district": "Manyinga", "availability": 0.7916666666666666, "mos": 2.6202899061824683, "rows": 240, "risk": "red"}, {"province": "North-Western Province", "district": "Mufumbwe", "availability": 0.8177966101694916, "mos": 3.687123202385915, "rows": 236, "risk": "red"}, {"province": "North-Western Province", "district": "Kasempa", "availability": 0.8317757009345794, "mos": 3.1430865565077233, "rows": 214, "risk": "red"}, {"province": "North-Western Province", "district": "Mushindamo", "availability": 0.9417989417989417, "mos": 5.99339344405994, "rows": 189, "risk": "green"}, {"province": "North-Western Province", "district": "Solwezi", "availability": 0.7755905511811023, "mos": 5.395389114777145, "rows": 254, "risk": "red"}, {"province": "North-Western Province", "district": "Kalumbila", "availability": 0.799163179916318, "mos": 4.184297482742141, "rows": 239, "risk": "red"}, {"province": "North-Western Province", "district": "Ikelenge", "availability": 0.8457446808510638, "mos": 4.116744823353661, "rows": 188, "risk": "yellow"}, {"province": "North-Western Province", "district": "Mwinilunga", "availability": 0.6410256410256411, "mos": 3.4636967584752654, "rows": 156, "risk": "red"}, {"province": "Muchinga Province", "district": "Chinsali", "availability": 0.7062706270627063, "mos": 3.1591143917017153, "rows": 303, "risk": "red"}, {"province": "Muchinga Province", "district": "Isoka", "availability": 0.9473684210526315, "mos": 2.8750249564775014, "rows": 190, "risk": "red"}, {"province": "Muchinga Province", "district": "Kanchibiya", "availability": 0.9357142857142857, "mos": 2.937496362058621, "rows": 140, "risk": "red"}, {"province": "Muchinga Province", "district": "Lavushimanda", "availability": 0.9428571428571428, "mos": 4.587888810317556, "rows": 140, "risk": "green"}, {"province": "Muchinga Province", "district": "Mafinga", "availability": 0.8833333333333333, "mos": 3.2720721910377306, "rows": 240, "risk": "green"}, {"province": "Muchinga Province", "district": "Mpika", "availability": 0.8315789473684211, "mos": 3.569021434057045, "rows": 285, "risk": "red"}, {"province": "Muchinga Province", "district": "Nakonde", "availability": 0.9210526315789473, "mos": 2.432686812268202, "rows": 190, "risk": "red"}, {"province": "Muchinga Province", "district": "Shiwang`andu", "availability": 0.9424460431654677, "mos": 4.271749394423837, "rows": 139, "risk": "green"}, {"province": "Eastern Province", "district": "Nyimba", "availability": 0.9526315789473684, "mos": 1.4024331317595164, "rows": 190, "risk": "red"}, {"province": "Eastern Province", "district": "Petauke", "availability": 0.9093959731543624, "mos": 2.6433915634326413, "rows": 298, "risk": "red"}, {"province": "Eastern Province", "district": "Lusangazi", "availability": 0.9857142857142858, "mos": 3.064030809151805, "rows": 140, "risk": "green"}, {"province": "Eastern Province", "district": "Katete", "availability": 0.8427947598253275, "mos": 3.345466669900577, "rows": 229, "risk": "yellow"}, {"province": "Eastern Province", "district": "Sinda", "availability": 0.9210526315789473, "mos": 4.1078806679852145, "rows": 190, "risk": "green"}, {"province": "Eastern Province", "district": "Chipata", "availability": 0.9182561307901907, "mos": 3.026933812084975, "rows": 367, "risk": "green"}, {"province": "Eastern Province", "district": "Kasenengwa", "availability": 0.9642857142857143, "mos": 2.2496370145013707, "rows": 140, "risk": "red"}, {"province": "Eastern Province", "district": "Chipangali", "availability": 0.9428571428571428, "mos": 1.9125537771929697, "rows": 140, "risk": "red"}, {"province": "Eastern Province", "district": "Mambwe", "availability": 0.8860759493670886, "mos": 3.8358701223222686, "rows": 237, "risk": "green"}, {"province": "Eastern Province", "district": "Vubwi", "availability": 0.9438202247191011, "mos": 4.669583943745105, "rows": 178, "risk": "green"}, {"province": "Eastern Province", "district": "Chadiza", "availability": 0.8736842105263158, "mos": 2.89843175538868, "rows": 190, "risk": "red"}, {"province": "Eastern Province", "district": "Lumezi", "availability": 0.8526315789473684, "mos": 2.6361041591140797, "rows": 190, "risk": "red"}, {"province": "Eastern Province", "district": "Lundazi", "availability": 0.868421052631579, "mos": 2.2453257320720996, "rows": 190, "risk": "red"}, {"province": "Eastern Province", "district": "Chasefu", "availability": 0.9642857142857143, "mos": 2.5700218595529223, "rows": 140, "risk": "red"}, {"province": "Eastern Province", "district": "Chama", "availability": 0.9081081081081082, "mos": 3.0670476290730773, "rows": 185, "risk": "green"}, {"province": "Lusaka Province", "district": "Chilanga", "availability": 0.9785714285714285, "mos": 3.206130462757254, "rows": 140, "risk": "green"}, {"province": "Lusaka Province", "district": "Chongwe", "availability": 0.9263157894736842, "mos": 2.783504082665712, "rows": 190, "risk": "red"}, {"province": "Lusaka Province", "district": "Kafue", "availability": 0.9746192893401016, "mos": 4.283409205197386, "rows": 197, "risk": "green"}, {"province": "Lusaka Province", "district": "Luangwa", "availability": 0.8791666666666667, "mos": 4.44281760593033, "rows": 240, "risk": "yellow"}, {"province": "Lusaka Province", "district": "Lusaka", "availability": 0.7651966626936829, "mos": 2.7277968950221605, "rows": 839, "risk": "red"}, {"province": "Lusaka Province", "district": "Rufunsa", "availability": 0.9473684210526315, "mos": 3.4011311743665797, "rows": 190, "risk": "green"}, {"province": "Western Province", "district": "Luampa", "availability": 0.8842105263157894, "mos": 2.642307913373842, "rows": 190, "risk": "red"}, {"province": "Western Province", "district": "Kaoma District", "availability": 0.85, "mos": 2.484835992514132, "rows": 240, "risk": "red"}, {"province": "Western Province", "district": "Sioma District", "availability": 0.9214285714285714, "mos": 2.5727079918723135, "rows": 140, "risk": "red"}, {"province": "Western Province", "district": "Sikongo", "availability": 0.9, "mos": 3.108839179232195, "rows": 140, "risk": "green"}, {"province": "Western Province", "district": "Nalolo District", "availability": 0.9051724137931034, "mos": 2.123272456496031, "rows": 116, "risk": "red"}, {"province": "Western Province", "district": "Mwandi District", "availability": 0.9095477386934674, "mos": 3.4044881626689625, "rows": 199, "risk": "green"}, {"province": "Western Province", "district": "Mitete District", "availability": 0.9357142857142857, "mos": 1.9787479371984777, "rows": 140, "risk": "red"}, {"province": "Western Province", "district": "Lukulu", "availability": 0.9297297297297298, "mos": 3.6494946077701638, "rows": 185, "risk": "green"}, {"province": "Western Province", "district": "Nkeyema District", "availability": 0.841726618705036, "mos": 1.710158978707891, "rows": 139, "risk": "red"}, {"province": "Western Province", "district": "Mulobezi", "availability": 0.8375, "mos": 2.949757401331317, "rows": 240, "risk": "red"}, {"province": "Western Province", "district": "Mongu", "availability": 0.8714859437751004, "mos": 2.7580946261489414, "rows": 249, "risk": "red"}, {"province": "Western Province", "district": "Kalabo", "availability": 0.8661087866108786, "mos": 2.4965366831291407, "rows": 239, "risk": "red"}, {"province": "Western Province", "district": "Shangombo", "availability": 0.8894736842105263, "mos": 3.3960441979872154, "rows": 190, "risk": "green"}, {"province": "Western Province", "district": "Limulunga", "availability": 0.9, "mos": 4.20576304949741, "rows": 140, "risk": "green"}, {"province": "Western Province", "district": "Sesheke", "availability": 0.8888888888888888, "mos": 2.926738488920686, "rows": 189, "risk": "red"}, {"province": "Western Province", "district": "Senanga", "availability": 0.864321608040201, "mos": 1.9464444078233956, "rows": 199, "risk": "red"}, {"province": "Copperbelt Province", "district": "Chingola", "availability": 0.934010152284264, "mos": 2.4537229182203895, "rows": 197, "risk": "red"}, {"province": "Copperbelt Province", "district": "Chililabombwe", "availability": 0.899581589958159, "mos": 3.892204957355991, "rows": 239, "risk": "green"}, {"province": "Copperbelt Province", "district": "Kalulushi", "availability": 0.9346733668341709, "mos": 2.5771992801942574, "rows": 199, "risk": "red"}, {"province": "Copperbelt Province", "district": "Kitwe", "availability": 0.8696682464454977, "mos": 2.596897486606895, "rows": 422, "risk": "red"}, {"province": "Copperbelt Province", "district": "Masaiti", "availability": 0.9568345323741008, "mos": 2.786508651950998, "rows": 139, "risk": "red"}, {"province": "Copperbelt Province", "district": "Mpongwe", "availability": 0.9451476793248945, "mos": 2.695186773585495, "rows": 237, "risk": "red"}, {"province": "Copperbelt Province", "district": "Mufulira", "availability": 0.912, "mos": 3.4753880484495054, "rows": 250, "risk": "green"}, {"province": "Copperbelt Province", "district": "Luanshya", "availability": 0.9036144578313253, "mos": 1.8100614477536319, "rows": 249, "risk": "red"}, {"province": "Copperbelt Province", "district": "Lufwanyama", "availability": 0.9623430962343096, "mos": 4.5379333886563495, "rows": 239, "risk": "green"}, {"province": "Copperbelt Province", "district": "Ndola", "availability": 0.7966101694915254, "mos": 2.595292310337758, "rows": 590, "risk": "red"}, {"province": "Southern Province", "district": "Chikankata", "availability": 0.9467213114754098, "mos": 4.952847495354936, "rows": 244, "risk": "green"}, {"province": "Southern Province", "district": "Choma", "availability": 0.9227941176470589, "mos": 2.7943709791388684, "rows": 272, "risk": "red"}, {"province": "Southern Province", "district": "Chirundu", "availability": 0.9285714285714286, "mos": 3.863144366042985, "rows": 196, "risk": "green"}, {"province": "Southern Province", "district": "Gwembe", "availability": 0.8818565400843882, "mos": 4.578517198674646, "rows": 237, "risk": "green"}, {"province": "Southern Province", "district": "Itezhi Tezhi", "availability": 0.9574468085106383, "mos": 3.838006917775096, "rows": 188, "risk": "green"}, {"province": "Southern Province", "district": "Kalomo", "availability": 0.9330543933054394, "mos": 2.8631622249734234, "rows": 239, "risk": "red"}, {"province": "Southern Province", "district": "Kazungula", "availability": 0.7204301075268817, "mos": 2.3669955745017157, "rows": 186, "risk": "red"}, {"province": "Southern Province", "district": "Livingstone", "availability": 0.8419117647058824, "mos": 2.874937402392818, "rows": 272, "risk": "red"}, {"province": "Southern Province", "district": "Mazabuka", "availability": 0.8990825688073395, "mos": 2.9537674430999674, "rows": 218, "risk": "red"}, {"province": "Southern Province", "district": "Monze", "availability": 0.7614035087719299, "mos": 2.5643442906339238, "rows": 285, "risk": "red"}, {"province": "Southern Province", "district": "Namwala", "availability": 0.9411764705882353, "mos": 6.141073724580521, "rows": 187, "risk": "green"}, {"province": "Southern Province", "district": "Pemba", "availability": 0.95, "mos": 3.5409584887809453, "rows": 140, "risk": "green"}, {"province": "Southern Province", "district": "Siavonga", "availability": 0.9210526315789473, "mos": 3.4041300460435413, "rows": 190, "risk": "green"}, {"province": "Southern Province", "district": "Sinazongwe", "availability": 0.9583333333333334, "mos": 2.3581473788008873, "rows": 192, "risk": "red"}, {"province": "Southern Province", "district": "Zimba", "availability": 0.8392857142857143, "mos": 2.429873550878939, "rows": 224, "risk": "red"}], "dataQualityNotes": [{"province": "Luapula", "facility": "Mansa district Hospital", "issue": "missing AMCs"}, {"province": "Luapula", "facility": "kawambwa district hospital", "issue": "did not report"}, {"province": "Luapula", "facility": "kala district hospital", "issue": "did not report"}, {"province": "Luapula", "facility": "samfya district hospital", "issue": "did not report on L1 and EYE only reported on TB-DS-MDR"}, {"province": "Central Province", "facility": "mumbwa health centres", "issue": "same report"}, {"province": "Northern Province", "facility": "senga DH and mpulungu", "issue": "had the same number might have been to errors in transfering data"}, {"province": "North-Western Province", "facility": "Mwinilunga health posts", "issue": "did not report"}, {"province": "Eastern Province", "facility": "there are no TB-DR-MDR reports", "issue": "No Reports"}, {"province": "Lusaka", "facility": "UTH Adult", "issue": "did not report"}, {"province": "Western Province", "facility": "there are no TB-DR-MDR ,EYE units reports", "issue": "No Reports"}, {"province": "Southern Province", "facility": "kazungula DH", "issue": "did not report"}, {"province": "Southern Province", "facility": "chikuni Hospital", "issue": "did not report"}], "dataQuality": {"reportingRate": "100%", "facilitiesMissingReports": 9, "duplicateReports": 2, "missingAmcs": 1, "provincesWithIssues": 8}, "alerts": [{"severity": "High", "title": "Lusaka stock-out rate exceeds national average", "evidence": "Lusaka Province is at 32% stocked out compared with the national stock-out rate of 16.0%.", "owner": "Lusaka PHO / Control Tower"}, {"severity": "High", "title": "Western Province MOS below 3 months", "evidence": "Western Province average MOS is 2.8 months, the lowest provincial MOS in the March report.", "owner": "Western PHO / ZAMMSA"}, {"severity": "Data Quality", "title": "UTH Adult did not report", "evidence": "Lusaka data-quality notes identify UTH Adult as not reporting for the period.", "owner": "Lusaka PHO"}, {"severity": "High", "title": "Renal commodities below 40% availability", "evidence": "Renal availability is 39.7% with average MOS of 1.1 months.", "owner": "Clinical Care / ZAMMSA"}, {"severity": "High", "title": "TB-MDR availability remains below 35%", "evidence": "TB0MDR availability is 31.7% with average MOS of 1.5 months.", "owner": "TB Programme / ZAMMSA"}], "redistribution": [{"commodity": "Fluids / salts", "excessProvince": "North-Western Province", "shortageProvince": "Western Province", "reason": "North-Western has the highest MOS; Western has the lowest MOS."}, {"commodity": "Cannulae", "excessProvince": "Central Province", "shortageProvince": "Lusaka Province", "reason": "Central is the highest availability province; Lusaka has the highest stock-out pressure."}, {"commodity": "Antibiotics", "excessProvince": "Southern Province", "shortageProvince": "Copperbelt Province", "reason": "Copperbelt is below 84% availability with MOS under 3 months."}], "actionTracker": [{"action": "Redistribute renal commodities to high-risk service points", "owner": "ZAMMSA", "status": "In Progress", "evidence": "Renal availability 39.7%; stock-out imbalance 69%."}, {"action": "Follow up UTH Adult reporting gap", "owner": "Lusaka PHO", "status": "Pending", "evidence": "UTH Adult listed as did not report."}, {"action": "Resolve missing AMC values for Luapula", "owner": "Luapula PHO", "status": "In Progress", "evidence": "Mansa District Hospital missing AMCs."}, {"action": "Validate duplicate or repeated reports", "owner": "Central and Northern PHOs", "status": "Pending", "evidence": "Mumbwa health centres and Northern facilities flagged for duplicate/suspicious reporting."}, {"action": "Review TB-MDR pipeline and facility distribution", "owner": "TB Programme / ZAMMSA", "status": "Pending", "evidence": "TB0MDR availability 31.7%; TB-MDR stock-out imbalance 38%."}, {"action": "Coordinate support to Western Province", "owner": "Control Tower", "status": "In Progress", "evidence": "Western Province MOS 2.8 months and 33% understocked."}]};
+
+    const fmtPct = value => value == null ? "TBD" : `${(value * 100).toFixed(1)}%`;
+    const fmtNum = value => value == null ? "TBD" : value.toFixed(1);
+    const trendSymbol = trend => trend === "up" ? "↑" : trend === "down" ? "↓" : "→";
+    const trendClass = kpi => {
+      if (kpi.trend === "flat") return "warn";
+      const good = kpi.trend === kpi.goodDirection;
+      return good ? "good" : "bad";
+    };
+    const riskClass = value => value === "red" ? "red" : value === "yellow" ? "yellow" : value === "green" ? "green" : "gray";
+    const severityClass = severity => severity === "High" ? "red" : severity === "Data Quality" ? "blue" : "yellow";
+
+    function renderTicker() {
+      const risks = DATA.criticalProgrammes.slice(0, 5).map(item => `${item.programme}: ${fmtPct(item.availability)} availability · ${fmtNum(item.mos)} MOS`);
+      const national = DATA.national.kpis.map(kpi => `${kpi.label}: ${kpi.currentLabel}`);
+      const parts = [...national, ...risks, ...national, ...risks];
+      document.getElementById("tickerTrack").innerHTML = parts.map(part => `<span>${part}</span>`).join("");
+    }
+
+    function renderKpis() {
+      return `<div class="grid kpi-grid">${DATA.national.kpis.map(kpi => `
+        <article class="kpi-card">
+          <div class="kpi-label">${kpi.label}</div>
+          <div class="kpi-value">${kpi.currentLabel}</div>
+          <div class="kpi-prev">Previous week: ${kpi.previousLabel}</div>
+          <div class="trend ${trendClass(kpi)}">${trendSymbol(kpi.trend)} ${kpi.trend === "flat" ? "No change" : kpi.trend === "up" ? "Improving" : "Reducing"}</div>
+        </article>
+      `).join("")}</div>`;
+    }
+
+    function riskProgrammeList(items, limit = 5) {
+      return `<div class="risk-list">${items.slice(0, limit).map(item => `
+        <div class="risk-item">
+          <div class="risk-row">
+            <div class="risk-title">${item.programme}</div>
+            <span class="pill ${riskClass(item.risk)}">${fmtPct(item.availability)}</span>
+          </div>
+          <div class="muted">Average MOS ${fmtNum(item.mos)}${item.stockedOut != null ? ` · Stock-out imbalance ${fmtPct(item.stockedOut)}` : ""}</div>
+        </div>
+      `).join("")}</div>`;
+    }
+
+    function alertList() {
+      return `<div class="alert-list">${DATA.alerts.map(alert => `
+        <article class="alert-item">
+          <div><span class="pill ${severityClass(alert.severity)}">${alert.severity}</span></div>
+          <div class="risk-title">${alert.title}</div>
+          <div class="muted">${alert.evidence}</div>
+          <div class="muted"><strong>Owner:</strong> ${alert.owner}</div>
+        </article>
+      `).join("")}</div>`;
+    }
+
+    function renderBars(items, metric, labelFormatter = fmtPct, limit = 10, lowIsBad = true) {
+      return items.slice(0, limit).map(item => {
+        const raw = item[metric] ?? 0;
+        const width = Math.max(2, Math.min(100, raw * 100));
+        const color = lowIsBad ? riskClass(item.risk) : (raw >= 0.3 ? "red" : raw >= 0.15 ? "yellow" : "green");
+        return `<div class="bar-row">
+          <strong>${item.programme || item.province}</strong>
+          <div class="bar-track"><div class="bar-fill ${color}" style="--value:${width}%"></div></div>
+          <div class="right">${labelFormatter(raw)}</div>
+        </div>`;
+      }).join("");
+    }
+
+    function renderTrendSection() {
+      const availabilityBars = DATA.national.trend.map(d => `<div style="height:${Math.max(4, d.availability * 54)}px" title="${d.week}: ${fmtPct(d.availability)}"></div>`).join("");
+      const mosBars = DATA.national.trend.map(d => `<div style="height:${Math.max(4, d.mos / 6 * 54)}px" title="${d.week}: ${fmtNum(d.mos)} MOS"></div>`).join("");
+      const stockBars = DATA.national.trend.map(d => `<div style="height:${Math.max(4, d.stockOut * 220)}px;background:var(--red)" title="${d.week}: ${fmtPct(d.stockOut)}"></div>`).join("");
+      return `<section class="section">
+        <div class="section-head">
+          <div>
+            <h2>National Trend</h2>
+            <p class="section-subtitle">Trend history begins with the February baseline and the March week-one tracer report. This section will expand to 12 weeks as more reports are loaded.</p>
+          </div>
+        </div>
+        <div class="grid three-col">
+          <div class="mini-chart"><strong>Availability</strong><div class="spark">${availabilityBars}</div><p class="muted">82.9% to 85.6%</p></div>
+          <div class="mini-chart"><strong>Average MOS</strong><div class="spark">${mosBars}</div><p class="muted">Stable at 3.3 months</p></div>
+          <div class="mini-chart"><strong>Stock-out Rate</strong><div class="spark">${stockBars}</div><p class="muted">18.2% to 16.0%</p></div>
+        </div>
+      </section>`;
+    }
+
+    function renderOverview() {
+      document.getElementById("overview").innerHTML = `
+        ${renderKpis()}
+        <div class="grid two-col" style="margin-top:16px">
+          <section class="section">
+            <div class="section-head"><div><h2>National Risk Summary</h2><p class="section-subtitle">Programmes requiring executive attention</p></div></div>
+            ${riskProgrammeList(DATA.criticalProgrammes, 6)}
+          </section>
+          <section class="section">
+            <div class="section-head"><div><h2>Executive Alerts</h2><p class="section-subtitle">Decision signals for the March review</p></div></div>
+            ${alertList()}
+          </section>
+        </div>
+        ${renderTrendSection()}
+      `;
+    }
+
+    function renderRisks() {
+      const stockoutRows = DATA.topStockoutProgrammes.map(item => `
+        <tr>
+          <td>${item.programme}</td>
+          <td class="right">${fmtPct(item.availability)}</td>
+          <td class="right">${fmtNum(item.mos)}</td>
+          <td class="right">${fmtPct(item.stockedOut)}</td>
+        </tr>`).join("");
+      document.getElementById("risks").innerHTML = `
+        <div class="grid two-col">
+          <section class="section"><h2>Critical Programmes</h2><p class="section-subtitle">Traffic-light view of national programme risk</p>${riskProgrammeList(DATA.criticalProgrammes, 10)}</section>
+          <section class="section"><h2>Top 10 Stock-Out Programmes</h2><p class="section-subtitle">Ranked by programme stock-out imbalance</p><table><thead><tr><th>Programme</th><th class="right">Availability</th><th class="right">MOS</th><th class="right">Stocked out</th></tr></thead><tbody>${stockoutRows}</tbody></table></section>
+        </div>
+        <section class="section"><h2>National Redistribution Opportunities</h2><p class="section-subtitle">Candidate movements for Control Tower review</p>
+          <table><thead><tr><th>Commodity</th><th>Excess Province</th><th>Shortage Province</th><th>Reason</th></tr></thead><tbody>${DATA.redistribution.map(row => `<tr><td>${row.commodity}</td><td>${row.excessProvince}</td><td>${row.shortageProvince}</td><td>${row.reason}</td></tr>`).join("")}</tbody></table>
+        </section>
+      `;
+    }
+
+    function provinceRows(items) {
+      return items.map((item, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${item.province}</td>
+          <td class="right"><span class="pill ${riskClass(item.risk)}">${fmtPct(item.availability)}</span></td>
+          <td class="right">${fmtNum(item.mos)}</td>
+          <td class="right">${fmtPct(item.stockedOut)}</td>
+        </tr>`).join("");
+    }
+
+    function renderProvinceDetail(provinceName) {
+      const selected = DATA.provinces.find(p => p.province === provinceName) || DATA.provinces[0];
+      const districts = DATA.districts
+        .filter(d => d.province === selected.province)
+        .sort((a, b) => a.availability - b.availability)
+        .slice(0, 8);
+      document.getElementById("provinceDetail").innerHTML = `
+        <div class="section-head"><div><h2>${selected.province}</h2><p class="section-subtitle">District drilldown, worst availability first</p></div><span class="pill ${riskClass(selected.risk)}">${fmtPct(selected.availability)}</span></div>
+        <div class="grid three-col">
+          <div><strong>Average MOS</strong><br><span class="muted">${fmtNum(selected.mos)} months</span></div>
+          <div><strong>Stocked out</strong><br><span class="muted">${fmtPct(selected.stockedOut)}</span></div>
+          <div><strong>Emergency</strong><br><span class="muted">${fmtPct(selected.emergency)}</span></div>
+        </div>
+        <table style="margin-top:14px"><thead><tr><th>District</th><th class="right">Availability</th><th class="right">MOS</th></tr></thead><tbody>${districts.map(d => `<tr><td>${d.district}</td><td class="right"><span class="pill ${riskClass(d.risk)}">${fmtPct(d.availability)}</span></td><td class="right">${fmtNum(d.mos)}</td></tr>`).join("")}</tbody></table>
+      `;
+      document.querySelectorAll(".province-tile").forEach(tile => tile.classList.toggle("active", tile.dataset.province === selected.province));
+    }
+
+    function renderProvinces() {
+      const top = [...DATA.provinces].sort((a, b) => b.availability - a.availability).slice(0, 5);
+      const bottom = [...DATA.provinces].sort((a, b) => a.availability - b.availability).slice(0, 5);
+      document.getElementById("provinces").innerHTML = `
+        <div class="grid two-col">
+          <section class="section"><h2>Top 5 Provinces</h2><p class="section-subtitle">Highest availability</p><table><thead><tr><th>#</th><th>Province</th><th class="right">Availability</th><th class="right">MOS</th><th class="right">Stocked out</th></tr></thead><tbody>${provinceRows(top)}</tbody></table></section>
+          <section class="section"><h2>Bottom 5 Provinces</h2><p class="section-subtitle">Need management attention</p><table><thead><tr><th>#</th><th>Province</th><th class="right">Availability</th><th class="right">MOS</th><th class="right">Stocked out</th></tr></thead><tbody>${provinceRows(bottom)}</tbody></table></section>
+        </div>
+        <div class="grid two-col">
+          <section class="section">
+            <div class="section-head"><div><h2>National Map View</h2><p class="section-subtitle">Click a province to view district risks</p></div></div>
+            <div class="province-map">${DATA.provinces.map(p => `<button class="province-tile ${riskClass(p.risk)}" data-province="${p.province}"><div class="province-name">${p.province.replace(" Province","")}</div><div class="province-metric">${fmtPct(p.availability)} availability</div><div class="province-metric">${fmtNum(p.mos)} MOS</div></button>`).join("")}</div>
+          </section>
+          <section class="section" id="provinceDetail"></section>
+        </div>
+      `;
+      document.querySelectorAll(".province-tile").forEach(tile => tile.addEventListener("click", () => renderProvinceDetail(tile.dataset.province)));
+      renderProvinceDetail(DATA.provinces[0].province);
+    }
+
+    function renderCommodities() {
+      document.getElementById("commodities").innerHTML = `
+        <div class="grid two-col">
+          <section class="section"><h2>Threatening Service Delivery</h2><p class="section-subtitle">Lowest national programme availability</p>${renderBars(DATA.bottomProgrammes, "availability", fmtPct, 10, true)}</section>
+          <section class="section"><h2>Stock-Out Pressure</h2><p class="section-subtitle">Programme imbalance by stocked-out proportion</p>${renderBars(DATA.topStockoutProgrammes, "stockedOut", fmtPct, 10, false)}</section>
+        </div>
+        <section class="section">
+          <h2>Programme Performance Table</h2>
+          <div class="toolbar">
+            <input id="programmeSearch" placeholder="Search programme">
+            <select id="programmeRisk"><option value="all">All risk levels</option><option value="red">Action required</option><option value="yellow">Monitor</option><option value="green">Good</option></select>
+          </div>
+          <table><thead><tr><th>Programme</th><th class="right">Availability</th><th class="right">MOS</th><th class="right">Stocked Out</th><th class="right">Emergency</th></tr></thead><tbody id="programmeTable"></tbody></table>
+        </section>
+      `;
+      const renderTable = () => {
+        const search = document.getElementById("programmeSearch").value.toLowerCase();
+        const risk = document.getElementById("programmeRisk").value;
+        const rows = DATA.programmes
+          .filter(item => item.programme.toLowerCase().includes(search))
+          .filter(item => risk === "all" || item.risk === risk)
+          .sort((a, b) => a.availability - b.availability)
+          .map(item => `<tr><td>${item.programme}</td><td class="right"><span class="pill ${riskClass(item.risk)}">${fmtPct(item.availability)}</span></td><td class="right">${fmtNum(item.mos)}</td><td class="right">${fmtPct(item.stockedOut)}</td><td class="right">${fmtPct(item.emergency)}</td></tr>`)
+          .join("");
+        document.getElementById("programmeTable").innerHTML = rows;
+      };
+      document.getElementById("programmeSearch").addEventListener("input", renderTable);
+      document.getElementById("programmeRisk").addEventListener("change", renderTable);
+      renderTable();
+    }
+
+    function renderQuality() {
+      const q = DATA.dataQuality;
+      document.getElementById("quality").innerHTML = `
+        <div class="grid kpi-grid">
+          <article class="kpi-card"><div class="kpi-label">Reporting Rate</div><div class="kpi-value">${q.reportingRate}</div><div class="kpi-prev">All provinces and districts submitted</div></article>
+          <article class="kpi-card"><div class="kpi-label">Missing Reports</div><div class="kpi-value">${q.facilitiesMissingReports}</div><div class="kpi-prev">Facilities/programme reports flagged</div></article>
+          <article class="kpi-card"><div class="kpi-label">Duplicate Reports</div><div class="kpi-value">${q.duplicateReports}</div><div class="kpi-prev">Potential duplicate/suspicious reports</div></article>
+          <article class="kpi-card"><div class="kpi-label">Missing AMCs</div><div class="kpi-value">${q.missingAmcs}</div><div class="kpi-prev">AMC-related issues</div></article>
+          <article class="kpi-card"><div class="kpi-label">Provinces With Issues</div><div class="kpi-value">${q.provincesWithIssues}</div><div class="kpi-prev">Data quality follow-up required</div></article>
+        </div>
+        <section class="section" style="margin-top:16px"><h2>Data Quality Notes</h2><table><thead><tr><th>Province</th><th>Facility / Programme</th><th>Issue</th></tr></thead><tbody>${DATA.dataQualityNotes.map(note => `<tr><td>${note.province}</td><td>${note.facility}</td><td>${note.issue}</td></tr>`).join("")}</tbody></table></section>
+      `;
+    }
+
+    function renderActions() {
+      const rows = DATA.actionTracker.map(row => `
+        <tr>
+          <td>${row.action}</td>
+          <td>${row.owner}</td>
+          <td><span class="pill ${row.status === "In Progress" ? "yellow" : "gray"} action-status">${row.status}</span></td>
+          <td>${row.evidence}</td>
+        </tr>`).join("");
+      document.getElementById("actions").innerHTML = `
+        <section class="section">
+          <h2>Action Tracker</h2>
+          <p class="section-subtitle">Turns the dashboard from reporting into accountability. Status values can later be connected to a shared action log.</p>
+          <table><thead><tr><th>Action</th><th>Owner</th><th>Status</th><th>Evidence</th></tr></thead><tbody>${rows}</tbody></table>
+        </section>
+      `;
+    }
+
+    function setupTabs() {
+      const buttons = document.querySelectorAll(".tab-button");
+      const panels = document.querySelectorAll(".tab-panel");
+      buttons.forEach(button => {
+        button.addEventListener("click", () => {
+          buttons.forEach(item => item.classList.toggle("active", item === button));
+          panels.forEach(panel => panel.classList.toggle("active", panel.id === button.dataset.tab));
+        });
+      });
+    }
+
+    renderTicker();
+    renderOverview();
+    renderRisks();
+    renderProvinces();
+    renderCommodities();
+    renderQuality();
+    renderActions();
+    setupTabs();
+  </script>
+</body>
 </html>
