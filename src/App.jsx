@@ -398,11 +398,11 @@ function App() {
   const [activeConcern, setActiveConcern] = useState("");
   const [selectedCommodity, setSelectedCommodity] = useState(null);
   const [assistantQuestion, setAssistantQuestion] = useState("");
-  const [assistantAnswer, setAssistantAnswer] = useState("Ask about stockouts, programme pressure, overstock, data gaps, or recommended actions. I will answer from the loaded ZAMMSA report data.");
+  const [assistantAnswer, setAssistantAnswer] = useState("Ask about stockouts, low stock, programme pressure, facility alerts, data gaps, or recommended actions. I will answer from the loaded weekly tracer submissions.");
   const [weeklyProgramme, setWeeklyProgramme] = useState("EMMS");
   const [actions, setActions] = useState([
     { id: 1, issue: "Facility stockouts in the highest-risk reporting units", action: "Validate counts and initiate emergency redistribution", owner: "Provincial Pharmacists", status: "In progress" },
-    { id: 2, issue: "Central stock available while facilities report stockouts", action: "Review allocation, dispatch, and last-mile delivery", owner: "ZAMMSA", status: "Open" },
+    { id: 2, issue: "Central stock available while facilities report stockouts", action: "Review allocation, dispatch, and last-mile delivery", owner: "Central warehouse", status: "Open" },
     { id: 3, issue: "Commodities forecast to finish within 30 days", action: "Confirm orders and prioritize replenishment", owner: "Control Tower", status: "Open" },
     { id: 4, issue: "Missing AMI and unconfirmed MOS records", action: "Return data-quality queries to reporting teams", owner: "NSCCU", status: "In progress" },
   ]);
@@ -714,7 +714,7 @@ function App() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `zammsa-dashboard-${selectedReport}.csv`;
+    link.download = `tracer-dashboard-${fieldData.reportDate}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -954,15 +954,14 @@ function App() {
       <section className="hero">
         <div>
           <p className="eyebrow">National Tracer Drug Availability</p>
-          <h1>Facility-to-warehouse tracer visibility</h1>
-          <p className="lede">Start with weekly provincial tracer submissions from health posts, health centres, and hospitals, then roll up district, province, and national risk before comparing against ZAMMSA inventory.</p>
+          <h1>Weekly facility tracer control tower</h1>
+          <p className="lede">Start with what provinces submit each week: health posts, health centres, and hospitals. The dashboard rolls those reports from facility to district, province, and national level so stockouts and low-stock risks are visible early.</p>
         </div>
         <div className="report-card">
           <span>Weekly tracer submission</span>
           <strong>{fieldData.reportDate}</strong>
           <small>{fieldData.counts.rows.toLocaleString()} facility commodity rows across {fieldData.counts.provinces} provinces.</small>
           <small>Field availability: {formatPercent(fieldKpis.availability)} | Average MOS: {fieldKpis.mos}</small>
-          <small>ZAMMSA comparison extract: {selectedMeta.label}</small>
           <button className="hero-export" type="button" onClick={exportCsv}>Export current CSV</button>
         </div>
       </section>
@@ -971,15 +970,15 @@ function App() {
         <div className="executive-statement">
           <p className="eyebrow dark">Leadership Brief</p>
           <h2>National availability is {formatPercent(fieldKpis.availability)}, with {fieldKpis.riskRows.toLocaleString()} submitted commodity rows requiring attention.</h2>
-          <p>{bestProvince?.name} has the strongest reported availability at {formatPercent(bestProvince?.availability ?? 0)}, while {worstProvince?.name} is lowest at {formatPercent(worstProvince?.availability ?? 0)}. There are {stockoutFacilityCount} reporting units with at least one stockout and {forecastSummary.days30} ZAMMSA commodity lines forecast to finish within 30 days.</p>
+          <p>{bestProvince?.name} has the strongest reported availability at {formatPercent(bestProvince?.availability ?? 0)}, while {worstProvince?.name} is lowest at {formatPercent(worstProvince?.availability ?? 0)}. There are {stockoutFacilityCount} reporting units with at least one stockout and {lowStockFacilityCount} reporting units with low-stock commodities.</p>
         </div>
         <div className="executive-kpis">
           <div><span>National availability</span><strong>{formatPercent(fieldKpis.availability)}</strong><small>Weekly facility submissions</small></div>
           <div><span>National average MOS</span><strong>{fieldKpis.mos}</strong><small>Submitted field stock</small></div>
           <div><span>Reporting footprint</span><strong>{fieldData.counts.facilityUnits}</strong><small>Expected denominator not loaded</small></div>
           <div><span>Facilities with stockouts</span><strong>{stockoutFacilityCount}</strong><small>At least one stockout item</small></div>
-          <div><span>Distribution gaps</span><strong>{mismatchSummary.distributionGaps}</strong><small>Central available, field stockout</small></div>
-          <div><span>Finish within 30 days</span><strong>{forecastSummary.days30}</strong><small>ZAMMSA MOS forecast</small></div>
+          <div><span>Districts reporting</span><strong>{fieldData.counts.districts}</strong><small>Weekly provincial submissions</small></div>
+          <div><span>Low-stock facilities</span><strong>{lowStockFacilityCount}</strong><small>Below 2 MOS but not stocked out</small></div>
         </div>
       </section>
 
@@ -1092,9 +1091,9 @@ function App() {
 
       <section className="warehouse-comparison">
         <div>
-          <p className="eyebrow dark">ZAMMSA Comparison Layer</p>
-          <h2>Compare field tracer demand signals with national inventory position</h2>
-          <p>Field availability and MOS come from district/facility submissions. ZAMMSA risk uses the latest national stock extract and highlights whether warehouse stock risk aligns with field shortages.</p>
+          <p className="eyebrow dark">Central Inventory Comparison</p>
+          <h2>Compare facility tracer signals with national stock position</h2>
+          <p>Facility availability and MOS come from district/facility submissions. The central inventory layer is secondary and helps show whether stock is stuck upstream, short nationally, or available for redistribution.</p>
           <div className="mismatch-cards">
             <span><b>{mismatchSummary.distributionGaps}</b> distribution gaps</span>
             <span><b>{mismatchSummary.systemwideShortages}</b> systemwide shortages</span>
@@ -1110,9 +1109,9 @@ function App() {
                 <th>Field MOS</th>
                 <th>Field stockout rows</th>
                 <th>Field low-stock rows</th>
-                <th>ZAMMSA category</th>
-                <th>ZAMMSA available lines</th>
-                <th>ZAMMSA risk lines</th>
+                <th>Central category</th>
+                <th>Central available lines</th>
+                <th>Central risk lines</th>
                 <th>Signal</th>
               </tr>
             </thead>
@@ -1137,9 +1136,9 @@ function App() {
 
       <section className="tracer-overview" aria-label="National tracer availability overview">
         <div className="tracer-lead">
-          <p className="eyebrow dark">Warehouse Inventory Signal</p>
-          <h2>{formatPercent(nationalTracer.serviceRate)} ZAMMSA service availability</h2>
-          <p>This secondary layer uses the ZAMMSA stock extract to show national inventory cover, stockout burden, near-critical items, and data gaps.</p>
+          <p className="eyebrow dark">Central Inventory Signal</p>
+          <h2>{formatPercent(nationalTracer.serviceRate)} central service availability</h2>
+          <p>This secondary layer uses the central stock extract to show national inventory cover, stockout burden, near-critical items, and data gaps.</p>
         </div>
         <div className="tracer-metrics">
           <div>
