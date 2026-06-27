@@ -39,13 +39,37 @@ WORKBOOKS = [
         "week": "Week 4",
     },
     {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\april\TRACER SUMMARY REPORTS 4-5-2026 (1).xlsx"),
+        "label": "Week 1 - 5 April 2026",
+        "month": "2026-04",
+        "week": "Week 1",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\april\TRACER SUMMARY WEEK  TWO.xlsx"),
+        "label": "Week 2 - 12 April 2026",
+        "month": "2026-04",
+        "week": "Week 2",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\april\TRACER SUMMARY WEEK THREE.xlsx"),
+        "label": "Week 3 - 19 April 2026",
+        "month": "2026-04",
+        "week": "Week 3",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\april\TRACER DATED 26.4.26.xlsx"),
+        "label": "Week 4 - 26 April 2026",
+        "month": "2026-04",
+        "week": "Week 4",
+    },
+    {
         "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\analysed summery reports\may\16.05.26\tracer summary 17.05.26.xlsx"),
         "label": "Week 3 - 17 May 2026",
         "month": "2026-05",
         "week": "Week 3",
     },
 ]
-OUT = Path(r"C:\Users\Zanga Musakuzi\Desktop\DASH BOARD IDEAS\hospital dash board\src\tracerFacilityData.js")
+OUT = Path(__file__).resolve().parents[1] / "src" / "tracerFacilityData.js"
 
 
 def clean(value):
