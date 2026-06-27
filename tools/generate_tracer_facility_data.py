@@ -15,6 +15,30 @@ WORKBOOKS = [
         "week": "Week 1",
     },
     {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\march\provincial_tracer_ 8.3.26.xlsx"),
+        "label": "Week 1 - 8 March 2026",
+        "month": "2026-03",
+        "week": "Week 1",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\march\TRACER DATED 15-3-26.xlsx"),
+        "label": "Week 2 - 15 March 2026",
+        "month": "2026-03",
+        "week": "Week 2",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\march\22.03.26 SUMMARY REPORTS.xlsx"),
+        "label": "Week 3 - 22 March 2026",
+        "month": "2026-03",
+        "week": "Week 3",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\march\DATED 29.3.26.xlsx"),
+        "label": "Week 4 - 29 March 2026",
+        "month": "2026-03",
+        "week": "Week 4",
+    },
+    {
         "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\analysed summery reports\may\16.05.26\tracer summary 17.05.26.xlsx"),
         "label": "Week 3 - 17 May 2026",
         "month": "2026-05",
