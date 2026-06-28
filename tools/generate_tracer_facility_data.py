@@ -354,8 +354,8 @@ def summarize(config):
             "district": district,
             "facilityLevel": facility_level,
             "isAggregate": facility.upper() == "ALL",
-            "stockoutItems": sorted(alerts["stockout"], key=lambda item: (str(item["program"]), str(item["item"])))[:12],
-            "lowStockItems": sorted(alerts["lowStock"], key=lambda item: (item["mos"] if item["mos"] is not None else 99, str(item["program"]), str(item["item"])))[:12],
+            "stockoutItems": sorted(alerts["stockout"], key=lambda item: (str(item["program"]), str(item["item"]))),
+            "lowStockItems": sorted(alerts["lowStock"], key=lambda item: (item["mos"] if item["mos"] is not None else 99, str(item["program"]), str(item["item"]))),
             "stockoutItemCount": len(alerts["stockout"]),
             "lowStockItemCount": len(alerts["lowStock"]),
         }))

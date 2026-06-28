@@ -173,13 +173,18 @@ function KpiCard({ label, value, sub, tone = "green" }) {
   );
 }
 
-function FacilityCard({ facility }) {
+function FacilityCard({ facility, onOpen }) {
   return (
     <article>
       <div className="facility-alert-head">
         <div>
-          <h4>{facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name}</h4>
+          <h4>
+            <button className="facility-title-button" type="button" onClick={() => onOpen(facility)}>
+              {facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name}
+            </button>
+          </h4>
           <span>{facility.district} | {facility.province} | {facility.facilityLevel}</span>
+          {facility.isAggregate ? <small className="aggregate-note">Aggregate summary row. Load actual provincial tracer files to show named facilities under this level.</small> : null}
         </div>
         <div className="facility-alert-counts">
           <b>{facility.stockoutItemCount}</b>
@@ -202,7 +207,80 @@ function FacilityCard({ facility }) {
           )) : <span>No low-stock items submitted</span>}
         </div>
       </div>
+      <button className="open-tracer-button" type="button" onClick={() => onOpen(facility)}>Open submitted tracer</button>
     </article>
+  );
+}
+
+function FacilityTracerModal({ facility, report, onClose }) {
+  if (!facility) return null;
+  const title = facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name;
+  const stockoutItems = facility.stockoutItems || [];
+  const lowStockItems = facility.lowStockItems || [];
+  return (
+    <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Submitted tracer details">
+      <div className="tracer-modal">
+        <div className="modal-head">
+          <div>
+            <p className="eyebrow dark">Submitted Tracer</p>
+            <h2>{title}</h2>
+            <span>{facility.district} | {facility.province} | {facility.facilityLevel} | {report.label}</span>
+          </div>
+          <button type="button" onClick={onClose}>Close</button>
+        </div>
+        {facility.isAggregate ? (
+          <div className="modal-warning">
+            This row is an aggregate from the weekly summary. It does not yet contain named health post/health centre facilities. Once the actual provincial tracer files are loaded, this same window will show the named facility submission.
+          </div>
+        ) : null}
+        <div className="modal-kpis">
+          <KpiCard label="Availability" value={formatPercent(facility.availability)} sub={`${facility.rows.toLocaleString()} submitted rows`} />
+          <KpiCard label="Average MOS" value={formatMos(facility.mos)} sub="Submitted stock position" />
+          <KpiCard label="Stockout items" value={facility.stockoutItemCount} sub="MOS at or near zero" tone="red" />
+          <KpiCard label="Low-stock items" value={facility.lowStockItemCount} sub="Below 2 MOS" tone="amber" />
+        </div>
+        <div className="tracer-detail-grid">
+          <div>
+            <h3>Stockout commodities</h3>
+            <div className="tracer-detail-table">
+              <table>
+                <thead><tr><th>Commodity</th><th>Programme</th><th>Qty</th><th>AMC</th><th>MOS</th></tr></thead>
+                <tbody>
+                  {stockoutItems.length ? stockoutItems.map((item, index) => (
+                    <tr key={`modal-stockout-${item.item}-${index}`}>
+                      <td>{item.item}</td>
+                      <td>{item.program}</td>
+                      <td>{item.quantity?.toLocaleString?.() ?? item.quantity}</td>
+                      <td>{item.amc?.toLocaleString?.() ?? item.amc}</td>
+                      <td>{formatMos(item.mos)}</td>
+                    </tr>
+                  )) : <tr><td colSpan="5">No stockout commodities submitted.</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <h3>Low-stock commodities</h3>
+            <div className="tracer-detail-table">
+              <table>
+                <thead><tr><th>Commodity</th><th>Programme</th><th>Qty</th><th>AMC</th><th>MOS</th></tr></thead>
+                <tbody>
+                  {lowStockItems.length ? lowStockItems.map((item, index) => (
+                    <tr key={`modal-low-${item.item}-${index}`}>
+                      <td>{item.item}</td>
+                      <td>{item.program}</td>
+                      <td>{item.quantity?.toLocaleString?.() ?? item.quantity}</td>
+                      <td>{item.amc?.toLocaleString?.() ?? item.amc}</td>
+                      <td>{formatMos(item.mos)}</td>
+                    </tr>
+                  )) : <tr><td colSpan="5">No low-stock commodities submitted.</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -213,6 +291,7 @@ function App() {
   const [selectedDistrict, setSelectedDistrict] = useState("all");
   const [selectedFacilityLevel, setSelectedFacilityLevel] = useState("all");
   const [selectedFacility, setSelectedFacility] = useState("all");
+  const [openFacility, setOpenFacility] = useState(null);
   const [query, setQuery] = useState("");
   const [actions, setActions] = useState([
     { id: 1, issue: "Facility stockouts in highest-risk reporting units", action: "Validate counts and initiate redistribution", owner: "Provincial pharmacist", status: "In progress" },
@@ -255,6 +334,7 @@ function App() {
   const lowStockFacilityCount = filteredFacilities.filter((facility) => facility.lowStockItemCount > 0).length;
   const facilityAlerts = filteredFacilities
     .filter((facility) => facility.stockoutItemCount > 0 || facility.lowStockItemCount > 0)
+    .sort((a, b) => Number(a.isAggregate) - Number(b.isAggregate) || b.stockoutItemCount - a.stockoutItemCount || b.lowStockItemCount - a.lowStockItemCount)
     .slice(0, 48);
   const districtsInScope = fieldData.districts
     .filter((district) => selectedProvince === "all" || district.province === selectedProvince);
@@ -514,7 +594,7 @@ function App() {
             <div>
               <p className="eyebrow dark">Facility Alerts</p>
               <h3>{selectedDistrict !== "all" ? `${selectedDistrict} reporting units` : selectedProvince !== "all" ? `${selectedProvince} facilities and districts` : "Facilities with stockouts and low stock"}</h3>
-              <p>Stockout flags are submitted commodities at or near zero MOS. Low stock means below 2 MOS but not stocked out.</p>
+              <p>Named health posts and health centres are shown when the actual facility tracer is loaded. “All health post/centre facilities” means the current source only contains an aggregate summary row.</p>
             </div>
             <div className="facility-alert-kpis">
               <span><b>{stockoutFacilityCount}</b> facilities with stockouts</span>
@@ -523,7 +603,7 @@ function App() {
           </div>
           <div className="facility-alert-list">
             {facilityAlerts.length ? facilityAlerts.map((facility) => (
-              <FacilityCard facility={facility} key={`${facility.province}-${facility.district}-${facility.facilityLevel}-${facility.name}`} />
+              <FacilityCard facility={facility} onOpen={setOpenFacility} key={`${facility.province}-${facility.district}-${facility.facilityLevel}-${facility.name}`} />
             )) : <div className="empty-state">No stockout or low-stock facilities match the current filters.</div>}
           </div>
         </section>
@@ -677,6 +757,7 @@ function App() {
           </div>
         </section>
       </main>
+      <FacilityTracerModal facility={openFacility} report={fieldData} onClose={() => setOpenFacility(null)} />
     </div>
   );
 }

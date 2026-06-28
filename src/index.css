@@ -955,6 +955,33 @@ h1 {
   white-space: nowrap;
 }
 
+.facility-title-button {
+  max-width: 100%;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  color: #0f2016;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 0;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.facility-title-button:hover {
+  color: #1f7a4d;
+  text-decoration: underline;
+}
+
+.aggregate-note {
+  display: block;
+  margin-top: 5px;
+  color: #8a5b00;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .facility-alert-head span,
 .facility-alert-items small {
   color: #607168;
@@ -1012,6 +1039,125 @@ h1 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.open-tracer-button {
+  justify-self: start;
+  border: 1px solid #b8d5c3;
+  border-radius: 6px;
+  background: #eef8f1;
+  color: #145a37;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 8px 10px;
+}
+
+.open-tracer-button:hover {
+  background: #dff1e6;
+}
+
+.tracer-modal {
+  width: min(1180px, calc(100vw - 36px));
+  max-height: calc(100vh - 36px);
+  overflow: auto;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(8, 27, 17, 0.28);
+  padding: 22px;
+}
+
+.tracer-modal .modal-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+.tracer-modal .modal-head h2 {
+  margin: 0 0 4px;
+  font-size: 24px;
+}
+
+.tracer-modal .modal-head span {
+  color: #607168;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.tracer-modal .modal-head button {
+  border: 1px solid #d0ddd4;
+  border-radius: 6px;
+  background: #f6faf7;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 9px 12px;
+}
+
+.modal-warning {
+  margin-bottom: 14px;
+  border: 1px solid #f0d38c;
+  border-radius: 8px;
+  background: #fff8e8;
+  color: #6b4a00;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 12px 14px;
+}
+
+.modal-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.tracer-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.tracer-detail-grid h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.tracer-detail-table {
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid #e1e9e4;
+  border-radius: 8px;
+}
+
+.tracer-detail-table table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 560px;
+}
+
+.tracer-detail-table th,
+.tracer-detail-table td {
+  border-bottom: 1px solid #e6eee9;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.tracer-detail-table th {
+  position: sticky;
+  top: 0;
+  background: #f2f7f3;
+  color: #506259;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.tracer-detail-table td {
+  color: #24372c;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .comparison-table-wrap {
