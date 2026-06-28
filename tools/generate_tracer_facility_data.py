@@ -86,6 +86,24 @@ WORKBOOKS = [
         "month": "2026-05",
         "week": "Week 5",
     },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\june\07.06.2026 SUMMARY TRACE LIST.xlsx"),
+        "label": "Week 1 - 7 June 2026",
+        "month": "2026-06",
+        "week": "Week 1",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\june\14.06.2026 tracer summary.xlsx"),
+        "label": "Week 2 - 14 June 2026",
+        "month": "2026-06",
+        "week": "Week 2",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\june\21.06.2026 tracer.xlsx"),
+        "label": "Week 3 - 21 June 2026",
+        "month": "2026-06",
+        "week": "Week 3",
+    },
 ]
 OUT = Path(__file__).resolve().parents[1] / "src" / "tracerFacilityData.js"
 
@@ -97,6 +115,17 @@ def clean(value):
         text = " ".join(value.strip().split())
         return text or None
     return value
+
+
+def normalize_header(value):
+    text = (clean(value) or "").upper()
+    aliases = {
+        "AVERAGE AMC": "AMC",
+        "AVG AMC": "AMC",
+        " AMC": "AMC",
+        " MOS": "MOS",
+    }
+    return aliases.get(text, text)
 
 
 def norm_text(value):
@@ -195,7 +224,7 @@ def summarize(config):
     workbook_path = config["path"]
     wb = openpyxl.load_workbook(workbook_path, read_only=True, data_only=True)
     ws = wb[wb.sheetnames[0]]
-    headers = [clean(cell) or "" for cell in next(ws.iter_rows(min_row=1, max_row=1, values_only=True))]
+    headers = [normalize_header(cell) for cell in next(ws.iter_rows(min_row=1, max_row=1, values_only=True))]
 
     national = make_bucket()
     by_province = defaultdict(make_bucket)
@@ -271,8 +300,8 @@ def summarize(config):
             "district": district,
             "facilityLevel": facility_level,
             "isAggregate": facility.upper() == "ALL",
-            "stockoutItems": sorted(alerts["stockout"], key=lambda item: (item["program"], item["item"]))[:12],
-            "lowStockItems": sorted(alerts["lowStock"], key=lambda item: (item["mos"] if item["mos"] is not None else 99, item["program"], item["item"]))[:12],
+            "stockoutItems": sorted(alerts["stockout"], key=lambda item: (str(item["program"]), str(item["item"])))[:12],
+            "lowStockItems": sorted(alerts["lowStock"], key=lambda item: (item["mos"] if item["mos"] is not None else 99, str(item["program"]), str(item["item"])))[:12],
             "stockoutItemCount": len(alerts["stockout"]),
             "lowStockItemCount": len(alerts["lowStock"]),
         }))
