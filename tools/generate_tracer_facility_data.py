@@ -55,6 +55,20 @@ WORKBOOKS = [
         "week": "Week 1",
     },
     {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\feb\TRACER WEEKLY SUMMARY REPORTS 22.02.26.xlsx"),
+        "sheet": "CV.2.22.26",
+        "label": "Week 3 - 22 February 2026",
+        "month": "2026-02",
+        "week": "Week 3",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\feb\28.02.2026 SUMMARY REPORTS.xlsx"),
+        "sheet": "SUMMARY REPORTS",
+        "label": "Week 4 - 28 February 2026",
+        "month": "2026-02",
+        "week": "Week 4",
+    },
+    {
         "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\march\provincial_tracer_ 8.3.26.xlsx"),
         "label": "Week 1 - 8 March 2026",
         "month": "2026-03",
