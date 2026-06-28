@@ -63,10 +63,28 @@ WORKBOOKS = [
         "week": "Week 4",
     },
     {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\may\TRACER SUMMARY  WEEK ONE MAY 2026.xlsx"),
+        "label": "Week 1 - 3 May 2026",
+        "month": "2026-05",
+        "week": "Week 1",
+    },
+    {
         "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\analysed summery reports\may\16.05.26\tracer summary 17.05.26.xlsx"),
         "label": "Week 3 - 17 May 2026",
         "month": "2026-05",
         "week": "Week 3",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\may\week 3.xlsx"),
+        "label": "Week 4 - 24 May 2026",
+        "month": "2026-05",
+        "week": "Week 4",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\may\WEEK 4 TRACER SUMMARY REPORT.xlsx"),
+        "label": "Week 5 - 31 May 2026",
+        "month": "2026-05",
+        "week": "Week 5",
     },
 ]
 OUT = Path(__file__).resolve().parents[1] / "src" / "tracerFacilityData.js"
