@@ -9,6 +9,46 @@ import openpyxl
 
 WORKBOOKS = [
     {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\feb\TRACER SUMMARY REPORTS  JANUARY 2026 (3).xlsx"),
+        "sheet": "4-01-2026",
+        "reportDate": "2026-01-04",
+        "label": "Week 1 - 4 January 2026",
+        "month": "2026-01",
+        "week": "Week 1",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\feb\TRACER SUMMARY REPORTS  JANUARY 2026 (3).xlsx"),
+        "sheet": "11-01-2026",
+        "reportDate": "2026-01-11",
+        "label": "Week 2 - 11 January 2026",
+        "month": "2026-01",
+        "week": "Week 2",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\feb\TRACER SUMMARY REPORTS  JANUARY 2026 (3).xlsx"),
+        "sheet": "18-01-2026",
+        "reportDate": "2026-01-18",
+        "label": "Week 3 - 18 January 2026",
+        "month": "2026-01",
+        "week": "Week 3",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\feb\TRACER SUMMARY REPORTS  JANUARY 2026 (3).xlsx"),
+        "sheet": "25-01-2026",
+        "reportDate": "2026-01-25",
+        "label": "Week 4 - 25 January 2026",
+        "month": "2026-01",
+        "week": "Week 4",
+    },
+    {
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\feb\TRACER SUMMARY REPORTS  JANUARY 2026 (3).xlsx"),
+        "sheet": "31-01-2026",
+        "reportDate": "2026-01-31",
+        "label": "Week 5 - 31 January 2026",
+        "month": "2026-01",
+        "week": "Week 5",
+    },
+    {
         "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\feb\week one 08.02.2026 Summary tracer Reports.xlsx"),
         "label": "Week 1 - 8 February 2026",
         "month": "2026-02",
@@ -93,7 +133,7 @@ WORKBOOKS = [
         "week": "Week 1",
     },
     {
-        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\june\14.06.2026 tracer summary.xlsx"),
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\june\week 14.06.2026 tracer.xlsx"),
         "label": "Week 2 - 14 June 2026",
         "month": "2026-06",
         "week": "Week 2",
@@ -223,7 +263,7 @@ def finalize(name, bucket, extra=None):
 def summarize(config):
     workbook_path = config["path"]
     wb = openpyxl.load_workbook(workbook_path, read_only=True, data_only=True)
-    ws = wb[wb.sheetnames[0]]
+    ws = wb[config.get("sheet") or wb.sheetnames[0]]
     headers = [normalize_header(cell) for cell in next(ws.iter_rows(min_row=1, max_row=1, values_only=True))]
 
     national = make_bucket()
@@ -312,7 +352,9 @@ def summarize(config):
     items = [finalize(name, bucket, {"normalized": norm_text(name)}) for name, bucket in by_item.items()]
     items.sort(key=lambda item: (-item["riskRows"], item["availability"], item["name"]))
 
-    if hasattr(report_date, "strftime"):
+    if config.get("reportDate"):
+        report_date = config["reportDate"]
+    elif hasattr(report_date, "strftime"):
         report_date = report_date.strftime("%Y-%m-%d")
     return {
         "id": report_date,
