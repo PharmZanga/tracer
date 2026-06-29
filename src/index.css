@@ -415,7 +415,7 @@ select:focus-visible {
 .level-care-chart {
   display: grid;
   grid-template-columns: 46px minmax(0, 1fr);
-  min-height: 265px;
+  min-height: 310px;
 }
 
 .level-care-axis {
@@ -436,7 +436,7 @@ select:focus-visible {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
-  padding: 22px 4px 0;
+  padding: 18px 4px 0;
   border-left: 1px dashed #bad7c5;
   background:
     repeating-linear-gradient(to bottom, transparent 0, transparent 23px, rgba(51, 128, 80, 0.12) 24px);
@@ -444,9 +444,9 @@ select:focus-visible {
 
 .level-care-line {
   position: absolute;
-  inset: 6px 3% 82px 3%;
+  inset: 10px 3% 90px 3%;
   width: 94%;
-  height: calc(100% - 88px);
+  height: calc(100% - 108px);
   overflow: visible;
   pointer-events: none;
   z-index: 3;
@@ -464,8 +464,9 @@ select:focus-visible {
   display: grid;
   align-content: end;
   justify-items: center;
-  min-height: 220px;
-  padding-top: 24px;
+  grid-template-rows: 210px auto auto;
+  min-height: 286px;
+  padding-top: 12px;
   z-index: 4;
 }
 
@@ -501,6 +502,7 @@ select:focus-visible {
   background: #76b864;
   color: #0d1b12;
   padding-bottom: 9px;
+  align-self: end;
 }
 
 .mos-bar strong {
@@ -553,6 +555,28 @@ select:focus-visible {
 
 .availability-key {
   background: #d44e48;
+}
+
+.level-care-inclusions {
+  display: grid;
+  gap: 5px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid #dfeae3;
+  border-radius: 8px;
+  background: #f8fbf9;
+}
+
+.level-care-inclusions strong {
+  color: #173f29;
+  font-size: 12px;
+}
+
+.level-care-inclusions span,
+.level-care-inclusions small {
+  color: #607168;
+  font-size: 11px;
+  line-height: 1.45;
 }
 
 .action-tracker-head {

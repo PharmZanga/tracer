@@ -155,12 +155,15 @@ function careLevelBucket(facilityLevel = "") {
 }
 
 function LevelOfCarePerformance({ rows }) {
-  const maxMos = Math.max(4, ...rows.map((row) => row.mos || 0));
+  const chartHeight = 180;
   const chartPoints = rows.map((row, index) => {
     const x = rows.length <= 1 ? 50 : 9 + (index * 82) / (rows.length - 1);
-    const y = 94 - Math.max(0, Math.min(row.availability || 0, 1)) * 78;
+    const y = 92 - Math.max(0, Math.min(row.availability || 0, 1)) * 80;
     return `${x},${y}`;
   }).join(" ");
+  const level3Row = rows.find((row) => row.id === "level3");
+  const level3Levels = level3Row?.facilityLevels || [];
+  const level3Names = level3Row?.facilityNames || [];
 
   return (
     <section className="level-care-performance">
@@ -179,10 +182,12 @@ function LevelOfCarePerformance({ rows }) {
             <polyline points={chartPoints} />
           </svg>
           {rows.map((row) => {
-            const barHeight = `${Math.max(4, ((row.mos || 0) / maxMos) * 72)}%`;
+            const availability = Math.max(0, Math.min(row.availability || 0, 1));
+            const barHeight = `${Math.max(12, availability * chartHeight)}px`;
+            const pointTop = `${18 + (1 - availability) * chartHeight}px`;
             return (
               <div className="level-care-group" key={row.id}>
-                <div className="availability-point" style={{ top: `${94 - Math.max(0, Math.min(row.availability || 0, 1)) * 78}%` }}>
+                <div className="availability-point" style={{ top: pointTop }}>
                   <span>{formatPercent(row.availability)}</span>
                   <i />
                 </div>
@@ -197,9 +202,16 @@ function LevelOfCarePerformance({ rows }) {
         </div>
       </div>
       <div className="level-care-legend">
-        <span><i className="mos-key" />Average of MOS</span>
+        <span><i className="mos-key" />Availability bar, MOS shown inside</span>
         <span><i className="availability-key" />Average of Availability</span>
       </div>
+      {level3Row ? (
+        <div className="level-care-inclusions">
+          <strong>Level 3/Specialised calculation includes</strong>
+          <span>{level3Levels.length ? level3Levels.join(", ") : "No Level 3/Specialised facility levels in the current filter."}</span>
+          {level3Names.length ? <small>Facilities: {level3Names.slice(0, 12).join(", ")}{level3Names.length > 12 ? `, +${level3Names.length - 12} more` : ""}</small> : null}
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -543,7 +555,15 @@ function App() {
   const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
   const levelOfCareRows = careLevelBuckets.map((bucket) => {
     const facilities = filteredFacilities.filter((facility) => careLevelBucket(facility.facilityLevel) === bucket.id);
-    return { ...combineRollups(facilities, makeEmptyRollup(bucket.label)), id: bucket.id, label: bucket.label };
+    return {
+      ...combineRollups(facilities, makeEmptyRollup(bucket.label)),
+      id: bucket.id,
+      label: bucket.label,
+      facilityLevels: [...new Set(facilities.map((facility) => facility.facilityLevel))].sort(),
+      facilityNames: [...new Set(facilities
+        .filter((facility) => !facility.isAggregate)
+        .map((facility) => facility.name))].sort(),
+    };
   });
   const bestProvince = [...fieldData.provinces].sort((a, b) => b.availability - a.availability)[0];
   const worstProvince = fieldData.provinces[0];
