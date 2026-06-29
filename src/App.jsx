@@ -40,6 +40,10 @@ function csvCell(value) {
   return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 
+function normalizeCommodity(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
 function makeEmptyRollup(name = "Current selection") {
   return {
     name,
@@ -214,6 +218,59 @@ function LevelOfCarePerformance({ rows }) {
       ) : null}
     </section>
   );
+}
+
+function buildRedistributionCandidates(facilities) {
+  const demandByProvinceItem = new Map();
+  const supplyRows = [];
+
+  facilities.forEach((facility) => {
+    (facility.stockoutItems || []).forEach((item) => {
+      const key = `${facility.province}|${normalizeCommodity(item.item)}`;
+      const demand = demandByProvinceItem.get(key) || [];
+      demand.push({ facility, item, priority: "Stockout" });
+      demandByProvinceItem.set(key, demand);
+    });
+    (facility.lowStockItems || []).forEach((item) => {
+      const key = `${facility.province}|${normalizeCommodity(item.item)}`;
+      const demand = demandByProvinceItem.get(key) || [];
+      demand.push({ facility, item, priority: "Low stock" });
+      demandByProvinceItem.set(key, demand);
+    });
+    (facility.overstockItems || []).forEach((item) => {
+      supplyRows.push({ facility, item });
+    });
+  });
+
+  const candidates = [];
+  supplyRows.forEach((source) => {
+    const key = `${source.facility.province}|${normalizeCommodity(source.item.item)}`;
+    const demandRows = demandByProvinceItem.get(key) || [];
+    demandRows
+      .filter((destination) => destination.facility.name !== source.facility.name || destination.facility.district !== source.facility.district)
+      .slice(0, 3)
+      .forEach((destination) => {
+        candidates.push({
+          province: source.facility.province,
+          commodity: source.item.item,
+          sourceFacility: source.facility.isAggregate ? `All ${source.facility.facilityLevel.toLowerCase()} facilities` : source.facility.name,
+          sourceDistrict: source.facility.district,
+          sourceLevel: source.facility.facilityLevel,
+          sourceMos: source.item.mos,
+          sourceQty: source.item.quantity,
+          destinationFacility: destination.facility.isAggregate ? `All ${destination.facility.facilityLevel.toLowerCase()} facilities` : destination.facility.name,
+          destinationDistrict: destination.facility.district,
+          destinationLevel: destination.facility.facilityLevel,
+          destinationMos: destination.item.mos,
+          destinationQty: destination.item.quantity,
+          priority: destination.priority,
+        });
+      });
+  });
+
+  return candidates
+    .sort((a, b) => a.province.localeCompare(b.province) || (a.destinationMos || 0) - (b.destinationMos || 0) || (b.sourceMos || 0) - (a.sourceMos || 0))
+    .slice(0, 80);
 }
 
 function TopRowsTable({ title, rows, onSelect, detail = "riskRows" }) {
@@ -569,6 +626,8 @@ function App() {
   const worstProvince = fieldData.provinces[0];
   const stockoutFacilityCount = filteredFacilities.filter((facility) => facility.stockoutItemCount > 0).length;
   const lowStockFacilityCount = filteredFacilities.filter((facility) => facility.lowStockItemCount > 0).length;
+  const redistributionCandidates = buildRedistributionCandidates(filteredFacilities);
+  const redistributionProvinceCount = new Set(redistributionCandidates.map((item) => item.province)).size;
   const facilityAlerts = filteredFacilities
     .filter((facility) => facility.stockoutItemCount > 0 || facility.lowStockItemCount > 0)
     .sort((a, b) => Number(a.isAggregate) - Number(b.isAggregate) || b.stockoutItemCount - a.stockoutItemCount || b.lowStockItemCount - a.lowStockItemCount)
@@ -993,6 +1052,58 @@ function App() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="redistribution-panel">
+            <div className="redistribution-head">
+              <div>
+                <p className="eyebrow dark">Redistribution Recommendations</p>
+                <h3>Same-province commodity matches for provincial pharmacists</h3>
+                <p>Suggested from facilities reporting overstocked commodities to facilities in the same province reporting stockout or low stock for the same commodity.</p>
+              </div>
+              <div className="redistribution-summary">
+                <span><b>{redistributionCandidates.length}</b> suggested transfers</span>
+                <span><b>{redistributionProvinceCount}</b> provinces</span>
+              </div>
+            </div>
+            <div className="action-table-wrap redistribution-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Province</th>
+                    <th>Commodity</th>
+                    <th>Source overstock</th>
+                    <th>Destination need</th>
+                    <th>Suggested action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {redistributionCandidates.length ? redistributionCandidates.map((item, index) => (
+                    <tr key={`${item.province}-${item.commodity}-${item.sourceFacility}-${item.destinationFacility}-${index}`}>
+                      <td>{item.province}</td>
+                      <td>{item.commodity}</td>
+                      <td>
+                        <strong>{item.sourceFacility}</strong>
+                        <small>{item.sourceDistrict} | {item.sourceLevel}</small>
+                        <small>MOS {formatMos(item.sourceMos)} | Qty {item.sourceQty?.toLocaleString?.() ?? item.sourceQty}</small>
+                      </td>
+                      <td>
+                        <strong>{item.destinationFacility}</strong>
+                        <small>{item.destinationDistrict} | {item.destinationLevel}</small>
+                        <small>{item.priority} | MOS {formatMos(item.destinationMos)} | Qty {item.destinationQty?.toLocaleString?.() ?? item.destinationQty}</small>
+                      </td>
+                      <td>
+                        <span className={item.priority === "Stockout" ? "priority-pill critical" : "priority-pill monitor"}>{item.priority}</span>
+                        <p>Province to validate physical stock and redistribute from source to destination.</p>
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr>
+                      <td colSpan="5">No same-province overstock to stockout/low-stock commodity matches are available in the current filter.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
       </main>
