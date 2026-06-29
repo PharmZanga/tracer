@@ -390,6 +390,171 @@ select:focus-visible {
   font-size: 27px;
 }
 
+.level-care-performance {
+  margin-top: 16px;
+  padding: 18px 20px 16px;
+  border: 1px solid rgba(31, 122, 77, 0.22);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(18, 36, 25, 0.06);
+}
+
+.level-care-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 6px;
+}
+
+.level-care-head h2 {
+  margin: 0;
+  color: #132a1d;
+  font-size: 19px;
+}
+
+.level-care-chart {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  min-height: 265px;
+}
+
+.level-care-axis {
+  display: grid;
+  align-content: stretch;
+  padding: 14px 8px 50px 0;
+}
+
+.level-care-axis span {
+  color: #f07b45;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.level-care-plot {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  padding: 22px 4px 0;
+  border-left: 1px dashed #bad7c5;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0, transparent 23px, rgba(51, 128, 80, 0.12) 24px);
+}
+
+.level-care-line {
+  position: absolute;
+  inset: 6px 3% 82px 3%;
+  width: 94%;
+  height: calc(100% - 88px);
+  overflow: visible;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.level-care-line polyline {
+  fill: none;
+  stroke: #4663a2;
+  stroke-width: 1.7;
+  vector-effect: non-scaling-stroke;
+}
+
+.level-care-group {
+  position: relative;
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  min-height: 220px;
+  padding-top: 24px;
+  z-index: 4;
+}
+
+.availability-point {
+  position: absolute;
+  left: 50%;
+  display: grid;
+  justify-items: center;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+
+.availability-point span {
+  color: #141f18;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.availability-point i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d44e48;
+}
+
+.mos-bar {
+  display: grid;
+  align-items: end;
+  justify-items: center;
+  width: min(88px, 72%);
+  min-height: 22px;
+  background: #76b864;
+  color: #0d1b12;
+  padding-bottom: 9px;
+}
+
+.mos-bar strong {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.level-care-group b {
+  max-width: 140px;
+  min-height: 34px;
+  color: #202820;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.level-care-group small {
+  color: #63736a;
+  font-size: 10px;
+}
+
+.level-care-legend {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
+  color: #26362b;
+  font-size: 12px;
+}
+
+.level-care-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.level-care-legend i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.mos-key {
+  background: #76b864;
+}
+
+.availability-key {
+  background: #d44e48;
+}
+
 .action-tracker-head {
   display: flex;
   justify-content: space-between;
@@ -470,6 +635,7 @@ select:focus-visible {
 
 .page-executive > .hero,
 .page-executive > .executive-brief,
+.page-executive > .level-care-performance,
 .page-national > .tracer-overview,
 .page-provincial > .field-visibility,
 .page-facilities > .facility-alerts,

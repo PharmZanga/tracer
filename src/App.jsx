@@ -122,6 +122,88 @@ function classifyRollup(row) {
   return "green";
 }
 
+const careLevelBuckets = [
+  { id: "primary", label: "Health Centre/Health Post" },
+  { id: "level1", label: "Level 1 Hospital" },
+  { id: "level2", label: "Level 2 Hospital" },
+  { id: "level3", label: "Level 3/Specialised Hospital" },
+];
+
+function careLevelBucket(facilityLevel = "") {
+  const text = facilityLevel.toUpperCase();
+  if (text.includes("HEALTH CENTRE") || text.includes("HEALTH POST")) return "primary";
+  if (text.includes("LEVEL 2") || text.includes("GENERAL HOSPITAL")) return "level2";
+  if (
+    text.includes("LEVEL 3") ||
+    text.includes("TERTIARY") ||
+    text.includes("SPECIAL") ||
+    text.includes("OPTH") ||
+    text.includes("OPHTH") ||
+    text.includes("CANCER") ||
+    text.includes("RENAL") ||
+    text.includes("MENTAL") ||
+    text.includes("HEART") ||
+    text.includes("WOMEN") ||
+    text.includes("NEW BORN") ||
+    text.includes("PAEDIATRIC") ||
+    text.includes("TB") ||
+    text.includes("DS-TB") ||
+    text.includes("MDR")
+  ) return "level3";
+  if (text.includes("LEVEL 1") || text.includes("DISTRICT")) return "level1";
+  return "level3";
+}
+
+function LevelOfCarePerformance({ rows }) {
+  const maxMos = Math.max(4, ...rows.map((row) => row.mos || 0));
+  const chartPoints = rows.map((row, index) => {
+    const x = rows.length <= 1 ? 50 : 9 + (index * 82) / (rows.length - 1);
+    const y = 94 - Math.max(0, Math.min(row.availability || 0, 1)) * 78;
+    return `${x},${y}`;
+  }).join(" ");
+
+  return (
+    <section className="level-care-performance">
+      <div className="level-care-head">
+        <div>
+          <p className="eyebrow dark">Level Of Care Performance</p>
+          <h2>Facilities and departments performance</h2>
+        </div>
+      </div>
+      <div className="level-care-chart">
+        <div className="level-care-axis">
+          {[100, 90, 80, 70, 60, 50, 40, 30, 20, 10].map((tick) => <span key={tick}>{tick}%</span>)}
+        </div>
+        <div className="level-care-plot">
+          <svg className="level-care-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <polyline points={chartPoints} />
+          </svg>
+          {rows.map((row) => {
+            const barHeight = `${Math.max(4, ((row.mos || 0) / maxMos) * 72)}%`;
+            return (
+              <div className="level-care-group" key={row.id}>
+                <div className="availability-point" style={{ top: `${94 - Math.max(0, Math.min(row.availability || 0, 1)) * 78}%` }}>
+                  <span>{formatPercent(row.availability)}</span>
+                  <i />
+                </div>
+                <div className="mos-bar" style={{ height: barHeight }}>
+                  <strong>{formatMos(row.mos)}</strong>
+                </div>
+                <b>{row.label}</b>
+                <small>{row.rows.toLocaleString()} rows</small>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="level-care-legend">
+        <span><i className="mos-key" />Average of MOS</span>
+        <span><i className="availability-key" />Average of Availability</span>
+      </div>
+    </section>
+  );
+}
+
 function TopRowsTable({ title, rows, onSelect, detail = "riskRows" }) {
   return (
     <div className="panel">
@@ -409,6 +491,10 @@ function App() {
     .filter((facility) => selectedFacility === "all" || `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}` === selectedFacility);
 
   const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
+  const levelOfCareRows = careLevelBuckets.map((bucket) => {
+    const facilities = filteredFacilities.filter((facility) => careLevelBucket(facility.facilityLevel) === bucket.id);
+    return { ...combineRollups(facilities, makeEmptyRollup(bucket.label)), id: bucket.id, label: bucket.label };
+  });
   const bestProvince = [...fieldData.provinces].sort((a, b) => b.availability - a.availability)[0];
   const worstProvince = fieldData.provinces[0];
   const stockoutFacilityCount = filteredFacilities.filter((facility) => facility.stockoutItemCount > 0).length;
@@ -625,6 +711,8 @@ function App() {
             <div><span>Districts reporting</span><strong>{selectedProvince === "all" ? fieldData.counts.districts : districtsInScope.length}</strong><small>Province/district footprint</small></div>
           </div>
         </section>
+
+        <LevelOfCarePerformance rows={levelOfCareRows} />
 
         <section className="tracer-overview">
           <div className="tracer-lead">
