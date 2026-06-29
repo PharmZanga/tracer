@@ -175,6 +175,7 @@ function KpiCard({ label, value, sub, tone = "green" }) {
 
 function FacilityCard({ facility, onOpen }) {
   const rows = facility.rows || 0;
+  const availabilityPercent = formatPercent(facility.availability);
   const stockoutPercent = rows ? formatPercent((facility.stockoutItemCount || 0) / rows) : "0%";
   const lowStockPercent = rows ? formatPercent((facility.lowStockItemCount || 0) / rows) : "0%";
   return (
@@ -190,6 +191,10 @@ function FacilityCard({ facility, onOpen }) {
           {facility.isAggregate ? <small className="aggregate-note">Aggregate summary row. Load actual provincial tracer files to show named facilities under this level.</small> : null}
         </div>
         <div className="facility-alert-counts">
+          <div className="availability-count">
+            <b>{availabilityPercent}</b>
+            <small>available</small>
+          </div>
           <div>
             <b>{facility.stockoutItemCount}</b>
             <small>stockout</small>
