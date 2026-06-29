@@ -363,16 +363,66 @@ function FacilityTracerModal({ facility, report, onClose }) {
     { label: "Stocked according to plan", value: activeFacility.accordingToPlan || 0, tone: "green" },
     { label: "Overstocked", value: overstockRows, tone: "blue" },
   ];
+  const showBackButton = modalMode === "facility" || modalMode === "list";
+
+  function goBack() {
+    if (modalMode === "facility") {
+      setModalMode("list");
+      return;
+    }
+    setModalMode("aggregate");
+    setSelectedTracer(null);
+  }
+
+  function exportTracerExcel() {
+    const rows = [
+      ["Report", report.label],
+      ["Province", activeFacility.province],
+      ["District", activeFacility.district],
+      ["Facility level", activeFacility.facilityLevel],
+      ["Reporting unit", title],
+      ["Availability", formatPercent(activeFacility.availability)],
+      ["Average MOS", formatMos(activeFacility.mos)],
+      [],
+      ["Status", "Commodity", "Programme", "Quantity", "AMC", "MOS"],
+      ...[
+        ["Stockout", stockoutItems],
+        ["Low stock", lowStockItems],
+        ["Stocked according to plan", accordingToPlanItems],
+        ["Overstocked", overstockItems],
+      ].flatMap(([status, items]) => items.map((item) => [
+        status,
+        item.item,
+        item.program,
+        item.quantity,
+        item.amc,
+        formatMos(item.mos),
+      ])),
+    ];
+    const blob = new Blob([rows.map((row) => row.map(csvCell).join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "submitted-tracer"}-${report.reportDate}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Submitted tracer details">
       <div className="tracer-modal">
         <div className="modal-head">
+          {showBackButton ? <button className="modal-back-button" type="button" onClick={goBack}>Back</button> : null}
           <div>
             <p className="eyebrow dark">Submitted Tracer</p>
             <h2>{title}</h2>
             <span>{activeFacility.district} | {activeFacility.province} | {activeFacility.facilityLevel} | {report.label}</span>
           </div>
-          <button type="button" onClick={onClose}>Close</button>
+          <div className="modal-actions">
+            <button type="button" onClick={() => window.print()}>Export PDF</button>
+            <button type="button" onClick={exportTracerExcel}>Export Excel</button>
+            <button type="button" onClick={onClose}>Close</button>
+          </div>
         </div>
         {facility.isAggregate ? (
           <div className="modal-switcher">
@@ -414,7 +464,7 @@ function FacilityTracerModal({ facility, report, onClose }) {
             ) : null}
             {modalMode === "facility" ? (
               <div className="modal-warning">
-                Showing named facility tracer. <button type="button" className="inline-action" onClick={() => setModalMode("list")}>Back to facility list</button>
+                Showing named facility tracer. Use the Back button above to return to the facility list.
               </div>
             ) : null}
             <div className="modal-kpis">

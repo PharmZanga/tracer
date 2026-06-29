@@ -1253,8 +1253,13 @@ h1 {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  align-items: start;
+  align-items: flex-start;
   margin-bottom: 14px;
+}
+
+.tracer-modal .modal-head > div:first-of-type {
+  flex: 1;
+  min-width: 220px;
 }
 
 .tracer-modal .modal-head h2 {
@@ -1272,9 +1277,29 @@ h1 {
   border: 1px solid #d0ddd4;
   border-radius: 6px;
   background: #f6faf7;
+  color: #126238;
   cursor: pointer;
   font-weight: 800;
   padding: 9px 12px;
+}
+
+.tracer-modal .modal-head .modal-back-button {
+  border-color: #126238;
+  background: #126238;
+  color: #fff;
+  min-width: 76px;
+}
+
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: 360px;
+}
+
+.modal-actions button {
+  white-space: nowrap;
 }
 
 .modal-warning {
