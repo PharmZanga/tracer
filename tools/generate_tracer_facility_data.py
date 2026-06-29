@@ -49,7 +49,20 @@ WORKBOOKS = [
         "week": "Week 5",
     },
     {
-        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\feb\week one 08.02.2026 Summary tracer Reports.xlsx"),
+        "rawSources": [
+            {"province": "MUCHINGA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\February province submission\week 1 feb\06.02.26 MUCHINGA 2026 TRACER WEEKLY REPORT.xlsx")},
+            {"province": "NORTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\February province submission\week 1 feb\07.02.26 NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx")},
+            {"province": "CENTRAL PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\February province submission\week 1 feb\7_2_2025 CENTRAL PROVINCE 2025 TRACER WEEKLY REPORT.xlsx")},
+            {"province": "EASTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\February province submission\week 1 feb\7TH FEB EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (4).xlsx")},
+            {"province": "COPPERBELT PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\February province submission\week 1 feb\08.02.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx")},
+            {"province": "NORTH-WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\February province submission\week 1 feb\08-02-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx")},
+            {"province": "WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\February province submission\week 1 feb\08-02-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT.xlsx")},
+            {"province": "LUAPULA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\February province submission\week 1 feb\LUAPULA PROVINCE 2025 TRACER WEEKLY REPORT 7 2 26.xlsx")},
+            {"province": "LUSAKA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\February province submission\week 1 feb\LUSAKA PROVINCE TRACER WEEKLY REPORT PROVINCES-06.02.2026.xlsx")},
+            {"province": "SOUTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\February province submission\week 1 feb\SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 06.02.26 -Final.xlsx")},
+        ],
+        "source": "February Week 1 provincial raw submissions",
+        "reportDate": "2026-02-08",
         "label": "Week 1 - 8 February 2026",
         "month": "2026-02",
         "week": "Week 1",
@@ -200,11 +213,22 @@ def normalize_province(value):
 def num(value):
     if value is None:
         return None
+    if isinstance(value, str) and value.strip() in {"", "-", "N/A", "#N/A"}:
+        return None
     try:
         value = float(value)
     except (TypeError, ValueError):
         return None
     return None if math.isnan(value) else value
+
+
+def availability_value(value):
+    value = num(value)
+    if value is None:
+        return None
+    if value > 1:
+        value = value / 100 if value <= 100 else 1
+    return max(0, min(value, 1))
 
 
 def status_from_mos(mos):
@@ -235,7 +259,7 @@ def make_bucket():
 
 def add(bucket, row):
     mos = num(row.get("MOS"))
-    availability = num(row.get("AVAILABILITY"))
+    availability = availability_value(row.get("AVAILABILITY"))
     bucket["rows"] += 1
     bucket["quantity"] += num(row.get("QUANTITY")) or 0
     bucket["amc"] += num(row.get("AMC")) or 0
@@ -248,6 +272,86 @@ def add(bucket, row):
         bucket["mosSum"] += mos
         bucket["mosCount"] += 1
     bucket[status_from_mos(mos)] += 1
+
+
+def raw_facility_level(sheet_name, sheet_title):
+    title = f"{sheet_name} {sheet_title or ''}".upper()
+    if sheet_name.upper() == "HP" or "HEALTH POST" in title:
+        return "HEALTH POST"
+    if sheet_name.upper() == "HC" or "HEALTH CENTRE" in title:
+        return "HEALTH CENTRE"
+    if "L-1" in title or "LEVEL 1" in title:
+        return "DISTRICT LEVEL 1 HOSPITALS"
+    if "L-2" in title or "LEVEL 2" in title:
+        return "LEVEL 2 HOSPITAL"
+    if "L-3" in title or "LEVEL 3" in title:
+        return sheet_name.upper()
+    if "TB" in title:
+        return "TB UNITS"
+    if "EYE" in title or "OPTH" in title:
+        return "OPTHAMOLOGY UNITS"
+    if "RENAL" in title:
+        return "RENAL UNITS"
+    if "CANCER" in title:
+        return "CANCER DISEASES UNITS"
+    if "MENTAL" in title:
+        return "MENTAL HEALTH UNITS"
+    return sheet_name.upper()
+
+
+def iter_raw_matrix_rows(source, report_date):
+    workbook_path = source["path"]
+    province = normalize_province(source["province"])
+    wb = openpyxl.load_workbook(workbook_path, read_only=False, data_only=True)
+    skip = {"SITUATION BOARD", "SUMMARY", "COMMENTS", "COMMENT", "RECOMMENDATIONS", "RECOMEDATIONS"}
+    for ws in wb.worksheets:
+        sheet_name = ws.title.strip()
+        if any(token in sheet_name.upper() for token in skip):
+            continue
+        if ws.max_row < 4 or ws.max_column < 7:
+            continue
+        item_header = str(ws.cell(3, 2).value or "").upper()
+        if "DESCRIPTION" not in item_header and "PRODUCT" not in item_header:
+            continue
+        facility_level = raw_facility_level(sheet_name, ws.cell(1, 1).value)
+        for start_col in range(5, ws.max_column + 1, 4):
+            district = clean(ws.cell(2, start_col).value)
+            facility = clean(ws.cell(2, start_col + 1).value)
+            if not district:
+                continue
+            district = str(district).replace(" DISTRICT", "").strip().upper()
+            if facility_level in {"HEALTH POST", "HEALTH CENTRE"}:
+                facility_name = f"{district} {facility_level.title()} facilities"
+                is_aggregate = True
+            else:
+                facility_name = str(facility or district).strip()
+                is_aggregate = False
+            for row_index in range(4, ws.max_row + 1):
+                item = clean(ws.cell(row_index, 2).value)
+                if not item:
+                    continue
+                quantity = num(ws.cell(row_index, start_col).value)
+                amc = num(ws.cell(row_index, start_col + 1).value)
+                mos = num(ws.cell(row_index, start_col + 2).value)
+                if quantity is None and amc is None and mos is None:
+                    continue
+                yield {
+                    "DATE": report_date,
+                    "NATION": "ZAMBIA",
+                    "PROVINCE": province,
+                    "DISTRICT": district,
+                    "FACILITY LEVEL": facility_level,
+                    "FACILITY NAME": facility_name,
+                    "PROGRAM": facility_level,
+                    "DESCRIPTION OF ITEM": item,
+                    "UNIT": clean(ws.cell(row_index, 3).value),
+                    "QUANTITY": quantity,
+                    "AMC": amc,
+                    "MOS": mos,
+                    "AVAILABILITY": 1 if (quantity or 0) > 0 else 0,
+                    "_RAW_AGGREGATE": is_aggregate,
+                }
+    wb.close()
 
 
 def finalize(name, bucket, extra=None):
@@ -275,10 +379,24 @@ def finalize(name, bucket, extra=None):
 
 
 def summarize(config):
-    workbook_path = config["path"]
-    wb = openpyxl.load_workbook(workbook_path, read_only=True, data_only=True)
-    ws = wb[config.get("sheet") or wb.sheetnames[0]]
-    headers = [normalize_header(cell) for cell in next(ws.iter_rows(min_row=1, max_row=1, values_only=True))]
+    workbook_path = config.get("path")
+    if config.get("rawSources"):
+        rows_iter = (
+            row
+            for source in config["rawSources"]
+            for row in iter_raw_matrix_rows(source, config["reportDate"])
+        )
+        source_name = config.get("source", "Provincial raw submissions")
+        wb = None
+    else:
+        wb = openpyxl.load_workbook(workbook_path, read_only=True, data_only=True)
+        ws = wb[config.get("sheet") or wb.sheetnames[0]]
+        headers = [normalize_header(cell) for cell in next(ws.iter_rows(min_row=1, max_row=1, values_only=True))]
+        rows_iter = (
+            {key: clean(value) for key, value in zip(headers, row_values)}
+            for row_values in ws.iter_rows(min_row=2, values_only=True)
+        )
+        source_name = workbook_path.name
 
     national = make_bucket()
     by_province = defaultdict(make_bucket)
@@ -288,12 +406,12 @@ def summarize(config):
     by_program = defaultdict(make_bucket)
     by_item = defaultdict(make_bucket)
     facility_items = defaultdict(lambda: {"stockout": [], "lowStock": []})
+    facility_is_aggregate = {}
     comments = []
     province_names, district_units, facility_units, item_names, program_names = set(), set(), set(), set(), set()
     report_date = None
 
-    for row_values in ws.iter_rows(min_row=2, values_only=True):
-        row = {key: clean(value) for key, value in zip(headers, row_values)}
+    for row in rows_iter:
         province = normalize_province(row.get("PROVINCE"))
         district = (clean(row.get("DISTRICT")) or "Unknown district").upper()
         facility = clean(row.get("FACILITY NAME")) or "Unknown reporting unit"
@@ -326,6 +444,7 @@ def summarize(config):
             "amc": round(num(row.get("AMC")) or 0, 2),
         }
         key = (province, district, facility_level, facility)
+        facility_is_aggregate[key] = bool(row.get("_RAW_AGGREGATE")) or facility.upper() == "ALL"
         if mos is not None and mos <= 0.1:
             facility_items[key]["stockout"].append(alert_item)
         elif mos is not None and mos < 2:
@@ -353,7 +472,7 @@ def summarize(config):
             "province": province,
             "district": district,
             "facilityLevel": facility_level,
-            "isAggregate": facility.upper() == "ALL",
+            "isAggregate": facility_is_aggregate.get(key, facility.upper() == "ALL"),
             "stockoutItems": sorted(alerts["stockout"], key=lambda item: (str(item["program"]), str(item["item"]))),
             "lowStockItems": sorted(alerts["lowStock"], key=lambda item: (item["mos"] if item["mos"] is not None else 99, str(item["program"]), str(item["item"]))),
             "stockoutItemCount": len(alerts["stockout"]),
@@ -376,7 +495,7 @@ def summarize(config):
         "label": config["label"],
         "month": config["month"],
         "week": config["week"],
-        "source": workbook_path.name,
+        "source": source_name,
         "counts": {
             "rows": national["rows"],
             "provinces": len(province_names),
