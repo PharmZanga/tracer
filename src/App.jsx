@@ -212,11 +212,41 @@ function FacilityCard({ facility, onOpen }) {
   );
 }
 
+function TracerItemTable({ title, items, totalCount, emptyText }) {
+  const shownCount = items.length;
+  const countLabel = totalCount > shownCount ? `${shownCount} of ${totalCount}` : totalCount;
+  return (
+    <div>
+      <h3>{title} <small>{countLabel}</small></h3>
+      <div className="tracer-detail-table">
+        <table>
+          <thead><tr><th>Commodity</th><th>Programme</th><th>Qty</th><th>AMC</th><th>MOS</th></tr></thead>
+          <tbody>
+            {items.length ? items.map((item, index) => (
+              <tr key={`${title}-${item.item}-${index}`}>
+                <td>{item.item}</td>
+                <td>{item.program}</td>
+                <td>{item.quantity?.toLocaleString?.() ?? item.quantity}</td>
+                <td>{item.amc?.toLocaleString?.() ?? item.amc}</td>
+                <td>{formatMos(item.mos)}</td>
+              </tr>
+            )) : <tr><td colSpan="5">{emptyText}</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function FacilityTracerModal({ facility, report, onClose }) {
   if (!facility) return null;
   const title = facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name;
   const stockoutItems = facility.stockoutItems || [];
   const lowStockItems = facility.lowStockItems || [];
+  const accordingToPlanItems = facility.accordingToPlanItems || [];
+  const overstockItems = facility.overstockItems || [];
+  const accordingToPlanCount = facility.accordingToPlanItemCount ?? accordingToPlanItems.length;
+  const overstockCount = facility.overstockItemCount ?? overstockItems.length;
   return (
     <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Submitted tracer details">
       <div className="tracer-modal">
@@ -238,46 +268,14 @@ function FacilityTracerModal({ facility, report, onClose }) {
           <KpiCard label="Average MOS" value={formatMos(facility.mos)} sub="Submitted stock position" />
           <KpiCard label="Stockout items" value={facility.stockoutItemCount} sub="MOS at or near zero" tone="red" />
           <KpiCard label="Low-stock items" value={facility.lowStockItemCount} sub="Below 2 MOS" tone="amber" />
+          <KpiCard label="Stocked to plan" value={accordingToPlanCount} sub="2 to 4 MOS" />
+          <KpiCard label="Overstocked items" value={overstockCount} sub="Above 4 MOS" tone="blue" />
         </div>
         <div className="tracer-detail-grid">
-          <div>
-            <h3>Stockout commodities</h3>
-            <div className="tracer-detail-table">
-              <table>
-                <thead><tr><th>Commodity</th><th>Programme</th><th>Qty</th><th>AMC</th><th>MOS</th></tr></thead>
-                <tbody>
-                  {stockoutItems.length ? stockoutItems.map((item, index) => (
-                    <tr key={`modal-stockout-${item.item}-${index}`}>
-                      <td>{item.item}</td>
-                      <td>{item.program}</td>
-                      <td>{item.quantity?.toLocaleString?.() ?? item.quantity}</td>
-                      <td>{item.amc?.toLocaleString?.() ?? item.amc}</td>
-                      <td>{formatMos(item.mos)}</td>
-                    </tr>
-                  )) : <tr><td colSpan="5">No stockout commodities submitted.</td></tr>}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div>
-            <h3>Low-stock commodities</h3>
-            <div className="tracer-detail-table">
-              <table>
-                <thead><tr><th>Commodity</th><th>Programme</th><th>Qty</th><th>AMC</th><th>MOS</th></tr></thead>
-                <tbody>
-                  {lowStockItems.length ? lowStockItems.map((item, index) => (
-                    <tr key={`modal-low-${item.item}-${index}`}>
-                      <td>{item.item}</td>
-                      <td>{item.program}</td>
-                      <td>{item.quantity?.toLocaleString?.() ?? item.quantity}</td>
-                      <td>{item.amc?.toLocaleString?.() ?? item.amc}</td>
-                      <td>{formatMos(item.mos)}</td>
-                    </tr>
-                  )) : <tr><td colSpan="5">No low-stock commodities submitted.</td></tr>}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <TracerItemTable title="Stockout commodities" items={stockoutItems} totalCount={facility.stockoutItemCount} emptyText="No stockout commodities submitted." />
+          <TracerItemTable title="Low-stock commodities" items={lowStockItems} totalCount={facility.lowStockItemCount} emptyText="No low-stock commodities submitted." />
+          <TracerItemTable title="Stocked according to plan" items={accordingToPlanItems} totalCount={accordingToPlanCount} emptyText="No commodities submitted between 2 and 4 MOS." />
+          <TracerItemTable title="Overstocked commodities" items={overstockItems} totalCount={overstockCount} emptyText="No commodities submitted above 4 MOS." />
         </div>
       </div>
     </div>

@@ -405,7 +405,7 @@ def summarize(config):
     by_facility = defaultdict(make_bucket)
     by_program = defaultdict(make_bucket)
     by_item = defaultdict(make_bucket)
-    facility_items = defaultdict(lambda: {"stockout": [], "lowStock": []})
+    facility_items = defaultdict(lambda: {"stockout": [], "lowStock": [], "accordingToPlan": [], "overstock": []})
     facility_is_aggregate = {}
     comments = []
     province_names, district_units, facility_units, item_names, program_names = set(), set(), set(), set(), set()
@@ -449,6 +449,10 @@ def summarize(config):
             facility_items[key]["stockout"].append(alert_item)
         elif mos is not None and mos < 2:
             facility_items[key]["lowStock"].append(alert_item)
+        elif mos is not None and mos <= 4:
+            facility_items[key]["accordingToPlan"].append(alert_item)
+        elif mos is not None:
+            facility_items[key]["overstock"].append(alert_item)
 
         note = clean(row.get("COMMENT"))
         if note and note not in {"#NAME?", "STOCKED ACCORDING TO PLAN", "UNDERSTOCKED", "OVERSTOCKED"}:
@@ -468,6 +472,14 @@ def summarize(config):
     for key, bucket in by_facility.items():
         province, district, facility_level, facility = key
         alerts = facility_items[key]
+        according_to_plan_items = sorted(
+            alerts["accordingToPlan"],
+            key=lambda item: (item["mos"] if item["mos"] is not None else 99, str(item["program"]), str(item["item"])),
+        )
+        overstock_items = sorted(
+            alerts["overstock"],
+            key=lambda item: (-(item["mos"] if item["mos"] is not None else 0), str(item["program"]), str(item["item"])),
+        )
         facilities.append(finalize(facility, bucket, {
             "province": province,
             "district": district,
@@ -475,8 +487,12 @@ def summarize(config):
             "isAggregate": facility_is_aggregate.get(key, facility.upper() == "ALL"),
             "stockoutItems": sorted(alerts["stockout"], key=lambda item: (str(item["program"]), str(item["item"]))),
             "lowStockItems": sorted(alerts["lowStock"], key=lambda item: (item["mos"] if item["mos"] is not None else 99, str(item["program"]), str(item["item"]))),
+            "accordingToPlanItems": according_to_plan_items[:5],
+            "overstockItems": overstock_items[:5],
             "stockoutItemCount": len(alerts["stockout"]),
             "lowStockItemCount": len(alerts["lowStock"]),
+            "accordingToPlanItemCount": len(alerts["accordingToPlan"]),
+            "overstockItemCount": len(alerts["overstock"]),
         }))
     facilities.sort(key=lambda item: (-item["stockoutItemCount"], -item["lowStockItemCount"], item["availability"], item["province"], item["district"], item["name"]))
 
