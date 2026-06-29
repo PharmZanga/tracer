@@ -1265,20 +1265,27 @@ h1 {
 
 .tracer-modal {
   width: min(1180px, calc(100vw - 36px));
-  max-height: calc(100vh - 36px);
+  max-height: calc(100vh - 24px);
   overflow: auto;
   border-radius: 8px;
   background: #fff;
   box-shadow: 0 24px 70px rgba(8, 27, 17, 0.28);
-  padding: 22px;
+  padding: 0 22px 22px;
 }
 
 .tracer-modal .modal-head {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   display: flex;
   justify-content: space-between;
   gap: 16px;
   align-items: flex-start;
-  margin-bottom: 14px;
+  margin: 0 -22px 14px;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid #e1e9e4;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(18, 36, 25, 0.06);
 }
 
 .tracer-modal .modal-head > div:first-of-type {
@@ -2732,10 +2739,10 @@ td.neutral {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 30;
+  z-index: 200;
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 12px;
   background: rgba(10, 20, 14, 0.54);
 }
 
