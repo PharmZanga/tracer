@@ -1106,11 +1106,125 @@ h1 {
   padding: 12px 14px;
 }
 
+.modal-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.modal-switcher button,
+.inline-action {
+  border: 1px solid #bddbcc;
+  border-radius: 6px;
+  background: #f6faf7;
+  color: #126238;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 8px 11px;
+}
+
+.modal-switcher button.active {
+  background: #126238;
+  border-color: #126238;
+  color: #fff;
+}
+
+.inline-action {
+  margin-left: 8px;
+  padding: 5px 8px;
+}
+
 .modal-kpis {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 10px;
   margin-bottom: 16px;
+}
+
+.stock-status-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.stock-status {
+  border: 1px solid #dde9e2;
+  border-left: 4px solid #2c7a4b;
+  border-radius: 8px;
+  background: #fff;
+  padding: 11px 12px;
+}
+
+.stock-status span,
+.stock-status small {
+  display: block;
+  color: #607269;
+  font-size: 12px;
+}
+
+.stock-status strong {
+  display: block;
+  color: #17261d;
+  font-size: 26px;
+  line-height: 1.1;
+  margin: 4px 0;
+}
+
+.stock-status-red {
+  border-left-color: #bd2b20;
+}
+
+.stock-status-amber {
+  border-left-color: #b26a00;
+}
+
+.stock-status-blue {
+  border-left-color: #3665a8;
+}
+
+.individual-tracer-panel {
+  margin-top: 4px;
+}
+
+.individual-facility-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.individual-facility-list button {
+  border: 1px solid #dbe7df;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.individual-facility-list button:hover {
+  border-color: #76b38d;
+  box-shadow: 0 8px 18px rgba(18, 98, 56, 0.1);
+}
+
+.individual-facility-list strong,
+.individual-facility-list span,
+.individual-facility-list small {
+  display: block;
+}
+
+.individual-facility-list strong {
+  color: #14241b;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.individual-facility-list span,
+.individual-facility-list small {
+  color: #61746a;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .tracer-detail-grid {

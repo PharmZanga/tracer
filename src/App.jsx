@@ -240,13 +240,33 @@ function TracerItemTable({ title, items, totalCount, emptyText }) {
 
 function FacilityTracerModal({ facility, report, onClose }) {
   if (!facility) return null;
-  const title = facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name;
-  const stockoutItems = facility.stockoutItems || [];
-  const lowStockItems = facility.lowStockItems || [];
-  const accordingToPlanItems = facility.accordingToPlanItems || [];
-  const overstockItems = facility.overstockItems || [];
-  const accordingToPlanCount = facility.accordingToPlanItemCount ?? accordingToPlanItems.length;
-  const overstockCount = facility.overstockItemCount ?? overstockItems.length;
+  const relatedFacilities = report.facilities
+    .filter((item) => item.province === facility.province)
+    .filter((item) => item.district === facility.district)
+    .filter((item) => item.facilityLevel === facility.facilityLevel)
+    .filter((item) => !item.isAggregate)
+    .sort((a, b) => b.stockoutItemCount - a.stockoutItemCount || b.lowStockItemCount - a.lowStockItemCount || a.name.localeCompare(b.name));
+  const [modalMode, setModalMode] = useState("aggregate");
+  const [selectedTracer, setSelectedTracer] = useState(null);
+  const activeFacility = modalMode === "facility" && selectedTracer ? selectedTracer : facility;
+  const title = activeFacility.isAggregate ? `All ${activeFacility.facilityLevel.toLowerCase()} facilities` : activeFacility.name;
+  const stockoutItems = activeFacility.stockoutItems || [];
+  const lowStockItems = activeFacility.lowStockItems || [];
+  const accordingToPlanItems = activeFacility.accordingToPlanItems || [];
+  const overstockItems = activeFacility.overstockItems || [];
+  const accordingToPlanCount = activeFacility.accordingToPlanItemCount ?? accordingToPlanItems.length;
+  const overstockCount = activeFacility.overstockItemCount ?? overstockItems.length;
+  const lowStockCount = activeFacility.lowStockItemCount || 0;
+  const stockoutCount = activeFacility.stockoutItemCount || 0;
+  const statusTotal = activeFacility.rows || 0;
+  const lowStockRows = (activeFacility.nearCritical || 0) + (activeFacility.understocked || 0);
+  const overstockRows = (activeFacility.abovePlan || 0) + (activeFacility.overstock || 0);
+  const statusRows = [
+    { label: "Stockout", value: activeFacility.stockout || 0, tone: "red" },
+    { label: "Low stock", value: lowStockRows, tone: "amber" },
+    { label: "Stocked according to plan", value: activeFacility.accordingToPlan || 0, tone: "green" },
+    { label: "Overstocked", value: overstockRows, tone: "blue" },
+  ];
   return (
     <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Submitted tracer details">
       <div className="tracer-modal">
@@ -254,29 +274,78 @@ function FacilityTracerModal({ facility, report, onClose }) {
           <div>
             <p className="eyebrow dark">Submitted Tracer</p>
             <h2>{title}</h2>
-            <span>{facility.district} | {facility.province} | {facility.facilityLevel} | {report.label}</span>
+            <span>{activeFacility.district} | {activeFacility.province} | {activeFacility.facilityLevel} | {report.label}</span>
           </div>
           <button type="button" onClick={onClose}>Close</button>
         </div>
         {facility.isAggregate ? (
-          <div className="modal-warning">
-            This row is an aggregate from the weekly summary. It does not yet contain named health post/health centre facilities. Once the actual provincial tracer files are loaded, this same window will show the named facility submission.
+          <div className="modal-switcher">
+            <button className={modalMode === "aggregate" ? "active" : ""} type="button" onClick={() => {
+              setModalMode("aggregate");
+              setSelectedTracer(null);
+            }}>
+              Aggregate tracer summary
+            </button>
+            <button type="button" className={modalMode === "list" ? "active" : ""} onClick={() => setModalMode("list")}>
+              Show individual facility tracers
+            </button>
           </div>
         ) : null}
-        <div className="modal-kpis">
-          <KpiCard label="Availability" value={formatPercent(facility.availability)} sub={`${facility.rows.toLocaleString()} submitted rows`} />
-          <KpiCard label="Average MOS" value={formatMos(facility.mos)} sub="Submitted stock position" />
-          <KpiCard label="Stockout items" value={facility.stockoutItemCount} sub="MOS at or near zero" tone="red" />
-          <KpiCard label="Low-stock items" value={facility.lowStockItemCount} sub="Below 2 MOS" tone="amber" />
-          <KpiCard label="Stocked to plan" value={accordingToPlanCount} sub="2 to 4 MOS" />
-          <KpiCard label="Overstocked items" value={overstockCount} sub="Above 4 MOS" tone="blue" />
-        </div>
-        <div className="tracer-detail-grid">
-          <TracerItemTable title="Stockout commodities" items={stockoutItems} totalCount={facility.stockoutItemCount} emptyText="No stockout commodities submitted." />
-          <TracerItemTable title="Low-stock commodities" items={lowStockItems} totalCount={facility.lowStockItemCount} emptyText="No low-stock commodities submitted." />
-          <TracerItemTable title="Stocked according to plan" items={accordingToPlanItems} totalCount={accordingToPlanCount} emptyText="No commodities submitted between 2 and 4 MOS." />
-          <TracerItemTable title="Overstocked commodities" items={overstockItems} totalCount={overstockCount} emptyText="No commodities submitted above 4 MOS." />
-        </div>
+        {modalMode === "list" ? (
+          <div className="individual-tracer-panel">
+            <div className="modal-warning">
+              These are the named {facility.facilityLevel.toLowerCase()} submissions available for {facility.district}. Select a facility to open its submitted tracer in this same window.
+            </div>
+            <div className="individual-facility-list">
+              {relatedFacilities.length ? relatedFacilities.map((item) => (
+                <button type="button" key={`${item.province}-${item.district}-${item.facilityLevel}-${item.name}`} onClick={() => {
+                  setSelectedTracer(item);
+                  setModalMode("facility");
+                }}>
+                  <strong>{item.name}</strong>
+                  <span>{formatPercent(item.availability)} availability | MOS {formatMos(item.mos)}</span>
+                  <small>{item.stockoutItemCount} stockout | {item.lowStockItemCount} low stock</small>
+                </button>
+              )) : <div className="empty-state">No named facilities are available yet for this district and level. The uploaded tracer currently contains only the aggregate row.</div>}
+            </div>
+          </div>
+        ) : (
+          <>
+            {facility.isAggregate && modalMode === "aggregate" ? (
+              <div className="modal-warning">
+                This is the aggregate submitted tracer for all {facility.facilityLevel.toLowerCase()} facilities in {facility.district}. The percentages below show the overall drug status across the submitted rows before you drill into named facilities.
+              </div>
+            ) : null}
+            {modalMode === "facility" ? (
+              <div className="modal-warning">
+                Showing named facility tracer. <button type="button" className="inline-action" onClick={() => setModalMode("list")}>Back to facility list</button>
+              </div>
+            ) : null}
+            <div className="modal-kpis">
+              <KpiCard label="Availability" value={formatPercent(activeFacility.availability)} sub={`${activeFacility.rows.toLocaleString()} submitted rows`} />
+              <KpiCard label="Average MOS" value={formatMos(activeFacility.mos)} sub="Submitted stock position" />
+              <KpiCard label="Stockout items" value={stockoutCount} sub="MOS at or near zero" tone="red" />
+              <KpiCard label="Low-stock items" value={lowStockCount} sub="Below 2 MOS" tone="amber" />
+              <KpiCard label="Stocked to plan" value={accordingToPlanCount} sub="2 to 4 MOS" />
+              <KpiCard label="Overstocked items" value={overstockCount} sub="Above 4 MOS" tone="blue" />
+            </div>
+            <div className="stock-status-strip">
+              {statusRows.map((row) => (
+                <div className={`stock-status stock-status-${row.tone}`} key={row.label}>
+                  <span>{row.label}</span>
+                  <strong>{statusTotal ? formatPercent(row.value / statusTotal) : "0%"}</strong>
+                  <small>{row.value.toLocaleString()} of {statusTotal.toLocaleString()} rows</small>
+                </div>
+              ))}
+            </div>
+            <div className="tracer-detail-grid">
+              <TracerItemTable title="Stockout commodities" items={stockoutItems} totalCount={stockoutCount} emptyText="No stockout commodities submitted." />
+              <TracerItemTable title="Low-stock commodities" items={lowStockItems} totalCount={lowStockCount} emptyText="No low-stock commodities submitted." />
+              <TracerItemTable title="Stocked according to plan" items={accordingToPlanItems} totalCount={accordingToPlanCount} emptyText="No commodities submitted between 2 and 4 MOS." />
+              <TracerItemTable title="Overstocked commodities" items={overstockItems} totalCount={overstockCount} emptyText="No commodities submitted above 4 MOS." />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -755,7 +824,12 @@ function App() {
           </div>
         </section>
       </main>
-      <FacilityTracerModal facility={openFacility} report={fieldData} onClose={() => setOpenFacility(null)} />
+      <FacilityTracerModal
+        key={openFacility ? `${openFacility.province}-${openFacility.district}-${openFacility.facilityLevel}-${openFacility.name}` : "closed"}
+        facility={openFacility}
+        report={fieldData}
+        onClose={() => setOpenFacility(null)}
+      />
     </div>
   );
 }
