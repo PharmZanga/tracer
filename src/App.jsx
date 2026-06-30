@@ -743,6 +743,17 @@ function App() {
     : facilityTypeRows.sort((a, b) => a.type.localeCompare(b.type));
   const bottomDistrictRows = [...districtQualityRows].sort((a, b) => (a.rate || qualityRate(a)) - (b.rate || qualityRate(b)) || b.missing - a.missing).slice(0, 10);
   const topDistrictRows = [...districtQualityRows].sort((a, b) => (b.rate || qualityRate(b)) - (a.rate || qualityRate(a)) || a.missing - b.missing).slice(0, 10);
+  const stockStatusTotal = fieldKpis.rows || 1;
+  const stockStatusRows = [
+    { label: "Stocked out", count: fieldKpis.stockout, rate: fieldKpis.stockout / stockStatusTotal, sub: "MOS at or near zero", tone: "red" },
+    { label: "Emergency", count: fieldKpis.nearCritical, rate: fieldKpis.nearCritical / stockStatusTotal, sub: "Below 1 MOS", tone: "amber" },
+    { label: "Understocked", count: fieldKpis.understocked, rate: fieldKpis.understocked / stockStatusTotal, sub: "1 to below 2 MOS", tone: "amber" },
+    { label: "According to plan", count: fieldKpis.accordingToPlan, rate: fieldKpis.accordingToPlan / stockStatusTotal, sub: "2 to 4 MOS", tone: "green" },
+    { label: "Overstocked", count: fieldKpis.abovePlan + fieldKpis.overstock, rate: (fieldKpis.abovePlan + fieldKpis.overstock) / stockStatusTotal, sub: "Above 4 MOS", tone: "blue" },
+  ];
+  const productCategoryRows = [...fieldData.programmes]
+    .sort((a, b) => a.availability - b.availability || (a.mos || 0) - (b.mos || 0))
+    .slice(0, 36);
 
   function resetFieldHierarchy() {
     setSelectedProvince("all");
@@ -960,14 +971,64 @@ function App() {
           <div className="tracer-lead">
             <p className="eyebrow dark">National Stock Status</p>
             <h2>Tracer commodities by submitted months of stock</h2>
-            <p>Stock status is calculated from weekly facility/provincial tracer submissions only.</p>
+            <p>Stock status is shown as percentage of submitted commodity rows, with counts retained for traceability.</p>
           </div>
           <div className="tracer-metrics">
-            <KpiCard label="Stockout rows" value={fieldKpis.stockout.toLocaleString()} sub="MOS at or near zero" tone="red" />
-            <KpiCard label="Near critical" value={fieldKpis.nearCritical.toLocaleString()} sub="Below 1 MOS" tone="amber" />
-            <KpiCard label="Low stock" value={fieldKpis.understocked.toLocaleString()} sub="1 to below 2 MOS" tone="amber" />
-            <KpiCard label="According to plan" value={fieldKpis.accordingToPlan.toLocaleString()} sub="2 to 4 MOS" tone="green" />
-            <KpiCard label="Above plan" value={(fieldKpis.abovePlan + fieldKpis.overstock).toLocaleString()} sub="Above 4 MOS" tone="blue" />
+            {stockStatusRows.map((row) => (
+              <div className={`stock-percent-card stat-${row.tone}`} key={row.label}>
+                <span>{row.label}</span>
+                <strong>{formatPercent(row.rate)}</strong>
+                <small>{row.count.toLocaleString()} of {fieldKpis.rows.toLocaleString()} rows</small>
+                <em>{row.sub}</em>
+              </div>
+            ))}
+          </div>
+          <div className="product-performance">
+            <div className="product-performance-head">
+              <div>
+                <h3>Product category availability</h3>
+                <p>Availability percentage and average MOS by programme/product category for the selected week.</p>
+              </div>
+              <span>{productCategoryRows.length} categories shown</span>
+            </div>
+            <div className="product-performance-chart">
+              {productCategoryRows.map((row) => (
+                <div className="product-category-row" key={row.name}>
+                  <span>{row.name}</span>
+                  <div className="product-category-track">
+                    <i style={{ width: `${Math.min(100, Math.round((row.availability || 0) * 100))}%` }} />
+                  </div>
+                  <b>{formatPercent(row.availability)}</b>
+                  <em>MOS {formatMos(row.mos)}</em>
+                </div>
+              ))}
+            </div>
+            <div className="table-scroll compact-table product-performance-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Product category</th>
+                    <th>Availability</th>
+                    <th>Avg MOS</th>
+                    <th>Stocked out</th>
+                    <th>Low stock</th>
+                    <th>Rows</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {productCategoryRows.map((row) => (
+                    <tr key={row.name}>
+                      <td>{row.name}</td>
+                      <td>{formatPercent(row.availability)}</td>
+                      <td>{formatMos(row.mos)}</td>
+                      <td>{row.stockout.toLocaleString()}</td>
+                      <td>{(row.nearCritical + row.understocked).toLocaleString()}</td>
+                      <td>{row.rows.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 
