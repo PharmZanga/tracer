@@ -437,8 +437,18 @@ def corrected_value(value, fallback):
 
 
 def clean_facility_level(level, corrected_level):
+    original = (clean(level) or "").upper()
+    if "HEALTH CENTER/ HEALTH POST" in original or "HEALTH CENTRE/ HEALTH POST" in original:
+        return "PRIMARY FACILITY - LEVEL NOT SPECIFIED"
+    if "HEALTH POST" in original:
+        return "HEALTH POST"
+    if "HEALTH CENTRE" in original or "HEALTH CENTER" in original:
+        return "HEALTH CENTRE"
     value = corrected_value(corrected_level, level) or "Unknown facility level"
-    return str(value).strip().upper()
+    value = str(value).strip().upper()
+    if "HEALTH CENTER/ HEALTH POST" in value or "HEALTH CENTRE/ HEALTH POST" in value:
+        return "PRIMARY FACILITY - LEVEL NOT SPECIFIED"
+    return value
 
 
 def load_clean_workbook_configs():
@@ -466,6 +476,9 @@ def load_clean_workbook_configs():
         corrected_item = corrected_value(values[18] if len(values) > 18 else None, original_item)
         facility_level = clean_facility_level(original_level, values[19] if len(values) > 19 else None)
         is_aggregate = str(original_facility or "").strip().upper() == "ALL" or str(corrected_facility or "").strip().upper() in {"HC/HP", "ALL"}
+        facility_name = corrected_facility or original_facility or "Unknown reporting unit"
+        if is_aggregate and facility_level in {"HEALTH POST", "HEALTH CENTRE"}:
+            facility_name = f"{district} {facility_level.title()} facilities"
 
         rows_by_date[report_id].append({
             "DATE": report_id,
@@ -473,7 +486,7 @@ def load_clean_workbook_configs():
             "PROVINCE": province,
             "DISTRICT": district,
             "FACILITY LEVEL": facility_level,
-            "FACILITY NAME": corrected_facility or original_facility or "Unknown reporting unit",
+            "FACILITY NAME": facility_name,
             "PROGRAM": programme or "Unknown programme",
             "DESCRIPTION OF ITEM": corrected_item or original_item or "Unknown commodity",
             "UNIT": clean(values[8] if len(values) > 8 else None),
