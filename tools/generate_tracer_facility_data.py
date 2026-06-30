@@ -257,6 +257,17 @@ def normalize_province(value):
     return aliases.get(text, text)
 
 
+def normalize_district(value):
+    text = (clean(value) or "Unknown district").upper()
+    text = text.replace("`", "'")
+    text = re.sub(r"\s+DISTRICT$", "", text).strip()
+    aliases = {
+        "SINZONGWE": "SINAZONGWE",
+        "UNKNOWN DISTRICT": "UNKNOWN",
+    }
+    return aliases.get(text, text)
+
+
 def num(value):
     if value is None:
         return None
@@ -366,7 +377,7 @@ def iter_raw_matrix_rows(source, report_date):
             facility = clean(ws.cell(2, start_col + 1).value)
             if not district:
                 continue
-            district = str(district).replace(" DISTRICT", "").strip().upper()
+            district = normalize_district(district)
             if facility_level in {"HEALTH POST", "HEALTH CENTRE"}:
                 facility_name = f"{district} {facility_level.title()} facilities"
                 is_aggregate = True
@@ -467,7 +478,7 @@ def load_clean_workbook_configs():
         report_id = date_id(report_date)
         date_values[report_id] = report_date
         province = normalize_province(values[2])
-        district = clean(values[3])
+        district = normalize_district(values[3])
         original_level = clean(values[4])
         original_facility = clean(values[5])
         programme = clean(values[6])
@@ -576,7 +587,7 @@ def summarize(config):
 
     for row in rows_iter:
         province = normalize_province(row.get("PROVINCE"))
-        district = (clean(row.get("DISTRICT")) or "Unknown district").upper()
+        district = normalize_district(row.get("DISTRICT"))
         facility = clean(row.get("FACILITY NAME")) or "Unknown reporting unit"
         facility_level = (clean(row.get("FACILITY LEVEL")) or "Unknown facility level").upper()
         program = clean(row.get("PROGRAM")) or "Unknown programme"
@@ -585,7 +596,8 @@ def summarize(config):
             report_date = row.get("DATE")
 
         province_names.add(province)
-        district_units.add((province, district))
+        if district != "UNKNOWN":
+            district_units.add((province, district))
         facility_units.add((province, district, facility_level, facility))
         item_names.add(item)
         program_names.add(program)
@@ -694,15 +706,47 @@ def summarize(config):
     }
 
 
-def main():
-    periods = [summarize(config) for config in load_clean_workbook_configs()]
-    periods.sort(key=lambda item: item["reportDate"])
-    expected_districts = {(district["province"], district["name"]) for period in periods for district in period["districts"]}
-    expected_facilities = {
-        (facility["province"], facility["district"], facility["facilityLevel"], facility["name"])
-        for period in periods
-        for facility in period["facilities"]
-    }
+def reporting_rate(reported, expected):
+    return round(reported / expected, 4) if expected else 0
+
+
+def reporting_facility_type(facility_level):
+    text = str(facility_level or "").upper()
+    if "HEALTH POST" in text:
+        return "Health Posts"
+    if "HEALTH CENTRE" in text or "HEALTH CENTER" in text:
+        return "Health Centres"
+    if "LEVEL 2" in text or "GENERAL HOSPITAL" in text:
+        return "Level 2 Hospitals"
+    if (
+        "LEVEL 3" in text or
+        "TERTIARY" in text or
+        "SPECIAL" in text or
+        "OPTH" in text or
+        "OPHTH" in text or
+        "CANCER" in text or
+        "RENAL" in text or
+        "MENTAL" in text or
+        "HEART" in text or
+        "WOMEN" in text or
+        "NEW BORN" in text or
+        "PAEDIATRIC" in text or
+        "TB" in text or
+        "DS-TB" in text or
+        "MDR" in text
+    ):
+        return "Level 3/Specialised Hospitals"
+    if "LEVEL 1" in text or "DISTRICT" in text:
+        return "Level 1 Hospitals"
+    if "PRIMARY FACILITY" in text:
+        return "Primary - level not specified"
+    return "Other reporting units"
+
+
+def build_reporting_quality(periods, expected_districts, expected_facilities):
+    province_names = sorted({province for province, _district in expected_districts})
+    district_names = sorted(expected_districts)
+
     for period in periods:
         present_districts = {(district["province"], district["name"]) for district in period["districts"]}
         present_facilities = {
@@ -711,6 +755,67 @@ def main():
         }
         missing_districts = sorted(expected_districts - present_districts)
         missing_facilities = sorted(expected_facilities - present_facilities)
+
+        province_rows = []
+        for province in province_names:
+            expected_province_facilities = {item for item in expected_facilities if item[0] == province}
+            reported_province_facilities = expected_province_facilities & present_facilities
+            expected_province_districts = {item for item in expected_districts if item[0] == province}
+            reported_province_districts = expected_province_districts & present_districts
+            expected = len(expected_province_facilities)
+            reported = len(reported_province_facilities)
+            province_rows.append({
+                "name": province,
+                "districts": len(reported_province_districts),
+                "expectedDistricts": len(expected_province_districts),
+                "expected": expected,
+                "reported": reported,
+                "missing": max(expected - reported, 0),
+                "rate": reporting_rate(reported, expected),
+            })
+
+        district_rows = []
+        for province, district in district_names:
+            expected_district_facilities = {item for item in expected_facilities if item[0] == province and item[1] == district}
+            reported_district_facilities = expected_district_facilities & present_facilities
+            expected = len(expected_district_facilities)
+            reported = len(reported_district_facilities)
+            district_rows.append({
+                "province": province,
+                "name": district,
+                "expected": expected,
+                "reported": reported,
+                "missing": max(expected - reported, 0),
+                "rate": reporting_rate(reported, expected),
+            })
+
+        facility_type_keys = sorted({
+            (province, district, reporting_facility_type(facility_level))
+            for province, district, facility_level, _facility in expected_facilities
+        })
+        type_rows = []
+        for province, district, facility_type in facility_type_keys:
+            expected_type_facilities = {
+                item for item in expected_facilities
+                if item[0] == province and item[1] == district and reporting_facility_type(item[2]) == facility_type
+            }
+            reported_type_facilities = expected_type_facilities & present_facilities
+            expected = len(expected_type_facilities)
+            reported = len(reported_type_facilities)
+            type_rows.append({
+                "province": province,
+                "district": district,
+                "type": facility_type,
+                "expected": expected,
+                "reported": reported,
+                "missing": max(expected - reported, 0),
+                "rate": reporting_rate(reported, expected),
+            })
+
+        province_rows.sort(key=lambda item: (item["rate"], -item["missing"], item["name"]))
+        district_rows.sort(key=lambda item: (item["rate"], -item["missing"], item["province"], item["name"]))
+        type_rows.sort(key=lambda item: (item["province"], item["district"], item["type"]))
+
         period["counts"]["expectedDistricts"] = len(expected_districts)
         period["counts"]["expectedFacilityUnits"] = len(expected_facilities)
         period["counts"]["missingDistricts"] = len(missing_districts)
@@ -723,6 +828,24 @@ def main():
             {"province": province, "district": district, "facilityLevel": facility_level, "name": facility}
             for province, district, facility_level, facility in missing_facilities[:100]
         ]
+        period["dataQuality"] = {
+            "provinces": province_rows,
+            "districts": district_rows,
+            "facilityTypes": type_rows,
+        }
+
+
+def main():
+    periods = [summarize(config) for config in load_clean_workbook_configs()]
+    periods.sort(key=lambda item: item["reportDate"])
+    expected_districts = {(district["province"], district["name"]) for period in periods for district in period["districts"] if district["name"] != "UNKNOWN"}
+    expected_facilities = {
+        (facility["province"], facility["district"], facility["facilityLevel"], facility["name"])
+        for period in periods
+        for facility in period["facilities"]
+        if facility["district"] != "UNKNOWN"
+    }
+    build_reporting_quality(periods, expected_districts, expected_facilities)
     output = (
         "export const tracerReportingPeriods = "
         + json.dumps(periods, indent=2)

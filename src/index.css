@@ -2483,6 +2483,141 @@ h1 {
   gap: 14px;
 }
 
+.quality-drill-path {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 14px 0;
+  color: #607168;
+}
+
+.quality-drill-path button {
+  border: 1px solid #cfe0d5;
+  border-radius: 8px;
+  background: #fff;
+  color: #173f29;
+  cursor: pointer;
+  font-weight: 760;
+  padding: 8px 10px;
+}
+
+.quality-drill-path button:disabled {
+  cursor: default;
+  color: #7d8a82;
+}
+
+.quality-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.quality-panel {
+  min-width: 0;
+  border: 1px solid #dce7df;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(18, 36, 25, 0.05);
+  overflow: hidden;
+}
+
+.quality-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid #edf2ee;
+  background: #f7fbf8;
+}
+
+.quality-panel-head h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.quality-panel-head span {
+  color: #607168;
+  font-size: 12px;
+}
+
+.quality-bars {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+}
+
+.quality-bar-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(140px, 2fr) 58px;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 8px;
+  text-align: left;
+}
+
+.quality-bar-row:hover {
+  border-color: #cfe0d5;
+  background: #f8fbf8;
+}
+
+.quality-bar-row span,
+.quality-bar-row b {
+  font-size: 12px;
+}
+
+.quality-bar-row span {
+  color: #314338;
+  font-weight: 760;
+}
+
+.quality-bar-row b {
+  color: #173f29;
+  text-align: right;
+}
+
+.quality-bar-track {
+  height: 10px;
+  border-radius: 999px;
+  background: #edf2ee;
+  overflow: hidden;
+}
+
+.quality-bar-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #1f7a4d;
+}
+
+.quality-note {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid #cfe0d5;
+  border-radius: 8px;
+  background: #f8fbf8;
+  color: #314338;
+}
+
+.quality-note strong {
+  color: #173f29;
+}
+
+.quality-note span {
+  color: #607168;
+  font-size: 13px;
+}
+
 .concern {
   min-height: 250px;
   display: grid;
