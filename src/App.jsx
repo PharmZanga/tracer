@@ -755,7 +755,7 @@ function App() {
   const expectedProvinces = 10;
   const reportingRate = expectedProvinces ? fieldData.counts.provinces / expectedProvinces : 0;
   const expectedDistricts = fieldData.counts.expectedDistricts || fieldData.counts.districts;
-  const expectedFacilityUnits = fieldData.counts.expectedFacilityUnits || fieldData.counts.facilityUnits;
+  const expectedFacilityUnits = fieldData.counts.expectedLevelReports || fieldData.counts.expectedFacilityUnits || fieldData.counts.facilityUnits;
   const missingDistricts = fieldData.counts.missingDistricts || 0;
   const missingFacilityUnits = fieldData.counts.missingFacilityUnits || 0;
   const dataQuality = fieldData.dataQuality || { provinces: [], districts: [], facilityTypes: [] };
@@ -1217,15 +1217,15 @@ function App() {
           <div className="section-head">
             <div>
               <p className="eyebrow dark">Data Quality</p>
-              <h2>Province, district, and facility reporting footprint</h2>
-              <p>Expected facilities are taken from the clean tracer facility universe. Reported means the facility or aggregate reporting unit appears in the selected week.</p>
+              <h2>Province, district, and level-of-care reporting footprint</h2>
+              <p>Expected reports are checked by province, district, and level of care from the clean tracer universe. Reported means that district submitted that level of care in the selected week.</p>
             </div>
           </div>
           <div className="stats-grid">
             <KpiCard label="Province reporting" value={`${fieldData.counts.provinces}/${expectedProvinces}`} sub={`${formatPercent(reportingRate)} provincial footprint`} />
             <KpiCard label="District reporting" value={`${fieldData.counts.districts}/${expectedDistricts}`} sub={`${missingDistricts} districts did not submit`} />
-            <KpiCard label="Reporting units" value={`${fieldData.counts.facilityUnits}/${expectedFacilityUnits}`} sub={`${missingFacilityUnits} facility units did not submit`} />
-            <KpiCard label="Reporting rate" value={formatPercent(fieldData.counts.facilityUnits / expectedFacilityUnits)} sub="Reported facility footprint" />
+            <KpiCard label="Level reports" value={`${expectedFacilityUnits - missingFacilityUnits}/${expectedFacilityUnits}`} sub={`${missingFacilityUnits} district-level reports missing`} />
+            <KpiCard label="Reporting rate" value={formatPercent((expectedFacilityUnits - missingFacilityUnits) / expectedFacilityUnits)} sub="Reported district-level footprint" />
             <KpiCard label="Selected scope" value={selectedDistrict !== "all" ? selectedDistrict : selectedProvince !== "all" ? selectedProvince : "Zambia"} sub="Click tables below to drill down" />
           </div>
           <div className="quality-drill-path">
@@ -1241,20 +1241,20 @@ function App() {
             <button type="button" disabled={selectedDistrict === "all"}>{selectedDistrict === "all" ? "Select district" : selectedDistrict}</button>
           </div>
           <div className="quality-grid">
-            <QualityTable title="Provincial reporting footprint" rows={provinceQualityRows} firstColumn="Province" onSelect={(row) => selectQualityProvince(row.name)} />
-            <ReportingBars title="Province reporting footprint" rows={[...provinceQualityRows].sort((a, b) => (a.rate || qualityRate(a)) - (b.rate || qualityRate(b)))} onSelect={(row) => selectQualityProvince(row.name)} />
+            <QualityTable title="Provincial district-level reporting" rows={provinceQualityRows} firstColumn="Province" onSelect={(row) => selectQualityProvince(row.name)} />
+            <ReportingBars title="Province reporting percentage" rows={[...provinceQualityRows].sort((a, b) => (a.rate || qualityRate(a)) - (b.rate || qualityRate(b)))} onSelect={(row) => selectQualityProvince(row.name)} />
           </div>
           <div className="quality-grid">
             <QualityTable
-              title={selectedProvince === "all" ? "District reporting footprint" : `${selectedProvince} district reporting`}
+              title={selectedProvince === "all" ? "District reporting by expected levels" : `${selectedProvince} district reporting by expected levels`}
               rows={districtQualityRows}
               firstColumn="District"
               onSelect={(row) => selectQualityDistrict(row.name)}
             />
             <QualityTable
-              title={selectedDistrict === "all" ? "Facility type reporting in selected scope" : `${selectedDistrict} facility type reporting`}
+              title={selectedDistrict === "all" ? "Level of care reporting in selected scope" : `${selectedDistrict} level of care reporting`}
               rows={facilityTypeSummaryRows}
-              firstColumn="Facility type"
+              firstColumn="Level of care"
             />
           </div>
           <div className="quality-grid">
@@ -1264,13 +1264,13 @@ function App() {
           {selectedProvinceQuality ? (
             <div className="quality-note">
               <strong>{selectedProvinceQuality.name}</strong>
-              <span>{selectedProvinceQuality.reported.toLocaleString()} of {selectedProvinceQuality.expected.toLocaleString()} expected facility units reported, with {selectedProvinceQuality.missing.toLocaleString()} missing.</span>
+              <span>{selectedProvinceQuality.reported.toLocaleString()} of {selectedProvinceQuality.expected.toLocaleString()} expected district-level reports submitted, with {selectedProvinceQuality.missing.toLocaleString()} missing.</span>
             </div>
           ) : null}
           {selectedDistrictQuality ? (
             <div className="quality-note">
               <strong>{selectedDistrictQuality.name}</strong>
-              <span>{selectedDistrictQuality.reported.toLocaleString()} of {selectedDistrictQuality.expected.toLocaleString()} expected facility units reported, with {selectedDistrictQuality.missing.toLocaleString()} missing.</span>
+              <span>{selectedDistrictQuality.reported.toLocaleString()} of {selectedDistrictQuality.expected.toLocaleString()} expected level-of-care reports submitted, with {selectedDistrictQuality.missing.toLocaleString()} missing.</span>
             </div>
           ) : null}
           {comments.length ? (

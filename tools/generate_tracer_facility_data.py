@@ -728,28 +728,28 @@ def reporting_facility_type(facility_level):
         return "Health Posts"
     if "HEALTH CENTRE" in text or "HEALTH CENTER" in text:
         return "Health Centres"
+    if "RENAL" in text:
+        return "Renal Units"
+    if "CANCER" in text:
+        return "Cancer Units"
+    if "MENTAL" in text:
+        return "Mental Health Units"
+    if "OPTH" in text or "OPHTH" in text:
+        return "Ophthalmology Units"
+    if "TB" in text or "DS-TB" in text or "MDR" in text:
+        return "TB-DS/MDR Units"
+    if "HEART" in text:
+        return "Heart Hospital"
+    if "WOMEN" in text or "NEW BORN" in text:
+        return "Women and Newborn Hospital"
+    if "PAEDIATRIC" in text:
+        return "Paediatric Hospital"
     if "LEVEL 2" in text or "GENERAL HOSPITAL" in text:
         return "Level 2 Hospitals"
-    if (
-        "LEVEL 3" in text or
-        "TERTIARY" in text or
-        "SPECIAL" in text or
-        "OPTH" in text or
-        "OPHTH" in text or
-        "CANCER" in text or
-        "RENAL" in text or
-        "MENTAL" in text or
-        "HEART" in text or
-        "WOMEN" in text or
-        "NEW BORN" in text or
-        "PAEDIATRIC" in text or
-        "TB" in text or
-        "DS-TB" in text or
-        "MDR" in text
-    ):
-        return "Level 3/Specialised Hospitals"
     if "LEVEL 1" in text or "DISTRICT" in text:
         return "Level 1 Hospitals"
+    if "LEVEL 3" in text or "TERTIARY" in text or "SPECIAL" in text:
+        return "Level 3/Specialised Hospitals"
     if "PRIMARY FACILITY" in text:
         return "Primary - level not specified"
     return "Other reporting units"
@@ -758,6 +758,10 @@ def reporting_facility_type(facility_level):
 def build_reporting_quality(periods, expected_districts, expected_facilities):
     province_names = sorted({province for province, _district in expected_districts})
     district_names = sorted(expected_districts)
+    expected_level_reports = {
+        (province, district, reporting_facility_type(facility_level))
+        for province, district, facility_level, _facility in expected_facilities
+    }
 
     for period in periods:
         present_districts = {(district["province"], district["name"]) for district in period["districts"]}
@@ -765,17 +769,22 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
             (facility["province"], facility["district"], facility["facilityLevel"], facility["name"])
             for facility in period["facilities"]
         }
+        present_level_reports = {
+            (province, district, reporting_facility_type(facility_level))
+            for province, district, facility_level, _facility in present_facilities
+            if district != "UNKNOWN"
+        }
         missing_districts = sorted(expected_districts - present_districts)
-        missing_facilities = sorted(expected_facilities - present_facilities)
+        missing_level_reports = sorted(expected_level_reports - present_level_reports)
 
         province_rows = []
         for province in province_names:
-            expected_province_facilities = {item for item in expected_facilities if item[0] == province}
-            reported_province_facilities = expected_province_facilities & present_facilities
+            expected_province_reports = {item for item in expected_level_reports if item[0] == province}
+            reported_province_reports = expected_province_reports & present_level_reports
             expected_province_districts = {item for item in expected_districts if item[0] == province}
             reported_province_districts = expected_province_districts & present_districts
-            expected = len(expected_province_facilities)
-            reported = len(reported_province_facilities)
+            expected = len(expected_province_reports)
+            reported = len(reported_province_reports)
             province_rows.append({
                 "name": province,
                 "districts": len(reported_province_districts),
@@ -788,10 +797,10 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
 
         district_rows = []
         for province, district in district_names:
-            expected_district_facilities = {item for item in expected_facilities if item[0] == province and item[1] == district}
-            reported_district_facilities = expected_district_facilities & present_facilities
-            expected = len(expected_district_facilities)
-            reported = len(reported_district_facilities)
+            expected_district_reports = {item for item in expected_level_reports if item[0] == province and item[1] == district}
+            reported_district_reports = expected_district_reports & present_level_reports
+            expected = len(expected_district_reports)
+            reported = len(reported_district_reports)
             district_rows.append({
                 "province": province,
                 "name": district,
@@ -801,27 +810,17 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
                 "rate": reporting_rate(reported, expected),
             })
 
-        facility_type_keys = sorted({
-            (province, district, reporting_facility_type(facility_level))
-            for province, district, facility_level, _facility in expected_facilities
-        })
         type_rows = []
-        for province, district, facility_type in facility_type_keys:
-            expected_type_facilities = {
-                item for item in expected_facilities
-                if item[0] == province and item[1] == district and reporting_facility_type(item[2]) == facility_type
-            }
-            reported_type_facilities = expected_type_facilities & present_facilities
-            expected = len(expected_type_facilities)
-            reported = len(reported_type_facilities)
+        for province, district, facility_type in sorted(expected_level_reports):
+            reported = 1 if (province, district, facility_type) in present_level_reports else 0
             type_rows.append({
                 "province": province,
                 "district": district,
                 "type": facility_type,
-                "expected": expected,
+                "expected": 1,
                 "reported": reported,
-                "missing": max(expected - reported, 0),
-                "rate": reporting_rate(reported, expected),
+                "missing": 1 - reported,
+                "rate": reporting_rate(reported, 1),
             })
 
         province_rows.sort(key=lambda item: (item["rate"], -item["missing"], item["name"]))
@@ -829,16 +828,18 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
         type_rows.sort(key=lambda item: (item["province"], item["district"], item["type"]))
 
         period["counts"]["expectedDistricts"] = len(expected_districts)
-        period["counts"]["expectedFacilityUnits"] = len(expected_facilities)
+        period["counts"]["expectedFacilityUnits"] = len(expected_level_reports)
+        period["counts"]["expectedLevelReports"] = len(expected_level_reports)
         period["counts"]["missingDistricts"] = len(missing_districts)
-        period["counts"]["missingFacilityUnits"] = len(missing_facilities)
+        period["counts"]["missingFacilityUnits"] = len(missing_level_reports)
+        period["counts"]["missingLevelReports"] = len(missing_level_reports)
         period["missingDistricts"] = [
             {"province": province, "district": district}
             for province, district in missing_districts[:100]
         ]
         period["missingFacilities"] = [
-            {"province": province, "district": district, "facilityLevel": facility_level, "name": facility}
-            for province, district, facility_level, facility in missing_facilities[:100]
+            {"province": province, "district": district, "facilityLevel": facility_type, "name": facility_type}
+            for province, district, facility_type in missing_level_reports[:100]
         ]
         period["dataQuality"] = {
             "provinces": province_rows,
