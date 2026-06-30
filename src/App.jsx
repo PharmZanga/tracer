@@ -376,6 +376,85 @@ function aggregateRollups(rows, groupKey = "name") {
   }));
 }
 
+function qualityLevelGroup(type = "") {
+  if (type === "Health Posts" || type === "Health Centres") return "Health Posts & Health Centres";
+  return type;
+}
+
+function buildQualityLevelSections(rows) {
+  const groups = new Map();
+  rows.forEach((row) => {
+    const level = qualityLevelGroup(row.type);
+    if (!groups.has(level)) groups.set(level, new Map());
+    const districtRows = groups.get(level);
+    if (!districtRows.has(row.district)) {
+      districtRows.set(row.district, { name: row.district, expected: 0, reported: 0, missing: 0 });
+    }
+    const district = districtRows.get(row.district);
+    district.expected += row.expected || 0;
+    district.reported += row.reported || 0;
+    district.missing += row.missing || 0;
+  });
+  return [...groups.entries()].map(([level, districtMap]) => {
+    const districts = [...districtMap.values()]
+      .map((district) => ({
+        ...district,
+        rate: qualityRate(district),
+        status: district.missing === 0 ? "Reported" : district.reported > 0 ? "Partial" : "Missing",
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    const expected = districts.length;
+    const reported = districts.filter((district) => district.status === "Reported").length;
+    const partial = districts.filter((district) => district.status === "Partial").length;
+    const missing = districts.filter((district) => district.status === "Missing").length;
+    return {
+      level,
+      districts,
+      expected,
+      reported,
+      partial,
+      missing,
+      rate: expected ? reported / expected : 0,
+    };
+  }).sort((a, b) => a.level.localeCompare(b.level));
+}
+
+function QualityLevelSection({ section }) {
+  return (
+    <div className="quality-level-section">
+      <div className="quality-level-head">
+        <div>
+          <h3>{section.level}</h3>
+          <p>{section.reported} reported, {section.partial} partial, {section.missing} missing out of {section.expected} expected districts</p>
+        </div>
+        <strong>{formatPercent(section.rate)}</strong>
+      </div>
+      <div className="table-scroll compact-table quality-level-table">
+        <table>
+          <thead>
+            <tr>
+              <th>District</th>
+              <th>Expected</th>
+              <th>Reported</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {section.districts.map((district) => (
+              <tr key={`${section.level}-${district.name}`}>
+                <td>{district.name}</td>
+                <td><span className="quality-check expected">Yes</span></td>
+                <td><span className={district.status === "Reported" ? "quality-check reported" : district.status === "Partial" ? "quality-check partial" : "quality-check missing"}>{district.status === "Reported" ? "Yes" : district.status === "Partial" ? "Partial" : "No"}</span></td>
+                <td><span className={district.status === "Reported" ? "status-pill reported" : district.status === "Partial" ? "status-pill partial" : "status-pill missing"}>{district.status}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function ReportingBars({ title, rows, onSelect }) {
   return (
     <div className="quality-panel">
@@ -765,15 +844,10 @@ function App() {
     : provinceQualityRows.find((row) => row.name === selectedProvince);
   const districtQualityRows = (dataQuality.districts || [])
     .filter((row) => selectedProvince === "all" || row.province === selectedProvince);
-  const selectedDistrictQuality = selectedDistrict === "all"
-    ? null
-    : districtQualityRows.find((row) => row.name === selectedDistrict);
-  const facilityTypeRows = (dataQuality.facilityTypes || [])
-    .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
-    .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict);
-  const facilityTypeSummaryRows = selectedDistrict === "all"
-    ? aggregateQualityRows(facilityTypeRows, "type", "type").sort((a, b) => a.type.localeCompare(b.type))
-    : facilityTypeRows.sort((a, b) => a.type.localeCompare(b.type));
+  const provinceLevelRows = selectedProvince === "all"
+    ? []
+    : (dataQuality.facilityTypes || []).filter((row) => row.province === selectedProvince);
+  const qualityLevelSections = buildQualityLevelSections(provinceLevelRows);
   const bottomDistrictRows = [...districtQualityRows].sort((a, b) => (a.rate || qualityRate(a)) - (b.rate || qualityRate(b)) || b.missing - a.missing).slice(0, 10);
   const topDistrictRows = [...districtQualityRows].sort((a, b) => (b.rate || qualityRate(b)) - (a.rate || qualityRate(a)) || a.missing - b.missing).slice(0, 10);
   const stockStatusTotal = fieldKpis.rows || 1;
@@ -1226,7 +1300,7 @@ function App() {
             <KpiCard label="District reporting" value={`${fieldData.counts.districts}/${expectedDistricts}`} sub={`${missingDistricts} districts did not submit`} />
             <KpiCard label="Level reports" value={`${expectedFacilityUnits - missingFacilityUnits}/${expectedFacilityUnits}`} sub={`${missingFacilityUnits} district-level reports missing`} />
             <KpiCard label="Reporting rate" value={formatPercent((expectedFacilityUnits - missingFacilityUnits) / expectedFacilityUnits)} sub="Reported district-level footprint" />
-            <KpiCard label="Selected scope" value={selectedDistrict !== "all" ? selectedDistrict : selectedProvince !== "all" ? selectedProvince : "Zambia"} sub="Click tables below to drill down" />
+            <KpiCard label="Selected scope" value={selectedProvince !== "all" ? selectedProvince : "Zambia"} sub="Click a province to expand details" />
           </div>
           <div className="quality-drill-path">
             <button type="button" onClick={() => {
@@ -1237,29 +1311,10 @@ function App() {
             <button type="button" disabled={selectedProvince === "all"} onClick={() => selectQualityProvince(selectedProvince)}>
               {selectedProvince === "all" ? "Select province" : selectedProvince}
             </button>
-            <span>/</span>
-            <button type="button" disabled={selectedDistrict === "all"}>{selectedDistrict === "all" ? "Select district" : selectedDistrict}</button>
           </div>
           <div className="quality-grid">
             <QualityTable title="Provincial district-level reporting" rows={provinceQualityRows} firstColumn="Province" onSelect={(row) => selectQualityProvince(row.name)} />
             <ReportingBars title="Province reporting percentage" rows={[...provinceQualityRows].sort((a, b) => (a.rate || qualityRate(a)) - (b.rate || qualityRate(b)))} onSelect={(row) => selectQualityProvince(row.name)} />
-          </div>
-          <div className="quality-grid">
-            <QualityTable
-              title={selectedProvince === "all" ? "District reporting by expected levels" : `${selectedProvince} district reporting by expected levels`}
-              rows={districtQualityRows}
-              firstColumn="District"
-              onSelect={(row) => selectQualityDistrict(row.name)}
-            />
-            <QualityTable
-              title={selectedDistrict === "all" ? "Level of care reporting in selected scope" : `${selectedDistrict} level of care reporting`}
-              rows={facilityTypeSummaryRows}
-              firstColumn="Level of care"
-            />
-          </div>
-          <div className="quality-grid">
-            <QualityTable title="Bottom 10 districts by reporting" rows={bottomDistrictRows} firstColumn="District" onSelect={(row) => selectQualityDistrict(row.name)} />
-            <QualityTable title="Top 10 districts by reporting" rows={topDistrictRows} firstColumn="District" onSelect={(row) => selectQualityDistrict(row.name)} />
           </div>
           {selectedProvinceQuality ? (
             <div className="quality-note">
@@ -1267,12 +1322,13 @@ function App() {
               <span>{selectedProvinceQuality.reported.toLocaleString()} of {selectedProvinceQuality.expected.toLocaleString()} expected district-level reports submitted, with {selectedProvinceQuality.missing.toLocaleString()} missing.</span>
             </div>
           ) : null}
-          {selectedDistrictQuality ? (
-            <div className="quality-note">
-              <strong>{selectedDistrictQuality.name}</strong>
-              <span>{selectedDistrictQuality.reported.toLocaleString()} of {selectedDistrictQuality.expected.toLocaleString()} expected level-of-care reports submitted, with {selectedDistrictQuality.missing.toLocaleString()} missing.</span>
+          {selectedProvince === "all" ? (
+            <div className="empty-state">Select a province above to see expected and reported districts by level of care.</div>
+          ) : (
+            <div className="quality-level-sections">
+              {qualityLevelSections.map((section) => <QualityLevelSection section={section} key={section.level} />)}
             </div>
-          ) : null}
+          )}
           {comments.length ? (
             <div className="concerns-grid">
               {comments.slice(0, 6).map((comment, index) => (
