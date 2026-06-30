@@ -218,6 +218,8 @@ WORKBOOKS = [
     },
 ]
 OUT = Path(__file__).resolve().parents[1] / "src" / "tracerFacilityData.js"
+CLEAN_DATA_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\tracer dashboard\JANUARY-DECEMBER TRACER 2026.xlsx")
+CLEAN_DATA_SHEET = "SUMMARY SHEET"
 
 
 def clean(value):
@@ -399,6 +401,105 @@ def iter_raw_matrix_rows(source, report_date):
     wb.close()
 
 
+def date_id(value):
+    if hasattr(value, "strftime"):
+        return value.strftime("%Y-%m-%d")
+    return str(value)[:10]
+
+
+def week_label(value):
+    if hasattr(value, "strftime"):
+        return f"Week {(value.day - 1) // 7 + 1}"
+    try:
+        day = int(str(value)[8:10])
+    except (TypeError, ValueError):
+        day = 1
+    return f"Week {(day - 1) // 7 + 1}"
+
+
+def month_id(value):
+    if hasattr(value, "strftime"):
+        return value.strftime("%Y-%m")
+    return str(value)[:7]
+
+
+def period_label(value):
+    if hasattr(value, "strftime"):
+        return f"{week_label(value)} - {value.day} {value.strftime('%B %Y')}"
+    return f"{week_label(value)} - {date_id(value)}"
+
+
+def corrected_value(value, fallback):
+    text = clean(value)
+    if not text or str(text).upper() in {"NOT FOUND IN MASTER LIST", "#N/A", "#REF!"}:
+        return clean(fallback)
+    return text
+
+
+def clean_facility_level(level, corrected_level):
+    value = corrected_value(corrected_level, level) or "Unknown facility level"
+    return str(value).strip().upper()
+
+
+def load_clean_workbook_configs():
+    wb = openpyxl.load_workbook(CLEAN_DATA_WORKBOOK, read_only=True, data_only=True)
+    ws = wb[CLEAN_DATA_SHEET]
+    rows_by_date = defaultdict(list)
+    date_values = {}
+    source = CLEAN_DATA_WORKBOOK.name
+
+    for values in ws.iter_rows(min_row=2, values_only=True):
+        if not any(values):
+            continue
+        report_date = values[0]
+        if not report_date:
+            continue
+        report_id = date_id(report_date)
+        date_values[report_id] = report_date
+        province = normalize_province(values[2])
+        district = clean(values[3])
+        original_level = clean(values[4])
+        original_facility = clean(values[5])
+        programme = clean(values[6])
+        original_item = clean(values[7])
+        corrected_facility = corrected_value(values[17] if len(values) > 17 else None, original_facility)
+        corrected_item = corrected_value(values[18] if len(values) > 18 else None, original_item)
+        facility_level = clean_facility_level(original_level, values[19] if len(values) > 19 else None)
+        is_aggregate = str(original_facility or "").strip().upper() == "ALL" or str(corrected_facility or "").strip().upper() in {"HC/HP", "ALL"}
+
+        rows_by_date[report_id].append({
+            "DATE": report_id,
+            "NATION": "ZAMBIA",
+            "PROVINCE": province,
+            "DISTRICT": district,
+            "FACILITY LEVEL": facility_level,
+            "FACILITY NAME": corrected_facility or original_facility or "Unknown reporting unit",
+            "PROGRAM": programme or "Unknown programme",
+            "DESCRIPTION OF ITEM": corrected_item or original_item or "Unknown commodity",
+            "UNIT": clean(values[8] if len(values) > 8 else None),
+            "QUANTITY": num(values[9] if len(values) > 9 else None),
+            "AMC": num(values[10] if len(values) > 10 else None),
+            "MOS": num(values[11] if len(values) > 11 else None),
+            "AVAILABILITY": availability_value(values[12] if len(values) > 12 else None),
+            "COMMENT": clean(values[13] if len(values) > 13 else None),
+            "_RAW_AGGREGATE": is_aggregate,
+        })
+    wb.close()
+
+    configs = []
+    for report_id, rows in rows_by_date.items():
+        raw_date = date_values[report_id]
+        configs.append({
+            "rows": rows,
+            "reportDate": report_id,
+            "label": period_label(raw_date),
+            "month": month_id(raw_date),
+            "week": week_label(raw_date),
+            "source": source,
+        })
+    return configs
+
+
 def finalize(name, bucket, extra=None):
     rows = bucket["rows"]
     result = {
@@ -425,7 +526,11 @@ def finalize(name, bucket, extra=None):
 
 def summarize(config):
     workbook_path = config.get("path")
-    if config.get("rawSources"):
+    if config.get("rows") is not None:
+        rows_iter = iter(config["rows"])
+        source_name = config.get("source", "Clean tracer dataset")
+        wb = None
+    elif config.get("rawSources"):
         rows_iter = (
             row
             for source in config["rawSources"]
@@ -577,8 +682,34 @@ def summarize(config):
 
 
 def main():
-    periods = [summarize(config) for config in WORKBOOKS]
+    periods = [summarize(config) for config in load_clean_workbook_configs()]
     periods.sort(key=lambda item: item["reportDate"])
+    expected_districts = {(district["province"], district["name"]) for period in periods for district in period["districts"]}
+    expected_facilities = {
+        (facility["province"], facility["district"], facility["facilityLevel"], facility["name"])
+        for period in periods
+        for facility in period["facilities"]
+    }
+    for period in periods:
+        present_districts = {(district["province"], district["name"]) for district in period["districts"]}
+        present_facilities = {
+            (facility["province"], facility["district"], facility["facilityLevel"], facility["name"])
+            for facility in period["facilities"]
+        }
+        missing_districts = sorted(expected_districts - present_districts)
+        missing_facilities = sorted(expected_facilities - present_facilities)
+        period["counts"]["expectedDistricts"] = len(expected_districts)
+        period["counts"]["expectedFacilityUnits"] = len(expected_facilities)
+        period["counts"]["missingDistricts"] = len(missing_districts)
+        period["counts"]["missingFacilityUnits"] = len(missing_facilities)
+        period["missingDistricts"] = [
+            {"province": province, "district": district}
+            for province, district in missing_districts[:100]
+        ]
+        period["missingFacilities"] = [
+            {"province": province, "district": district, "facilityLevel": facility_level, "name": facility}
+            for province, district, facility_level, facility in missing_facilities[:100]
+        ]
     output = (
         "export const tracerReportingPeriods = "
         + json.dumps(periods, indent=2)

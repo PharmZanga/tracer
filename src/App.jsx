@@ -645,6 +645,10 @@ function App() {
   const comments = fieldData.comments || [];
   const expectedProvinces = 10;
   const reportingRate = expectedProvinces ? fieldData.counts.provinces / expectedProvinces : 0;
+  const expectedDistricts = fieldData.counts.expectedDistricts || fieldData.counts.districts;
+  const expectedFacilityUnits = fieldData.counts.expectedFacilityUnits || fieldData.counts.facilityUnits;
+  const missingDistricts = fieldData.counts.missingDistricts || 0;
+  const missingFacilityUnits = fieldData.counts.missingFacilityUnits || 0;
 
   function resetFieldHierarchy() {
     setSelectedProvince("all");
@@ -998,8 +1002,8 @@ function App() {
           </div>
           <div className="stats-grid">
             <KpiCard label="Province reporting" value={`${fieldData.counts.provinces}/${expectedProvinces}`} sub={`${formatPercent(reportingRate)} provincial footprint`} />
-            <KpiCard label="Districts" value={fieldData.counts.districts} sub="Districts in selected report" />
-            <KpiCard label="Reporting units" value={fieldData.counts.facilityUnits} sub="Facility/reporting-unit footprint" />
+            <KpiCard label="District reporting" value={`${fieldData.counts.districts}/${expectedDistricts}`} sub={`${missingDistricts} districts did not submit`} />
+            <KpiCard label="Reporting units" value={`${fieldData.counts.facilityUnits}/${expectedFacilityUnits}`} sub={`${missingFacilityUnits} facility units did not submit`} />
             <KpiCard label="Programmes" value={fieldData.counts.programmes} sub="Submitted programme groups" />
             <KpiCard label="Commodities" value={fieldData.counts.commodities} sub="Tracer items submitted" />
           </div>
