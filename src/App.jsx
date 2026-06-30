@@ -820,6 +820,19 @@ function App() {
     setActivePage("facilities");
   }
 
+  function changeProvinceFilter(province) {
+    setSelectedProvince(province);
+    setSelectedDistrict("all");
+    setSelectedFacilityLevel("all");
+    setSelectedFacility("all");
+  }
+
+  function changeDistrictFilter(district) {
+    setSelectedDistrict(district);
+    setSelectedFacilityLevel("all");
+    setSelectedFacility("all");
+  }
+
   function selectQualityProvince(province) {
     setSelectedProvince(province);
     setSelectedDistrict("all");
@@ -935,14 +948,14 @@ function App() {
             </label>
             <label>
               <span>Province</span>
-              <select value={selectedProvince} onChange={(event) => selectProvince(event.target.value)}>
+              <select value={selectedProvince} onChange={(event) => changeProvinceFilter(event.target.value)}>
                 <option value="all">All provinces</option>
                 {provinceOptions.map((province) => <option value={province} key={province}>{province}</option>)}
               </select>
             </label>
             <label>
               <span>District</span>
-              <select value={selectedDistrict} onChange={(event) => selectDistrict(event.target.value)}>
+              <select value={selectedDistrict} onChange={(event) => changeDistrictFilter(event.target.value)}>
                 <option value="all">All districts</option>
                 {districtOptions.map((district) => <option value={district} key={district}>{district}</option>)}
               </select>
