@@ -101,7 +101,20 @@ WORKBOOKS = [
         "week": "Week 4",
     },
     {
-        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\march\provincial_tracer_ 8.3.26.xlsx"),
+        "rawSources": [
+            {"province": "MUCHINGA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\march province submission\week 1\9.3.26 MUCHINGA 2026 TRACER WEEKLY REPORT (5).xlsx")},
+            {"province": "NORTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\march province submission\week 1\06.03.26 NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx")},
+            {"province": "CENTRAL PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\march province submission\week 1\7_3_2026 CENTRAL PROVINCE 2025 TRACER WEEKLY REPORT.xlsx")},
+            {"province": "EASTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\march province submission\week 1\7th Feb EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (8).xlsx")},
+            {"province": "COPPERBELT PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\march province submission\week 1\7.3.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx")},
+            {"province": "NORTH-WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\march province submission\week 1\08-03-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx")},
+            {"province": "WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\march province submission\week 1\08-03-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT.xlsx")},
+            {"province": "LUAPULA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\march province submission\week 1\LUAPULA PROVINCE 2025 TRACER WEEKLY REPORT 7 3 26.xlsx")},
+            {"province": "LUSAKA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\march province submission\week 1\LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (1).xlsx")},
+            {"province": "SOUTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\march province submission\week 1\SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 06.03.26.xlsx")},
+        ],
+        "source": "March Week 1 provincial raw submissions",
+        "reportDate": "2026-03-08",
         "label": "Week 1 - 8 March 2026",
         "month": "2026-03",
         "week": "Week 1",
@@ -504,8 +517,8 @@ def summarize(config):
             "district": district,
             "facilityLevel": facility_level,
             "isAggregate": facility_is_aggregate.get(key, facility.upper() == "ALL"),
-            "stockoutItems": sorted(alerts["stockout"], key=lambda item: (str(item["program"]), str(item["item"]))),
-            "lowStockItems": sorted(alerts["lowStock"], key=lambda item: (item["mos"] if item["mos"] is not None else 99, str(item["program"]), str(item["item"]))),
+            "stockoutItems": sorted(alerts["stockout"], key=lambda item: (str(item["program"]), str(item["item"])))[:60],
+            "lowStockItems": sorted(alerts["lowStock"], key=lambda item: (item["mos"] if item["mos"] is not None else 99, str(item["program"]), str(item["item"])))[:60],
             "accordingToPlanItems": according_to_plan_items[:5],
             "overstockItems": overstock_items[:5],
             "stockoutItemCount": len(alerts["stockout"]),
@@ -518,7 +531,7 @@ def summarize(config):
     programs = [finalize(name, bucket) for name, bucket in by_program.items()]
     programs.sort(key=lambda item: (item["availability"], -item["riskRows"]))
     items = [finalize(name, bucket, {"normalized": norm_text(name)}) for name, bucket in by_item.items()]
-    items.sort(key=lambda item: (-item["riskRows"], item["availability"], item["name"]))
+    items.sort(key=lambda item: (-item["riskRows"], item["availability"], str(item["name"])))
 
     if config.get("reportDate"):
         report_date = config["reportDate"]
