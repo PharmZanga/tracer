@@ -343,6 +343,39 @@ function aggregateQualityRows(rows, groupKey, labelKey = "name") {
   return [...groups.values()].map((row) => ({ ...row, rate: qualityRate(row) }));
 }
 
+function aggregateRollups(rows, groupKey = "name") {
+  const groups = new Map();
+  rows.forEach((row) => {
+    const key = row[groupKey];
+    if (!groups.has(key)) {
+      groups.set(key, { ...makeEmptyRollup(key), name: key });
+    }
+    const group = groups.get(key);
+    group.rows += row.rows || 0;
+    group.availabilityWeighted = (group.availabilityWeighted || 0) + (row.availability || 0) * (row.rows || 0);
+    if (row.mos !== null && row.mos !== undefined) {
+      group.mosWeighted = (group.mosWeighted || 0) + row.mos * (row.rows || 0);
+      group.mosRows = (group.mosRows || 0) + (row.rows || 0);
+    }
+    group.stockout += row.stockout || 0;
+    group.nearCritical += row.nearCritical || 0;
+    group.understocked += row.understocked || 0;
+    group.accordingToPlan += row.accordingToPlan || 0;
+    group.abovePlan += row.abovePlan || 0;
+    group.overstock += row.overstock || 0;
+    group.dataGap += row.dataGap || 0;
+    group.quantity += row.quantity || 0;
+    group.amc += row.amc || 0;
+    group.riskRows += row.riskRows || 0;
+  });
+  return [...groups.values()].map((row) => ({
+    ...row,
+    availability: row.rows ? row.availabilityWeighted / row.rows : 0,
+    mos: row.mosRows ? Math.round((row.mosWeighted / row.mosRows) * 100) / 100 : null,
+    stockoutRate: row.rows ? row.stockout / row.rows : 0,
+  }));
+}
+
 function ReportingBars({ title, rows, onSelect }) {
   return (
     <div className="quality-panel">
@@ -751,7 +784,11 @@ function App() {
     { label: "According to plan", count: fieldKpis.accordingToPlan, rate: fieldKpis.accordingToPlan / stockStatusTotal, sub: "2 to 4 MOS", tone: "green" },
     { label: "Overstocked", count: fieldKpis.abovePlan + fieldKpis.overstock, rate: (fieldKpis.abovePlan + fieldKpis.overstock) / stockStatusTotal, sub: "Above 4 MOS", tone: "blue" },
   ];
-  const productCategoryRows = [...fieldData.programmes]
+  const scopedProgrammeRows = (fieldData.programmeScopes || fieldData.programmes || [])
+    .filter((row) => !row.province || selectedProvince === "all" || row.province === selectedProvince)
+    .filter((row) => !row.district || selectedDistrict === "all" || row.district === selectedDistrict)
+    .filter((row) => !row.facilityLevel || selectedFacilityLevel === "all" || row.facilityLevel === selectedFacilityLevel);
+  const productCategoryRows = aggregateRollups(scopedProgrammeRows, "name")
     .sort((a, b) => a.availability - b.availability || (a.mos || 0) - (b.mos || 0))
     .slice(0, 36);
 
@@ -987,7 +1024,7 @@ function App() {
             <div className="product-performance-head">
               <div>
                 <h3>Product category availability</h3>
-                <p>Availability percentage and average MOS by programme/product category for the selected week.</p>
+                <p>Availability percentage and average MOS by programme/product category for the selected filters.</p>
               </div>
               <span>{productCategoryRows.length} categories shown</span>
             </div>

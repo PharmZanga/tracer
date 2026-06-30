@@ -578,6 +578,7 @@ def summarize(config):
     by_facility_level = defaultdict(make_bucket)
     by_facility = defaultdict(make_bucket)
     by_program = defaultdict(make_bucket)
+    by_program_scope = defaultdict(make_bucket)
     by_item = defaultdict(make_bucket)
     facility_items = defaultdict(lambda: {"stockout": [], "lowStock": [], "accordingToPlan": [], "overstock": []})
     facility_is_aggregate = {}
@@ -606,7 +607,9 @@ def summarize(config):
             national, by_province[province], by_district[(province, district)],
             by_facility_level[facility_level],
             by_facility[(province, district, facility_level, facility)],
-            by_program[program], by_item[item],
+            by_program[program],
+            by_program_scope[(province, facility_level, program)],
+            by_item[item],
         ):
             add(bucket, row)
 
@@ -673,6 +676,14 @@ def summarize(config):
 
     programs = [finalize(name, bucket) for name, bucket in by_program.items()]
     programs.sort(key=lambda item: (item["availability"], -item["riskRows"]))
+    program_scopes = [
+        finalize(program, bucket, {
+            "province": province,
+            "facilityLevel": facility_level,
+        })
+        for (province, facility_level, program), bucket in by_program_scope.items()
+    ]
+    program_scopes.sort(key=lambda item: (item["province"], item["facilityLevel"], item["availability"], item["name"]))
     items = [finalize(name, bucket, {"normalized": norm_text(name)}) for name, bucket in by_item.items()]
     items.sort(key=lambda item: (-item["riskRows"], item["availability"], str(item["name"])))
 
@@ -701,6 +712,7 @@ def summarize(config):
         "facilities": facilities,
         "facilityLevels": facility_levels,
         "programmes": programs,
+        "programmeScopes": program_scopes,
         "commodities": items,
         "comments": comments[:100],
     }
