@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
 import { tracerReportingPeriods } from "./tracerFacilityData.js";
+import { weeklyStockPeriods } from "./weeklyStockData.js";
 
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary" },
   { id: "national", short: "NS", label: "National Stock Status" },
+  { id: "stock", short: "WS", label: "Weekly Stock" },
   { id: "provincial", short: "PP", label: "Provincial Performance" },
   { id: "facilities", short: "FA", label: "Facility Alerts" },
   { id: "commodities", short: "CI", label: "Commodity Intelligence" },
@@ -762,6 +764,8 @@ function App() {
   const [selectedFacilityLevel, setSelectedFacilityLevel] = useState("all");
   const [selectedFacility, setSelectedFacility] = useState("all");
   const [openFacility, setOpenFacility] = useState(null);
+  const [stockDate, setStockDate] = useState(weeklyStockPeriods.at(-1)?.date || "");
+  const [stockStream, setStockStream] = useState(weeklyStockPeriods.at(-1)?.stream || "LAB");
   const [query, setQuery] = useState("");
   const [actions, setActions] = useState([
     { id: 1, issue: "Facility stockouts in highest-risk reporting units", action: "Validate counts and initiate redistribution", owner: "Provincial pharmacist", status: "In progress" },
@@ -775,6 +779,12 @@ function App() {
   const fieldMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))];
   const selectedMonth = fieldData.month;
   const weeksInMonth = tracerReportingPeriods.filter((period) => period.month === selectedMonth);
+  const stockDates = [...new Set(weeklyStockPeriods.map((period) => period.date))].sort();
+  const stockStreams = [...new Set(weeklyStockPeriods.map((period) => period.stream))].sort();
+  const stockData = weeklyStockPeriods.find((period) => period.date === stockDate && period.stream === stockStream) || weeklyStockPeriods.at(-1);
+  const stockCategoryRows = stockData ? [...stockData.categories].sort((a, b) => a.availability - b.availability || a.name.localeCompare(b.name)) : [];
+  const stockItemRows = stockData ? [...stockData.items].sort((a, b) => a.availability - b.availability || a.category.localeCompare(b.category) || a.name.localeCompare(b.name)) : [];
+  const stockoutItemRows = stockItemRows.filter((item) => item.availability <= 0).slice(0, 80);
 
   const provinceOptions = fieldData.provinces.map((province) => province.name).sort();
   const districtOptions = [...new Set(fieldData.districts
@@ -1154,6 +1164,111 @@ function App() {
               </table>
             </div>
           </div>
+        </section>
+
+        <section className="weekly-stock-section">
+          <div className="weekly-stock-head">
+            <div>
+              <p className="eyebrow dark">Weekly Stock</p>
+              <h2>EMMS and Lab stock availability</h2>
+              <p>Central weekly inventory position for 19 June and 26 June 2026, separated by EMMS and Laboratory commodities.</p>
+            </div>
+            <div className="weekly-stock-controls">
+              <label>
+                <span>Date</span>
+                <select value={stockDate} onChange={(event) => setStockDate(event.target.value)}>
+                  {stockDates.map((date) => <option value={date} key={date}>{date}</option>)}
+                </select>
+              </label>
+              <label>
+                <span>Stream</span>
+                <select value={stockStream} onChange={(event) => setStockStream(event.target.value)}>
+                  {stockStreams.map((stream) => <option value={stream} key={stream}>{stream}</option>)}
+                </select>
+              </label>
+            </div>
+          </div>
+          {stockData ? (
+            <>
+              <div className="weekly-stock-kpis">
+                <KpiCard label="Overall availability" value={formatPercent(stockData.overallAvailability)} sub={`${stockData.stream} | ${stockData.label}`} />
+                <KpiCard label="Available items" value={stockData.counts.availableItems.toLocaleString()} sub={`${formatPercent(stockData.counts.availableItems / stockData.counts.items)} of listed items`} />
+                <KpiCard label="Stocked out items" value={stockData.counts.stockoutItems.toLocaleString()} sub={`${formatPercent(stockData.counts.stockoutItems / stockData.counts.items)} of listed items`} tone="red" />
+                <KpiCard label="Categories" value={stockData.counts.categories.toLocaleString()} sub={stockData.source} tone="blue" />
+              </div>
+              <div className="weekly-stock-grid">
+                <div className="weekly-stock-panel">
+                  <div className="quality-panel-head">
+                    <h3>Category availability</h3>
+                    <span>{stockCategoryRows.length} categories</span>
+                  </div>
+                  <div className="stock-category-list">
+                    {stockCategoryRows.map((row) => (
+                      <div className="stock-category-row" key={row.name}>
+                        <span>{row.name}</span>
+                        <div className="stock-category-track"><i style={{ width: `${Math.round(row.availability * 100)}%` }} /></div>
+                        <b>{formatPercent(row.availability)}</b>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="weekly-stock-panel">
+                  <div className="quality-panel-head">
+                    <h3>Stockout items</h3>
+                    <span>{stockoutItemRows.length} shown</span>
+                  </div>
+                  <div className="table-scroll compact-table weekly-stock-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Category</th>
+                          <th>Item</th>
+                          <th>Availability</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {stockoutItemRows.map((item) => (
+                          <tr key={`${item.category}-${item.name}`}>
+                            <td>{item.category}</td>
+                            <td>{item.name}</td>
+                            <td>{formatPercent(item.availability)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div className="weekly-stock-panel">
+                <div className="quality-panel-head">
+                  <h3>All item availability</h3>
+                  <span>{stockItemRows.length} items</span>
+                </div>
+                <div className="table-scroll compact-table weekly-stock-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Category</th>
+                        <th>Item</th>
+                        <th>Availability</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stockItemRows.map((item) => (
+                        <tr key={`${item.category}-${item.name}`}>
+                          <td>{item.category}</td>
+                          <td>{item.name}</td>
+                          <td>{formatPercent(item.availability)}</td>
+                          <td><span className={item.availability > 0 ? "status-pill reported" : "status-pill missing"}>{item.status}</span></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+          ) : <div className="empty-state">No weekly stock data is available.</div>}
         </section>
 
         <section className="field-visibility">

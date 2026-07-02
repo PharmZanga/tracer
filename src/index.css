@@ -748,6 +748,7 @@ select:focus-visible {
 .page-executive > .executive-brief,
 .page-executive > .level-care-performance,
 .page-national > .tracer-overview,
+.page-stock > .weekly-stock-section,
 .page-provincial > .field-visibility,
 .page-facilities > .facility-alerts,
 .page-commodities > .table-panel,
@@ -1046,6 +1047,128 @@ h1 {
 
 .product-performance-table {
   max-height: 320px;
+}
+
+.weekly-stock-section {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid rgba(19, 43, 31, 0.09);
+  border-radius: 8px;
+  background: #fbfdfb;
+  box-shadow: 0 10px 30px rgba(18, 36, 25, 0.06);
+}
+
+.weekly-stock-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: end;
+}
+
+.weekly-stock-head h2 {
+  margin-bottom: 6px;
+  font-size: 30px;
+}
+
+.weekly-stock-head p {
+  margin: 0;
+  color: #607168;
+}
+
+.weekly-stock-controls {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+}
+
+.weekly-stock-controls label {
+  display: grid;
+  gap: 5px;
+  color: #607168;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.weekly-stock-controls select {
+  min-width: 150px;
+  border: 1px solid #cfded5;
+  border-radius: 8px;
+  background: #fff;
+  color: #20382a;
+  padding: 10px;
+}
+
+.weekly-stock-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.weekly-stock-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 14px;
+}
+
+.weekly-stock-panel {
+  min-width: 0;
+  border: 1px solid #dce7df;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.stock-category-list {
+  display: grid;
+  gap: 8px;
+  max-height: 520px;
+  overflow: auto;
+  padding: 12px;
+}
+
+.stock-category-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(120px, 1.4fr) 60px;
+  gap: 10px;
+  align-items: center;
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: #f8fbf8;
+}
+
+.stock-category-row span,
+.stock-category-row b {
+  font-size: 12px;
+}
+
+.stock-category-row span {
+  color: #314338;
+  font-weight: 760;
+}
+
+.stock-category-row b {
+  color: #173f29;
+  text-align: right;
+}
+
+.stock-category-track {
+  height: 10px;
+  border-radius: 999px;
+  background: #edf2ee;
+  overflow: hidden;
+}
+
+.stock-category-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #76b865;
+}
+
+.weekly-stock-table {
+  max-height: 520px;
 }
 
 .tracer-baskets {
