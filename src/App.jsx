@@ -29,8 +29,16 @@ const stockStreamLabels = {
   LAB: "Laboratory commodities (LAB)",
 };
 
+function normalizeRate(value) {
+  const number = Number(value || 0);
+  if (!Number.isFinite(number) || number <= 0) return 0;
+  if (number > 1 && number <= 10) return Math.min(number / 10, 1);
+  if (number > 10) return Math.min(number / 100, 1);
+  return Math.min(number, 1);
+}
+
 function formatPercent(value) {
-  return `${Math.round((value || 0) * 1000) / 10}%`;
+  return `${Math.round(normalizeRate(value) * 1000) / 10}%`;
 }
 
 function formatMos(value) {
@@ -107,7 +115,7 @@ function combineRollups(rows, fallback) {
   if (!rows.length) return fallback || makeEmptyRollup();
   const totals = rows.reduce((acc, row) => {
     acc.rows += row.rows || 0;
-    acc.availabilityWeighted += (row.availability || 0) * (row.rows || 0);
+    acc.availabilityWeighted += normalizeRate(row.availability) * (row.rows || 0);
     if (row.mos !== null && row.mos !== undefined) {
       acc.mosWeighted += row.mos * (row.rows || 0);
       acc.mosRows += row.rows || 0;
@@ -391,7 +399,7 @@ function aggregateRollups(rows, groupKey = "name") {
     }
     const group = groups.get(key);
     group.rows += row.rows || 0;
-    group.availabilityWeighted = (group.availabilityWeighted || 0) + (row.availability || 0) * (row.rows || 0);
+    group.availabilityWeighted = (group.availabilityWeighted || 0) + normalizeRate(row.availability) * (row.rows || 0);
     if (row.mos !== null && row.mos !== undefined) {
       group.mosWeighted = (group.mosWeighted || 0) + row.mos * (row.rows || 0);
       group.mosRows = (group.mosRows || 0) + (row.rows || 0);
