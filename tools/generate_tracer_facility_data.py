@@ -572,9 +572,18 @@ def load_clean_workbook_configs():
         programme = clean(values[6])
         original_item = clean(values[7])
         corrected_facility = corrected_value(values[17] if len(values) > 17 else None, original_facility)
+        if str(corrected_facility or "").strip().upper() == "HC/HP" and str(original_facility or "").strip().upper() not in {"", "ALL"}:
+            corrected_facility = original_facility
         corrected_item = corrected_value(values[18] if len(values) > 18 else None, original_item)
         facility_level = clean_facility_level(original_level, values[19] if len(values) > 19 else None)
-        is_aggregate = str(original_facility or "").strip().upper() == "ALL" or str(corrected_facility or "").strip().upper() in {"HC/HP", "ALL"}
+        is_aggregate = (
+            str(original_facility or "").strip().upper() == "ALL"
+            or str(corrected_facility or "").strip().upper() == "ALL"
+            or (
+                str(corrected_facility or "").strip().upper() == "HC/HP"
+                and facility_level in {"HEALTH POST", "HEALTH CENTRE", "PRIMARY FACILITY - LEVEL NOT SPECIFIED"}
+            )
+        )
         facility_name = corrected_facility or original_facility or "Unknown reporting unit"
         if is_aggregate and facility_level in {"HEALTH POST", "HEALTH CENTRE"}:
             facility_name = f"{district} {facility_level.title()} facilities"
