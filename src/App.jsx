@@ -29,49 +29,6 @@ const stockStreamLabels = {
   LAB: "Laboratory commodities (LAB)",
 };
 
-const legacyWeeklyReports = [
-  { stream: "EMMS", date: "2026-05-15", label: "15 May 2026", overallAvailability: 0.4465, counts: { items: 477, availableItems: 213, stockoutItems: 264, categories: 40 } },
-  { stream: "EMMS", date: "2026-05-22", label: "22 May 2026", overallAvailability: 0.4423, counts: { items: 477, availableItems: 211, stockoutItems: 266, categories: 40 } },
-  { stream: "EMMS", date: "2026-05-29", label: "29 May 2026", overallAvailability: 0.4423, counts: { items: 477, availableItems: 211, stockoutItems: 266, categories: 40 } },
-  { stream: "EMMS", date: "2026-06-05", label: "5 June 2026", overallAvailability: 0.4465, counts: { items: 477, availableItems: 213, stockoutItems: 264, categories: 40 } },
-  { stream: "EMMS", date: "2026-06-13", label: "13 June 2026", overallAvailability: 0.438, counts: { items: 477, availableItems: 209, stockoutItems: 268, categories: 40 } },
-  { stream: "LAB", date: "2026-05-15", label: "15 May 2026", overallAvailability: 0.4979, counts: { items: 229, availableItems: 114, stockoutItems: 115, categories: 14 } },
-  { stream: "LAB", date: "2026-05-22", label: "22 May 2026", overallAvailability: 0.5393, counts: { items: 229, availableItems: 123, stockoutItems: 106, categories: 14 } },
-  { stream: "LAB", date: "2026-05-29", label: "29 May 2026", overallAvailability: 0.5343, counts: { items: 229, availableItems: 122, stockoutItems: 107, categories: 14 } },
-  { stream: "LAB", date: "2026-06-05", label: "5 June 2026", overallAvailability: 0.5521, counts: { items: 229, availableItems: 126, stockoutItems: 103, categories: 14 } },
-];
-
-const legacyChangeRows = {
-  EMMS: {
-    from: "29 May 2026",
-    to: "5 June 2026",
-    newlyUnavailable: [
-      { item: "Clopidogrel", category: "CARDIOVASCULAR MEDICINES" },
-      { item: "Digoxin", category: "CARDIOVASCULAR MEDICINES" },
-      { item: "Etoposide inj", category: "ANTINEOPLASTICS AND IMMUNOMODULATORS" },
-      { item: "Syringes 10ml", category: "SYRINGES AND NEEDLES" },
-      { item: "Syringes 5ml", category: "SYRINGES AND NEEDLES" },
-      { item: "Trihexyphenidyl", category: "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS" },
-    ],
-    recovered: [
-      { item: "Artesunate 60mg Pwd For Inj(1)", category: "ANTIMALARIAL" },
-      { item: "Azithromycin tab/cap", category: "ANTIINFECTIVE MEDICINES" },
-      { item: "Bupivacaine", category: "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES" },
-      { item: "Diclofenac Inj", category: "MEDICINES FOR PAIN AND PALLIATIVE CARE" },
-      { item: "Diclofenac tab", category: "MEDICINES FOR PAIN AND PALLIATIVE CARE" },
-      { item: "Griseofulvin", category: "ANTIINFECTIVE MEDICINES" },
-      { item: "Insulin Injection intermediate - Isophane", category: "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE" },
-      { item: "Telmisartan + Hydrochlorothizide", category: "CARDIOVASCULAR MEDICINES" },
-    ],
-  },
-  LAB: {
-    from: "29 May 2026",
-    to: "5 June 2026",
-    newlyUnavailable: [],
-    recovered: [{ item: "Standard Q HIV/Syphilis Combo", category: "HIV Test Kits" }],
-  },
-};
-
 function formatPercent(value) {
   return `${Math.round((value || 0) * 1000) / 10}%`;
 }
@@ -860,8 +817,8 @@ function App() {
   const fieldMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))];
   const selectedMonth = fieldData.month;
   const weeksInMonth = tracerReportingPeriods.filter((period) => period.month === selectedMonth);
-  const stockStreams = [...new Set([...legacyWeeklyReports, ...weeklyStockPeriods].map((period) => period.stream))].sort();
-  const stockTrendRows = [...legacyWeeklyReports, ...weeklyStockPeriods]
+  const stockStreams = [...new Set(weeklyStockPeriods.map((period) => period.stream))].sort();
+  const stockTrendRows = weeklyStockPeriods
     .filter((period) => period.stream === stockStream)
     .sort((a, b) => a.date.localeCompare(b.date));
   const stockDates = stockTrendRows.map((period) => ({ date: period.date, label: period.label }));
@@ -871,7 +828,7 @@ function App() {
     .filter((period) => period.stream === stockStream && period.date < (stockData?.date || ""))
     .sort((a, b) => a.date.localeCompare(b.date))
     .at(-1);
-  const stockChange = stockChangeRows(currentStockPeriod, previousStockPeriod) || legacyChangeRows[stockStream];
+  const stockChange = stockChangeRows(currentStockPeriod, previousStockPeriod) || { from: stockData?.label || "", to: stockData?.label || "", newlyUnavailable: [], recovered: [] };
   const stockCategoryRows = stockData ? stockCategoryRowsFor(stockData).sort((a, b) => b.availability - a.availability || a.name.localeCompare(b.name)) : [];
   const stockItemRows = currentStockPeriod?.items ? [...currentStockPeriod.items].sort((a, b) => a.availability - b.availability || a.category.localeCompare(b.category) || a.name.localeCompare(b.name)) : [];
   const stockoutItemRows = stockItemRows.filter((item) => item.availability <= 0).slice(0, 80);
@@ -1289,7 +1246,7 @@ function App() {
                 <span>Programme</span>
                 <select value={stockStream} onChange={(event) => {
                   const nextStream = event.target.value;
-                  const nextRows = [...legacyWeeklyReports, ...weeklyStockPeriods].filter((period) => period.stream === nextStream).sort((a, b) => a.date.localeCompare(b.date));
+                  const nextRows = weeklyStockPeriods.filter((period) => period.stream === nextStream).sort((a, b) => a.date.localeCompare(b.date));
                   setStockStream(nextStream);
                   setStockDate(nextRows.at(-1)?.date || "");
                   setStockCategory("");
