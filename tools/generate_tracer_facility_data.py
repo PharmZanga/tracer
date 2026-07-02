@@ -220,6 +220,13 @@ WORKBOOKS = [
 OUT = Path(__file__).resolve().parents[1] / "src" / "tracerFacilityData.js"
 CLEAN_DATA_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\tracer dashboard\JANUARY-DECEMBER TRACER 2026.xlsx")
 CLEAN_DATA_SHEET = "SUMMARY SHEET"
+RAW_AVAILABILITY_SOURCES = [
+    {
+        "reportDate": "2026-02-22",
+        "province": "LUSAKA PROVINCE",
+        "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\February province submission\week 3\LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx"),
+    },
+]
 
 
 def clean(value):
@@ -246,6 +253,14 @@ def norm_text(value):
     value = clean(value) or ""
     value = re.sub(r"[^a-z0-9]+", " ", str(value).lower())
     return " ".join(value.split())
+
+
+def facility_match_key(value):
+    text = norm_text(value)
+    aliases = {
+        "levy mwanawasa uth": "levy mwanawasa university teaching hospital",
+    }
+    return aliases.get(text, text)
 
 
 def normalize_province(value):
@@ -357,6 +372,65 @@ def raw_facility_level(sheet_name, sheet_title):
     return sheet_name.upper()
 
 
+def normalize_raw_facility_level(sheet_name, sheet_title):
+    level = raw_facility_level(sheet_name, sheet_title)
+    if level == "L-1":
+        return "DISTRICT LEVEL 1 HOSPITALS"
+    if level == "L-2":
+        return "LEVEL 2 HOSPITAL"
+    if level == "L-3":
+        return "LEVEL 3 HOSPITAL"
+    if level == "L-3 PAED":
+        return "LEVEL 3 PAEDIATRICS HOSPITALS"
+    if level == "L-3 ADULT":
+        return "LEVEL 3 ADULT HOSPITALS"
+    if level == "RENAL UNITS":
+        return "RENAL UNITS"
+    if level == "CANCER DISEASES UNITS":
+        return "CANCER DISEASES UNITS"
+    if level == "MENTAL HEALTH UNITS":
+        return "MENTAL HEALTH UNITS"
+    if level == "OPTHAMOLOGY UNITS":
+        return "OPTHAMOLOGY UNITS"
+    if level == "TB UNITS":
+        return "TB UNITS"
+    return level
+
+
+def load_raw_availability_overrides():
+    overrides = {}
+    skip = {"SITUATION BOARD", "SUMMARY", "SUMMARY SHEET", "COMMENTS", "COMMENT", "RECOMMENDATIONS", "RECOMEDATIONS", "PROGRAM"}
+    for source in RAW_AVAILABILITY_SOURCES:
+        if not source["path"].exists():
+            continue
+        wb = openpyxl.load_workbook(source["path"], read_only=False, data_only=True)
+        province = normalize_province(source["province"])
+        report_date = source["reportDate"]
+        for ws in wb.worksheets:
+            sheet_name = ws.title.strip()
+            if any(token in sheet_name.upper() for token in skip):
+                continue
+            footer_row = None
+            for row_index in range(1, ws.max_row + 1):
+                label = str(ws.cell(row_index, 2).value or "").strip().upper()
+                if "PERCENTAGE AVAILABILITY" in label:
+                    footer_row = row_index
+                    break
+            if not footer_row:
+                continue
+            facility_level = normalize_raw_facility_level(sheet_name, ws.cell(1, 1).value)
+            for start_col in range(5, ws.max_column + 1, 4):
+                district = clean(ws.cell(2, start_col).value)
+                facility = clean(ws.cell(2, start_col + 1).value)
+                availability = availability_value(ws.cell(footer_row, start_col).value)
+                if not district or not facility or availability is None:
+                    continue
+                key = (report_date, province, normalize_district(district), facility_level, facility_match_key(facility))
+                overrides[key] = availability
+        wb.close()
+    return overrides
+
+
 def iter_raw_matrix_rows(source, report_date):
     workbook_path = source["path"]
     province = normalize_province(source["province"])
@@ -455,6 +529,20 @@ def clean_facility_level(level, corrected_level):
         return "HEALTH POST"
     if "HEALTH CENTRE" in original or "HEALTH CENTER" in original:
         return "HEALTH CENTRE"
+    if "RENAL" in original:
+        return "RENAL UNITS"
+    if "CANCER" in original:
+        return "CANCER DISEASES UNITS"
+    if "MENTAL" in original or "PSYCH" in original:
+        return "MENTAL HEALTH UNITS"
+    if "OPTH" in original or "OPHTH" in original or "EYE" in original:
+        return "OPTHAMOLOGY UNITS"
+    if "TB" in original or "MDR" in original:
+        return "TB UNITS"
+    if "HEART" in original:
+        return "HEART HOSPITAL"
+    if "WOMEN" in original or "NEW BORN" in original or "WNB" in original:
+        return "WOMEN AND NEWBORN UNITS"
     value = corrected_value(corrected_level, level) or "Unknown facility level"
     value = str(value).strip().upper()
     if "HEALTH CENTER/ HEALTH POST" in value or "HEALTH CENTRE/ HEALTH POST" in value:
@@ -491,6 +579,7 @@ def load_clean_workbook_configs():
         if is_aggregate and facility_level in {"HEALTH POST", "HEALTH CENTRE"}:
             facility_name = f"{district} {facility_level.title()} facilities"
 
+        quantity = num(values[9] if len(values) > 9 else None)
         rows_by_date[report_id].append({
             "DATE": report_id,
             "NATION": "ZAMBIA",
@@ -501,10 +590,10 @@ def load_clean_workbook_configs():
             "PROGRAM": programme or "Unknown programme",
             "DESCRIPTION OF ITEM": corrected_item or original_item or "Unknown commodity",
             "UNIT": clean(values[8] if len(values) > 8 else None),
-            "QUANTITY": num(values[9] if len(values) > 9 else None),
+            "QUANTITY": quantity,
             "AMC": num(values[10] if len(values) > 10 else None),
             "MOS": num(values[11] if len(values) > 11 else None),
-            "AVAILABILITY": availability_value(values[12] if len(values) > 12 else None),
+            "AVAILABILITY": 1 if (quantity or 0) > 0 else 0,
             "COMMENT": clean(values[13] if len(values) > 13 else None),
             "_RAW_AGGREGATE": is_aggregate,
         })
@@ -550,6 +639,7 @@ def finalize(name, bucket, extra=None):
 
 def summarize(config):
     workbook_path = config.get("path")
+    availability_overrides = config.get("availabilityOverrides", {})
     if config.get("rows") is not None:
         rows_iter = iter(config["rows"])
         source_name = config.get("source", "Clean tracer dataset")
@@ -658,7 +748,7 @@ def summarize(config):
             alerts["overstock"],
             key=lambda item: (-(item["mos"] if item["mos"] is not None else 0), str(item["program"]), str(item["item"])),
         )
-        facilities.append(finalize(facility, bucket, {
+        facility_result = finalize(facility, bucket, {
             "province": province,
             "district": district,
             "facilityLevel": facility_level,
@@ -671,7 +761,11 @@ def summarize(config):
             "lowStockItemCount": len(alerts["lowStock"]),
             "accordingToPlanItemCount": len(alerts["accordingToPlan"]),
             "overstockItemCount": len(alerts["overstock"]),
-        }))
+        })
+        override_key = (config.get("reportDate"), province, district, facility_level, facility_match_key(facility))
+        if override_key in availability_overrides:
+            facility_result["availability"] = round(availability_overrides[override_key], 4)
+        facilities.append(facility_result)
     facilities.sort(key=lambda item: (-item["stockoutItemCount"], -item["lowStockItemCount"], item["availability"], item["province"], item["district"], item["name"]))
 
     programs = [finalize(name, bucket) for name, bucket in by_program.items()]
@@ -849,7 +943,12 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
 
 
 def main():
-    periods = [summarize(config) for config in load_clean_workbook_configs()]
+    availability_overrides = load_raw_availability_overrides()
+    configs = []
+    for config in load_clean_workbook_configs():
+        config["availabilityOverrides"] = availability_overrides
+        configs.append(config)
+    periods = [summarize(config) for config in configs]
     periods.sort(key=lambda item: item["reportDate"])
     expected_districts = {(district["province"], district["name"]) for period in periods for district in period["districts"] if district["name"] != "UNKNOWN"}
     expected_facilities = {
