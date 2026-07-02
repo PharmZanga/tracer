@@ -29,6 +29,49 @@ const stockStreamLabels = {
   LAB: "Laboratory commodities (LAB)",
 };
 
+const legacyWeeklyReports = [
+  { stream: "EMMS", date: "2026-05-15", label: "15 May 2026", overallAvailability: 0.4465, counts: { items: 477, availableItems: 213, stockoutItems: 264, categories: 40 } },
+  { stream: "EMMS", date: "2026-05-22", label: "22 May 2026", overallAvailability: 0.4423, counts: { items: 477, availableItems: 211, stockoutItems: 266, categories: 40 } },
+  { stream: "EMMS", date: "2026-05-29", label: "29 May 2026", overallAvailability: 0.4423, counts: { items: 477, availableItems: 211, stockoutItems: 266, categories: 40 } },
+  { stream: "EMMS", date: "2026-06-05", label: "5 June 2026", overallAvailability: 0.4465, counts: { items: 477, availableItems: 213, stockoutItems: 264, categories: 40 } },
+  { stream: "EMMS", date: "2026-06-13", label: "13 June 2026", overallAvailability: 0.438, counts: { items: 477, availableItems: 209, stockoutItems: 268, categories: 40 } },
+  { stream: "LAB", date: "2026-05-15", label: "15 May 2026", overallAvailability: 0.4979, counts: { items: 229, availableItems: 114, stockoutItems: 115, categories: 14 } },
+  { stream: "LAB", date: "2026-05-22", label: "22 May 2026", overallAvailability: 0.5393, counts: { items: 229, availableItems: 123, stockoutItems: 106, categories: 14 } },
+  { stream: "LAB", date: "2026-05-29", label: "29 May 2026", overallAvailability: 0.5343, counts: { items: 229, availableItems: 122, stockoutItems: 107, categories: 14 } },
+  { stream: "LAB", date: "2026-06-05", label: "5 June 2026", overallAvailability: 0.5521, counts: { items: 229, availableItems: 126, stockoutItems: 103, categories: 14 } },
+];
+
+const legacyChangeRows = {
+  EMMS: {
+    from: "29 May 2026",
+    to: "5 June 2026",
+    newlyUnavailable: [
+      { item: "Clopidogrel", category: "CARDIOVASCULAR MEDICINES" },
+      { item: "Digoxin", category: "CARDIOVASCULAR MEDICINES" },
+      { item: "Etoposide inj", category: "ANTINEOPLASTICS AND IMMUNOMODULATORS" },
+      { item: "Syringes 10ml", category: "SYRINGES AND NEEDLES" },
+      { item: "Syringes 5ml", category: "SYRINGES AND NEEDLES" },
+      { item: "Trihexyphenidyl", category: "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS" },
+    ],
+    recovered: [
+      { item: "Artesunate 60mg Pwd For Inj(1)", category: "ANTIMALARIAL" },
+      { item: "Azithromycin tab/cap", category: "ANTIINFECTIVE MEDICINES" },
+      { item: "Bupivacaine", category: "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES" },
+      { item: "Diclofenac Inj", category: "MEDICINES FOR PAIN AND PALLIATIVE CARE" },
+      { item: "Diclofenac tab", category: "MEDICINES FOR PAIN AND PALLIATIVE CARE" },
+      { item: "Griseofulvin", category: "ANTIINFECTIVE MEDICINES" },
+      { item: "Insulin Injection intermediate - Isophane", category: "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE" },
+      { item: "Telmisartan + Hydrochlorothizide", category: "CARDIOVASCULAR MEDICINES" },
+    ],
+  },
+  LAB: {
+    from: "29 May 2026",
+    to: "5 June 2026",
+    newlyUnavailable: [],
+    recovered: [{ item: "Standard Q HIV/Syphilis Combo", category: "HIV Test Kits" }],
+  },
+};
+
 function formatPercent(value) {
   return `${Math.round((value || 0) * 1000) / 10}%`;
 }
@@ -49,6 +92,38 @@ function csvCell(value) {
 
 function normalizeCommodity(value) {
   return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function stockCategoryRowsFor(period) {
+  if (!period) return [];
+  if (!period.items) {
+    return (period.categories || []).map((row) => ({
+      name: row.name,
+      available: row.available ?? null,
+      total: row.total ?? null,
+      availability: row.availability || 0,
+    }));
+  }
+  const grouped = new Map();
+  period.items.forEach((item) => {
+    const current = grouped.get(item.category) || { name: item.category, available: 0, total: 0, availability: 0 };
+    current.total += 1;
+    if ((item.availability || 0) > 0) current.available += 1;
+    grouped.set(item.category, current);
+  });
+  return [...grouped.values()].map((row) => ({ ...row, availability: row.total ? row.available / row.total : 0 }));
+}
+
+function stockChangeRows(current, previous) {
+  if (!current?.items || !previous?.items) return null;
+  const previousByName = new Map(previous.items.map((item) => [normalizeCommodity(item.name), item]));
+  const newlyUnavailable = current.items
+    .filter((item) => (item.availability || 0) <= 0 && (previousByName.get(normalizeCommodity(item.name))?.availability || 0) > 0)
+    .map((item) => ({ item: item.name, category: item.category }));
+  const recovered = current.items
+    .filter((item) => (item.availability || 0) > 0 && (previousByName.get(normalizeCommodity(item.name))?.availability || 0) <= 0)
+    .map((item) => ({ item: item.name, category: item.category }));
+  return { from: previous.label, to: current.label, newlyUnavailable, recovered };
 }
 
 function makeEmptyRollup(name = "Current selection") {
@@ -771,6 +846,7 @@ function App() {
   const [openFacility, setOpenFacility] = useState(null);
   const [stockDate, setStockDate] = useState([...new Set(weeklyStockPeriods.map((period) => period.date))].sort().at(-1) || "");
   const [stockStream, setStockStream] = useState(weeklyStockPeriods.some((period) => period.stream === "EMMS") ? "EMMS" : weeklyStockPeriods.at(-1)?.stream || "LAB");
+  const [stockCategory, setStockCategory] = useState("");
   const [query, setQuery] = useState("");
   const [actions, setActions] = useState([
     { id: 1, issue: "Facility stockouts in highest-risk reporting units", action: "Validate counts and initiate redistribution", owner: "Provincial pharmacist", status: "In progress" },
@@ -784,15 +860,27 @@ function App() {
   const fieldMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))];
   const selectedMonth = fieldData.month;
   const weeksInMonth = tracerReportingPeriods.filter((period) => period.month === selectedMonth);
-  const stockStreams = [...new Set(weeklyStockPeriods.map((period) => period.stream))].sort();
-  const stockTrendRows = weeklyStockPeriods
+  const stockStreams = [...new Set([...legacyWeeklyReports, ...weeklyStockPeriods].map((period) => period.stream))].sort();
+  const stockTrendRows = [...legacyWeeklyReports, ...weeklyStockPeriods]
     .filter((period) => period.stream === stockStream)
     .sort((a, b) => a.date.localeCompare(b.date));
   const stockDates = stockTrendRows.map((period) => ({ date: period.date, label: period.label }));
-  const stockData = weeklyStockPeriods.find((period) => period.date === stockDate && period.stream === stockStream) || weeklyStockPeriods.at(-1);
-  const stockCategoryRows = stockData ? [...stockData.categories].sort((a, b) => a.availability - b.availability || a.name.localeCompare(b.name)) : [];
-  const stockItemRows = stockData ? [...stockData.items].sort((a, b) => a.availability - b.availability || a.category.localeCompare(b.category) || a.name.localeCompare(b.name)) : [];
+  const stockData = stockTrendRows.find((period) => period.date === stockDate) || stockTrendRows.at(-1);
+  const currentStockPeriod = weeklyStockPeriods.find((period) => period.date === stockData?.date && period.stream === stockData?.stream);
+  const previousStockPeriod = weeklyStockPeriods
+    .filter((period) => period.stream === stockStream && period.date < (stockData?.date || ""))
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .at(-1);
+  const stockChange = stockChangeRows(currentStockPeriod, previousStockPeriod) || legacyChangeRows[stockStream];
+  const stockCategoryRows = stockData ? stockCategoryRowsFor(stockData).sort((a, b) => b.availability - a.availability || a.name.localeCompare(b.name)) : [];
+  const stockItemRows = currentStockPeriod?.items ? [...currentStockPeriod.items].sort((a, b) => a.availability - b.availability || a.category.localeCompare(b.category) || a.name.localeCompare(b.name)) : [];
   const stockoutItemRows = stockItemRows.filter((item) => item.availability <= 0).slice(0, 80);
+  const selectedStockCategory = stockCategory || stockCategoryRows[0]?.name || "";
+  const selectedStockItems = currentStockPeriod?.items
+    ? currentStockPeriod.items
+      .filter((item) => item.category === selectedStockCategory)
+      .sort((a, b) => a.availability - b.availability || a.name.localeCompare(b.name))
+    : [];
 
   const provinceOptions = fieldData.provinces.map((province) => province.name).sort();
   const districtOptions = [...new Set(fieldData.districts
@@ -1175,128 +1263,151 @@ function App() {
         </section>
 
         <section className="weekly-stock-section">
+          <div className="weekly-hero">
+            <div>
+              <p>National Supply Chain Visibility</p>
+              <h2>Medicines and medical supplies stock intelligence</h2>
+              <span>Central stock status, programme risks, weekly availability, and item movement monitoring.</span>
+            </div>
+            <img src="./control-tower-logo.svg" alt="Control Tower" />
+          </div>
+          <div className="weekly-live-strip">
+            <span>Live indicators</span>
+            <b>{stockData?.counts?.items?.toLocaleString() || "0"}</b><small>unique ordering codes across stock reports</small>
+            <b>{stockData?.counts?.availableItems?.toLocaleString() || "0"}</b><small>commodities available in selected week</small>
+            <b>{stockData?.counts?.stockoutItems?.toLocaleString() || "0"}</b><small>commodities displayed at 0.0 availability</small>
+            <b>{formatPercent(stockData?.overallAvailability)}</b><small>weekly availability</small>
+          </div>
           <div className="weekly-stock-head">
             <div>
-              <p className="eyebrow dark">Weekly Stock</p>
-              <h2>EMMS and Lab stock availability</h2>
-              <p>Central weekly inventory position for 19 June and 26 June 2026, separated by EMMS and Laboratory commodities.</p>
+              <p className="eyebrow dark">Weekly Inventory Availability</p>
+              <h2>EMMS and laboratory availability</h2>
+              <p>This tab uses only the weekly inventory submissions. Select a programme and reporting week, then click a category bar to see related medicines in the latest weekly stock-status report.</p>
             </div>
             <div className="weekly-stock-controls">
               <label>
-                <span>Date</span>
-                <select value={stockDate} onChange={(event) => setStockDate(event.target.value)}>
-                  {stockDates.map((period) => <option value={period.date} key={period.date}>{period.label}</option>)}
+                <span>Programme</span>
+                <select value={stockStream} onChange={(event) => {
+                  const nextStream = event.target.value;
+                  const nextRows = [...legacyWeeklyReports, ...weeklyStockPeriods].filter((period) => period.stream === nextStream).sort((a, b) => a.date.localeCompare(b.date));
+                  setStockStream(nextStream);
+                  setStockDate(nextRows.at(-1)?.date || "");
+                  setStockCategory("");
+                }}>
+                  {stockStreams.map((stream) => <option value={stream} key={stream}>{stockStreamLabels[stream] || stream}</option>)}
                 </select>
               </label>
               <label>
-                <span>Stream</span>
-                <select value={stockStream} onChange={(event) => setStockStream(event.target.value)}>
-                  {stockStreams.map((stream) => <option value={stream} key={stream}>{stockStreamLabels[stream] || stream}</option>)}
+                <span>Reporting week</span>
+                <select value={stockDate} onChange={(event) => {
+                  setStockDate(event.target.value);
+                  setStockCategory("");
+                }}>
+                  {stockDates.map((period) => <option value={period.date} key={period.date}>{period.label}</option>)}
                 </select>
               </label>
             </div>
           </div>
           {stockData ? (
             <>
-              <div className="weekly-stock-kpis">
-                <KpiCard label="Overall availability" value={formatPercent(stockData.overallAvailability)} sub={`${stockStreamLabels[stockData.stream] || stockData.stream} | ${stockData.label}`} />
-                <KpiCard label="Available items" value={stockData.counts.availableItems.toLocaleString()} sub={`${formatPercent(stockData.counts.availableItems / stockData.counts.items)} of listed items`} />
-                <KpiCard label="Stocked out items" value={stockData.counts.stockoutItems.toLocaleString()} sub={`${formatPercent(stockData.counts.stockoutItems / stockData.counts.items)} of listed items`} tone="red" />
-                <KpiCard label="Categories" value={stockData.counts.categories.toLocaleString()} sub={stockData.source} tone="blue" />
-              </div>
-              <div className="weekly-stock-panel stock-trend-panel">
-                <div className="quality-panel-head">
-                  <div>
-                    <h3>Availability trend by week</h3>
-                    <p>Click a week to update the category chart and item lists.</p>
-                  </div>
-                  <span>{stockStreamLabels[stockStream] || stockStream}</span>
-                </div>
-                <div className="stock-trend-bars">
-                  {stockTrendRows.map((period) => (
-                    <button
-                      type="button"
-                      className={period.date === stockDate ? "active" : ""}
-                      key={period.id}
-                      onClick={() => setStockDate(period.date)}
-                    >
-                      <i style={{ height: `${Math.max(26, Math.round(period.overallAvailability * 170))}px` }} />
-                      <strong>{formatPercent(period.overallAvailability)}</strong>
-                      <span>{period.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
               <div className="weekly-stock-grid">
-                <div className="weekly-stock-panel">
+                <div className="weekly-stock-panel stock-trend-panel">
                   <div className="quality-panel-head">
-                    <h3>Category availability</h3>
-                    <span>{stockCategoryRows.length} categories</span>
+                    <div>
+                      <h3>Availability trend by week</h3>
+                      <p>Click a week to update the category chart and week-to-week item changes.</p>
+                    </div>
                   </div>
-                  <div className="stock-category-list">
-                    {stockCategoryRows.map((row) => (
-                      <div className="stock-category-row" key={row.name}>
-                        <span>{row.name}</span>
-                        <div className="stock-category-track"><i style={{ width: `${Math.round(row.availability * 100)}%` }} /></div>
-                        <b>{formatPercent(row.availability)}</b>
-                      </div>
+                  <div className="stock-trend-bars">
+                    {stockTrendRows.map((period) => (
+                      <button type="button" className={period.date === stockDate ? "active" : ""} key={`${period.stream}-${period.date}`} onClick={() => {
+                        setStockDate(period.date);
+                        setStockCategory("");
+                      }}>
+                        <i style={{ height: `${Math.max(28, Math.round(period.overallAvailability * 150))}px` }} />
+                        <strong>{formatPercent(period.overallAvailability)}</strong>
+                        <span>{period.label}</span>
+                      </button>
                     ))}
                   </div>
                 </div>
                 <div className="weekly-stock-panel">
                   <div className="quality-panel-head">
-                    <h3>Stockout items</h3>
-                    <span>{stockoutItemRows.length} shown</span>
+                    <div>
+                      <h3>Stock availability by category</h3>
+                      <p>Click any category bar to reveal related commodities from the selected central stock-status report.</p>
+                    </div>
+                    <span>{stockCategoryRows.length} categories</span>
                   </div>
+                  <div className="stock-category-list intelligence-category-list">
+                    {stockCategoryRows.map((row) => (
+                      <button type="button" className={selectedStockCategory === row.name ? "stock-category-row active" : "stock-category-row"} key={row.name} onClick={() => setStockCategory(row.name)}>
+                        <span>{row.name}</span>
+                        <div className="stock-category-track"><i style={{ width: `${Math.round(row.availability * 100)}%` }} /></div>
+                        <b>{row.available !== null && row.total !== null ? `${row.available}/${row.total}` : formatPercent(row.availability)}</b>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="weekly-change-grid">
+                <div className="weekly-change-box">
+                  <h3>Newly unavailable · {stockChange?.newlyUnavailable?.length || 0}</h3>
+                  <p>{stockChange?.from} to {stockChange?.to}</p>
+                  <div className="weekly-change-items">
+                    {(stockChange?.newlyUnavailable || []).slice(0, 30).map((item) => (
+                      <div className="weekly-change-item" key={`${item.item}-${item.category}`}>
+                        <b>{item.item}</b>
+                        <span>{item.category}</span>
+                      </div>
+                    ))}
+                    {!(stockChange?.newlyUnavailable || []).length && <div className="empty-state small">No newly unavailable items in this comparison.</div>}
+                  </div>
+                </div>
+                <div className="weekly-change-box recovered">
+                  <h3>Recovered · {stockChange?.recovered?.length || 0}</h3>
+                  <p>{stockChange?.from} to {stockChange?.to}</p>
+                  <div className="weekly-change-items">
+                    {(stockChange?.recovered || []).slice(0, 30).map((item) => (
+                      <div className="weekly-change-item" key={`${item.item}-${item.category}`}>
+                        <b>{item.item}</b>
+                        <span>{item.category}</span>
+                      </div>
+                    ))}
+                    {!(stockChange?.recovered || []).length && <div className="empty-state small">No recovered items in this comparison.</div>}
+                  </div>
+                </div>
+              </div>
+              <div className="weekly-stock-panel linked-stock">
+                <div className="quality-panel-head">
+                  <div>
+                    <h3>{selectedStockCategory || "Select a category"}</h3>
+                    <p>{currentStockPeriod ? "Related stock-status commodities appear here." : "Item names are available for the 19 and 26 June workbook periods."}</p>
+                  </div>
+                  <span>{selectedStockItems.length ? `${selectedStockItems.length} items` : ""}</span>
+                </div>
+                {selectedStockItems.length ? (
                   <div className="table-scroll compact-table weekly-stock-table">
                     <table>
                       <thead>
                         <tr>
-                          <th>Category</th>
                           <th>Item</th>
                           <th>Availability</th>
+                          <th>Status</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {stockoutItemRows.map((item) => (
+                        {selectedStockItems.map((item) => (
                           <tr key={`${item.category}-${item.name}`}>
-                            <td>{item.category}</td>
                             <td>{item.name}</td>
                             <td>{formatPercent(item.availability)}</td>
+                            <td><span className={item.availability > 0 ? "status-pill reported" : "status-pill missing"}>{item.status}</span></td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
-                </div>
-              </div>
-              <div className="weekly-stock-panel">
-                <div className="quality-panel-head">
-                  <h3>All item availability</h3>
-                  <span>{stockItemRows.length} items</span>
-                </div>
-                <div className="table-scroll compact-table weekly-stock-table">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Category</th>
-                        <th>Item</th>
-                        <th>Availability</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {stockItemRows.map((item) => (
-                        <tr key={`${item.category}-${item.name}`}>
-                          <td>{item.category}</td>
-                          <td>{item.name}</td>
-                          <td>{formatPercent(item.availability)}</td>
-                          <td><span className={item.availability > 0 ? "status-pill reported" : "status-pill missing"}>{item.status}</span></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                ) : <div className="empty-state">Select a 19 or 26 June category to see the submitted stock-status commodities.</div>}
               </div>
             </>
           ) : <div className="empty-state">No weekly stock data is available.</div>}
