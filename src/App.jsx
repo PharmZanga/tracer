@@ -24,6 +24,11 @@ const statusLabels = {
   dataGap: "Data gap",
 };
 
+const stockStreamLabels = {
+  EMMS: "Essential medicines (EMMS)",
+  LAB: "Laboratory commodities (LAB)",
+};
+
 function formatPercent(value) {
   return `${Math.round((value || 0) * 1000) / 10}%`;
 }
@@ -764,8 +769,8 @@ function App() {
   const [selectedFacilityLevel, setSelectedFacilityLevel] = useState("all");
   const [selectedFacility, setSelectedFacility] = useState("all");
   const [openFacility, setOpenFacility] = useState(null);
-  const [stockDate, setStockDate] = useState(weeklyStockPeriods.at(-1)?.date || "");
-  const [stockStream, setStockStream] = useState(weeklyStockPeriods.at(-1)?.stream || "LAB");
+  const [stockDate, setStockDate] = useState([...new Set(weeklyStockPeriods.map((period) => period.date))].sort().at(-1) || "");
+  const [stockStream, setStockStream] = useState(weeklyStockPeriods.some((period) => period.stream === "EMMS") ? "EMMS" : weeklyStockPeriods.at(-1)?.stream || "LAB");
   const [query, setQuery] = useState("");
   const [actions, setActions] = useState([
     { id: 1, issue: "Facility stockouts in highest-risk reporting units", action: "Validate counts and initiate redistribution", owner: "Provincial pharmacist", status: "In progress" },
@@ -779,8 +784,11 @@ function App() {
   const fieldMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))];
   const selectedMonth = fieldData.month;
   const weeksInMonth = tracerReportingPeriods.filter((period) => period.month === selectedMonth);
-  const stockDates = [...new Set(weeklyStockPeriods.map((period) => period.date))].sort();
   const stockStreams = [...new Set(weeklyStockPeriods.map((period) => period.stream))].sort();
+  const stockTrendRows = weeklyStockPeriods
+    .filter((period) => period.stream === stockStream)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  const stockDates = stockTrendRows.map((period) => ({ date: period.date, label: period.label }));
   const stockData = weeklyStockPeriods.find((period) => period.date === stockDate && period.stream === stockStream) || weeklyStockPeriods.at(-1);
   const stockCategoryRows = stockData ? [...stockData.categories].sort((a, b) => a.availability - b.availability || a.name.localeCompare(b.name)) : [];
   const stockItemRows = stockData ? [...stockData.items].sort((a, b) => a.availability - b.availability || a.category.localeCompare(b.category) || a.name.localeCompare(b.name)) : [];
@@ -1177,13 +1185,13 @@ function App() {
               <label>
                 <span>Date</span>
                 <select value={stockDate} onChange={(event) => setStockDate(event.target.value)}>
-                  {stockDates.map((date) => <option value={date} key={date}>{date}</option>)}
+                  {stockDates.map((period) => <option value={period.date} key={period.date}>{period.label}</option>)}
                 </select>
               </label>
               <label>
                 <span>Stream</span>
                 <select value={stockStream} onChange={(event) => setStockStream(event.target.value)}>
-                  {stockStreams.map((stream) => <option value={stream} key={stream}>{stream}</option>)}
+                  {stockStreams.map((stream) => <option value={stream} key={stream}>{stockStreamLabels[stream] || stream}</option>)}
                 </select>
               </label>
             </div>
@@ -1191,10 +1199,33 @@ function App() {
           {stockData ? (
             <>
               <div className="weekly-stock-kpis">
-                <KpiCard label="Overall availability" value={formatPercent(stockData.overallAvailability)} sub={`${stockData.stream} | ${stockData.label}`} />
+                <KpiCard label="Overall availability" value={formatPercent(stockData.overallAvailability)} sub={`${stockStreamLabels[stockData.stream] || stockData.stream} | ${stockData.label}`} />
                 <KpiCard label="Available items" value={stockData.counts.availableItems.toLocaleString()} sub={`${formatPercent(stockData.counts.availableItems / stockData.counts.items)} of listed items`} />
                 <KpiCard label="Stocked out items" value={stockData.counts.stockoutItems.toLocaleString()} sub={`${formatPercent(stockData.counts.stockoutItems / stockData.counts.items)} of listed items`} tone="red" />
                 <KpiCard label="Categories" value={stockData.counts.categories.toLocaleString()} sub={stockData.source} tone="blue" />
+              </div>
+              <div className="weekly-stock-panel stock-trend-panel">
+                <div className="quality-panel-head">
+                  <div>
+                    <h3>Availability trend by week</h3>
+                    <p>Click a week to update the category chart and item lists.</p>
+                  </div>
+                  <span>{stockStreamLabels[stockStream] || stockStream}</span>
+                </div>
+                <div className="stock-trend-bars">
+                  {stockTrendRows.map((period) => (
+                    <button
+                      type="button"
+                      className={period.date === stockDate ? "active" : ""}
+                      key={period.id}
+                      onClick={() => setStockDate(period.date)}
+                    >
+                      <i style={{ height: `${Math.max(26, Math.round(period.overallAvailability * 170))}px` }} />
+                      <strong>{formatPercent(period.overallAvailability)}</strong>
+                      <span>{period.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className="weekly-stock-grid">
                 <div className="weekly-stock-panel">

@@ -1106,6 +1106,69 @@ h1 {
   gap: 12px;
 }
 
+.stock-trend-panel {
+  padding: 14px;
+}
+
+.stock-trend-panel .quality-panel-head {
+  padding: 0 0 10px;
+}
+
+.stock-trend-panel .quality-panel-head p {
+  margin: 4px 0 0;
+  color: #607168;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.stock-trend-bars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(116px, 1fr));
+  gap: 12px;
+  align-items: end;
+  min-height: 170px;
+  border-top: 1px solid #edf2ee;
+  padding-top: 14px;
+}
+
+.stock-trend-bars button {
+  display: grid;
+  justify-items: center;
+  align-content: end;
+  gap: 7px;
+  min-height: 150px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: #f8fbf8;
+  color: #16251c;
+  cursor: pointer;
+  padding: 10px 8px;
+}
+
+.stock-trend-bars button.active {
+  border-color: #24784e;
+  background: #eef7f1;
+  box-shadow: inset 0 0 0 1px rgba(36, 120, 78, 0.2);
+}
+
+.stock-trend-bars i {
+  width: 54px;
+  min-height: 26px;
+  border-radius: 5px 5px 0 0;
+  background: #287f53;
+}
+
+.stock-trend-bars strong {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.stock-trend-bars span {
+  color: #607168;
+  font-size: 12px;
+  text-align: center;
+}
+
 .weekly-stock-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
