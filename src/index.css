@@ -754,6 +754,7 @@ select:focus-visible {
 .page-commodities > .table-panel,
 .page-programmes > .weekly-section,
 .page-quality > .concerns-section,
+.page-reporting > .reporting-rate-section,
 .page-actions > .action-tracker {
   display: grid;
 }
@@ -3050,6 +3051,90 @@ h1 {
   background: #1f7a4d;
 }
 
+.reporting-rate-section {
+  gap: 16px;
+}
+
+.reporting-filter-bar {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(150px, 1fr));
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #dce7df;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.reporting-filter-bar label {
+  display: grid;
+  gap: 6px;
+}
+
+.reporting-filter-bar span {
+  color: #607168;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.reporting-filter-bar select {
+  min-width: 0;
+  border: 1px solid #cfded5;
+  border-radius: 6px;
+  background: #fff;
+  color: #10251a;
+  padding: 9px 10px;
+}
+
+.reporting-drill-path {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  color: #607168;
+  font-size: 13px;
+}
+
+.reporting-drill-path button {
+  border: 1px solid #cfe0d5;
+  border-radius: 999px;
+  background: #fff;
+  color: #176b42;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 7px 12px;
+}
+
+.reporting-drill-path button:disabled {
+  color: #8b9b91;
+  cursor: default;
+}
+
+.reporting-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 0.9fr);
+  gap: 16px;
+}
+
+.reporting-facilities .table-scroll {
+  max-height: 470px;
+}
+
+.reporting-table {
+  margin-top: 0;
+}
+
+.reporting-tone-green .quality-bar-track i {
+  background: #1f7a4d;
+}
+
+.reporting-tone-amber .quality-bar-track i {
+  background: #b56a00;
+}
+
+.reporting-tone-red .quality-bar-track i {
+  background: #c52b1e;
+}
+
 .quality-note {
   display: flex;
   gap: 12px;
@@ -3701,6 +3786,8 @@ td.neutral {
   .assistant-panel,
   .weekly-grid,
   .change-grid,
+  .reporting-filter-bar,
+  .reporting-layout,
   .table-tools {
     grid-template-columns: 1fr;
   }

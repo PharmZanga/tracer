@@ -11,6 +11,7 @@ const dashboardPages = [
   { id: "commodities", short: "CI", label: "Commodity Intelligence" },
   { id: "programmes", short: "PR", label: "Programme Performance" },
   { id: "quality", short: "DQ", label: "Data Quality" },
+  { id: "reporting", short: "RR", label: "Reporting Rate" },
   { id: "actions", short: "AT", label: "Action Tracker" },
 ];
 
@@ -373,6 +374,21 @@ function KpiCard({ label, value, sub, tone = "green" }) {
 
 function qualityRate(row) {
   return row?.expected ? (row.reported || 0) / row.expected : 0;
+}
+
+function reportingTone(rate) {
+  const value = normalizeRate(rate);
+  if (value >= 0.9) return "green";
+  if (value >= 0.7) return "amber";
+  return "red";
+}
+
+function reportingStatus(row) {
+  return (row.reported || 0) > 0 ? "Reported" : "Not Reported";
+}
+
+function reportingFacilityLabel(type) {
+  return type === "Health Centres" ? "Health Centre" : "Health Post";
 }
 
 function aggregateQualityRows(rows, groupKey, labelKey = "name") {
@@ -812,6 +828,13 @@ function App() {
   const [stockDate, setStockDate] = useState([...new Set(weeklyStockPeriods.map((period) => period.date))].sort().at(-1) || "");
   const [stockStream, setStockStream] = useState(weeklyStockPeriods.some((period) => period.stream === "EMMS") ? "EMMS" : weeklyStockPeriods.at(-1)?.stream || "LAB");
   const [stockCategory, setStockCategory] = useState("");
+  const [reportPeriodId, setReportPeriodId] = useState(tracerReportingPeriods.at(-1).id);
+  const [reportProvince, setReportProvince] = useState("all");
+  const [reportDistrict, setReportDistrict] = useState("all");
+  const [reportFacilityType, setReportFacilityType] = useState("all");
+  const [reportStatus, setReportStatus] = useState("all");
+  const [reportDrillProvince, setReportDrillProvince] = useState("");
+  const [reportDrillDistrict, setReportDrillDistrict] = useState("");
   const [query, setQuery] = useState("");
   const [actions, setActions] = useState([
     { id: 1, issue: "Facility stockouts in highest-risk reporting units", action: "Validate counts and initiate redistribution", owner: "Provincial pharmacist", status: "In progress" },
@@ -846,6 +869,46 @@ function App() {
       .filter((item) => item.category === selectedStockCategory)
       .sort((a, b) => a.availability - b.availability || a.name.localeCompare(b.name))
     : [];
+  const reportData = tracerReportingPeriods.find((period) => period.id === reportPeriodId) || tracerReportingPeriods.at(-1);
+  const reportBaseRows = (reportData.dataQuality?.facilityTypes || [])
+    .filter((row) => row.type === "Health Centres" || row.type === "Health Posts")
+    .map((row) => ({
+      ...row,
+      facilityType: reportingFacilityLabel(row.type),
+      facilityName: `${row.district} ${reportingFacilityLabel(row.type)} reporting unit`,
+      status: reportingStatus(row),
+      rate: qualityRate(row),
+      notReported: row.missing || 0,
+      lastReportingPeriod: (row.reported || 0) > 0 ? reportData.label : "-",
+    }));
+  const reportProvinceOptions = [...new Set(reportBaseRows.map((row) => row.province))].sort();
+  const reportDistrictOptions = [...new Set(reportBaseRows
+    .filter((row) => reportProvince === "all" || row.province === reportProvince)
+    .map((row) => row.district))].sort();
+  const reportingRows = reportBaseRows
+    .filter((row) => reportProvince === "all" || row.province === reportProvince)
+    .filter((row) => reportDistrict === "all" || row.district === reportDistrict)
+    .filter((row) => reportFacilityType === "all" || row.facilityType === reportFacilityType)
+    .filter((row) => reportStatus === "all" || row.status === reportStatus);
+  const reportingKpis = reportingRows.reduce((acc, row) => {
+    acc.expected += row.expected || 0;
+    acc.reported += row.reported || 0;
+    acc.notReported += row.notReported || 0;
+    return acc;
+  }, { expected: 0, reported: 0, notReported: 0 });
+  reportingKpis.rate = reportingKpis.expected ? reportingKpis.reported / reportingKpis.expected : 0;
+  const reportingProvinceRows = aggregateQualityRows(reportingRows, "province", "name")
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const reportingDistrictRows = aggregateQualityRows(
+    reportingRows.filter((row) => (reportDrillProvince || reportProvince) === "all" || row.province === (reportDrillProvince || reportProvince)),
+    "district",
+    "name",
+  ).sort((a, b) => a.name.localeCompare(b.name));
+  const reportingChartRows = reportDrillProvince ? reportingDistrictRows : reportingProvinceRows;
+  const reportingFacilityRows = reportingRows
+    .filter((row) => !reportDrillProvince || row.province === reportDrillProvince)
+    .filter((row) => !reportDrillDistrict || row.district === reportDrillDistrict)
+    .sort((a, b) => a.province.localeCompare(b.province) || a.district.localeCompare(b.district) || a.facilityType.localeCompare(b.facilityType));
 
   const provinceOptions = fieldData.provinces.map((province) => province.name).sort();
   const districtOptions = [...new Set(fieldData.districts
@@ -991,6 +1054,28 @@ function App() {
     setSelectedFacilityLevel("all");
     setSelectedFacility("all");
     setActivePage("quality");
+  }
+
+  function changeReportPeriod(periodId) {
+    setReportPeriodId(periodId);
+    setReportProvince("all");
+    setReportDistrict("all");
+    setReportFacilityType("all");
+    setReportStatus("all");
+    setReportDrillProvince("");
+    setReportDrillDistrict("");
+  }
+
+  function changeReportProvince(province) {
+    setReportProvince(province);
+    setReportDistrict("all");
+    setReportDrillProvince(province === "all" ? "" : province);
+    setReportDrillDistrict("");
+  }
+
+  function changeReportDistrict(district) {
+    setReportDistrict(district);
+    setReportDrillDistrict(district === "all" ? "" : district);
   }
 
   function updateActionStatus(id, status) {
@@ -1564,6 +1649,185 @@ function App() {
               ))}
             </div>
           ) : <div className="empty-state">No submission comments were captured for this selected week.</div>}
+        </section>
+
+        <section className="reporting-rate-section">
+          <div className="section-head">
+            <div>
+              <p className="eyebrow dark">Reporting Rate</p>
+              <h2>Health centre and health post reporting performance</h2>
+              <p>Reporting rate is calculated as facilities reported divided by facilities expected for health centres and health posts in the selected reporting period.</p>
+            </div>
+          </div>
+          <div className="reporting-filter-bar">
+            <label>
+              <span>Reporting period</span>
+              <select value={reportPeriodId} onChange={(event) => changeReportPeriod(event.target.value)}>
+                {tracerReportingPeriods.map((period) => (
+                  <option value={period.id} key={period.id}>{period.label}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Province</span>
+              <select value={reportProvince} onChange={(event) => changeReportProvince(event.target.value)}>
+                <option value="all">All provinces</option>
+                {reportProvinceOptions.map((province) => <option value={province} key={province}>{province}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>District</span>
+              <select value={reportDistrict} onChange={(event) => changeReportDistrict(event.target.value)}>
+                <option value="all">All districts</option>
+                {reportDistrictOptions.map((district) => <option value={district} key={district}>{district}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Facility Type</span>
+              <select value={reportFacilityType} onChange={(event) => {
+                setReportFacilityType(event.target.value);
+                setReportDrillDistrict("");
+              }}>
+                <option value="all">Health Centre and Health Post</option>
+                <option value="Health Centre">Health Centre</option>
+                <option value="Health Post">Health Post</option>
+              </select>
+            </label>
+            <label>
+              <span>Report status</span>
+              <select value={reportStatus} onChange={(event) => setReportStatus(event.target.value)}>
+                <option value="all">All</option>
+                <option value="Reported">Reported</option>
+                <option value="Not Reported">Not Reported</option>
+              </select>
+            </label>
+          </div>
+          <div className="stats-grid">
+            <KpiCard label="Expected facilities" value={reportingKpis.expected.toLocaleString()} sub="Health centre/post reports expected" />
+            <KpiCard label="Facilities reported" value={reportingKpis.reported.toLocaleString()} sub="Submitted in selected period" />
+            <KpiCard label="Facilities not reported" value={reportingKpis.notReported.toLocaleString()} sub="Missing in selected period" tone="red" />
+            <KpiCard label="Reporting rate" value={formatPercent(reportingKpis.rate)} sub="Reported / expected" tone={reportingTone(reportingKpis.rate)} />
+          </div>
+          <div className="reporting-drill-path">
+            <button type="button" onClick={() => {
+              setReportDrillProvince("");
+              setReportDrillDistrict("");
+            }}>Zambia</button>
+            <span>/</span>
+            <button type="button" disabled={!reportDrillProvince} onClick={() => setReportDrillDistrict("")}>
+              {reportDrillProvince || "Select province"}
+            </button>
+            <span>/</span>
+            <button type="button" disabled={!reportDrillDistrict}>{reportDrillDistrict || "Select district"}</button>
+          </div>
+          <div className="reporting-layout">
+            <div className="quality-panel reporting-chart">
+              <div className="quality-panel-head">
+                <div>
+                  <h3>{reportDrillProvince ? `District reporting rate in ${reportDrillProvince}` : "Reporting rate by province"}</h3>
+                  <p>{reportDrillProvince ? "Click a district to show health centre and health post reporting units." : "Click a province to drill down to district reporting rate."}</p>
+                </div>
+                <span>{reportingChartRows.length} rows</span>
+              </div>
+              <div className="quality-bars">
+                {reportingChartRows.map((row) => {
+                  const rate = row.rate || qualityRate(row);
+                  const tone = reportingTone(rate);
+                  return (
+                    <button
+                      type="button"
+                      className={`quality-bar-row reporting-tone-${tone}`}
+                      key={row.name}
+                      onClick={() => {
+                        if (reportDrillProvince) {
+                          setReportDrillDistrict(row.name);
+                          setReportDistrict(row.name);
+                        } else {
+                          setReportDrillProvince(row.name);
+                          setReportProvince(row.name);
+                          setReportDistrict("all");
+                          setReportDrillDistrict("");
+                        }
+                      }}
+                    >
+                      <span>{row.name}</span>
+                      <div className="quality-bar-track"><i style={{ width: `${Math.round(normalizeRate(rate) * 100)}%` }} /></div>
+                      <b>{formatPercent(rate)}</b>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="quality-panel reporting-facilities">
+              <div className="quality-panel-head">
+                <div>
+                  <h3>{reportDrillDistrict ? `${reportDrillDistrict} facility-level reporting` : "Facility-level reporting"}</h3>
+                  <p>Rows show health centre and health post reporting status for the selected scope.</p>
+                </div>
+                <span>{reportingFacilityRows.length} rows</span>
+              </div>
+              <div className="table-scroll compact-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Facility name</th>
+                      <th>Facility type</th>
+                      <th>Reported status</th>
+                      <th>Reporting rate</th>
+                      <th>Last reporting period</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reportingFacilityRows.map((row) => (
+                      <tr key={`${row.province}-${row.district}-${row.facilityType}`}>
+                        <td>{row.facilityName}</td>
+                        <td>{row.facilityType}</td>
+                        <td><span className={`status-pill ${row.status === "Reported" ? "reported" : "missing"}`}>{row.status}</span></td>
+                        <td>{formatPercent(row.rate)}</td>
+                        <td>{row.lastReportingPeriod}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div className="table-panel reporting-table">
+            <div className="table-headline">
+              <div>
+                <h2>Reporting rate detail</h2>
+                <p>Province, district and facility-type summary for the selected reporting filters.</p>
+              </div>
+            </div>
+            <div className="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Province</th>
+                    <th>District</th>
+                    <th>Facility Type</th>
+                    <th>Expected</th>
+                    <th>Reported</th>
+                    <th>Not Reported</th>
+                    <th>Reporting Rate %</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reportingRows.map((row) => (
+                    <tr key={`${row.province}-${row.district}-${row.facilityType}`}>
+                      <td>{row.province}</td>
+                      <td>{row.district}</td>
+                      <td>{row.facilityType}</td>
+                      <td>{row.expected.toLocaleString()}</td>
+                      <td>{row.reported.toLocaleString()}</td>
+                      <td>{row.notReported.toLocaleString()}</td>
+                      <td><span className={`comparison-signal ${reportingTone(row.rate)}`}>{formatPercent(row.rate)}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </section>
 
         <section className="action-tracker">
