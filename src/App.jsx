@@ -5,7 +5,7 @@ import { weeklyStockPeriods } from "./weeklyStockData.js";
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary" },
   { id: "national", short: "NS", label: "National Stock Status" },
-  { id: "stock", short: "WS", label: "Weekly Stock" },
+  { id: "stock", short: "ZS", label: "ZAMMSA Weekly Stock Status" },
   { id: "provincial", short: "PP", label: "Provincial Performance" },
   { id: "facilities", short: "FA", label: "Facility Alerts" },
   { id: "commodities", short: "CI", label: "Commodity Intelligence" },
@@ -1246,8 +1246,8 @@ function App() {
           <div className="weekly-stock-head">
             <div>
               <p className="eyebrow dark">Weekly Inventory Availability</p>
-              <h2>EMMS and laboratory availability</h2>
-              <p>This tab uses only the weekly inventory submissions. Select a programme and reporting week, then click a category bar to see related medicines in the latest weekly stock-status report.</p>
+              <h2>ZAMMSA weekly stock status</h2>
+              <p>This tab uses only ZAMMSA weekly stock-status submissions. Select EMMS or laboratory and a reporting week, then click a category bar to see related medicines in the latest weekly stock-status report.</p>
             </div>
             <div className="weekly-stock-controls">
               <label>
