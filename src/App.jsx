@@ -388,7 +388,21 @@ function reportingStatus(row) {
 }
 
 function reportingFacilityLabel(type) {
-  return type === "Health Centres" ? "Health Centre" : "Health Post";
+  const labels = {
+    "Health Centres": "Health Centre",
+    "Health Posts": "Health Post",
+    "Level 1 Hospitals": "Level 1 Hospital",
+    "Level 2 Hospitals": "Level 2 / General Hospital",
+    "Level 3/Specialised Hospitals": "Level 3 / Specialised Hospital",
+    "Cancer Units": "Cancer Unit",
+    "Renal Units": "Renal Unit",
+    "TB-DS/MDR Units": "TB-DS / TB-MDR Unit",
+    "Mental Health Units": "Mental Health Unit",
+    "Ophthalmology Units": "Eye / Ophthalmology Unit",
+    "Heart Units": "Heart / Cardiac Unit",
+    "Women And Newborn Units": "Women and Newborn Unit",
+  };
+  return labels[type] || String(type || "Reporting Unit").replace(/\s+Units$/, " Unit").replace(/\s+Hospitals$/, " Hospital");
 }
 
 function aggregateQualityRows(rows, groupKey, labelKey = "name") {
@@ -871,7 +885,6 @@ function App() {
     : [];
   const reportData = tracerReportingPeriods.find((period) => period.id === reportPeriodId) || tracerReportingPeriods.at(-1);
   const reportBaseRows = (reportData.dataQuality?.facilityTypes || [])
-    .filter((row) => row.type === "Health Centres" || row.type === "Health Posts")
     .map((row) => ({
       ...row,
       facilityType: reportingFacilityLabel(row.type),
@@ -881,6 +894,7 @@ function App() {
       notReported: row.missing || 0,
       lastReportingPeriod: (row.reported || 0) > 0 ? reportData.label : "-",
     }));
+  const reportFacilityTypeOptions = [...new Set(reportBaseRows.map((row) => row.facilityType))].sort();
   const reportProvinceOptions = [...new Set(reportBaseRows.map((row) => row.province))].sort();
   const reportDistrictOptions = [...new Set(reportBaseRows
     .filter((row) => reportProvince === "all" || row.province === reportProvince)
@@ -1655,8 +1669,8 @@ function App() {
           <div className="section-head">
             <div>
               <p className="eyebrow dark">Reporting Rate</p>
-              <h2>Health centre and health post reporting performance</h2>
-              <p>Reporting rate is calculated as facilities reported divided by facilities expected for health centres and health posts in the selected reporting period.</p>
+              <h2>Facility and specialised unit reporting performance</h2>
+              <p>Reporting rate is calculated as reporting units submitted divided by reporting units expected for each facility level or specialised programme in the selected period.</p>
             </div>
           </div>
           <div className="reporting-filter-bar">
@@ -1688,9 +1702,8 @@ function App() {
                 setReportFacilityType(event.target.value);
                 setReportDrillDistrict("");
               }}>
-                <option value="all">Health Centre and Health Post</option>
-                <option value="Health Centre">Health Centre</option>
-                <option value="Health Post">Health Post</option>
+                <option value="all">All facility levels</option>
+                {reportFacilityTypeOptions.map((type) => <option value={type} key={type}>{type}</option>)}
               </select>
             </label>
             <label>
@@ -1703,9 +1716,9 @@ function App() {
             </label>
           </div>
           <div className="stats-grid">
-            <KpiCard label="Expected facilities" value={reportingKpis.expected.toLocaleString()} sub="Health centre/post reports expected" />
-            <KpiCard label="Facilities reported" value={reportingKpis.reported.toLocaleString()} sub="Submitted in selected period" />
-            <KpiCard label="Facilities not reported" value={reportingKpis.notReported.toLocaleString()} sub="Missing in selected period" tone="red" />
+            <KpiCard label="Expected reporting units" value={reportingKpis.expected.toLocaleString()} sub="Facility-level reports expected" />
+            <KpiCard label="Reporting units submitted" value={reportingKpis.reported.toLocaleString()} sub="Submitted in selected period" />
+            <KpiCard label="Reporting units missing" value={reportingKpis.notReported.toLocaleString()} sub="Missing in selected period" tone="red" />
             <KpiCard label="Reporting rate" value={formatPercent(reportingKpis.rate)} sub="Reported / expected" tone={reportingTone(reportingKpis.rate)} />
           </div>
           <div className="reporting-drill-path">
@@ -1725,7 +1738,7 @@ function App() {
               <div className="quality-panel-head">
                 <div>
                   <h3>{reportDrillProvince ? `District reporting rate in ${reportDrillProvince}` : "Reporting rate by province"}</h3>
-                  <p>{reportDrillProvince ? "Click a district to show health centre and health post reporting units." : "Click a province to drill down to district reporting rate."}</p>
+                  <p>{reportDrillProvince ? "Click a district to show facility level and specialised reporting units." : "Click a province to drill down to district reporting rate."}</p>
                 </div>
                 <span>{reportingChartRows.length} rows</span>
               </div>
@@ -1762,7 +1775,7 @@ function App() {
               <div className="quality-panel-head">
                 <div>
                   <h3>{reportDrillDistrict ? `${reportDrillDistrict} facility-level reporting` : "Facility-level reporting"}</h3>
-                  <p>Rows show health centre and health post reporting status for the selected scope.</p>
+                  <p>Rows show facility level and specialised reporting status for the selected scope.</p>
                 </div>
                 <span>{reportingFacilityRows.length} rows</span>
               </div>
