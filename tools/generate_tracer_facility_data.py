@@ -283,6 +283,20 @@ def normalize_district(value):
     return aliases.get(text, text)
 
 
+def normalize_program(value):
+    text = (clean(value) or "Unknown programme").upper()
+    compact = re.sub(r"[^A-Z0-9]+", "", text)
+    aliases = {
+        "TB0MDR": "TB-MDR",
+        "TBMDR": "TB-MDR",
+        "MDRTB": "TB-MDR",
+        "TB0DS": "TB-DS",
+        "TBDS": "TB-DS",
+        "DSTB": "TB-DS",
+    }
+    return aliases.get(compact, text)
+
+
 def num(value):
     if value is None:
         return None
@@ -474,7 +488,7 @@ def iter_raw_matrix_rows(source, report_date):
                     "DISTRICT": district,
                     "FACILITY LEVEL": facility_level,
                     "FACILITY NAME": facility_name,
-                    "PROGRAM": facility_level,
+                    "PROGRAM": normalize_program(facility_level),
                     "DESCRIPTION OF ITEM": item,
                     "UNIT": clean(ws.cell(row_index, 3).value),
                     "QUANTITY": quantity,
@@ -569,7 +583,7 @@ def load_clean_workbook_configs():
         district = normalize_district(values[3])
         original_level = clean(values[4])
         original_facility = clean(values[5])
-        programme = clean(values[6])
+        programme = normalize_program(values[6])
         original_item = clean(values[7])
         corrected_facility = corrected_value(values[17] if len(values) > 17 else None, original_facility)
         if str(corrected_facility or "").strip().upper() == "HC/HP" and str(original_facility or "").strip().upper() not in {"", "ALL"}:
@@ -690,7 +704,7 @@ def summarize(config):
         district = normalize_district(row.get("DISTRICT"))
         facility = clean(row.get("FACILITY NAME")) or "Unknown reporting unit"
         facility_level = (clean(row.get("FACILITY LEVEL")) or "Unknown facility level").upper()
-        program = clean(row.get("PROGRAM")) or "Unknown programme"
+        program = normalize_program(row.get("PROGRAM"))
         item = clean(row.get("DESCRIPTION OF ITEM")) or "Unknown commodity"
         if report_date is None:
             report_date = row.get("DATE")
