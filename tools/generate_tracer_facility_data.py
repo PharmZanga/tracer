@@ -507,6 +507,13 @@ def date_id(value):
 
 
 def week_label(value):
+    report_id = date_id(value)
+    week_overrides = {
+        "2026-02-22": "Week 3",
+        "2026-02-28": "Week 4",
+    }
+    if report_id in week_overrides:
+        return week_overrides[report_id]
     if hasattr(value, "strftime"):
         return f"Week {(value.day - 1) // 7 + 1}"
     try:
