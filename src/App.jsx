@@ -9,6 +9,7 @@ const dashboardPages = [
   { id: "provincial", short: "PP", label: "Provincial Performance" },
   { id: "facilities", short: "FA", label: "Facility Alerts" },
   { id: "commodities", short: "CI", label: "Commodity Intelligence" },
+  { id: "comparison", short: "CP", label: "Comparison" },
   { id: "programmes", short: "PR", label: "Programme Performance" },
   { id: "quality", short: "DQ", label: "Data Quality" },
   { id: "reporting", short: "RR", label: "Reporting Rate" },
@@ -453,6 +454,112 @@ function aggregateRollups(rows, groupKey = "name") {
   }));
 }
 
+function quarterOfMonth(month = "") {
+  const monthNumber = Number(String(month).slice(5, 7));
+  if (!monthNumber) return "Q1";
+  return `Q${Math.floor((monthNumber - 1) / 3) + 1}`;
+}
+
+function shortPeriodLabel(period) {
+  if (!period?.reportDate) return period?.label || "";
+  return new Date(`${period.reportDate}T00:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+function comparisonMetricValue(row, metric) {
+  if (metric === "mos") return row.mos ?? 0;
+  if (metric === "amc") return row.amc ?? 0;
+  if (metric === "reporting") return row.expected ? (row.reported || 0) / row.expected : row.rows ? 1 : 0;
+  return normalizeRate(row.availability);
+}
+
+function comparisonMetricLabel(metric) {
+  if (metric === "mos") return "Months of stock";
+  if (metric === "amc") return "AMC";
+  if (metric === "reporting") return "Reporting rate";
+  return "Availability";
+}
+
+function formatComparisonMetric(value, metric) {
+  if (metric === "availability" || metric === "reporting") return formatPercent(value);
+  if (metric === "mos") return formatMos(value);
+  return Math.round(value || 0).toLocaleString();
+}
+
+function comparisonTone(value, metric) {
+  if (metric === "amc") return "green";
+  const normalized = metric === "mos" ? Math.min((value || 0) / 4, 1) : normalizeRate(value);
+  if (normalized >= 0.8) return "green";
+  if (normalized >= 0.6) return "amber";
+  return "red";
+}
+
+function comparisonPeriodMatches(period, filters) {
+  const year = String(filters.year);
+  if (!String(period.month || "").startsWith(year)) return false;
+  if (filters.periodType === "yearly") return true;
+  if (filters.periodType === "quarterly") return quarterOfMonth(period.month) === filters.quarter;
+  return period.month === filters.month;
+}
+
+function comparisonRowsForPeriod(period, filters) {
+  const provinceFilter = (row) => filters.province === "all" || row.province === filters.province || row.name === filters.province;
+  const districtFilter = (row) => filters.district === "all" || row.district === filters.district || row.name === filters.district;
+  const facilityLevelFilter = (row) => filters.facilityLevel === "all" || row.facilityLevel === filters.facilityLevel;
+  const programFilter = (row) => filters.program === "all" || row.name === filters.program || row.programme === filters.program || row.program === filters.program;
+  const commodityFilter = (row) => filters.commodity === "all" || row.name === filters.commodity;
+
+  if (filters.compareBy === "province") {
+    return (period.provinces || [])
+      .filter(provinceFilter)
+      .map((row) => ({ ...row, group: row.name }));
+  }
+  if (filters.compareBy === "district") {
+    return (period.districts || [])
+      .filter(provinceFilter)
+      .filter(districtFilter)
+      .map((row) => ({ ...row, group: row.name }));
+  }
+  if (filters.compareBy === "commodity") {
+    return (period.commodities || [])
+      .filter(commodityFilter)
+      .map((row) => ({ ...row, group: row.name }));
+  }
+  if (filters.compareBy === "program") {
+    return (period.programmes || [])
+      .filter(programFilter)
+      .map((row) => ({ ...row, group: row.name }));
+  }
+
+  const groups = careLevelBuckets.map((bucket) => {
+    const facilities = (period.facilities || [])
+      .filter(provinceFilter)
+      .filter(districtFilter)
+      .filter(facilityLevelFilter)
+      .filter((facility) => careLevelBucket(facility.facilityLevel) === bucket.id);
+    return {
+      ...combineRollups(facilities, makeEmptyRollup(bucket.label)),
+      name: bucket.label,
+      group: bucket.label,
+    };
+  });
+  return groups.filter((row) => row.rows > 0 || filters.facilityLevel === "all");
+}
+
+function aggregateComparisonRows(periods, filters) {
+  const rows = periods.flatMap((period) => comparisonRowsForPeriod(period, filters));
+  const groups = new Map();
+  rows.forEach((row) => {
+    const key = row.group || row.name;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(row);
+  });
+  return [...groups.entries()].map(([name, values]) => ({
+    ...combineRollups(values, makeEmptyRollup(name)),
+    name,
+    periods: values.length,
+  }));
+}
+
 function qualityLevelGroup(type = "") {
   if (type === "Health Posts" || type === "Health Centres") return "Health Posts & Health Centres";
   return type;
@@ -849,6 +956,17 @@ function App() {
   const [reportStatus, setReportStatus] = useState("all");
   const [reportDrillProvince, setReportDrillProvince] = useState("");
   const [reportDrillDistrict, setReportDrillDistrict] = useState("");
+  const [comparisonPeriodType, setComparisonPeriodType] = useState("monthly");
+  const [comparisonYear, setComparisonYear] = useState("2026");
+  const [comparisonQuarter, setComparisonQuarter] = useState("Q2");
+  const [comparisonMonth, setComparisonMonth] = useState(tracerReportingPeriods.at(-1).month);
+  const [comparisonProvince, setComparisonProvince] = useState("all");
+  const [comparisonDistrict, setComparisonDistrict] = useState("all");
+  const [comparisonFacilityLevel, setComparisonFacilityLevel] = useState("all");
+  const [comparisonCommodity, setComparisonCommodity] = useState("all");
+  const [comparisonProgram, setComparisonProgram] = useState("all");
+  const [comparisonCompareBy, setComparisonCompareBy] = useState("level");
+  const [comparisonMetric, setComparisonMetric] = useState("availability");
   const [query, setQuery] = useState("");
   const [actions, setActions] = useState([
     { id: 1, issue: "Facility stockouts in highest-risk reporting units", action: "Validate counts and initiate redistribution", owner: "Provincial pharmacist", status: "In progress" },
@@ -1013,6 +1131,87 @@ function App() {
   const productCategoryRows = aggregateRollups(scopedProgrammeRows, "name")
     .sort((a, b) => a.availability - b.availability || (a.mos || 0) - (b.mos || 0))
     .slice(0, 36);
+  const comparisonYears = [...new Set(tracerReportingPeriods.map((period) => String(period.month).slice(0, 4)))].sort();
+  const comparisonMonths = [...new Set(tracerReportingPeriods
+    .filter((period) => String(period.month).startsWith(comparisonYear))
+    .map((period) => period.month))].sort();
+  const comparisonDistrictOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.districts || [])
+    .filter((row) => comparisonProvince === "all" || row.province === comparisonProvince)
+    .map((row) => row.name))].sort();
+  const comparisonFacilityLevelOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.facilityLevels || []))]
+    .map((row) => row.name || row.facilityLevel || row)
+    .filter(Boolean)
+    .sort();
+  const comparisonCommodityOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.commodities || []).map((row) => row.name))]
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b))
+    .slice(0, 600);
+  const comparisonProgramOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.programmes || []).map((row) => row.name))]
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b));
+  const comparisonFilters = {
+    periodType: comparisonPeriodType,
+    year: comparisonYear,
+    quarter: comparisonQuarter,
+    month: comparisonMonth,
+    province: comparisonProvince,
+    district: comparisonDistrict,
+    facilityLevel: comparisonFacilityLevel,
+    commodity: comparisonCommodity,
+    program: comparisonProgram,
+    compareBy: comparisonCompareBy,
+  };
+  const comparisonPeriods = tracerReportingPeriods
+    .filter((period) => comparisonPeriodMatches(period, comparisonFilters))
+    .sort((a, b) => a.reportDate.localeCompare(b.reportDate));
+  const previousComparisonPeriods = (() => {
+    if (!comparisonPeriods.length) return [];
+    const firstDate = comparisonPeriods[0].reportDate;
+    const sameYearPeriods = tracerReportingPeriods
+      .filter((period) => String(period.month).startsWith(comparisonYear) && period.reportDate < firstDate)
+      .sort((a, b) => b.reportDate.localeCompare(a.reportDate));
+    if (comparisonPeriodType === "monthly") {
+      const previousMonth = sameYearPeriods[0]?.month;
+      return previousMonth ? tracerReportingPeriods.filter((period) => period.month === previousMonth) : [];
+    }
+    if (comparisonPeriodType === "quarterly") {
+      const previousQuarter = sameYearPeriods[0] ? quarterOfMonth(sameYearPeriods[0].month) : "";
+      return previousQuarter ? tracerReportingPeriods.filter((period) => String(period.month).startsWith(comparisonYear) && quarterOfMonth(period.month) === previousQuarter) : [];
+    }
+    return tracerReportingPeriods.filter((period) => String(period.month).startsWith(String(Number(comparisonYear) - 1)));
+  })();
+  const comparisonRows = aggregateComparisonRows(comparisonPeriods, comparisonFilters)
+    .sort((a, b) => comparisonMetricValue(b, comparisonMetric) - comparisonMetricValue(a, comparisonMetric) || a.name.localeCompare(b.name));
+  const previousComparisonRows = aggregateComparisonRows(previousComparisonPeriods, comparisonFilters);
+  const comparisonCurrent = combineRollups(comparisonRows, makeEmptyRollup("Current comparison"));
+  const comparisonPrevious = combineRollups(previousComparisonRows, makeEmptyRollup("Previous comparison"));
+  const comparisonDelta = comparisonMetricValue(comparisonCurrent, comparisonMetric) - comparisonMetricValue(comparisonPrevious, comparisonMetric);
+  const comparisonBest = comparisonRows[0] || makeEmptyRollup("No data");
+  const comparisonWorst = comparisonRows.at(-1) || makeEmptyRollup("No data");
+  const comparisonGap = comparisonMetricValue(comparisonBest, comparisonMetric) - comparisonMetricValue(comparisonWorst, comparisonMetric);
+  const comparisonTrendGroups = comparisonRows.slice(0, 5).map((row) => row.name);
+  const comparisonTrendRows = comparisonPeriods.map((period) => {
+    const periodRows = comparisonRowsForPeriod(period, comparisonFilters);
+    return {
+      period,
+      values: comparisonTrendGroups.map((name) => {
+        const row = periodRows.find((item) => (item.group || item.name) === name);
+        return { name, value: row ? comparisonMetricValue(row, comparisonMetric) : 0 };
+      }),
+    };
+  });
+  const comparisonCommodityRows = aggregateRollups(comparisonPeriods.flatMap((period) => period.commodities || []), "name")
+    .filter((row) => comparisonCommodity === "all" || row.name === comparisonCommodity)
+    .sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)
+    .slice(0, 60);
+  const comparisonInsights = [
+    `${comparisonBest.name} has the highest ${comparisonMetricLabel(comparisonMetric).toLowerCase()} at ${formatComparisonMetric(comparisonMetricValue(comparisonBest, comparisonMetric), comparisonMetric)}.`,
+    `${comparisonWorst.name} is the lowest performer at ${formatComparisonMetric(comparisonMetricValue(comparisonWorst, comparisonMetric), comparisonMetric)}.`,
+    `The performance gap across the selected comparison is ${formatComparisonMetric(comparisonGap, comparisonMetric)}.`,
+    comparisonDelta >= 0
+      ? `The current selection improved by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} compared to the previous comparable period.`
+      : `The current selection declined by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} compared to the previous comparable period.`,
+  ];
 
   function resetFieldHierarchy() {
     setSelectedProvince("all");
@@ -1569,6 +1768,296 @@ function App() {
                 })}
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <section className="comparison-section">
+          <div className="section-head">
+            <div>
+              <p className="eyebrow dark">Comparison</p>
+              <h2>Compare tracer drug availability across time, care level, and commodity</h2>
+              <p>Use monthly, quarterly, or yearly views to compare availability, months of stock, reporting rate, and AMC across provinces, districts, levels of care, programmes, and medicines.</p>
+            </div>
+            <div className="export-actions">
+              <button type="button" onClick={exportCsv}>Export CSV</button>
+              <button type="button" onClick={() => window.print()}>Export PDF</button>
+            </div>
+          </div>
+
+          <div className="comparison-filters">
+            <label>
+              <span>Period type</span>
+              <select value={comparisonPeriodType} onChange={(event) => setComparisonPeriodType(event.target.value)}>
+                <option value="monthly">Monthly</option>
+                <option value="quarterly">Quarterly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+            </label>
+            <label>
+              <span>Year</span>
+              <select value={comparisonYear} onChange={(event) => {
+                const year = event.target.value;
+                setComparisonYear(year);
+                const firstMonth = comparisonMonths.find((month) => month.startsWith(year)) || `${year}-01`;
+                setComparisonMonth(firstMonth);
+              }}>
+                {comparisonYears.map((year) => <option value={year} key={year}>{year}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Quarter</span>
+              <select value={comparisonQuarter} onChange={(event) => setComparisonQuarter(event.target.value)} disabled={comparisonPeriodType !== "quarterly"}>
+                <option value="Q1">Q1</option>
+                <option value="Q2">Q2</option>
+                <option value="Q3">Q3</option>
+                <option value="Q4">Q4</option>
+              </select>
+            </label>
+            <label>
+              <span>Month</span>
+              <select value={comparisonMonth} onChange={(event) => setComparisonMonth(event.target.value)} disabled={comparisonPeriodType !== "monthly"}>
+                {comparisonMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Province</span>
+              <select value={comparisonProvince} onChange={(event) => {
+                setComparisonProvince(event.target.value);
+                setComparisonDistrict("all");
+              }}>
+                <option value="all">All provinces</option>
+                {provinceOptions.map((province) => <option value={province} key={province}>{province}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>District</span>
+              <select value={comparisonDistrict} onChange={(event) => setComparisonDistrict(event.target.value)}>
+                <option value="all">All districts</option>
+                {comparisonDistrictOptions.map((district) => <option value={district} key={district}>{district}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Level of care</span>
+              <select value={comparisonFacilityLevel} onChange={(event) => setComparisonFacilityLevel(event.target.value)}>
+                <option value="all">All levels</option>
+                {comparisonFacilityLevelOptions.map((level) => <option value={level} key={level}>{level}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Commodity</span>
+              <select value={comparisonCommodity} onChange={(event) => {
+                setComparisonCommodity(event.target.value);
+                if (event.target.value !== "all") setComparisonCompareBy("commodity");
+              }}>
+                <option value="all">All commodities</option>
+                {comparisonCommodityOptions.map((commodity) => <option value={commodity} key={commodity}>{commodity}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Program</span>
+              <select value={comparisonProgram} onChange={(event) => {
+                setComparisonProgram(event.target.value);
+                if (event.target.value !== "all") setComparisonCompareBy("program");
+              }}>
+                <option value="all">All programmes</option>
+                {comparisonProgramOptions.map((program) => <option value={program} key={program}>{program}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Compare by</span>
+              <select value={comparisonCompareBy} onChange={(event) => setComparisonCompareBy(event.target.value)}>
+                <option value="level">Level of care</option>
+                <option value="province">Province</option>
+                <option value="district">District</option>
+                <option value="commodity">Commodity</option>
+                <option value="program">Program</option>
+              </select>
+            </label>
+            <label>
+              <span>Display metric</span>
+              <select value={comparisonMetric} onChange={(event) => setComparisonMetric(event.target.value)}>
+                <option value="availability">Availability</option>
+                <option value="mos">Months of stock</option>
+                <option value="reporting">Reporting rate</option>
+                <option value="amc">AMC</option>
+              </select>
+            </label>
+          </div>
+
+          <div className="stats-grid comparison-kpis">
+            <KpiCard
+              label={`Average ${comparisonMetricLabel(comparisonMetric)}`}
+              value={formatComparisonMetric(comparisonMetricValue(comparisonCurrent, comparisonMetric), comparisonMetric)}
+              sub={`${comparisonDelta >= 0 ? "+" : "-"}${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} vs previous period`}
+              tone={comparisonTone(comparisonMetricValue(comparisonCurrent, comparisonMetric), comparisonMetric)}
+            />
+            <KpiCard label="Highest performing" value={comparisonBest.name} sub={formatComparisonMetric(comparisonMetricValue(comparisonBest, comparisonMetric), comparisonMetric)} />
+            <KpiCard label="Lowest performing" value={comparisonWorst.name} sub={formatComparisonMetric(comparisonMetricValue(comparisonWorst, comparisonMetric), comparisonMetric)} tone={comparisonTone(comparisonMetricValue(comparisonWorst, comparisonMetric), comparisonMetric)} />
+            <KpiCard label="Performance gap" value={formatComparisonMetric(comparisonGap, comparisonMetric)} sub={`${comparisonRows.length} comparison rows`} tone="amber" />
+            <KpiCard label="Periods included" value={comparisonPeriods.length.toLocaleString()} sub={comparisonPeriodType} tone="blue" />
+          </div>
+
+          <div className="comparison-layout">
+            <div className="comparison-panel">
+              <div className="quality-panel-head">
+                <div>
+                  <h3>{comparisonMetricLabel(comparisonMetric)} comparison</h3>
+                  <p>Ranked by selected metric for the active filters.</p>
+                </div>
+                <span>{comparisonRows.length} rows</span>
+              </div>
+              <div className="comparison-bars">
+                {comparisonRows.slice(0, 14).map((row) => {
+                  const value = comparisonMetricValue(row, comparisonMetric);
+                  const barWidth = comparisonMetric === "mos" ? Math.min((value / 6) * 100, 100) : comparisonMetric === "amc" ? Math.min((value / Math.max(comparisonMetricValue(comparisonBest, comparisonMetric), 1)) * 100, 100) : normalizeRate(value) * 100;
+                  return (
+                    <div className={`comparison-bar-row comparison-${comparisonTone(value, comparisonMetric)}`} key={row.name}>
+                      <span>{row.name}</span>
+                      <div><i style={{ width: `${barWidth}%` }} /></div>
+                      <b>{formatComparisonMetric(value, comparisonMetric)}</b>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="comparison-panel">
+              <div className="quality-panel-head">
+                <div>
+                  <h3>Trend comparison</h3>
+                  <p>Top comparison rows across selected reporting weeks.</p>
+                </div>
+                <span>{comparisonTrendRows.length} periods</span>
+              </div>
+              <div className="comparison-trend">
+                {comparisonTrendRows.map((row) => (
+                  <div className="comparison-trend-row" key={row.period.id}>
+                    <strong>{shortPeriodLabel(row.period)}</strong>
+                    <div>
+                      {row.values.map((item) => (
+                        <span
+                          title={`${item.name}: ${formatComparisonMetric(item.value, comparisonMetric)}`}
+                          style={{ height: `${Math.max(8, comparisonMetric === "mos" ? Math.min(item.value / 6, 1) * 68 : comparisonMetric === "amc" ? 32 : normalizeRate(item.value) * 68)}px` }}
+                          key={`${row.period.id}-${item.name}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="comparison-legend">
+                {comparisonTrendGroups.map((name) => <span key={name}>{name}</span>)}
+              </div>
+            </div>
+          </div>
+
+          <div className="comparison-panel">
+            <div className="quality-panel-head">
+              <div>
+                <h3>Heatmap</h3>
+                <p>Rows are the top comparison groups; columns are reporting periods.</p>
+              </div>
+            </div>
+            <div className="comparison-heatmap">
+              <div className="heatmap-header">
+                <span />
+                {comparisonPeriods.map((period) => <b key={period.id}>{shortPeriodLabel(period)}</b>)}
+              </div>
+              {comparisonTrendGroups.map((name) => (
+                <div className="heatmap-row" key={name}>
+                  <strong>{name}</strong>
+                  {comparisonPeriods.map((period) => {
+                    const row = comparisonRowsForPeriod(period, comparisonFilters).find((item) => (item.group || item.name) === name);
+                    const value = row ? comparisonMetricValue(row, comparisonMetric) : 0;
+                    return <span className={`heatmap-cell heatmap-${comparisonTone(value, comparisonMetric)}`} key={`${name}-${period.id}`}>{formatComparisonMetric(value, comparisonMetric)}</span>;
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="comparison-grid">
+            <div className="comparison-panel">
+              <div className="quality-panel-head">
+                <div>
+                  <h3>Ranking table</h3>
+                  <p>Best to weakest performers for the current comparison.</p>
+                </div>
+              </div>
+              <div className="table-scroll compact-table">
+                <table>
+                  <thead>
+                    <tr><th>Rank</th><th>Name</th><th>{comparisonMetricLabel(comparisonMetric)}</th><th>MOS</th><th>Risk rows</th><th>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    {comparisonRows.slice(0, 30).map((row, index) => {
+                      const value = comparisonMetricValue(row, comparisonMetric);
+                      const tone = comparisonTone(value, comparisonMetric);
+                      return (
+                        <tr key={row.name}>
+                          <td>{index + 1}</td>
+                          <td>{row.name}</td>
+                          <td>{formatComparisonMetric(value, comparisonMetric)}</td>
+                          <td>{formatMos(row.mos)}</td>
+                          <td>{row.riskRows.toLocaleString()}</td>
+                          <td><span className={`comparison-signal ${tone}`}>{tone === "green" ? "Good" : tone === "amber" ? "Monitor" : "Critical"}</span></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="comparison-panel insights-panel">
+              <div className="quality-panel-head">
+                <div>
+                  <h3>Insights</h3>
+                  <p>Automatic interpretation from the selected comparison.</p>
+                </div>
+              </div>
+              {comparisonInsights.map((insight) => <p key={insight}>{insight}</p>)}
+            </div>
+          </div>
+
+          <div className="table-panel comparison-commodity-table">
+            <div className="table-headline">
+              <div>
+                <h2>Commodity comparison table</h2>
+                <p>Commodity rollup across the selected period window.</p>
+              </div>
+            </div>
+            <div className="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Commodity</th>
+                    <th>Availability</th>
+                    <th>MOS</th>
+                    <th>AMC</th>
+                    <th>Stockout rows</th>
+                    <th>Low-stock rows</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparisonCommodityRows.map((row) => {
+                    const tone = classifyRollup(row);
+                    return (
+                      <tr key={row.name}>
+                        <td>{row.name}</td>
+                        <td>{formatPercent(row.availability)}</td>
+                        <td>{formatMos(row.mos)}</td>
+                        <td>{Math.round(row.amc || 0).toLocaleString()}</td>
+                        <td>{row.stockout.toLocaleString()}</td>
+                        <td>{(row.nearCritical + row.understocked).toLocaleString()}</td>
+                        <td><span className={`comparison-signal ${tone}`}>{tone === "green" ? "Good" : tone === "amber" ? "Monitor" : "Critical"}</span></td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 
