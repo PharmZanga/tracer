@@ -469,6 +469,12 @@ function shortPeriodLabel(period) {
   return new Date(`${period.reportDate}T00:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+function comparisonWindowLabel(periodType, year, quarter, month) {
+  if (periodType === "yearly") return String(year);
+  if (periodType === "quarterly") return `${quarter} ${year}`;
+  return monthLabel(month);
+}
+
 function comparisonMetricValue(row, metric) {
   if (metric === "mos") return row.mos ?? 0;
   if (metric === "amc") return row.amc ?? 0;
@@ -1193,17 +1199,54 @@ function App() {
   const comparisonBest = comparisonRows[0] || makeEmptyRollup("No data");
   const comparisonWorst = comparisonRows.at(-1) || makeEmptyRollup("No data");
   const comparisonGap = comparisonMetricValue(comparisonBest, comparisonMetric) - comparisonMetricValue(comparisonWorst, comparisonMetric);
+  const comparisonCurrentLabel = comparisonWindowLabel(comparisonPeriodType, comparisonYear, comparisonQuarter, comparisonMonth);
+  const previousComparisonAnchor = previousComparisonPeriods.at(-1);
+  const comparisonPreviousLabel = previousComparisonAnchor
+    ? comparisonWindowLabel(
+      comparisonPeriodType,
+      String(previousComparisonAnchor.month).slice(0, 4),
+      quarterOfMonth(previousComparisonAnchor.month),
+      previousComparisonAnchor.month,
+    )
+    : "Previous period";
+  const comparisonPreviousByName = new Map(previousComparisonRows.map((row) => [row.name, row]));
+  const comparisonCareOrder = new Map(careLevelBuckets.map((bucket, index) => [bucket.label, index]));
+  const comparisonExecutiveRows = [...comparisonRows]
+    .sort((a, b) => {
+      if (comparisonCompareBy !== "level") return comparisonMetricValue(b, comparisonMetric) - comparisonMetricValue(a, comparisonMetric);
+      return (comparisonCareOrder.get(a.name) ?? 99) - (comparisonCareOrder.get(b.name) ?? 99);
+    })
+    .slice(0, comparisonCompareBy === "level" ? 4 : 8)
+    .map((current) => ({
+      name: current.name,
+      current,
+      previous: comparisonPreviousByName.get(current.name) || makeEmptyRollup(current.name),
+    }));
+  const comparisonMosScale = Math.max(
+    4,
+    Math.ceil(Math.max(0, ...comparisonExecutiveRows.flatMap((row) => [row.current.mos || 0, row.previous.mos || 0]))),
+  );
+  const comparisonPreviousMosPoints = comparisonExecutiveRows.map((row, index) => {
+    const x = ((index + 0.5) / Math.max(comparisonExecutiveRows.length, 1)) * 100;
+    const y = 100 - Math.min((row.previous.mos || 0) / comparisonMosScale, 1) * 100;
+    return `${x},${y}`;
+  }).join(" ");
+  const comparisonCurrentMosPoints = comparisonExecutiveRows.map((row, index) => {
+    const x = ((index + 0.5) / Math.max(comparisonExecutiveRows.length, 1)) * 100;
+    const y = 100 - Math.min((row.current.mos || 0) / comparisonMosScale, 1) * 100;
+    return `${x},${y}`;
+  }).join(" ");
+  const comparisonAvailabilityDeltaPoints = (normalizeRate(comparisonCurrent.availability) - normalizeRate(comparisonPrevious.availability)) * 100;
+  const comparisonMosDelta = (comparisonCurrent.mos || 0) - (comparisonPrevious.mos || 0);
+  const comparisonTakeaways = [...comparisonExecutiveRows]
+    .map((row) => ({
+      name: row.name,
+      delta: (normalizeRate(row.current.availability) - normalizeRate(row.previous.availability)) * 100,
+      availability: normalizeRate(row.current.availability),
+    }))
+    .sort((a, b) => a.delta - b.delta)
+    .slice(0, 3);
   const comparisonTrendGroups = comparisonRows.slice(0, 5).map((row) => row.name);
-  const comparisonTrendRows = comparisonPeriods.map((period) => {
-    const periodRows = comparisonRowsForPeriod(period, comparisonFilters);
-    return {
-      period,
-      values: comparisonTrendGroups.map((name) => {
-        const row = periodRows.find((item) => (item.group || item.name) === name);
-        return { name, value: row ? comparisonMetricValue(row, comparisonMetric) : 0 };
-      }),
-    };
-  });
   const comparisonCommodityRows = aggregateRollups(comparisonPeriods.flatMap((period) => period.commodities || []), "name")
     .filter((row) => comparisonCommodity === "all" || row.name === comparisonCommodity)
     .sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)
@@ -1888,71 +1931,101 @@ function App() {
             </label>
           </div>
 
-          <div className="stats-grid comparison-kpis">
-            <KpiCard
-              label={`Average ${comparisonMetricLabel(comparisonMetric)}`}
-              value={formatComparisonMetric(comparisonMetricValue(comparisonCurrent, comparisonMetric), comparisonMetric)}
-              sub={`${comparisonDelta >= 0 ? "+" : "-"}${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} vs previous period`}
-              tone={comparisonTone(comparisonMetricValue(comparisonCurrent, comparisonMetric), comparisonMetric)}
-            />
-            <KpiCard label="Highest performing" value={comparisonBest.name} sub={formatComparisonMetric(comparisonMetricValue(comparisonBest, comparisonMetric), comparisonMetric)} />
-            <KpiCard label="Lowest performing" value={comparisonWorst.name} sub={formatComparisonMetric(comparisonMetricValue(comparisonWorst, comparisonMetric), comparisonMetric)} tone={comparisonTone(comparisonMetricValue(comparisonWorst, comparisonMetric), comparisonMetric)} />
-            <KpiCard label="Performance gap" value={formatComparisonMetric(comparisonGap, comparisonMetric)} sub={`${comparisonRows.length} comparison rows`} tone="amber" />
-            <KpiCard label="Periods included" value={comparisonPeriods.length.toLocaleString()} sub={comparisonPeriodType} tone="blue" />
+          <div className="comparison-overview">
+            <div className="comparison-story">
+              <p>National overview</p>
+              <h3>{comparisonPreviousLabel} vs {comparisonCurrentLabel}</h3>
+              <strong>Drug availability and months of stock</strong>
+              <div className={`comparison-story-callout ${comparisonAvailabilityDeltaPoints >= 0 ? "positive" : "negative"}`}>
+                {comparisonAvailabilityDeltaPoints >= 0 ? "Availability improved" : "Availability declined"} by {Math.abs(comparisonAvailabilityDeltaPoints).toFixed(1)} percentage points in {comparisonCurrentLabel} compared with {comparisonPreviousLabel}.
+              </div>
+            </div>
+
+            <div className="comparison-period-kpi availability">
+              <h3>Drug availability</h3>
+              <div>
+                <span><small>{comparisonPreviousLabel}</small><strong>{formatPercent(comparisonPrevious.availability)}</strong></span>
+                <b aria-hidden="true">&#8594;</b>
+                <span><small>{comparisonCurrentLabel}</small><strong>{formatPercent(comparisonCurrent.availability)}</strong></span>
+              </div>
+              <p className={comparisonAvailabilityDeltaPoints >= 0 ? "positive" : "negative"}>
+                {comparisonAvailabilityDeltaPoints >= 0 ? "Up" : "Down"} {Math.abs(comparisonAvailabilityDeltaPoints).toFixed(1)} percentage points
+              </p>
+            </div>
+
+            <div className="comparison-period-kpi mos">
+              <h3>Months of stock (MOS)</h3>
+              <div>
+                <span><small>{comparisonPreviousLabel}</small><strong>{formatMos(comparisonPrevious.mos)}</strong></span>
+                <b aria-hidden="true">&#8594;</b>
+                <span><small>{comparisonCurrentLabel}</small><strong>{formatMos(comparisonCurrent.mos)}</strong></span>
+              </div>
+              <p className={comparisonMosDelta >= 0 ? "positive" : "negative"}>
+                {comparisonMosDelta >= 0 ? "Up" : "Down"} {Math.abs(comparisonMosDelta).toFixed(1)} months
+              </p>
+            </div>
           </div>
 
-          <div className="comparison-layout">
-            <div className="comparison-panel">
-              <div className="quality-panel-head">
-                <div>
-                  <h3>{comparisonMetricLabel(comparisonMetric)} comparison</h3>
-                  <p>Ranked by selected metric for the active filters.</p>
-                </div>
-                <span>{comparisonRows.length} rows</span>
-              </div>
-              <div className="comparison-bars">
-                {comparisonRows.slice(0, 14).map((row) => {
-                  const value = comparisonMetricValue(row, comparisonMetric);
-                  const barWidth = comparisonMetric === "mos" ? Math.min((value / 6) * 100, 100) : comparisonMetric === "amc" ? Math.min((value / Math.max(comparisonMetricValue(comparisonBest, comparisonMetric), 1)) * 100, 100) : normalizeRate(value) * 100;
-                  return (
-                    <div className={`comparison-bar-row comparison-${comparisonTone(value, comparisonMetric)}`} key={row.name}>
-                      <span>{row.name}</span>
-                      <div><i style={{ width: `${barWidth}%` }} /></div>
-                      <b>{formatComparisonMetric(value, comparisonMetric)}</b>
-                    </div>
-                  );
-                })}
+          <div className="comparison-panel comparison-combo-panel">
+            <div className="comparison-combo-title">
+              <h3>Drug availability by {comparisonCompareBy === "level" ? "level of care" : comparisonCompareBy} - {comparisonPreviousLabel} vs {comparisonCurrentLabel}</h3>
+              <div className="comparison-combo-legend" aria-label="Chart legend">
+                <span className="previous-availability">{comparisonPreviousLabel} availability</span>
+                <span className="current-availability">{comparisonCurrentLabel} availability</span>
+                <span className="previous-mos">{comparisonPreviousLabel} MOS</span>
+                <span className="current-mos">{comparisonCurrentLabel} MOS</span>
               </div>
             </div>
-
-            <div className="comparison-panel">
-              <div className="quality-panel-head">
-                <div>
-                  <h3>Trend comparison</h3>
-                  <p>Top comparison rows across selected reporting weeks.</p>
-                </div>
-                <span>{comparisonTrendRows.length} periods</span>
-              </div>
-              <div className="comparison-trend">
-                {comparisonTrendRows.map((row) => (
-                  <div className="comparison-trend-row" key={row.period.id}>
-                    <strong>{shortPeriodLabel(row.period)}</strong>
-                    <div>
-                      {row.values.map((item) => (
-                        <span
-                          title={`${item.name}: ${formatComparisonMetric(item.value, comparisonMetric)}`}
-                          style={{ height: `${Math.max(8, comparisonMetric === "mos" ? Math.min(item.value / 6, 1) * 68 : comparisonMetric === "amc" ? 32 : normalizeRate(item.value) * 68)}px` }}
-                          key={`${row.period.id}-${item.name}`}
-                        />
-                      ))}
-                    </div>
+            {comparisonExecutiveRows.length ? (
+              <div className="comparison-combo-scroll">
+                <div className="comparison-combo-chart" style={{ minWidth: `${Math.max(820, comparisonExecutiveRows.length * 160)}px` }}>
+                  <span className="comparison-axis-title availability">Availability (%)</span>
+                  <span className="comparison-axis-title mos">Months of stock (MOS)</span>
+                  <div className="comparison-left-axis" aria-hidden="true">
+                    {[100, 80, 60, 40, 20, 0].map((value) => <span style={{ bottom: `${value}%` }} key={value}>{value}%</span>)}
                   </div>
-                ))}
+                  <div className="comparison-right-axis" aria-hidden="true">
+                    {[comparisonMosScale, comparisonMosScale * 0.75, comparisonMosScale * 0.5, comparisonMosScale * 0.25, 0].map((value) => <span style={{ bottom: `${(value / comparisonMosScale) * 100}%` }} key={value}>{value.toFixed(1)}</span>)}
+                  </div>
+                  <div className="comparison-combo-plot">
+                    <div className="comparison-grid-lines" aria-hidden="true">{[0, 1, 2, 3, 4, 5].map((value) => <i key={value} />)}</div>
+                    <div className="comparison-category-grid" style={{ "--comparison-columns": comparisonExecutiveRows.length }}>
+                      {comparisonExecutiveRows.map((row) => {
+                        const previousAvailability = normalizeRate(row.previous.availability) * 100;
+                        const currentAvailability = normalizeRate(row.current.availability) * 100;
+                        const previousMosTop = 100 - Math.min((row.previous.mos || 0) / comparisonMosScale, 1) * 100;
+                        const currentMosTop = 100 - Math.min((row.current.mos || 0) / comparisonMosScale, 1) * 100;
+                        return (
+                          <div className="comparison-category" key={row.name}>
+                            <div className="comparison-paired-bars">
+                              <i className="previous" style={{ height: `${previousAvailability}%` }}><b>{previousAvailability.toFixed(1)}%</b></i>
+                              <i className="current" style={{ height: `${currentAvailability}%` }}><b>{currentAvailability.toFixed(1)}%</b></i>
+                            </div>
+                            <span className="comparison-mos-marker previous" style={{ top: `${previousMosTop}%` }}>{formatMos(row.previous.mos)}</span>
+                            <span className="comparison-mos-marker current" style={{ top: `${currentMosTop}%` }}>{formatMos(row.current.mos)}</span>
+                            <strong>{row.name}</strong>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <svg className="comparison-mos-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                      <polyline className="previous" points={comparisonPreviousMosPoints} />
+                      <polyline className="current" points={comparisonCurrentMosPoints} />
+                    </svg>
+                  </div>
+                </div>
               </div>
-              <div className="comparison-legend">
-                {comparisonTrendGroups.map((name) => <span key={name}>{name}</span>)}
+            ) : <p className="empty-state">No comparison rows match the selected filters.</p>}
+          </div>
+
+          <div className="comparison-takeaways">
+            <h3>Key takeaways</h3>
+            {comparisonTakeaways.map((item) => (
+              <div className={item.delta >= 0 ? "positive" : "negative"} key={item.name}>
+                <strong>{item.name}</strong>
+                <p>{item.delta >= 0 ? "Availability improved" : "Availability declined"} by {Math.abs(item.delta).toFixed(1)} percentage points to {formatPercent(item.availability)}.</p>
               </div>
-            </div>
+            ))}
           </div>
 
           <div className="comparison-panel">
