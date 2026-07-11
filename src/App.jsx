@@ -39,6 +39,10 @@ function normalizeRate(value) {
   return Math.min(number, 1);
 }
 
+function compareText(a, b) {
+  return String(a ?? "").localeCompare(String(b ?? ""));
+}
+
 function formatPercent(value) {
   return `${Math.round(normalizeRate(value) * 1000) / 10}%`;
 }
@@ -1144,11 +1148,11 @@ function App() {
     .sort();
   const comparisonCommodityOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.commodities || []).map((row) => row.name))]
     .filter(Boolean)
-    .sort((a, b) => a.localeCompare(b))
+    .sort(compareText)
     .slice(0, 600);
   const comparisonProgramOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.programmes || []).map((row) => row.name))]
     .filter(Boolean)
-    .sort((a, b) => a.localeCompare(b));
+    .sort(compareText);
   const comparisonFilters = {
     periodType: comparisonPeriodType,
     year: comparisonYear,
@@ -1163,13 +1167,13 @@ function App() {
   };
   const comparisonPeriods = tracerReportingPeriods
     .filter((period) => comparisonPeriodMatches(period, comparisonFilters))
-    .sort((a, b) => a.reportDate.localeCompare(b.reportDate));
+    .sort((a, b) => compareText(a.reportDate, b.reportDate));
   const previousComparisonPeriods = (() => {
     if (!comparisonPeriods.length) return [];
     const firstDate = comparisonPeriods[0].reportDate;
     const sameYearPeriods = tracerReportingPeriods
       .filter((period) => String(period.month).startsWith(comparisonYear) && period.reportDate < firstDate)
-      .sort((a, b) => b.reportDate.localeCompare(a.reportDate));
+      .sort((a, b) => compareText(b.reportDate, a.reportDate));
     if (comparisonPeriodType === "monthly") {
       const previousMonth = sameYearPeriods[0]?.month;
       return previousMonth ? tracerReportingPeriods.filter((period) => period.month === previousMonth) : [];
@@ -1181,7 +1185,7 @@ function App() {
     return tracerReportingPeriods.filter((period) => String(period.month).startsWith(String(Number(comparisonYear) - 1)));
   })();
   const comparisonRows = aggregateComparisonRows(comparisonPeriods, comparisonFilters)
-    .sort((a, b) => comparisonMetricValue(b, comparisonMetric) - comparisonMetricValue(a, comparisonMetric) || a.name.localeCompare(b.name));
+    .sort((a, b) => comparisonMetricValue(b, comparisonMetric) - comparisonMetricValue(a, comparisonMetric) || compareText(a.name, b.name));
   const previousComparisonRows = aggregateComparisonRows(previousComparisonPeriods, comparisonFilters);
   const comparisonCurrent = combineRollups(comparisonRows, makeEmptyRollup("Current comparison"));
   const comparisonPrevious = combineRollups(previousComparisonRows, makeEmptyRollup("Previous comparison"));

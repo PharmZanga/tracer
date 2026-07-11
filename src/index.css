@@ -4150,3 +4150,41 @@ td.neutral {
     font-size: 11px;
   }
 }
+/* Startup fallback remains usable even if a data row prevents the dashboard from rendering. */
+.startup-error {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background: #eef4f1;
+  color: #10261e;
+}
+
+.startup-error > div {
+  width: min(560px, 100%);
+  padding: 32px;
+  border: 1px solid #c8d9d1;
+  border-top: 5px solid #08764b;
+  background: #fff;
+}
+
+.startup-error h1 {
+  margin: 6px 0 12px;
+  font-size: 28px;
+}
+
+.startup-error p {
+  line-height: 1.55;
+}
+
+.startup-error button {
+  margin-top: 12px;
+  padding: 10px 16px;
+  border: 1px solid #08764b;
+  border-radius: 4px;
+  background: #08764b;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
