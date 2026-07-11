@@ -509,10 +509,12 @@ function shortPeriodLabel(period) {
   return new Date(`${period.reportDate}T00:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
-function comparisonWindowLabel(periodType, year, quarter, month) {
-  if (periodType === "yearly") return String(year);
-  if (periodType === "quarterly") return `${quarter} ${year}`;
-  return monthLabel(month);
+function comparisonRangeLabel(periodType, year, start, end) {
+  const lower = String(start) <= String(end) ? start : end;
+  const upper = String(start) <= String(end) ? end : start;
+  if (periodType === "yearly") return lower === upper ? String(lower) : `${lower} to ${upper}`;
+  if (periodType === "quarterly") return lower === upper ? `${lower} ${year}` : `${lower} to ${upper} ${year}`;
+  return lower === upper ? monthLabel(lower) : `${monthLabel(lower)} to ${monthLabel(upper)}`;
 }
 
 function comparisonMetricValue(row, metric) {
@@ -543,12 +545,14 @@ function comparisonTone(value, metric) {
   return "red";
 }
 
-function comparisonPeriodMatches(period, filters) {
-  const year = String(filters.year);
-  if (!String(period.month || "").startsWith(year)) return false;
-  if (filters.periodType === "yearly") return true;
-  if (filters.periodType === "quarterly") return quarterOfMonth(period.month) === filters.quarter;
-  return period.month === filters.month;
+function comparisonPeriodInRange(period, periodType, year, start, end) {
+  const periodYear = String(period.month || "").slice(0, 4);
+  if (periodType === "yearly") return periodYear >= String(start) && periodYear <= String(end);
+  if (periodYear !== String(year)) return false;
+  const value = periodType === "quarterly" ? quarterOfMonth(period.month) : String(period.month);
+  const lower = String(start) <= String(end) ? String(start) : String(end);
+  const upper = String(start) <= String(end) ? String(end) : String(start);
+  return value >= lower && value <= upper;
 }
 
 function comparisonRowsForPeriod(period, filters) {
@@ -1009,8 +1013,10 @@ function App() {
   const [reportDrillDistrict, setReportDrillDistrict] = useState("");
   const [comparisonPeriodType, setComparisonPeriodType] = useState("monthly");
   const [comparisonYear, setComparisonYear] = useState("2026");
-  const [comparisonQuarter, setComparisonQuarter] = useState("Q2");
-  const [comparisonMonth, setComparisonMonth] = useState(tracerReportingPeriods.at(-1).month);
+  const [comparisonBaselineStart, setComparisonBaselineStart] = useState(() => [...new Set(tracerReportingPeriods.map((period) => period.month))].at(-2) || tracerReportingPeriods.at(-1).month);
+  const [comparisonBaselineEnd, setComparisonBaselineEnd] = useState(() => [...new Set(tracerReportingPeriods.map((period) => period.month))].at(-2) || tracerReportingPeriods.at(-1).month);
+  const [comparisonRangeStart, setComparisonRangeStart] = useState(() => tracerReportingPeriods.at(-1).month);
+  const [comparisonRangeEnd, setComparisonRangeEnd] = useState(() => tracerReportingPeriods.at(-1).month);
   const [comparisonProvince, setComparisonProvince] = useState("all");
   const [comparisonDistrict, setComparisonDistrict] = useState("all");
   const [comparisonFacilityLevel, setComparisonFacilityLevel] = useState("all");
@@ -1183,6 +1189,11 @@ function App() {
   const comparisonMonths = [...new Set(tracerReportingPeriods
     .filter((period) => String(period.month).startsWith(comparisonYear))
     .map((period) => period.month))].sort();
+  const comparisonRangeOptions = comparisonPeriodType === "monthly"
+    ? comparisonMonths.map((month) => ({ value: month, label: monthLabel(month) }))
+    : comparisonPeriodType === "quarterly"
+      ? ["Q1", "Q2", "Q3", "Q4"].map((quarter) => ({ value: quarter, label: quarter }))
+      : comparisonYears.map((year) => ({ value: year, label: year }));
   const comparisonDistrictOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.districts || [])
     .filter((row) => comparisonProvince === "all" || row.province === comparisonProvince)
     .map((row) => row.name))].sort();
@@ -1195,10 +1206,6 @@ function App() {
     .filter(Boolean)
     .sort(compareText);
   const comparisonFilters = {
-    periodType: comparisonPeriodType,
-    year: comparisonYear,
-    quarter: comparisonQuarter,
-    month: comparisonMonth,
     province: comparisonProvince,
     district: comparisonDistrict,
     facilityLevel: comparisonFacilityLevel,
@@ -1207,24 +1214,11 @@ function App() {
     compareBy: comparisonCompareBy,
   };
   const comparisonPeriods = tracerReportingPeriods
-    .filter((period) => comparisonPeriodMatches(period, comparisonFilters))
+    .filter((period) => comparisonPeriodInRange(period, comparisonPeriodType, comparisonYear, comparisonRangeStart, comparisonRangeEnd))
     .sort((a, b) => compareText(a.reportDate, b.reportDate));
-  const previousComparisonPeriods = (() => {
-    if (!comparisonPeriods.length) return [];
-    const firstDate = comparisonPeriods[0].reportDate;
-    const sameYearPeriods = tracerReportingPeriods
-      .filter((period) => String(period.month).startsWith(comparisonYear) && period.reportDate < firstDate)
-      .sort((a, b) => compareText(b.reportDate, a.reportDate));
-    if (comparisonPeriodType === "monthly") {
-      const previousMonth = sameYearPeriods[0]?.month;
-      return previousMonth ? tracerReportingPeriods.filter((period) => period.month === previousMonth) : [];
-    }
-    if (comparisonPeriodType === "quarterly") {
-      const previousQuarter = sameYearPeriods[0] ? quarterOfMonth(sameYearPeriods[0].month) : "";
-      return previousQuarter ? tracerReportingPeriods.filter((period) => String(period.month).startsWith(comparisonYear) && quarterOfMonth(period.month) === previousQuarter) : [];
-    }
-    return tracerReportingPeriods.filter((period) => String(period.month).startsWith(String(Number(comparisonYear) - 1)));
-  })();
+  const previousComparisonPeriods = tracerReportingPeriods
+    .filter((period) => comparisonPeriodInRange(period, comparisonPeriodType, comparisonYear, comparisonBaselineStart, comparisonBaselineEnd))
+    .sort((a, b) => compareText(a.reportDate, b.reportDate));
   const comparisonRows = aggregateComparisonRows(comparisonPeriods, comparisonFilters)
     .sort((a, b) => comparisonMetricValue(b, comparisonMetric) - comparisonMetricValue(a, comparisonMetric) || compareText(a.name, b.name));
   const previousComparisonRows = aggregateComparisonRows(previousComparisonPeriods, comparisonFilters);
@@ -1234,16 +1228,8 @@ function App() {
   const comparisonBest = comparisonRows[0] || makeEmptyRollup("No data");
   const comparisonWorst = comparisonRows.at(-1) || makeEmptyRollup("No data");
   const comparisonGap = comparisonMetricValue(comparisonBest, comparisonMetric) - comparisonMetricValue(comparisonWorst, comparisonMetric);
-  const comparisonCurrentLabel = comparisonWindowLabel(comparisonPeriodType, comparisonYear, comparisonQuarter, comparisonMonth);
-  const previousComparisonAnchor = previousComparisonPeriods.at(-1);
-  const comparisonPreviousLabel = previousComparisonAnchor
-    ? comparisonWindowLabel(
-      comparisonPeriodType,
-      String(previousComparisonAnchor.month).slice(0, 4),
-      quarterOfMonth(previousComparisonAnchor.month),
-      previousComparisonAnchor.month,
-    )
-    : "Previous period";
+  const comparisonCurrentLabel = comparisonRangeLabel(comparisonPeriodType, comparisonYear, comparisonRangeStart, comparisonRangeEnd);
+  const comparisonPreviousLabel = comparisonRangeLabel(comparisonPeriodType, comparisonYear, comparisonBaselineStart, comparisonBaselineEnd);
   const comparisonPreviousByName = new Map(previousComparisonRows.map((row) => [row.name, row]));
   const comparisonCareOrder = new Map(careLevelBuckets.map((bucket, index) => [bucket.label, index]));
   const comparisonExecutiveRows = [...comparisonRows]
@@ -1291,8 +1277,8 @@ function App() {
     `${comparisonWorst.name} is the lowest performer at ${formatComparisonMetric(comparisonMetricValue(comparisonWorst, comparisonMetric), comparisonMetric)}.`,
     `The performance gap across the selected comparison is ${formatComparisonMetric(comparisonGap, comparisonMetric)}.`,
     comparisonDelta >= 0
-      ? `The current selection improved by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} compared to the previous comparable period.`
-      : `The current selection declined by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} compared to the previous comparable period.`,
+      ? `The comparison range improved by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} against the selected baseline range.`
+      : `The comparison range declined by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} against the selected baseline range.`,
   ];
 
   function resetFieldHierarchy() {
@@ -1872,36 +1858,80 @@ function App() {
           <div className="comparison-filters">
             <label>
               <span>Period type</span>
-              <select value={comparisonPeriodType} onChange={(event) => setComparisonPeriodType(event.target.value)}>
+              <select value={comparisonPeriodType} onChange={(event) => {
+                const periodType = event.target.value;
+                setComparisonPeriodType(periodType);
+                if (periodType === "monthly") {
+                  const months = [...new Set(tracerReportingPeriods
+                    .filter((period) => String(period.month).startsWith(comparisonYear))
+                    .map((period) => period.month))].sort();
+                  const latest = months.at(-1) || "";
+                  const baseline = months.at(-2) || latest;
+                  setComparisonBaselineStart(baseline);
+                  setComparisonBaselineEnd(baseline);
+                  setComparisonRangeStart(latest);
+                  setComparisonRangeEnd(latest);
+                } else if (periodType === "quarterly") {
+                  setComparisonBaselineStart("Q1");
+                  setComparisonBaselineEnd("Q1");
+                  setComparisonRangeStart("Q2");
+                  setComparisonRangeEnd("Q2");
+                } else {
+                  const latestYear = comparisonYears.at(-1) || comparisonYear;
+                  const baselineYear = comparisonYears.at(-2) || latestYear;
+                  setComparisonBaselineStart(baselineYear);
+                  setComparisonBaselineEnd(baselineYear);
+                  setComparisonRangeStart(latestYear);
+                  setComparisonRangeEnd(latestYear);
+                }
+              }}>
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
                 <option value="yearly">Yearly</option>
               </select>
             </label>
-            <label>
+            {comparisonPeriodType !== "yearly" && <label>
               <span>Year</span>
               <select value={comparisonYear} onChange={(event) => {
                 const year = event.target.value;
+                const months = [...new Set(tracerReportingPeriods
+                  .filter((period) => String(period.month).startsWith(year))
+                  .map((period) => period.month))].sort();
+                const latest = months.at(-1) || "";
+                const baseline = months.at(-2) || latest;
                 setComparisonYear(year);
-                const firstMonth = comparisonMonths.find((month) => month.startsWith(year)) || `${year}-01`;
-                setComparisonMonth(firstMonth);
+                if (comparisonPeriodType === "monthly") {
+                  setComparisonBaselineStart(baseline);
+                  setComparisonBaselineEnd(baseline);
+                  setComparisonRangeStart(latest);
+                  setComparisonRangeEnd(latest);
+                }
               }}>
                 {comparisonYears.map((year) => <option value={year} key={year}>{year}</option>)}
               </select>
-            </label>
+            </label>}
             <label>
-              <span>Quarter</span>
-              <select value={comparisonQuarter} onChange={(event) => setComparisonQuarter(event.target.value)} disabled={comparisonPeriodType !== "quarterly"}>
-                <option value="Q1">Q1</option>
-                <option value="Q2">Q2</option>
-                <option value="Q3">Q3</option>
-                <option value="Q4">Q4</option>
+              <span>Baseline start</span>
+              <select value={comparisonBaselineStart} onChange={(event) => setComparisonBaselineStart(event.target.value)}>
+                {comparisonRangeOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}
               </select>
             </label>
             <label>
-              <span>Month</span>
-              <select value={comparisonMonth} onChange={(event) => setComparisonMonth(event.target.value)} disabled={comparisonPeriodType !== "monthly"}>
-                {comparisonMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}
+              <span>Baseline end</span>
+              <select value={comparisonBaselineEnd} onChange={(event) => setComparisonBaselineEnd(event.target.value)}>
+                {comparisonRangeOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Comparison start</span>
+              <select value={comparisonRangeStart} onChange={(event) => setComparisonRangeStart(event.target.value)}>
+                {comparisonRangeOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Comparison end</span>
+              <select value={comparisonRangeEnd} onChange={(event) => setComparisonRangeEnd(event.target.value)}>
+                {comparisonRangeOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}
               </select>
             </label>
             <label>
