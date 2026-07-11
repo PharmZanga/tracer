@@ -186,6 +186,14 @@ const careLevelBuckets = [
   { id: "level3", label: "Level 3/Specialised Hospital" },
 ];
 
+const facilityCareLevelOptions = [
+  { value: "health-post", label: "Health Post" },
+  { value: "health-centre", label: "Health Centre" },
+  { value: "level-1", label: "Level 1" },
+  { value: "level-2", label: "Level 2" },
+  { value: "level-3", label: "Level 3" },
+];
+
 function careLevelBucket(facilityLevel = "") {
   const text = facilityLevel.toUpperCase();
   if (text.includes("HEALTH CENTRE") || text.includes("HEALTH POST")) return "primary";
@@ -209,6 +217,17 @@ function careLevelBucket(facilityLevel = "") {
   ) return "level3";
   if (text.includes("LEVEL 1") || text.includes("DISTRICT")) return "level1";
   return "level3";
+}
+
+function matchesFacilityCareLevel(facilityLevel = "", selectedLevel = "all") {
+  if (selectedLevel === "all") return true;
+  const text = String(facilityLevel).toUpperCase();
+  if (selectedLevel === "health-post") return text.includes("HEALTH POST");
+  if (selectedLevel === "health-centre") return text.includes("HEALTH CENTRE");
+  if (selectedLevel === "level-1") return careLevelBucket(text) === "level1";
+  if (selectedLevel === "level-2") return careLevelBucket(text) === "level2";
+  if (selectedLevel === "level-3") return careLevelBucket(text) === "level3";
+  return false;
 }
 
 function LevelOfCarePerformance({ rows }) {
@@ -514,7 +533,7 @@ function comparisonPeriodMatches(period, filters) {
 function comparisonRowsForPeriod(period, filters) {
   const provinceFilter = (row) => filters.province === "all" || row.province === filters.province || row.name === filters.province;
   const districtFilter = (row) => filters.district === "all" || row.district === filters.district || row.name === filters.district;
-  const facilityLevelFilter = (row) => filters.facilityLevel === "all" || row.facilityLevel === filters.facilityLevel;
+  const facilityLevelFilter = (row) => matchesFacilityCareLevel(row.facilityLevel, filters.facilityLevel);
   const programFilter = (row) => filters.program === "all" || row.name === filters.program || row.programme === filters.program || row.program === filters.program;
   const commodityFilter = (row) => filters.commodity === "all" || row.name === filters.commodity;
 
@@ -1056,21 +1075,18 @@ function App() {
   const districtOptions = [...new Set(fieldData.districts
     .filter((district) => selectedProvince === "all" || district.province === selectedProvince)
     .map((district) => district.name))].sort();
-  const facilityLevelOptions = [...new Set(fieldData.facilities
-    .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
-    .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict)
-    .map((facility) => facility.facilityLevel))].sort();
+  const facilityLevelOptions = facilityCareLevelOptions;
   const facilityOptions = selectedDistrict === "all" ? [] : fieldData.facilities
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
     .filter((facility) => facility.district === selectedDistrict)
-    .filter((facility) => selectedFacilityLevel === "all" || facility.facilityLevel === selectedFacilityLevel)
+    .filter((facility) => matchesFacilityCareLevel(facility.facilityLevel, selectedFacilityLevel))
     .map((facility) => `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}`)
     .sort();
 
   const filteredFacilities = fieldData.facilities
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
     .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict)
-    .filter((facility) => selectedFacilityLevel === "all" || facility.facilityLevel === selectedFacilityLevel)
+    .filter((facility) => matchesFacilityCareLevel(facility.facilityLevel, selectedFacilityLevel))
     .filter((facility) => selectedFacility === "all" || `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}` === selectedFacility);
 
   const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
@@ -1137,7 +1153,7 @@ function App() {
   const scopedProgrammeRows = (fieldData.programmeScopes || fieldData.programmes || [])
     .filter((row) => !row.province || selectedProvince === "all" || row.province === selectedProvince)
     .filter((row) => !row.district || selectedDistrict === "all" || row.district === selectedDistrict)
-    .filter((row) => !row.facilityLevel || selectedFacilityLevel === "all" || row.facilityLevel === selectedFacilityLevel);
+    .filter((row) => !row.facilityLevel || matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel));
   const productCategoryRows = aggregateRollups(scopedProgrammeRows, "name")
     .sort((a, b) => a.availability - b.availability || (a.mos || 0) - (b.mos || 0))
     .slice(0, 36);
@@ -1148,10 +1164,7 @@ function App() {
   const comparisonDistrictOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.districts || [])
     .filter((row) => comparisonProvince === "all" || row.province === comparisonProvince)
     .map((row) => row.name))].sort();
-  const comparisonFacilityLevelOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.facilityLevels || []))]
-    .map((row) => row.name || row.facilityLevel || row)
-    .filter(Boolean)
-    .sort();
+  const comparisonFacilityLevelOptions = facilityCareLevelOptions;
   const comparisonCommodityOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.commodities || []).map((row) => row.name))]
     .filter(Boolean)
     .sort(compareText)
@@ -1457,7 +1470,7 @@ function App() {
                 setSelectedFacility("all");
               }}>
                 <option value="all">All levels</option>
-                {facilityLevelOptions.map((level) => <option value={level} key={level}>{level}</option>)}
+                {facilityLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
               </select>
             </label>
             <label>
@@ -1887,7 +1900,7 @@ function App() {
               <span>Level of care</span>
               <select value={comparisonFacilityLevel} onChange={(event) => setComparisonFacilityLevel(event.target.value)}>
                 <option value="all">All levels</option>
-                {comparisonFacilityLevelOptions.map((level) => <option value={level} key={level}>{level}</option>)}
+                {comparisonFacilityLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
               </select>
             </label>
             <label>
