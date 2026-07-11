@@ -194,6 +194,16 @@ const facilityCareLevelOptions = [
   { value: "level-3", label: "Level 3" },
 ];
 
+const specialisedCareLevelOptions = [
+  { value: "specialised-cancer", label: "Cancer Diseases Hospital" },
+  { value: "specialised-heart", label: "National Heart Hospital" },
+  { value: "specialised-women-newborn", label: "Women and Newborn Hospital" },
+  { value: "specialised-renal", label: "Renal Units" },
+  { value: "specialised-mental-health", label: "Mental Health Units" },
+  { value: "specialised-eye", label: "Eye/Ophthalmology Hospital" },
+  { value: "specialised-tb", label: "TB Units" },
+];
+
 function careLevelBucket(facilityLevel = "") {
   const text = facilityLevel.toUpperCase();
   if (text.includes("HEALTH CENTRE") || text.includes("HEALTH POST")) return "primary";
@@ -227,7 +237,18 @@ function matchesFacilityCareLevel(facilityLevel = "", selectedLevel = "all") {
   if (selectedLevel === "level-1") return careLevelBucket(text) === "level1";
   if (selectedLevel === "level-2") return careLevelBucket(text) === "level2";
   if (selectedLevel === "level-3") return careLevelBucket(text) === "level3";
+  if (selectedLevel === "specialised-cancer") return text.includes("CANCER");
+  if (selectedLevel === "specialised-heart") return text.includes("HEART");
+  if (selectedLevel === "specialised-women-newborn") return text.includes("WOMEN") || text.includes("NEW BORN") || text.includes("NEWBORN");
+  if (selectedLevel === "specialised-renal") return text.includes("RENAL");
+  if (selectedLevel === "specialised-mental-health") return text.includes("MENTAL");
+  if (selectedLevel === "specialised-eye") return text.includes("OPTH") || text.includes("OPHTH") || text.includes("EYE");
+  if (selectedLevel === "specialised-tb") return text.includes("TB") || text.includes("MDR");
   return false;
+}
+
+function facilityCareLevelLabel(selectedLevel) {
+  return [...facilityCareLevelOptions, ...specialisedCareLevelOptions].find((option) => option.value === selectedLevel)?.label || "All levels";
 }
 
 function LevelOfCarePerformance({ rows }) {
@@ -559,6 +580,7 @@ function comparisonRowsForPeriod(period, filters) {
       .map((row) => ({ ...row, group: row.name }));
   }
 
+  const selectedLevelLabel = filters.facilityLevel === "all" ? "" : facilityCareLevelLabel(filters.facilityLevel);
   const groups = careLevelBuckets.map((bucket) => {
     const facilities = (period.facilities || [])
       .filter(provinceFilter)
@@ -566,9 +588,9 @@ function comparisonRowsForPeriod(period, filters) {
       .filter(facilityLevelFilter)
       .filter((facility) => careLevelBucket(facility.facilityLevel) === bucket.id);
     return {
-      ...combineRollups(facilities, makeEmptyRollup(bucket.label)),
-      name: bucket.label,
-      group: bucket.label,
+      ...combineRollups(facilities, makeEmptyRollup(selectedLevelLabel || bucket.label)),
+      name: selectedLevelLabel || bucket.label,
+      group: selectedLevelLabel || bucket.label,
     };
   });
   return groups.filter((row) => row.rows > 0 || filters.facilityLevel === "all");
@@ -1471,6 +1493,9 @@ function App() {
               }}>
                 <option value="all">All levels</option>
                 {facilityLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
+                <optgroup label="Specialised services">
+                  {specialisedCareLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
+                </optgroup>
               </select>
             </label>
             <label>
@@ -1901,6 +1926,9 @@ function App() {
               <select value={comparisonFacilityLevel} onChange={(event) => setComparisonFacilityLevel(event.target.value)}>
                 <option value="all">All levels</option>
                 {comparisonFacilityLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
+                <optgroup label="Specialised services">
+                  {specialisedCareLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
+                </optgroup>
               </select>
             </label>
             <label>
