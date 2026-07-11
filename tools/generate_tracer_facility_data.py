@@ -283,8 +283,9 @@ def normalize_district(value):
     return aliases.get(text, text)
 
 
-def normalize_program(value):
-    text = (clean(value) or "Unknown programme").upper()
+def normalize_program(value, item=None):
+    text = str(clean(value) or "Unknown programme").upper()
+    item_text = str(clean(item) or "").upper()
     compact = re.sub(r"[^A-Z0-9]+", "", text)
     aliases = {
         "TB0MDR": "TB-MDR",
@@ -294,7 +295,18 @@ def normalize_program(value):
         "TBDS": "TB-DS",
         "DSTB": "TB-DS",
     }
-    return aliases.get(compact, text)
+    if compact in aliases:
+        return aliases[compact]
+
+    antiretroviral_terms = (
+        "ABACAVIR", "LAMIVUDINE", "DOLUTEGRAVIR", "TENOFOVIR", "EFAVIRENZ",
+        "NEVIRAPINE", "LOPINAVIR", "RITONAVIR", "ZIDOVUDINE",
+    )
+    if any(term in text or term in item_text for term in antiretroviral_terms):
+        return "ART"
+    if compact in {"", "REF", "NA", "NAN", "NONE", "UNKNOWNPROGRAMME"}:
+        return "Unknown programme"
+    return text
 
 
 def num(value):
@@ -590,12 +602,12 @@ def load_clean_workbook_configs():
         district = normalize_district(values[3])
         original_level = clean(values[4])
         original_facility = clean(values[5])
-        programme = normalize_program(values[6])
         original_item = clean(values[7])
         corrected_facility = corrected_value(values[17] if len(values) > 17 else None, original_facility)
         if str(corrected_facility or "").strip().upper() == "HC/HP" and str(original_facility or "").strip().upper() not in {"", "ALL"}:
             corrected_facility = original_facility
         corrected_item = corrected_value(values[18] if len(values) > 18 else None, original_item)
+        programme = normalize_program(values[6], corrected_item or original_item)
         facility_level = clean_facility_level(original_level, values[19] if len(values) > 19 else None)
         is_aggregate = (
             str(original_facility or "").strip().upper() == "ALL"
@@ -711,8 +723,8 @@ def summarize(config):
         district = normalize_district(row.get("DISTRICT"))
         facility = clean(row.get("FACILITY NAME")) or "Unknown reporting unit"
         facility_level = (clean(row.get("FACILITY LEVEL")) or "Unknown facility level").upper()
-        program = normalize_program(row.get("PROGRAM"))
         item = clean(row.get("DESCRIPTION OF ITEM")) or "Unknown commodity"
+        program = normalize_program(row.get("PROGRAM"), item)
         if report_date is None:
             report_date = row.get("DATE")
 
