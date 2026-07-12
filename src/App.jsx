@@ -1319,14 +1319,16 @@ function App() {
   const commodityProvinceRows = commodityGroupRows(selectedCommodityRows, "province");
   const commodityDistrictRows = commodityGroupRows(selectedCommodityRows, "district");
   const commodityLevelRows = commodityGroupRows(selectedCommodityRows, "facilityLevel");
-  const commodityFacilityHistory = useMemo(() => !openCommodityFacility ? [] : tracerReportingPeriods.map((period) => commodityRowsFromPeriod(period)
-    .find((row) => row.item === selectedCommodity
-      && row.province === openCommodityFacility.province
-      && row.district === openCommodityFacility.district
-      && row.facilityLevel === openCommodityFacility.facilityLevel
-      && row.facility === openCommodityFacility.facility))
-    .filter(Boolean)
-    .map((row) => ({ ...row, label: period.label, reportDate: period.reportDate })), [openCommodityFacility, selectedCommodity]);
+  const commodityFacilityHistory = useMemo(() => !openCommodityFacility ? [] : tracerReportingPeriods
+    .map((period) => {
+      const row = commodityRowsFromPeriod(period).find((item) => item.item === selectedCommodity
+        && item.province === openCommodityFacility.province
+        && item.district === openCommodityFacility.district
+        && item.facilityLevel === openCommodityFacility.facilityLevel
+        && item.facility === openCommodityFacility.facility);
+      return row ? { ...row, label: period.label, reportDate: period.reportDate } : null;
+    })
+    .filter(Boolean), [openCommodityFacility, selectedCommodity]);
 
   const comments = fieldData.comments || [];
   const expectedProvinces = 10;
