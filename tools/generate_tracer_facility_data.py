@@ -424,6 +424,14 @@ def canonical_facility_level(value):
     return "PRIMARY CARE - NOT SPECIFIED"
 
 
+def canonical_facility_level_for_facility(level, facility_name):
+    """Apply known national facility classifications after source cleanup."""
+    facility_key = facility_match_key(facility_name)
+    if facility_key == "kafue general hospital":
+        return "LEVEL 2/GENERAL HOSPITAL"
+    return canonical_facility_level(level)
+
+
 def raw_facility_level(sheet_name, sheet_title):
     title = f"{sheet_name} {sheet_title or ''}".upper()
     if sheet_name.upper() == "HP" or "HEALTH POST" in title:
@@ -474,13 +482,16 @@ def load_raw_availability_overrides():
                     break
             if not footer_row:
                 continue
-            facility_level = normalize_raw_facility_level(sheet_name, ws.cell(1, 1).value)
             for start_col in range(5, ws.max_column + 1, 4):
                 district = clean(ws.cell(2, start_col).value)
                 facility = clean(ws.cell(2, start_col + 1).value)
                 availability = availability_value(ws.cell(footer_row, start_col).value)
                 if not district or not facility or availability is None:
                     continue
+                facility_level = canonical_facility_level_for_facility(
+                    normalize_raw_facility_level(sheet_name, ws.cell(1, 1).value),
+                    facility,
+                )
                 key = (report_date, province, normalize_district(district), facility_level, facility_match_key(facility))
                 overrides[key] = availability
         wb.close()
@@ -501,13 +512,14 @@ def iter_raw_matrix_rows(source, report_date):
         item_header = str(ws.cell(3, 2).value or "").upper()
         if "DESCRIPTION" not in item_header and "PRODUCT" not in item_header:
             continue
-        facility_level = raw_facility_level(sheet_name, ws.cell(1, 1).value)
+        source_facility_level = raw_facility_level(sheet_name, ws.cell(1, 1).value)
         for start_col in range(5, ws.max_column + 1, 4):
             district = clean(ws.cell(2, start_col).value)
             facility = clean(ws.cell(2, start_col + 1).value)
             if not district:
                 continue
             district = normalize_district(district)
+            facility_level = canonical_facility_level_for_facility(source_facility_level, facility)
             if facility_level in {"HEALTH POST", "HEALTH CENTRE"}:
                 facility_name = f"{district} {facility_level.title()} facilities"
                 is_aggregate = True
@@ -627,6 +639,7 @@ def load_clean_workbook_configs():
             )
         )
         facility_name = corrected_facility or original_facility or "Unknown reporting unit"
+        facility_level = canonical_facility_level_for_facility(facility_level, facility_name)
         if is_aggregate and facility_level in {"HEALTH POST", "HEALTH CENTRE"}:
             facility_name = f"{district} {facility_level.title()} facilities"
 

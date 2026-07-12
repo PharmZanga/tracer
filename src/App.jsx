@@ -241,6 +241,7 @@ const careLevelBuckets = [
 ];
 
 const facilityCareLevelOptions = [
+  { value: "primary-combined", label: "Health Centre / Health Post (combined)" },
   { value: "health-post", label: "Health Post" },
   { value: "health-centre", label: "Health Centre" },
   { value: "level-1", label: "Level 1" },
@@ -260,7 +261,7 @@ const specialisedCareLevelOptions = [
 
 function careLevelBucket(facilityLevel = "") {
   const text = facilityLevel.toUpperCase();
-  if (text.includes("HEALTH CENTRE") || text.includes("HEALTH POST")) return "primary";
+  if (text.includes("HEALTH CENTRE") || text.includes("HEALTH POST") || text.includes("PRIMARY CARE")) return "primary";
   if (text.includes("LEVEL 2") || text.includes("GENERAL HOSPITAL")) return "level2";
   if (
     text.includes("LEVEL 3") ||
@@ -286,6 +287,7 @@ function careLevelBucket(facilityLevel = "") {
 function matchesFacilityCareLevel(facilityLevel = "", selectedLevel = "all") {
   if (selectedLevel === "all") return true;
   const text = String(facilityLevel).toUpperCase();
+  if (selectedLevel === "primary-combined") return text.includes("PRIMARY CARE");
   if (selectedLevel === "health-post") return text.includes("HEALTH POST");
   if (selectedLevel === "health-centre") return text.includes("HEALTH CENTRE");
   if (selectedLevel === "level-1") return careLevelBucket(text) === "level1";
@@ -1206,7 +1208,12 @@ function App() {
   const districtOptions = [...new Set(fieldData.districts
     .filter((district) => selectedProvince === "all" || district.province === selectedProvince)
     .map((district) => district.name))].sort();
-  const facilityLevelOptions = facilityCareLevelOptions;
+  const scopedFacilityLevelRows = fieldData.facilities
+    .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
+    .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict);
+  const optionIsAvailableInScope = (option) => scopedFacilityLevelRows.some((facility) => matchesFacilityCareLevel(facility.facilityLevel, option.value));
+  const facilityLevelOptions = facilityCareLevelOptions.filter(optionIsAvailableInScope);
+  const specialisedFacilityLevelOptions = specialisedCareLevelOptions.filter(optionIsAvailableInScope);
   const facilityOptions = selectedDistrict === "all" ? [] : fieldData.facilities
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
     .filter((facility) => facility.district === selectedDistrict)
@@ -1463,7 +1470,12 @@ function App() {
   const comparisonDistrictOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.districts || [])
     .filter((row) => comparisonProvince === "all" || row.province === comparisonProvince)
     .map((row) => row.name))].sort();
-  const comparisonFacilityLevelOptions = facilityCareLevelOptions;
+  const comparisonFacilityLevelRows = tracerReportingPeriods.flatMap((period) => period.facilities || [])
+    .filter((facility) => comparisonProvince === "all" || facility.province === comparisonProvince)
+    .filter((facility) => comparisonDistrict === "all" || facility.district === comparisonDistrict);
+  const comparisonOptionIsAvailable = (option) => comparisonFacilityLevelRows.some((facility) => matchesFacilityCareLevel(facility.facilityLevel, option.value));
+  const comparisonFacilityLevelOptions = facilityCareLevelOptions.filter(comparisonOptionIsAvailable);
+  const comparisonSpecialisedFacilityLevelOptions = specialisedCareLevelOptions.filter(comparisonOptionIsAvailable);
   const comparisonCommodityOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.commodities || []).map((row) => row.name))]
     .filter(Boolean)
     .sort(compareText)
@@ -1796,9 +1808,9 @@ function App() {
               }}>
                 <option value="all">All levels</option>
                 {facilityLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
-                <optgroup label="Specialised services">
-                  {specialisedCareLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
-                </optgroup>
+                {specialisedFacilityLevelOptions.length > 0 && <optgroup label="Specialised services">
+                  {specialisedFacilityLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
+                </optgroup>}
               </select>
             </label>
             <label>
@@ -2299,9 +2311,9 @@ function App() {
               <select value={comparisonFacilityLevel} onChange={(event) => setComparisonFacilityLevel(event.target.value)}>
                 <option value="all">All levels</option>
                 {comparisonFacilityLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
-                <optgroup label="Specialised services">
-                  {specialisedCareLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
-                </optgroup>
+                {comparisonSpecialisedFacilityLevelOptions.length > 0 && <optgroup label="Specialised services">
+                  {comparisonSpecialisedFacilityLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}
+                </optgroup>}
               </select>
             </label>
             <label>
