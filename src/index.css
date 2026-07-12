@@ -51,7 +51,11 @@ select:focus-visible {
   gap: 24px;
   padding: 10px 28px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-  background: linear-gradient(90deg, #052f25, #0b4536 62%, #07372c);
+  background:
+    linear-gradient(90deg, rgba(5, 47, 37, 0.96), rgba(11, 69, 54, 0.9) 62%, rgba(7, 55, 44, 0.96)),
+    url("https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=1800&q=80");
+  background-position: center;
+  background-size: cover;
   color: #fff;
 }
 
@@ -113,7 +117,11 @@ select:focus-visible {
   display: flex;
   flex-direction: column;
   border-right: 1px solid #d7e1da;
-  background: #10251a;
+  background:
+    linear-gradient(rgba(10, 35, 25, 0.94), rgba(10, 35, 25, 0.9)),
+    url("https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=900&q=80");
+  background-position: left center;
+  background-size: cover;
   color: #fff;
   overflow-y: auto;
   min-width: 0;
