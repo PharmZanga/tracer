@@ -4673,6 +4673,28 @@ td.neutral {
 .commodity-trend-list { max-height: 220px; overflow: auto; }
 .commodity-trend-list > div { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; padding: 8px 0; border-bottom: 1px solid #e5eee9; font-size: 11px; }
 .commodity-trend-list em { color: #106e50; font-style: normal; }
+
+.commodity-week-chart-panel { min-width: 0; }
+.commodity-week-chart-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.commodity-week-chart-head span { color: #50675a; font-size: 10px; white-space: nowrap; }
+.commodity-week-chart-head i, .commodity-week-chart-head b { display: inline-block; width: 12px; height: 8px; margin: 0 4px 0 8px; background: #176bcc; vertical-align: middle; }
+.commodity-week-chart-head b { height: 2px; background: #008081; }
+.commodity-week-chart { position: relative; height: 235px; margin: 24px 4px 0 34px; border-left: 1px solid #9eb7aa; border-bottom: 1px solid #9eb7aa; }
+.commodity-week-axis { position: absolute; top: -19px; color: #1964b9; font-size: 10px; font-weight: 800; }
+.commodity-week-axis.availability { left: -34px; }
+.commodity-week-axis.mos { right: 0; color: #007878; }
+.commodity-week-grid { position: absolute; inset: 0; }
+.commodity-week-grid i { position: absolute; left: 0; right: 0; border-top: 1px solid #e1e9e5; }
+.commodity-week-grid small { position: absolute; left: -31px; top: -7px; color: #64786c; font-size: 9px; font-style: normal; }
+.commodity-week-columns { position: absolute; z-index: 2; inset: 0; display: grid; grid-template-columns: repeat(var(--commodity-columns), minmax(36px, 1fr)); align-items: end; }
+.commodity-week-columns button { position: relative; display: grid; height: 100%; min-width: 0; padding: 0 3px 26px; border: 0; background: transparent; cursor: pointer; }
+.commodity-week-columns button > i { position: relative; align-self: end; display: block; min-height: 2px; background: #176bcc; font-style: normal; }
+.commodity-week-columns button > i b { position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 9px; white-space: nowrap; }
+.commodity-week-columns button > em { position: absolute; z-index: 4; left: 50%; transform: translate(-50%, 50%); padding: 2px 4px; border-radius: 2px; background: #008081; color: #fff; font-size: 9px; font-style: normal; font-weight: 800; white-space: nowrap; }
+.commodity-week-columns button > span { position: absolute; bottom: 3px; left: 1px; right: 1px; overflow: hidden; color: #455c4f; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.commodity-week-mos-line { position: absolute; z-index: 3; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.commodity-week-mos-line polyline { fill: none; stroke: #008081; stroke-width: 1.3; vector-effect: non-scaling-stroke; }
+.commodity-week-note { display: block; margin-top: 8px; color: #607468; font-size: 10px; }
 .commodity-table-tools { margin-top: 18px; }
 .commodity-pagination { margin-top: 14px; align-items: center; }
 

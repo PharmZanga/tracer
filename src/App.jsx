@@ -1309,6 +1309,13 @@ function App() {
     const amc = rows.reduce((sum, row) => sum + row.amc, 0);
     return { label: period.label, reportDate: period.reportDate, availability: rows.length ? rows.filter((row) => row.quantity > 0).length / rows.length : 0, mos: amc > 0 ? quantity / amc : 0, rows: rows.length };
   }), [selectedCommodity, selectedProvince, selectedDistrict, selectedFacilityLevel]);
+  const commodityTrendVisibleRows = commodityTrendRows.slice(-12);
+  const commodityTrendMosScale = Math.max(4, Math.ceil(Math.max(0, ...commodityTrendVisibleRows.map((row) => row.mos || 0))));
+  const commodityTrendMosPoints = commodityTrendVisibleRows.map((row, index) => {
+    const x = ((index + 0.5) / Math.max(commodityTrendVisibleRows.length, 1)) * 100;
+    const y = 100 - Math.min((row.mos || 0) / commodityTrendMosScale, 1) * 100;
+    return `${x},${y}`;
+  }).join(" ");
   const commodityProvinceRows = commodityGroupRows(selectedCommodityRows, "province");
   const commodityDistrictRows = commodityGroupRows(selectedCommodityRows, "district");
   const commodityLevelRows = commodityGroupRows(selectedCommodityRows, "facilityLevel");
@@ -2150,7 +2157,7 @@ function App() {
             <div className="commodity-chart-grid">
               <div className="commodity-chart-panel"><h3>Availability by province</h3>{commodityProvinceRows.map((row) => <button type="button" className="commodity-bar" key={row.name} onClick={() => changeProvinceFilter(row.name)}><span>{row.name}</span><i><b style={{ width: `${Math.round(row.availability * 100)}%` }} /></i><strong>{formatPercent(row.availability)}</strong></button>)}</div>
               <div className="commodity-chart-panel"><h3>Average MOS by level of care</h3>{commodityLevelRows.map((row) => <button type="button" className="commodity-bar" key={row.name} onClick={() => { const option = [...facilityCareLevelOptions, ...specialisedCareLevelOptions].find((item) => item.label.toUpperCase() === row.name.toUpperCase()); if (option) setSelectedFacilityLevel(option.value); }}><span>{row.name}</span><i><b style={{ width: `${Math.min((row.mos / 12) * 100, 100)}%` }} /></i><strong>{formatMos(row.mos)}</strong></button>)}</div>
-              <div className="commodity-chart-panel"><h3>Weekly availability and MOS</h3><div className="commodity-trend-list">{commodityTrendRows.slice(-12).map((row) => <div key={row.reportDate}><span>{row.label}</span><b>{formatPercent(row.availability)}</b><em>{formatMos(row.mos)} MOS</em></div>)}</div></div>
+              <div className="commodity-chart-panel commodity-week-chart-panel"><div className="commodity-week-chart-head"><h3>Weekly availability and MOS</h3><span><i /> Availability <b /> MOS</span></div><div className="commodity-week-chart"><div className="commodity-week-axis availability">Availability (%)</div><div className="commodity-week-axis mos">MOS</div><div className="commodity-week-grid" aria-hidden="true">{[0, 25, 50, 75, 100].map((value) => <i key={value} style={{ bottom: `${value}%` }}><small>{value}%</small></i>)}</div><div className="commodity-week-columns" style={{ "--commodity-columns": commodityTrendVisibleRows.length }}>{commodityTrendVisibleRows.map((row) => <button type="button" key={row.reportDate} onClick={() => { setFieldPeriodId(row.reportDate); resetFieldHierarchy(); }}><i style={{ height: `${Math.round(row.availability * 100)}%` }}><b>{formatPercent(row.availability)}</b></i><em style={{ bottom: `${Math.min((row.mos / commodityTrendMosScale) * 100, 100)}%` }}>{formatMos(row.mos)}</em><span>{row.label.replace("Week ", "W")}</span></button>)}</div><svg className="commodity-week-mos-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points={commodityTrendMosPoints} /></svg></div><small className="commodity-week-note">Click a week to update the reporting period.</small></div>
             </div>
             <div className="table-tools commodity-table-tools">
               <input value={commodityFacilityQuery} onChange={(event) => { setCommodityFacilityQuery(event.target.value); setCommodityPage(1); }} placeholder="Search facility, district, or province" />
