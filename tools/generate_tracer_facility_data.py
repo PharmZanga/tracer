@@ -975,6 +975,11 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
         (province, district, reporting_facility_type(facility_level))
         for province, district, facility_level, _facility in expected_facilities
     }
+    expected_named_reports = {
+        (province, district, facility_level, facility)
+        for province, district, facility_level, facility in expected_facilities
+        if district != "UNKNOWN"
+    }
 
     for period in periods:
         present_districts = {(district["province"], district["name"]) for district in period["districts"]}
@@ -1036,13 +1041,30 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
                 "rate": reporting_rate(reported, 1),
             })
 
+        facility_rows = []
+        for province, district, facility_level, facility in sorted(expected_named_reports):
+            reported = 1 if (province, district, facility_level, facility) in present_facilities else 0
+            facility_rows.append({
+                "province": province,
+                "district": district,
+                "facilityLevel": facility_level,
+                "facilityType": reporting_facility_type(facility_level),
+                "name": facility,
+                "expected": 1,
+                "reported": reported,
+                "missing": 1 - reported,
+                "rate": reporting_rate(reported, 1),
+            })
+
         province_rows.sort(key=lambda item: (item["rate"], -item["missing"], item["name"]))
         district_rows.sort(key=lambda item: (item["rate"], -item["missing"], item["province"], item["name"]))
         type_rows.sort(key=lambda item: (item["province"], item["district"], item["type"]))
+        facility_rows.sort(key=lambda item: (item["province"], item["district"], item["facilityLevel"], item["name"]))
 
         period["counts"]["expectedDistricts"] = len(expected_districts)
         period["counts"]["expectedFacilityUnits"] = len(expected_level_reports)
         period["counts"]["expectedLevelReports"] = len(expected_level_reports)
+        period["counts"]["expectedNamedFacilityReports"] = len(expected_named_reports)
         period["counts"]["missingDistricts"] = len(missing_districts)
         period["counts"]["missingFacilityUnits"] = len(missing_level_reports)
         period["counts"]["missingLevelReports"] = len(missing_level_reports)
@@ -1058,6 +1080,7 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
             "provinces": province_rows,
             "districts": district_rows,
             "facilityTypes": type_rows,
+            "facilities": facility_rows,
         }
 
 

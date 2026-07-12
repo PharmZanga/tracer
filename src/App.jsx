@@ -486,6 +486,36 @@ function reportingStatus(row) {
   return (row.reported || 0) > 0 ? "Reported" : "Not Reported";
 }
 
+const reportingConsistencyRules = {
+  minorGapPeriods: 1,
+  persistentMissedPeriods: 2,
+};
+
+function longestMissedRun(history) {
+  let longest = 0;
+  let current = 0;
+  history.forEach((row) => {
+    if (row.reported) {
+      current = 0;
+    } else {
+      current += 1;
+      longest = Math.max(longest, current);
+    }
+  });
+  return longest;
+}
+
+function reportingConsistency(history) {
+  const reported = history.filter((row) => row.reported).length;
+  const missed = history.length - reported;
+  const run = longestMissedRun(history);
+  if (!reported) return "No reporting";
+  if (!missed) return "Fully reported";
+  if (run >= reportingConsistencyRules.persistentMissedPeriods) return "Persistent non-reporting";
+  if (missed <= reportingConsistencyRules.minorGapPeriods) return "Minor reporting gaps";
+  return "Irregular reporting";
+}
+
 function reportingFacilityLabel(type) {
   const labels = {
     "Health Centres": "Health Centre",
@@ -1086,6 +1116,16 @@ function App() {
   const [commodityPage, setCommodityPage] = useState(1);
   const [commodityPageSize, setCommodityPageSize] = useState(25);
   const [openCommodityFacility, setOpenCommodityFacility] = useState(null);
+  const [qualityRangeStart, setQualityRangeStart] = useState("2026-01");
+  const [qualityRangeEnd, setQualityRangeEnd] = useState("2026-06");
+  const [qualityGranularity, setQualityGranularity] = useState("month");
+  const [qualityProvinceFilter, setQualityProvinceFilter] = useState("all");
+  const [qualityDistrictFilter, setQualityDistrictFilter] = useState("all");
+  const [qualityFacilityLevelFilter, setQualityFacilityLevelFilter] = useState("all");
+  const [qualityStatusFilter, setQualityStatusFilter] = useState("non-reporting");
+  const [qualitySearch, setQualitySearch] = useState("");
+  const [qualityPointFilter, setQualityPointFilter] = useState("all");
+  const [openReportingFacility, setOpenReportingFacility] = useState(null);
   const [actions, setActions] = useState([
     { id: 1, issue: "Facility stockouts in highest-risk reporting units", action: "Validate counts and initiate redistribution", owner: "Provincial pharmacist", status: "In progress" },
     { id: 2, issue: "Low-stock commodities below 2 MOS", action: "Prioritize replenishment before stockout", owner: "District pharmacist", status: "Open" },
@@ -1286,6 +1326,80 @@ function App() {
   const missingDistricts = fieldData.counts.missingDistricts || 0;
   const missingFacilityUnits = fieldData.counts.missingFacilityUnits || 0;
   const dataQuality = fieldData.dataQuality || { provinces: [], districts: [], facilityTypes: [] };
+  const qualityMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))].sort();
+  const qualityRangeLower = qualityRangeStart <= qualityRangeEnd ? qualityRangeStart : qualityRangeEnd;
+  const qualityRangeUpper = qualityRangeStart <= qualityRangeEnd ? qualityRangeEnd : qualityRangeStart;
+  const qualityRangePeriods = tracerReportingPeriods.filter((period) => period.month >= qualityRangeLower && period.month <= qualityRangeUpper);
+  const qualityRoster = qualityRangePeriods[0]?.dataQuality?.facilities || [];
+  const qualityProvinceOptions = [...new Set(qualityRoster.map((row) => row.province))].sort();
+  const qualityDistrictOptions = [...new Set(qualityRoster
+    .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
+    .map((row) => row.district))].sort();
+  const qualityFacilityLevelOptions = [...new Set(qualityRoster
+    .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
+    .filter((row) => qualityDistrictFilter === "all" || row.district === qualityDistrictFilter)
+    .map((row) => row.facilityLevel))].sort();
+  const qualityPeriodFacilityMaps = useMemo(() => new Map(qualityRangePeriods.map((period) => [period.id, new Map((period.dataQuality?.facilities || []).map((row) => [`${row.province}|${row.district}|${row.facilityLevel}|${row.name}`, row]))])), [qualityRangePeriods]);
+  const qualityFacilityHistories = useMemo(() => qualityRoster
+    .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
+    .filter((row) => qualityDistrictFilter === "all" || row.district === qualityDistrictFilter)
+    .filter((row) => qualityFacilityLevelFilter === "all" || row.facilityLevel === qualityFacilityLevelFilter)
+    .map((facility) => {
+      const key = `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}`;
+      const history = qualityRangePeriods.map((period) => {
+        const row = qualityPeriodFacilityMaps.get(period.id)?.get(key);
+        return { id: period.id, month: period.month, label: period.label, expected: true, reported: Boolean(row?.reported) };
+      });
+      const reports = history.filter((row) => row.reported).length;
+      const missed = history.length - reports;
+      const consistency = reportingConsistency(history);
+      return {
+        ...facility,
+        history,
+        expectedReports: history.length,
+        reportsSubmitted: reports,
+        missedReports: missed,
+        rate: history.length ? reports / history.length : 0,
+        consistency,
+        consecutiveMissed: longestMissedRun(history),
+        latestReport: [...history].reverse().find((row) => row.reported)?.label || "No successful report",
+      };
+    }), [qualityRoster, qualityRangePeriods, qualityPeriodFacilityMaps, qualityProvinceFilter, qualityDistrictFilter, qualityFacilityLevelFilter]);
+  const qualityTrendRows = useMemo(() => {
+    const groups = new Map();
+    qualityRangePeriods.forEach((period) => {
+      const key = qualityGranularity === "month" ? period.month : period.id;
+      const current = groups.get(key) || { id: key, label: qualityGranularity === "month" ? monthLabel(period.month) : period.label, expected: 0, reported: 0 };
+      qualityFacilityHistories.forEach((facility) => {
+        const history = facility.history.find((row) => row.id === period.id);
+        if (history?.expected) {
+          current.expected += 1;
+          current.reported += history.reported ? 1 : 0;
+        }
+      });
+      groups.set(key, current);
+    });
+    return [...groups.values()].map((row) => ({ ...row, missing: row.expected - row.reported, rate: row.expected ? row.reported / row.expected : 0 }));
+  }, [qualityRangePeriods, qualityFacilityHistories, qualityGranularity]);
+  const qualitySummary = qualityFacilityHistories.reduce((summary, facility) => {
+    summary.expected += facility.expectedReports;
+    summary.reported += facility.reportsSubmitted;
+    summary.missing += facility.missedReports;
+    summary.consistent += facility.consistency === "Fully reported" ? 1 : 0;
+    summary.irregular += ["Irregular reporting", "Persistent non-reporting", "No reporting"].includes(facility.consistency) ? 1 : 0;
+    return summary;
+  }, { expected: 0, reported: 0, missing: 0, consistent: 0, irregular: 0 });
+  qualitySummary.rate = qualitySummary.expected ? qualitySummary.reported / qualitySummary.expected : 0;
+  const lowestQualityPoint = [...qualityTrendRows].sort((a, b) => a.rate - b.rate)[0];
+  const qualityDistrictTrendRows = aggregateQualityRows(qualityFacilityHistories.map((row) => ({ ...row, expected: row.expectedReports, reported: row.reportsSubmitted, missing: row.missedReports })), "district")
+    .sort((a, b) => a.rate - b.rate || a.name.localeCompare(b.name));
+  const qualityLevelTrendRows = aggregateQualityRows(qualityFacilityHistories.map((row) => ({ ...row, expected: row.expectedReports, reported: row.reportsSubmitted, missing: row.missedReports, level: row.facilityLevel })), "level")
+    .sort((a, b) => a.rate - b.rate || a.name.localeCompare(b.name));
+  const nonReportingFacilityRows = qualityFacilityHistories
+    .filter((row) => qualityStatusFilter === "all" || (qualityStatusFilter === "non-reporting" ? row.missedReports > 0 : row.consistency === qualityStatusFilter))
+    .filter((row) => qualityPointFilter === "all" || row.history.some((item) => (qualityGranularity === "month" ? item.month === qualityPointFilter : item.id === qualityPointFilter) && !item.reported))
+    .filter((row) => !qualitySearch.trim() || `${row.name} ${row.district} ${row.province}`.toLowerCase().includes(qualitySearch.trim().toLowerCase()))
+    .sort((a, b) => b.missedReports - a.missedReports || a.rate - b.rate || compareText(a.name, b.name));
   const provinceQualityRows = dataQuality.provinces || [];
   const selectedProvinceQuality = selectedProvince === "all"
     ? null
@@ -1544,6 +1658,28 @@ function App() {
     const link = document.createElement("a");
     link.href = url;
     link.download = `commodity-intelligence-${selectedCommodity.replaceAll(/[^a-z0-9]+/gi, "-").toLowerCase()}-${fieldData.reportDate}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportNonReportingCsv() {
+    const rows = [
+      ["Reporting range", `${monthLabel(qualityRangeLower)} to ${monthLabel(qualityRangeUpper)}`],
+      ["Province", qualityProvinceFilter === "all" ? "All provinces" : qualityProvinceFilter],
+      ["District", qualityDistrictFilter === "all" ? "All districts" : qualityDistrictFilter],
+      ["Facility level", qualityFacilityLevelFilter === "all" ? "All levels" : qualityFacilityLevelFilter],
+      ["Expected reports", qualitySummary.expected],
+      ["Reports received", qualitySummary.reported],
+      ["Reporting rate", formatPercent(qualitySummary.rate)],
+      [],
+      ["Province", "District", "Facility", "Facility level", "Expected reports", "Reports received", "Missed reports", "Reporting rate", "Consecutive missed", "Latest successful report", "Status"],
+      ...nonReportingFacilityRows.map((row) => [row.province, row.district, row.name, row.facilityLevel, row.expectedReports, row.reportsSubmitted, row.missedReports, formatPercent(row.rate), row.consecutiveMissed, row.latestReport, row.consistency]),
+    ];
+    const blob = new Blob([rows.map((row) => row.map(csvCell).join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `non-reporting-facilities-${qualityRangeLower}-to-${qualityRangeUpper}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -2458,6 +2594,53 @@ function App() {
             <QualityTable title="Provincial district-level reporting" rows={provinceQualityRows} firstColumn="Province" onSelect={(row) => selectQualityProvince(row.name)} />
             <ReportingBars title="Province reporting percentage" rows={[...provinceQualityRows].sort((a, b) => (a.rate || qualityRate(a)) - (b.rate || qualityRate(b)))} onSelect={(row) => selectQualityProvince(row.name)} />
           </div>
+          <div className="non-reporting-workspace">
+            <div className="table-headline">
+              <div>
+                <p className="eyebrow dark">Non-Reporting Facilities</p>
+                <h2>Reporting-rate trend and follow-up list</h2>
+                <p>Expected reporting units are drawn from the tracer reporting universe. A non-reporting unit is only shown when it was expected in the selected period.</p>
+              </div>
+              <div className="export-actions"><button type="button" onClick={exportNonReportingCsv}>Export CSV</button><button type="button" onClick={() => window.print()}>Export PDF</button></div>
+            </div>
+            <div className="reporting-filter-bar">
+              <label><span>Start month</span><select value={qualityRangeStart} onChange={(event) => setQualityRangeStart(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
+              <label><span>End month</span><select value={qualityRangeEnd} onChange={(event) => setQualityRangeEnd(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
+              <label><span>Trend period</span><select value={qualityGranularity} onChange={(event) => { setQualityGranularity(event.target.value); setQualityPointFilter("all"); }}><option value="month">Month</option><option value="week">Reporting week</option></select></label>
+              <label><span>Province</span><select value={qualityProvinceFilter} onChange={(event) => { setQualityProvinceFilter(event.target.value); setQualityDistrictFilter("all"); }}><option value="all">All provinces</option>{qualityProvinceOptions.map((province) => <option value={province} key={province}>{province}</option>)}</select></label>
+              <label><span>District</span><select value={qualityDistrictFilter} onChange={(event) => setQualityDistrictFilter(event.target.value)}><option value="all">All districts</option>{qualityDistrictOptions.map((district) => <option value={district} key={district}>{district}</option>)}</select></label>
+              <label><span>Facility level</span><select value={qualityFacilityLevelFilter} onChange={(event) => setQualityFacilityLevelFilter(event.target.value)}><option value="all">All levels</option>{qualityFacilityLevelOptions.map((level) => <option value={level} key={level}>{level}</option>)}</select></label>
+              <label><span>Reporting status</span><select value={qualityStatusFilter} onChange={(event) => setQualityStatusFilter(event.target.value)}><option value="non-reporting">Any reporting gap</option><option value="all">All reporting units</option><option value="Fully reported">Fully reported</option><option value="Minor reporting gaps">Minor reporting gaps</option><option value="Irregular reporting">Irregular reporting</option><option value="Persistent non-reporting">Persistent non-reporting</option><option value="No reporting">No reporting</option></select></label>
+            </div>
+            <div className="stats-grid non-reporting-kpis">
+              <KpiCard label="Expected reports" value={qualitySummary.expected.toLocaleString()} sub="Expected monthly or weekly reports" />
+              <KpiCard label="Reports received" value={qualitySummary.reported.toLocaleString()} sub="Reports received in selected range" />
+              <KpiCard label="Overall reporting rate" value={formatPercent(qualitySummary.rate)} sub="Reports received / expected" tone={reportingTone(qualitySummary.rate)} />
+              <KpiCard label="Non-reporting units" value={qualityFacilityHistories.filter((row) => row.missedReports > 0).length.toLocaleString()} sub="Unique expected units with a gap" tone="red" />
+              <KpiCard label="Incomplete reports" value="0" sub="Not inferable from tracer source" tone="amber" />
+              <KpiCard label="Consistent units" value={qualitySummary.consistent.toLocaleString()} sub="Reported in every expected period" />
+              <KpiCard label="Irregular units" value={qualitySummary.irregular.toLocaleString()} sub="Two or more missed periods" tone="amber" />
+              <KpiCard label="Lowest reporting period" value={lowestQualityPoint ? formatPercent(lowestQualityPoint.rate) : "-"} sub={lowestQualityPoint?.label || "No selected periods"} tone="red" />
+            </div>
+            <div className="non-reporting-grid">
+              <div className="quality-panel">
+                <div className="quality-panel-head"><div><h3>Reporting Rate Trend</h3><p>Click a month or week to show facilities that missed that point.</p></div><span>{monthLabel(qualityRangeLower)} to {monthLabel(qualityRangeUpper)}</span></div>
+                <div className="quality-bars">{qualityTrendRows.map((row) => <button type="button" className={`quality-bar-row reporting-tone-${reportingTone(row.rate)} ${qualityPointFilter === row.id ? "active" : ""}`} key={row.id} onClick={() => setQualityPointFilter((current) => current === row.id ? "all" : row.id)}><span>{row.label}</span><div className="quality-bar-track"><i style={{ width: `${Math.round(row.rate * 100)}%` }} /></div><b>{formatPercent(row.rate)}</b><small>{row.reported}/{row.expected}</small></button>)}</div>
+              </div>
+              <div className="quality-panel">
+                <div className="quality-panel-head"><div><h3>District reporting rate</h3><p>Lowest to highest across the selected range.</p></div><span>{qualityDistrictTrendRows.length} districts</span></div>
+                <div className="quality-bars">{qualityDistrictTrendRows.slice(0, 18).map((row) => <button type="button" className={`quality-bar-row reporting-tone-${reportingTone(row.rate)}`} key={row.name} onClick={() => setQualityDistrictFilter(row.name)}><span>{row.name}</span><div className="quality-bar-track"><i style={{ width: `${Math.round(row.rate * 100)}%` }} /></div><b>{formatPercent(row.rate)}</b></button>)}</div>
+              </div>
+              <div className="quality-panel">
+                <div className="quality-panel-head"><div><h3>Reporting rate by facility level</h3><p>Expected reports versus reports received.</p></div></div>
+                <div className="quality-bars">{qualityLevelTrendRows.map((row) => <button type="button" className={`quality-bar-row reporting-tone-${reportingTone(row.rate)}`} key={row.name} onClick={() => setQualityFacilityLevelFilter(row.name)}><span>{row.name}</span><div className="quality-bar-track"><i style={{ width: `${Math.round(row.rate * 100)}%` }} /></div><b>{formatPercent(row.rate)}</b></button>)}</div>
+              </div>
+            </div>
+            <div className="table-panel non-reporting-table">
+              <div className="table-headline"><div><h2>Non-reporting facilities</h2><p>Only expected reporting units with an identified reporting gap are listed. Aggregate health-post and health-centre rows remain aggregate where the submitted tracer does not provide individual facility names.</p></div><input value={qualitySearch} onChange={(event) => setQualitySearch(event.target.value)} placeholder="Search facility, district, or province" /></div>
+              <div className="table-scroll"><table><thead><tr><th>Province</th><th>District</th><th>Facility / reporting unit</th><th>Facility level</th><th>Expected</th><th>Submitted</th><th>Missed</th><th>Rate</th><th>Consecutive missed</th><th>Latest report</th><th>Status</th><th /></tr></thead><tbody>{nonReportingFacilityRows.length ? nonReportingFacilityRows.map((row) => <tr key={`${row.province}-${row.district}-${row.facilityLevel}-${row.name}`}><td>{row.province}</td><td>{row.district}</td><td>{row.name}</td><td>{row.facilityLevel}</td><td>{row.expectedReports}</td><td>{row.reportsSubmitted}</td><td>{row.missedReports}</td><td>{formatPercent(row.rate)}</td><td>{row.consecutiveMissed}</td><td>{row.latestReport}</td><td><span className={`comparison-signal ${row.missedReports ? "red" : "green"}`}>{row.consistency}</span></td><td><button type="button" className="ghost-button" onClick={() => setOpenReportingFacility(row)}>History</button></td></tr>) : <tr><td colSpan="12">No expected reporting units match the selected reporting-gap filters.</td></tr>}</tbody></table></div>
+            </div>
+          </div>
           {selectedProvinceQuality ? (
             <div className="quality-note">
               <strong>{selectedProvinceQuality.name}</strong>
@@ -2774,6 +2957,14 @@ function App() {
           </div>
           <div className="commodity-history"><h3>Submitted commodity trend</h3><p>Only periods with a submitted record are plotted. Missing submissions are not interpreted as stockouts.</p>{commodityFacilityHistory.length ? <div className="commodity-history-list">{commodityFacilityHistory.map((row) => <div key={row.reportDate}><span>{row.label}</span><b>SOH {Math.round(row.quantity).toLocaleString()}</b><b>AMC {Math.round(row.amc).toLocaleString()}</b><b>{formatMos(row.mos)} MOS</b><em>{commodityStockStatus(row.mos)}</em></div>)}</div> : <div className="empty-state">No submitted historical record was found for this commodity and facility.</div>}</div>
           <div className="commodity-detail-note"><b>Reporting status:</b> Reported for {fieldData.label}. Quantity received, dispensed/consumed, losses, adjustments, and days out of stock are not present in the submitted tracer source and are therefore not estimated.</div>
+        </section>
+      </div>}
+      {openReportingFacility && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setOpenReportingFacility(null)}>
+        <section className="commodity-detail-panel" role="dialog" aria-modal="true" aria-label="Facility reporting history" onMouseDown={(event) => event.stopPropagation()}>
+          <div className="commodity-detail-head"><div><p className="eyebrow dark">Data Quality &gt; Non-Reporting Facilities &gt; {openReportingFacility.name}</p><h2>{openReportingFacility.name}</h2><span>{openReportingFacility.district} | {openReportingFacility.province} | {openReportingFacility.facilityLevel}</span></div><button type="button" onClick={() => setOpenReportingFacility(null)}>Close</button></div>
+          <div className="commodity-detail-kpis"><div><span>Expected reports</span><strong>{openReportingFacility.expectedReports}</strong></div><div><span>Reports received</span><strong>{openReportingFacility.reportsSubmitted}</strong></div><div><span>Reporting rate</span><strong>{formatPercent(openReportingFacility.rate)}</strong></div><div className={openReportingFacility.missedReports ? "red" : "green"}><span>Consistency</span><strong>{openReportingFacility.consistency}</strong></div></div>
+          <div className="commodity-history"><h3>Period-by-period reporting history</h3><p>{monthLabel(qualityRangeLower)} to {monthLabel(qualityRangeUpper)}. A missing period is only shown because this unit is expected in the reporting universe.</p><div className="commodity-history-list">{openReportingFacility.history.map((row) => <div key={row.id}><span>{row.label}</span><b>Expected: Yes</b><b>Reported: {row.reported ? "Yes" : "No"}</b><em>{row.reported ? "Reported" : "Not reported"}</em></div>)}</div></div>
+          <div className="commodity-detail-note"><b>Latest successful report:</b> {openReportingFacility.latestReport}. <b>Consecutive periods missed:</b> {openReportingFacility.consecutiveMissed}. Aggregate health-post and health-centre reporting units are shown where named facility submissions are not present in the source.</div>
         </section>
       </div>}
     </div>
