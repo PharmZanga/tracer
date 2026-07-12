@@ -4733,6 +4733,51 @@ td.neutral {
 .non-reporting-table { margin-top: 18px; }
 .non-reporting-table input { min-width: 260px; }
 
+.non-reporting-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border-top: 1px solid #e0ebe4;
+  color: #53685b;
+  font-size: 12px;
+}
+
+.non-reporting-pagination button {
+  min-width: 84px;
+  padding: 8px 12px;
+  border: 1px solid #a6c6b3;
+  background: #fff;
+  color: #126443;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.non-reporting-pagination button:disabled { opacity: 0.45; cursor: default; }
+
+.reporting-trend-graph {
+  position: relative;
+  height: 235px;
+  margin: 28px 12px 12px 36px;
+  border-left: 1px solid #9eb7aa;
+  border-bottom: 1px solid #9eb7aa;
+}
+
+.reporting-trend-axis { position: absolute; top: -19px; left: -36px; color: #126443; font-size: 10px; font-weight: 800; }
+.reporting-trend-grid { position: absolute; inset: 0; }
+.reporting-trend-grid i { position: absolute; left: 0; right: 0; border-top: 1px solid #e1e9e5; }
+.reporting-trend-grid small { position: absolute; left: -30px; top: -7px; color: #607468; font-size: 9px; font-style: normal; }
+.reporting-trend-points { position: absolute; z-index: 2; inset: 0; display: grid; grid-template-columns: repeat(var(--trend-points), minmax(24px, 1fr)); }
+.reporting-trend-points button { position: relative; width: 100%; height: 100%; border: 0; background: transparent; cursor: pointer; }
+.reporting-trend-points button::before { content: ""; position: absolute; top: var(--trend-rate); left: 50%; width: 10px; height: 10px; transform: translate(-50%, -50%); border-radius: 50%; background: #08764b; box-shadow: 0 0 0 2px #fff; }
+.reporting-trend-points button.active::before { background: #b42318; }
+.reporting-trend-points button b { position: absolute; top: calc(var(--trend-rate) - 9px); left: 50%; transform: translate(-50%, -100%); color: #075e3b; font-size: 10px; white-space: nowrap; }
+.reporting-trend-points button span { position: absolute; bottom: -21px; left: 1px; right: 1px; overflow: hidden; color: #53685b; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.reporting-trend-graph svg { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.reporting-trend-graph polyline { fill: none; stroke: #08764b; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+
 @media (max-width: 920px) {
   .commodity-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .commodity-chart-grid { grid-template-columns: 1fr; }

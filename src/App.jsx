@@ -1125,6 +1125,7 @@ function App() {
   const [qualityFacilityLevelFilter, setQualityFacilityLevelFilter] = useState("all");
   const [qualityStatusFilter, setQualityStatusFilter] = useState("non-reporting");
   const [qualitySearch, setQualitySearch] = useState("");
+  const [qualityTablePage, setQualityTablePage] = useState(1);
   const [qualityPointFilter, setQualityPointFilter] = useState("all");
   const [openReportingFacility, setOpenReportingFacility] = useState(null);
   const [actions, setActions] = useState([
@@ -1412,6 +1413,14 @@ function App() {
     .filter((row) => qualityPointFilter === "all" || row.history.some((item) => (qualityGranularity === "month" ? item.month === qualityPointFilter : item.id === qualityPointFilter) && !item.reported))
     .filter((row) => !qualitySearch.trim() || `${row.name} ${row.district} ${row.province}`.toLowerCase().includes(qualitySearch.trim().toLowerCase()))
     .sort((a, b) => b.missedReports - a.missedReports || a.rate - b.rate || compareText(a.name, b.name));
+  const qualityTablePageCount = Math.max(1, Math.ceil(nonReportingFacilityRows.length / 10));
+  const qualityTableCurrentPage = Math.min(qualityTablePage, qualityTablePageCount);
+  const visibleNonReportingFacilityRows = nonReportingFacilityRows.slice((qualityTableCurrentPage - 1) * 10, qualityTableCurrentPage * 10);
+  const qualityTrendPoints = qualityTrendRows.map((row, index) => {
+    const x = ((index + 0.5) / Math.max(qualityTrendRows.length, 1)) * 100;
+    const y = 100 - normalizeRate(row.rate) * 100;
+    return `${x},${y}`;
+  }).join(" ");
   const provinceQualityRows = dataQuality.provinces || [];
   const selectedProvinceQuality = selectedProvince === "all"
     ? null
@@ -2639,7 +2648,7 @@ function App() {
             <div className="non-reporting-grid">
               <div className="quality-panel">
                 <div className="quality-panel-head"><div><h3>Reporting Rate Trend</h3><p>Click a month or week to show facilities that missed that point.</p></div><span>{monthLabel(qualityRangeLower)} to {monthLabel(qualityRangeUpper)}</span></div>
-                <div className="quality-bars">{qualityTrendRows.map((row) => <button type="button" className={`quality-bar-row reporting-tone-${reportingTone(row.rate)} ${qualityPointFilter === row.id ? "active" : ""}`} key={row.id} onClick={() => setQualityPointFilter((current) => current === row.id ? "all" : row.id)}><span>{row.label}</span><div className="quality-bar-track"><i style={{ width: `${Math.round(row.rate * 100)}%` }} /></div><b>{formatPercent(row.rate)}</b><small>{row.reported}/{row.expected}</small></button>)}</div>
+                <div className="reporting-trend-graph"><div className="reporting-trend-axis">Reporting rate (%)</div><div className="reporting-trend-grid" aria-hidden="true">{[0, 25, 50, 75, 100].map((value) => <i key={value} style={{ bottom: `${value}%` }}><small>{value}%</small></i>)}</div><div className="reporting-trend-points" style={{ "--trend-points": qualityTrendRows.length }}>{qualityTrendRows.map((row) => <button type="button" className={qualityPointFilter === row.id ? "active" : ""} key={row.id} style={{ "--trend-rate": `${100 - normalizeRate(row.rate) * 100}%` }} onClick={() => { setQualityPointFilter((current) => current === row.id ? "all" : row.id); setQualityTablePage(1); }}><b>{formatPercent(row.rate)}</b><span>{qualityGranularity === "month" ? row.label.replace(" 2026", "") : row.label.replace("Week ", "W")}</span></button>)}</div><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points={qualityTrendPoints} /></svg></div>
               </div>
               <div className="quality-panel">
                 <div className="quality-panel-head"><div><h3>District reporting rate</h3><p>Lowest to highest across the selected range.</p></div><span>{qualityDistrictTrendRows.length} districts</span></div>
@@ -2651,8 +2660,9 @@ function App() {
               </div>
             </div>
             <div className="table-panel non-reporting-table">
-              <div className="table-headline"><div><h2>Non-reporting facilities</h2><p>Only expected reporting units with an identified reporting gap are listed. Aggregate health-post and health-centre rows remain aggregate where the submitted tracer does not provide individual facility names.</p></div><input value={qualitySearch} onChange={(event) => setQualitySearch(event.target.value)} placeholder="Search facility, district, or province" /></div>
-              <div className="table-scroll"><table><thead><tr><th>Province</th><th>District</th><th>Facility / reporting unit</th><th>Facility level</th><th>Expected</th><th>Submitted</th><th>Missed</th><th>Rate</th><th>Consecutive missed</th><th>Latest report</th><th>Status</th><th /></tr></thead><tbody>{nonReportingFacilityRows.length ? nonReportingFacilityRows.map((row) => <tr key={`${row.province}-${row.district}-${row.facilityLevel}-${row.name}`}><td>{row.province}</td><td>{row.district}</td><td>{row.name}</td><td>{row.facilityLevel}</td><td>{row.expectedReports}</td><td>{row.reportsSubmitted}</td><td>{row.missedReports}</td><td>{formatPercent(row.rate)}</td><td>{row.consecutiveMissed}</td><td>{row.latestReport}</td><td><span className={`comparison-signal ${row.missedReports ? "red" : "green"}`}>{row.consistency}</span></td><td><button type="button" className="ghost-button" onClick={() => setOpenReportingFacility(row)}>History</button></td></tr>) : <tr><td colSpan="12">No expected reporting units match the selected reporting-gap filters.</td></tr>}</tbody></table></div>
+              <div className="table-headline"><div><h2>Non-reporting facilities</h2><p>Only expected reporting units with an identified reporting gap are listed. Aggregate health-post and health-centre rows remain aggregate where the submitted tracer does not provide individual facility names.</p></div><input value={qualitySearch} onChange={(event) => { setQualitySearch(event.target.value); setQualityTablePage(1); }} placeholder="Search facility, district, or province" /></div>
+              <div className="table-scroll"><table><thead><tr><th>Province</th><th>District</th><th>Facility / reporting unit</th><th>Facility level</th><th>Expected</th><th>Submitted</th><th>Missed</th><th>Rate</th><th>Consecutive missed</th><th>Latest report</th><th>Status</th><th /></tr></thead><tbody>{visibleNonReportingFacilityRows.length ? visibleNonReportingFacilityRows.map((row) => <tr key={`${row.province}-${row.district}-${row.facilityLevel}-${row.name}`}><td>{row.province}</td><td>{row.district}</td><td>{row.name}</td><td>{row.facilityLevel}</td><td>{row.expectedReports}</td><td>{row.reportsSubmitted}</td><td>{row.missedReports}</td><td>{formatPercent(row.rate)}</td><td>{row.consecutiveMissed}</td><td>{row.latestReport}</td><td><span className={`comparison-signal ${row.missedReports ? "red" : "green"}`}>{row.consistency}</span></td><td><button type="button" className="ghost-button" onClick={() => setOpenReportingFacility(row)}>History</button></td></tr>) : <tr><td colSpan="12">No expected reporting units match the selected reporting-gap filters.</td></tr>}</tbody></table></div>
+              <div className="non-reporting-pagination"><button type="button" disabled={qualityTableCurrentPage <= 1} onClick={() => setQualityTablePage((page) => page - 1)}>Previous</button><span>Page {qualityTableCurrentPage} of {qualityTablePageCount} | {nonReportingFacilityRows.length} facilities</span><button type="button" disabled={qualityTableCurrentPage >= qualityTablePageCount} onClick={() => setQualityTablePage((page) => page + 1)}>Next</button></div>
             </div>
           </div>
           {selectedProvinceQuality ? (
