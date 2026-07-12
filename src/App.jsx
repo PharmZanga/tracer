@@ -1110,6 +1110,7 @@ function App() {
   const [comparisonMetric, setComparisonMetric] = useState("availability");
   const [query, setQuery] = useState("");
   const [selectedCommodity, setSelectedCommodity] = useState("");
+  const [commodityOptionPage, setCommodityOptionPage] = useState(1);
   const [commodityStatusFilter, setCommodityStatusFilter] = useState("all");
   const [commodityFacilityQuery, setCommodityFacilityQuery] = useState("");
   const [commoditySort, setCommoditySort] = useState("mos");
@@ -1255,8 +1256,10 @@ function App() {
   const commodityOptions = useMemo(() => [...new Set(commodityScopeRows.map((row) => row.item))].filter(Boolean).sort(compareText), [commodityScopeRows]);
   const commodityMatches = useMemo(() => {
     const search = query.trim().toLowerCase();
-    return commodityOptions.filter((item) => !search || item.toLowerCase().includes(search)).slice(0, 30);
+    return commodityOptions.filter((item) => !search || item.toLowerCase().includes(search));
   }, [commodityOptions, query]);
+  const commodityOptionPageCount = Math.max(1, Math.ceil(commodityMatches.length / 10));
+  const visibleCommodityMatches = commodityMatches.slice((Math.min(commodityOptionPage, commodityOptionPageCount) - 1) * 10, Math.min(commodityOptionPage, commodityOptionPageCount) * 10);
   const selectedCommodityRows = useMemo(() => {
     if (!selectedCommodity) return [];
     const grouped = new Map();
@@ -2105,15 +2108,17 @@ function App() {
           <div className="commodity-search-row">
             <div className="commodity-autocomplete">
               <label htmlFor="commodity-search">Commodity search</label>
-              <input id="commodity-search" value={query} onChange={(event) => { setQuery(event.target.value); setCommodityPage(1); }} placeholder="Search for a commodity..." autoComplete="off" />
-              {query && !selectedCommodity && <div className="commodity-match-list">
-                {commodityMatches.length ? commodityMatches.map((item) => <button type="button" key={item} onClick={() => { setSelectedCommodity(item); setQuery(item); setCommodityPage(1); }}>{item}</button>) : <p>No matching commodity was found in the selected reporting period and filters.</p>}
+              <input id="commodity-search" value={query} onChange={(event) => { setQuery(event.target.value); setCommodityOptionPage(1); setCommodityPage(1); }} placeholder="Search for a commodity..." autoComplete="off" />
+              {!selectedCommodity && <div className="commodity-match-list">
+                <div className="commodity-match-head"><span>{commodityMatches.length} commodities in current filters</span><span>Page {Math.min(commodityOptionPage, commodityOptionPageCount)} of {commodityOptionPageCount}</span></div>
+                {visibleCommodityMatches.length ? visibleCommodityMatches.map((item) => <button type="button" key={item} onClick={() => { setSelectedCommodity(item); setQuery(item); setCommodityPage(1); }}>{item}</button>) : <p>No matching commodity was found in the selected reporting period and filters.</p>}
+                {commodityMatches.length > 10 && <div className="commodity-match-pagination"><button type="button" disabled={commodityOptionPage <= 1} onClick={() => setCommodityOptionPage((page) => page - 1)}>Previous</button><button type="button" disabled={commodityOptionPage >= commodityOptionPageCount} onClick={() => setCommodityOptionPage((page) => page + 1)}>Next</button></div>}
               </div>}
             </div>
             <div className="selected-commodity-control">
               <span>Selected reporting week</span>
               <strong>{fieldData.label}</strong>
-              {selectedCommodity && <button type="button" onClick={() => { setSelectedCommodity(""); setQuery(""); setCommodityStatusFilter("all"); setOpenCommodityFacility(null); }}>Clear search</button>}
+              {selectedCommodity && <button type="button" onClick={() => { setSelectedCommodity(""); setQuery(""); setCommodityOptionPage(1); setCommodityStatusFilter("all"); setOpenCommodityFacility(null); }}>Clear search</button>}
             </div>
           </div>
 
