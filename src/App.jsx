@@ -255,7 +255,7 @@ const specialisedCareLevelOptions = [
   { value: "specialised-renal", label: "Renal Units" },
   { value: "specialised-mental-health", label: "Mental Health Units" },
   { value: "specialised-eye", label: "Eye/Ophthalmology Hospital" },
-  { value: "specialised-tb", label: "TB Units" },
+  { value: "specialised-tb", label: "TB-DS / TB-MDR Units" },
 ];
 
 function careLevelBucket(facilityLevel = "") {

@@ -388,54 +388,69 @@ def add(bucket, row):
     bucket[status_from_mos(mos)] += 1
 
 
+def canonical_facility_level(value):
+    """Return one controlled level-of-care label for every source variation."""
+    text = (clean(value) or "").upper().replace("&", " ")
+    if not text:
+        return "PRIMARY CARE - NOT SPECIFIED"
+    if "HEALTH CENTER/ HEALTH POST" in text or "HEALTH CENTRE/ HEALTH POST" in text:
+        return "PRIMARY CARE - NOT SPECIFIED"
+    if "HEALTH POST" in text:
+        return "HEALTH POST"
+    if "HEALTH CENTRE" in text or "HEALTH CENTER" in text:
+        return "HEALTH CENTRE"
+    if "CANCER" in text:
+        return "CANCER DISEASES HOSPITAL"
+    if "HEART" in text or "CARDIAC" in text:
+        return "NATIONAL HEART HOSPITAL"
+    if "WOMEN" in text or "NEW BORN" in text or "NEWBORN" in text or "WNB" in text:
+        return "WOMEN AND NEWBORN HOSPITAL"
+    if "RENAL" in text:
+        return "RENAL UNITS"
+    if "MENTAL" in text or "PSYCH" in text:
+        return "MENTAL HEALTH UNITS"
+    if "OPTH" in text or "OPHTH" in text or "EYE" in text:
+        return "EYE/OPHTHALMOLOGY HOSPITAL"
+    if "TB" in text or "MDR" in text:
+        return "TB-DS/TB-MDR UNITS"
+    if "LEVEL 1" in text or "DISTRICT LEVEL" in text:
+        return "LEVEL 1 HOSPITAL"
+    if "LEVEL 2" in text or "GENERAL HOSPITAL" in text:
+        return "LEVEL 2/GENERAL HOSPITAL"
+    if "LEVEL 3" in text or "TERTIARY" in text or "PAEDIATRIC" in text or "ADULT HOSPITAL" in text:
+        return "LEVEL 3 HOSPITAL"
+    if "PRIMARY FACILITY" in text:
+        return "PRIMARY CARE - NOT SPECIFIED"
+    return "PRIMARY CARE - NOT SPECIFIED"
+
+
 def raw_facility_level(sheet_name, sheet_title):
     title = f"{sheet_name} {sheet_title or ''}".upper()
     if sheet_name.upper() == "HP" or "HEALTH POST" in title:
-        return "HEALTH POST"
+        return canonical_facility_level("HEALTH POST")
     if sheet_name.upper() == "HC" or "HEALTH CENTRE" in title:
-        return "HEALTH CENTRE"
+        return canonical_facility_level("HEALTH CENTRE")
     if "L-1" in title or "LEVEL 1" in title:
-        return "DISTRICT LEVEL 1 HOSPITALS"
+        return canonical_facility_level("DISTRICT LEVEL 1 HOSPITALS")
     if "L-2" in title or "LEVEL 2" in title:
-        return "LEVEL 2 HOSPITAL"
+        return canonical_facility_level("LEVEL 2 HOSPITAL")
     if "L-3" in title or "LEVEL 3" in title:
-        return sheet_name.upper()
+        return canonical_facility_level(sheet_name.upper())
     if "TB" in title:
-        return "TB UNITS"
+        return canonical_facility_level("TB UNITS")
     if "EYE" in title or "OPTH" in title:
-        return "OPTHAMOLOGY UNITS"
+        return canonical_facility_level("OPTHAMOLOGY UNITS")
     if "RENAL" in title:
-        return "RENAL UNITS"
+        return canonical_facility_level("RENAL UNITS")
     if "CANCER" in title:
-        return "CANCER DISEASES UNITS"
+        return canonical_facility_level("CANCER DISEASES UNITS")
     if "MENTAL" in title:
-        return "MENTAL HEALTH UNITS"
-    return sheet_name.upper()
+        return canonical_facility_level("MENTAL HEALTH UNITS")
+    return canonical_facility_level(sheet_name.upper())
 
 
 def normalize_raw_facility_level(sheet_name, sheet_title):
-    level = raw_facility_level(sheet_name, sheet_title)
-    if level == "L-1":
-        return "DISTRICT LEVEL 1 HOSPITALS"
-    if level == "L-2":
-        return "LEVEL 2 HOSPITAL"
-    if level == "L-3":
-        return "LEVEL 3 HOSPITAL"
-    if level == "L-3 PAED":
-        return "LEVEL 3 PAEDIATRICS HOSPITALS"
-    if level == "L-3 ADULT":
-        return "LEVEL 3 ADULT HOSPITALS"
-    if level == "RENAL UNITS":
-        return "RENAL UNITS"
-    if level == "CANCER DISEASES UNITS":
-        return "CANCER DISEASES UNITS"
-    if level == "MENTAL HEALTH UNITS":
-        return "MENTAL HEALTH UNITS"
-    if level == "OPTHAMOLOGY UNITS":
-        return "OPTHAMOLOGY UNITS"
-    if level == "TB UNITS":
-        return "TB UNITS"
-    return level
+    return canonical_facility_level(raw_facility_level(sheet_name, sheet_title))
 
 
 def load_raw_availability_overrides():
@@ -574,32 +589,7 @@ def corrected_value(value, fallback):
 
 
 def clean_facility_level(level, corrected_level):
-    original = (clean(level) or "").upper()
-    if "HEALTH CENTER/ HEALTH POST" in original or "HEALTH CENTRE/ HEALTH POST" in original:
-        return "PRIMARY FACILITY - LEVEL NOT SPECIFIED"
-    if "HEALTH POST" in original:
-        return "HEALTH POST"
-    if "HEALTH CENTRE" in original or "HEALTH CENTER" in original:
-        return "HEALTH CENTRE"
-    if "RENAL" in original:
-        return "RENAL UNITS"
-    if "CANCER" in original:
-        return "CANCER DISEASES UNITS"
-    if "MENTAL" in original or "PSYCH" in original:
-        return "MENTAL HEALTH UNITS"
-    if "OPTH" in original or "OPHTH" in original or "EYE" in original:
-        return "OPTHAMOLOGY UNITS"
-    if "TB" in original or "MDR" in original:
-        return "TB UNITS"
-    if "HEART" in original:
-        return "HEART HOSPITAL"
-    if "WOMEN" in original or "NEW BORN" in original or "WNB" in original:
-        return "WOMEN AND NEWBORN UNITS"
-    value = corrected_value(corrected_level, level) or "Unknown facility level"
-    value = str(value).strip().upper()
-    if "HEALTH CENTER/ HEALTH POST" in value or "HEALTH CENTRE/ HEALTH POST" in value:
-        return "PRIMARY FACILITY - LEVEL NOT SPECIFIED"
-    return value
+    return canonical_facility_level(corrected_value(corrected_level, level))
 
 
 def load_clean_workbook_configs():
@@ -633,7 +623,7 @@ def load_clean_workbook_configs():
             or str(corrected_facility or "").strip().upper() == "ALL"
             or (
                 str(corrected_facility or "").strip().upper() == "HC/HP"
-                and facility_level in {"HEALTH POST", "HEALTH CENTRE", "PRIMARY FACILITY - LEVEL NOT SPECIFIED"}
+                and facility_level in {"HEALTH POST", "HEALTH CENTRE", "PRIMARY CARE - NOT SPECIFIED"}
             )
         )
         facility_name = corrected_facility or original_facility or "Unknown reporting unit"
@@ -742,7 +732,7 @@ def summarize(config):
         province = normalize_province(row.get("PROVINCE"))
         district = normalize_district(row.get("DISTRICT"))
         facility = clean(row.get("FACILITY NAME")) or "Unknown reporting unit"
-        facility_level = (clean(row.get("FACILITY LEVEL")) or "Unknown facility level").upper()
+        facility_level = canonical_facility_level(row.get("FACILITY LEVEL"))
         item = clean(row.get("DESCRIPTION OF ITEM")) or "Unknown commodity"
         program = normalize_program(row.get("PROGRAM"), item)
         cancer_scope = (
@@ -760,7 +750,7 @@ def summarize(config):
             continue
         if cancer_scope:
             facility = "CANCER DISEASES HOSPITAL"
-            facility_level = "CANCER DISEASES UNITS"
+            facility_level = "CANCER DISEASES HOSPITAL"
         if report_date is None:
             report_date = row.get("DATE")
 
