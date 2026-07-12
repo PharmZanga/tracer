@@ -1164,17 +1164,33 @@ function App() {
       .sort((a, b) => a.availability - b.availability || a.name.localeCompare(b.name))
     : [];
   const reportData = tracerReportingPeriods.find((period) => period.id === reportPeriodId) || tracerReportingPeriods.at(-1);
-  const reportBaseRows = (reportData.dataQuality?.facilityTypes || [])
-    .map((row) => ({
-      ...row,
-      facilityType: reportingFacilityLabel(row.type),
-      facilityName: `${row.district} ${reportingFacilityLabel(row.type)} reporting unit`,
-      status: reportingStatus(row),
-      rate: qualityRate(row),
-      notReported: row.missing || 0,
-      lastReportingPeriod: (row.reported || 0) > 0 ? reportData.label : "-",
+  const reportSubmittedDistrictKeys = new Set((reportData.districts || []).map((row) => `${row.province}|${row.name}`));
+  const reportBaseRows = (reportData.dataQuality?.districts || [])
+    .map((row) => {
+      const reported = reportSubmittedDistrictKeys.has(`${row.province}|${row.name}`) ? 1 : 0;
+      return {
+        province: row.province,
+        district: row.name,
+        expected: 1,
+        reported,
+        notReported: 1 - reported,
+        missing: 1 - reported,
+        status: reported ? "Reported" : "Not Reported",
+        rate: reported,
+        lastReportingPeriod: reported ? reportData.label : "-",
+      };
+    });
+  const reportSubmittedFacilityRows = (reportData.facilities || [])
+    .map((facility) => ({
+      province: facility.province,
+      district: facility.district,
+      facilityName: facility.name,
+      facilityType: facility.facilityLevel,
+      status: "Reported",
+      rate: 1,
+      lastReportingPeriod: reportData.label,
     }));
-  const reportFacilityTypeOptions = [...new Set(reportBaseRows.map((row) => row.facilityType))].sort();
+  const reportFacilityTypeOptions = [...new Set(reportSubmittedFacilityRows.map((row) => row.facilityType))].sort();
   const reportProvinceOptions = [...new Set(reportBaseRows.map((row) => row.province))].sort();
   const reportDistrictOptions = [...new Set(reportBaseRows
     .filter((row) => reportProvince === "all" || row.province === reportProvince)
@@ -1182,7 +1198,6 @@ function App() {
   const reportingRows = reportBaseRows
     .filter((row) => reportProvince === "all" || row.province === reportProvince)
     .filter((row) => reportDistrict === "all" || row.district === reportDistrict)
-    .filter((row) => reportFacilityType === "all" || row.facilityType === reportFacilityType)
     .filter((row) => reportStatus === "all" || row.status === reportStatus);
   const reportingKpis = reportingRows.reduce((acc, row) => {
     acc.expected += row.expected || 0;
@@ -1199,9 +1214,13 @@ function App() {
     "name",
   ).sort((a, b) => a.name.localeCompare(b.name));
   const reportingChartRows = reportDrillProvince ? reportingDistrictRows : reportingProvinceRows;
-  const reportingFacilityRows = reportingRows
+  const reportingFacilityRows = reportSubmittedFacilityRows
+    .filter((row) => reportProvince === "all" || row.province === reportProvince)
+    .filter((row) => reportDistrict === "all" || row.district === reportDistrict)
     .filter((row) => !reportDrillProvince || row.province === reportDrillProvince)
     .filter((row) => !reportDrillDistrict || row.district === reportDrillDistrict)
+    .filter((row) => reportFacilityType === "all" || row.facilityType === reportFacilityType)
+    .filter((row) => reportStatus === "all" || row.status === reportStatus)
     .sort((a, b) => a.province.localeCompare(b.province) || a.district.localeCompare(b.district) || a.facilityType.localeCompare(b.facilityType));
 
   const provinceOptions = fieldData.provinces.map((province) => province.name).sort();
@@ -2709,8 +2728,8 @@ function App() {
           <div className="section-head">
             <div>
               <p className="eyebrow dark">Reporting Rate</p>
-              <h2>Facility and specialised unit reporting performance</h2>
-              <p>Reporting rate is calculated as reporting units submitted divided by reporting units expected for each facility level or specialised programme in the selected period.</p>
+              <h2>District and facility reporting performance</h2>
+              <p>Reporting rate is calculated from districts that submitted in the selected week divided by districts expected to submit. The facility list shows the reporting units actually submitted, not drug rows.</p>
             </div>
           </div>
           <div className="reporting-filter-bar">
@@ -2742,7 +2761,7 @@ function App() {
                 setReportFacilityType(event.target.value);
                 setReportDrillDistrict("");
               }}>
-                <option value="all">All facility levels</option>
+                <option value="all">All submitted facility levels</option>
                 {reportFacilityTypeOptions.map((type) => <option value={type} key={type}>{type}</option>)}
               </select>
             </label>
@@ -2756,10 +2775,11 @@ function App() {
             </label>
           </div>
           <div className="stats-grid">
-            <KpiCard label="Expected reporting units" value={reportingKpis.expected.toLocaleString()} sub="Facility-level reports expected" />
-            <KpiCard label="Reporting units submitted" value={reportingKpis.reported.toLocaleString()} sub="Submitted in selected period" />
-            <KpiCard label="Reporting units missing" value={reportingKpis.notReported.toLocaleString()} sub="Missing in selected period" tone="red" />
-            <KpiCard label="Reporting rate" value={formatPercent(reportingKpis.rate)} sub="Reported / expected" tone={reportingTone(reportingKpis.rate)} />
+            <KpiCard label="Expected districts" value={reportingKpis.expected.toLocaleString()} sub="Districts expected to submit" />
+            <KpiCard label="Districts submitted" value={reportingKpis.reported.toLocaleString()} sub="Districts with a tracer submission" />
+            <KpiCard label="Districts missing" value={reportingKpis.notReported.toLocaleString()} sub="Districts without a tracer submission" tone="red" />
+            <KpiCard label="District reporting rate" value={formatPercent(reportingKpis.rate)} sub="Districts submitted / expected" tone={reportingTone(reportingKpis.rate)} />
+            <KpiCard label="Reporting facilities" value={reportingFacilityRows.length.toLocaleString()} sub="Unique submitted reporting units" />
           </div>
           <div className="reporting-drill-path">
             <button type="button" onClick={() => {
@@ -2778,7 +2798,7 @@ function App() {
               <div className="quality-panel-head">
                 <div>
                   <h3>{reportDrillProvince ? `District reporting rate in ${reportDrillProvince}` : "Reporting rate by province"}</h3>
-                  <p>{reportDrillProvince ? "Click a district to show facility level and specialised reporting units." : "Click a province to drill down to district reporting rate."}</p>
+                  <p>{reportDrillProvince ? "Click a district to show submitted facilities." : "Click a province to drill down to district reporting rate."}</p>
                 </div>
                 <span>{reportingChartRows.length} rows</span>
               </div>
@@ -2814,8 +2834,8 @@ function App() {
             <div className="quality-panel reporting-facilities">
               <div className="quality-panel-head">
                 <div>
-                  <h3>{reportDrillDistrict ? `${reportDrillDistrict} facility-level reporting` : "Facility-level reporting"}</h3>
-                  <p>Rows show facility level and specialised reporting status for the selected scope.</p>
+                  <h3>{reportDrillDistrict ? `${reportDrillDistrict} submitted facilities` : "Submitted facilities"}</h3>
+                  <p>Each row is one submitted reporting facility or aggregate facility level for the selected week.</p>
                 </div>
                 <span>{reportingFacilityRows.length} rows</span>
               </div>
@@ -2826,20 +2846,18 @@ function App() {
                       <th>Facility name</th>
                       <th>Facility type</th>
                       <th>Reported status</th>
-                      <th>Reporting rate</th>
                       <th>Last reporting period</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {reportingFacilityRows.map((row) => (
-                      <tr key={`${row.province}-${row.district}-${row.facilityType}`}>
+                    {reportingFacilityRows.length ? reportingFacilityRows.map((row) => (
+                      <tr key={`${row.province}-${row.district}-${row.facilityType}-${row.facilityName}`}>
                         <td>{row.facilityName}</td>
                         <td>{row.facilityType}</td>
                         <td><span className={`status-pill ${row.status === "Reported" ? "reported" : "missing"}`}>{row.status}</span></td>
-                        <td>{formatPercent(row.rate)}</td>
                         <td>{row.lastReportingPeriod}</td>
                       </tr>
-                    ))}
+                    )) : <tr><td colSpan="4">No submitted facilities match the selected filters.</td></tr>}
                   </tbody>
                 </table>
               </div>
@@ -2849,7 +2867,7 @@ function App() {
             <div className="table-headline">
               <div>
                 <h2>Reporting rate detail</h2>
-                <p>Province, district and facility-type summary for the selected reporting filters.</p>
+                <p>District reporting summary for the selected reporting filters.</p>
               </div>
             </div>
             <div className="table-scroll">
@@ -2858,7 +2876,6 @@ function App() {
                   <tr>
                     <th>Province</th>
                     <th>District</th>
-                    <th>Facility Type</th>
                     <th>Expected</th>
                     <th>Reported</th>
                     <th>Not Reported</th>
@@ -2867,10 +2884,9 @@ function App() {
                 </thead>
                 <tbody>
                   {reportingRows.map((row) => (
-                    <tr key={`${row.province}-${row.district}-${row.facilityType}`}>
+                    <tr key={`${row.province}-${row.district}`}>
                       <td>{row.province}</td>
                       <td>{row.district}</td>
-                      <td>{row.facilityType}</td>
                       <td>{row.expected.toLocaleString()}</td>
                       <td>{row.reported.toLocaleString()}</td>
                       <td>{row.notReported.toLocaleString()}</td>
