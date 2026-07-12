@@ -67,22 +67,21 @@ function normalizeCommodity(value) {
 
 function stockCategoryRowsFor(period) {
   if (!period) return [];
-  if (!period.items) {
-    return (period.categories || []).map((row) => ({
-      name: row.name,
-      available: row.available ?? null,
-      total: row.total ?? null,
-      availability: row.availability || 0,
-    }));
-  }
+  const sourceCategories = new Map((period.categories || []).map((row) => [row.name, row.availability]));
   const grouped = new Map();
-  period.items.forEach((item) => {
+  (period.items || []).forEach((item) => {
     const current = grouped.get(item.category) || { name: item.category, available: 0, total: 0, availability: 0 };
     current.total += 1;
     if ((item.availability || 0) > 0) current.available += 1;
     grouped.set(item.category, current);
   });
-  return [...grouped.values()].map((row) => ({ ...row, availability: row.total ? row.available / row.total : 0 }));
+  for (const [name, availability] of sourceCategories) {
+    if (!grouped.has(name)) grouped.set(name, { name, available: null, total: null, availability });
+  }
+  return [...grouped.values()].map((row) => ({
+    ...row,
+    availability: sourceCategories.has(row.name) ? sourceCategories.get(row.name) : row.total ? row.available / row.total : 0,
+  }));
 }
 
 function stockChangeRows(current, previous) {
@@ -226,7 +225,7 @@ function careLevelBucket(facilityLevel = "") {
     text.includes("MDR")
   ) return "level3";
   if (text.includes("LEVEL 1") || text.includes("DISTRICT")) return "level1";
-  return "level3";
+  return "other";
 }
 
 function matchesFacilityCareLevel(facilityLevel = "", selectedLevel = "all") {
@@ -1118,6 +1117,10 @@ function App() {
     .filter((facility) => selectedFacility === "all" || `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}` === selectedFacility);
 
   const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
+  const scopedProvinceRows = aggregateRollups(filteredFacilities, "province")
+    .sort((a, b) => b.availability - a.availability || b.rows - a.rows);
+  const scopedDistrictRows = aggregateRollups(filteredFacilities, "district")
+    .sort((a, b) => b.riskRows - a.riskRows || a.availability - b.availability);
   const levelOfCareRows = careLevelBuckets.map((bucket) => {
     const facilities = filteredFacilities.filter((facility) => careLevelBucket(facility.facilityLevel) === bucket.id);
     return {
@@ -1129,9 +1132,9 @@ function App() {
         .filter((facility) => !facility.isAggregate)
         .map((facility) => facility.name))].sort(),
     };
-  });
-  const bestProvince = [...fieldData.provinces].sort((a, b) => b.availability - a.availability)[0];
-  const worstProvince = fieldData.provinces[0];
+  }).filter((row) => selectedProvince === "all" || row.rows > 0);
+  const bestProvince = scopedProvinceRows[0];
+  const worstProvince = [...scopedProvinceRows].sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)[0];
   const stockoutFacilityCount = filteredFacilities.filter((facility) => facility.stockoutItemCount > 0).length;
   const lowStockFacilityCount = filteredFacilities.filter((facility) => facility.lowStockItemCount > 0).length;
   const redistributionCandidates = buildRedistributionCandidates(filteredFacilities);
@@ -1140,8 +1143,7 @@ function App() {
     .filter((facility) => facility.stockoutItemCount > 0 || facility.lowStockItemCount > 0)
     .sort((a, b) => Number(a.isAggregate) - Number(b.isAggregate) || b.stockoutItemCount - a.stockoutItemCount || b.lowStockItemCount - a.lowStockItemCount)
     .slice(0, 48);
-  const districtsInScope = fieldData.districts
-    .filter((district) => selectedProvince === "all" || district.province === selectedProvince);
+  const districtsInScope = scopedDistrictRows;
 
   const commoditiesInScope = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -1185,6 +1187,9 @@ function App() {
   const productCategoryRows = aggregateRollups(scopedProgrammeRows, "name")
     .sort((a, b) => a.availability - b.availability || (a.mos || 0) - (b.mos || 0))
     .slice(0, 36);
+  const programmePressureRows = aggregateRollups(scopedProgrammeRows, "name")
+    .sort((a, b) => b.riskRows - a.riskRows || a.availability - b.availability)
+    .slice(0, 12);
   const comparisonYears = [...new Set(tracerReportingPeriods.map((period) => String(period.month).slice(0, 4)))].sort();
   const comparisonMonths = [...new Set(tracerReportingPeriods
     .filter((period) => String(period.month).startsWith(comparisonYear))
@@ -1441,7 +1446,7 @@ function App() {
             <span>National Tracer Drug Availability</span>
             <strong>{activePageLabel}</strong>
           </div>
-          <div className="global-filter-bar">
+          {!['stock', 'comparison', 'reporting'].includes(activePage) && <div className="global-filter-bar">
             <label>
               <span>Month</span>
               <select value={selectedMonth} onChange={(event) => changeMonth(event.target.value)}>
@@ -1457,14 +1462,14 @@ function App() {
                 {weeksInMonth.map((period) => <option value={period.id} key={period.id}>{period.week} - {period.reportDate}</option>)}
               </select>
             </label>
-            <label>
+            {activePage !== "commodities" && <label>
               <span>Province</span>
               <select value={selectedProvince} onChange={(event) => changeProvinceFilter(event.target.value)}>
                 <option value="all">All provinces</option>
                 {provinceOptions.map((province) => <option value={province} key={province}>{province}</option>)}
               </select>
-            </label>
-            <label>
+            </label>}
+            {!["quality", "commodities"].includes(activePage) && <><label>
               <span>District</span>
               <select value={selectedDistrict} onChange={(event) => changeDistrictFilter(event.target.value)}>
                 <option value="all">All districts</option>
@@ -1493,9 +1498,8 @@ function App() {
                   return <option value={facility} key={facility}>{name === "ALL" ? `All ${level.toLowerCase()} facilities - ${district}` : `${name} - ${district}`}</option>;
                 })}
               </select>
-            </label>
-            <button type="button" onClick={resetFieldHierarchy}>Clear</button>
-          </div>
+            </label><button type="button" onClick={resetFieldHierarchy}>Clear</button></>}
+          </div>}
         </header>
 
         <section className="hero">
@@ -1762,9 +1766,9 @@ function App() {
             <div><span>Current footprint</span><strong>{filteredFacilities.length}</strong><small>Reporting units in current filters</small></div>
           </div>
           <div className="field-grid">
-            <TopRowsTable title="Province availability" rows={fieldData.provinces.slice(0, 10)} onSelect={(row) => selectProvince(row.name)} />
+            <TopRowsTable title="Province availability" rows={scopedProvinceRows.slice(0, 10)} onSelect={(row) => selectProvince(row.name)} />
             <TopRowsTable title={selectedProvince === "all" ? "Districts needing attention" : `Districts in ${selectedProvince}`} rows={districtsInScope.slice(0, 12)} onSelect={(row) => selectDistrict(row.name)} />
-            <TopRowsTable title="Programme pressure" rows={fieldData.programmes.slice(0, 12)} />
+            <TopRowsTable title="Programme pressure" rows={programmePressureRows} />
           </div>
           <div className="hierarchy-path">
             <button type="button" onClick={resetFieldHierarchy}>Zambia</button>

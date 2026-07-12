@@ -218,6 +218,7 @@ WORKBOOKS = [
     },
 ]
 OUT = Path(__file__).resolve().parents[1] / "src" / "tracerFacilityData.js"
+OUT_DIR = OUT.parent
 CLEAN_DATA_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\tracer dashboard\JANUARY-DECEMBER TRACER 2026.xlsx")
 CLEAN_DATA_SHEET = "SUMMARY SHEET"
 RAW_AVAILABILITY_SOURCES = [
@@ -266,8 +267,16 @@ def facility_match_key(value):
 def normalize_province(value):
     text = (clean(value) or "Unknown").upper()
     aliases = {
+        "CENTRAL": "CENTRAL PROVINCE",
+        "COPPERBELT": "COPPERBELT PROVINCE",
         "EASTERN": "EASTERN PROVINCE",
+        "LUAPULA": "LUAPULA PROVINCE",
+        "LUSAKA": "LUSAKA PROVINCE",
+        "MUCHINGA": "MUCHINGA PROVINCE",
         "NORTHWESTERN PROVINCE": "NORTH-WESTERN PROVINCE",
+        "NORTHERN": "NORTHERN PROVINCE",
+        "SOUTHERN": "SOUTHERN PROVINCE",
+        "WESTERN": "WESTERN PROVINCE",
     }
     return aliases.get(text, text)
 
@@ -278,6 +287,9 @@ def normalize_district(value):
     text = re.sub(r"\s+DISTRICT$", "", text).strip()
     aliases = {
         "SINZONGWE": "SINAZONGWE",
+        "CHKANKATA": "CHIKANKATA",
+        "NAWMALA": "NAMWALA",
+        "MWENSE D HOSP": "MWENSE",
         "UNKNOWN DISTRICT": "UNKNOWN",
     }
     return aliases.get(text, text)
@@ -523,6 +535,10 @@ def week_label(value):
     week_overrides = {
         "2026-02-22": "Week 3",
         "2026-02-28": "Week 4",
+        "2026-03-08": "Week 1",
+        "2026-03-15": "Week 2",
+        "2026-03-22": "Week 3",
+        "2026-03-29": "Week 4",
     }
     if report_id in week_overrides:
         return week_overrides[report_id]
@@ -725,6 +741,22 @@ def summarize(config):
         facility_level = (clean(row.get("FACILITY LEVEL")) or "Unknown facility level").upper()
         item = clean(row.get("DESCRIPTION OF ITEM")) or "Unknown commodity"
         program = normalize_program(row.get("PROGRAM"), item)
+        cancer_scope = (
+            program == "CANCER"
+            or "CANCER" in facility_level
+            or "CANCER" in facility.upper()
+        )
+        # Cancer indicators in the tracer are reported from the Cancer Diseases
+        # Hospital in Lusaka. Exclude unrelated provincial cancer labels so every
+        # tracer tab uses the same designated reporting source.
+        if cancer_scope and not (
+            province == "LUSAKA PROVINCE"
+            and ("CANCER" in facility_level or "CANCER" in facility.upper())
+        ):
+            continue
+        if cancer_scope:
+            facility = "CANCER DISEASES HOSPITAL"
+            facility_level = "CANCER DISEASES UNITS"
         if report_date is None:
             report_date = row.get("DATE")
 
@@ -987,6 +1019,13 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
 def main():
     availability_overrides = load_raw_availability_overrides()
     configs = []
+    # The approved clean workbook begins on 22 February. January is retained
+    # from its validated weekly summary workbook so the dashboard covers Jan-Jun.
+    for config in WORKBOOKS:
+        if config.get("month") == "2026-01":
+            config = dict(config)
+            config["availabilityOverrides"] = availability_overrides
+            configs.append(config)
     for config in load_clean_workbook_configs():
         config["availabilityOverrides"] = availability_overrides
         configs.append(config)
@@ -1000,10 +1039,31 @@ def main():
         if facility["district"] != "UNKNOWN"
     }
     build_reporting_quality(periods, expected_districts, expected_facilities)
+    # Keep each generated module below GitHub's 100 MB file limit while
+    # preserving the complete Jan-Jun history available to the dashboard.
+    period_groups = {
+        "JanFeb": [period for period in periods if period["month"] in {"2026-01", "2026-02"}],
+        "MarApr": [period for period in periods if period["month"] in {"2026-03", "2026-04"}],
+        "MayJun": [period for period in periods if period["month"] in {"2026-05", "2026-06"}],
+    }
+    module_names = []
+    for suffix, group in period_groups.items():
+        module_name = f"tracerFacilityData{suffix}"
+        module_names.append(module_name)
+        (OUT_DIR / f"{module_name}.js").write_text(
+            "export const tracerReportingPeriods = " + json.dumps(group, indent=2) + ";\n",
+            encoding="utf-8",
+        )
+
+    imports = "\n".join(
+        f'import {{ tracerReportingPeriods as {name} }} from "./{name}.js";'
+        for name in module_names
+    )
     output = (
-        "export const tracerReportingPeriods = "
-        + json.dumps(periods, indent=2)
-        + ";\n\nexport const tracerFacilityData = tracerReportingPeriods.at(-1);\n"
+        f"{imports}\n\n"
+        + "export const tracerReportingPeriods = ["
+        + ", ".join(f"...{name}" for name in module_names)
+        + "];\n\nexport const tracerFacilityData = tracerReportingPeriods.at(-1);\n"
     )
     OUT.write_text(output, encoding="utf-8")
     print([(item["label"], item["counts"]) for item in periods])
