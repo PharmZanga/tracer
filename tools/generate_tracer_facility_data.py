@@ -290,6 +290,9 @@ def normalize_district(value):
         "CHKANKATA": "CHIKANKATA",
         "NAWMALA": "NAMWALA",
         "MWENSE D HOSP": "MWENSE",
+        # Loloma is a locality/ward and Loloma Mission Hospital reports under
+        # Manyinga District; it is not a separate North-Western district.
+        "LOLOMA": "MANYINGA",
         "UNKNOWN DISTRICT": "UNKNOWN",
     }
     return aliases.get(text, text)
