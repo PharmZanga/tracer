@@ -728,6 +728,7 @@ def summarize(config):
     by_program = defaultdict(make_bucket)
     by_program_scope = defaultdict(make_bucket)
     by_item = defaultdict(make_bucket)
+    commodity_facility_rows = []
     facility_items = defaultdict(lambda: {"stockout": [], "lowStock": [], "accordingToPlan": [], "overstock": []})
     facility_is_aggregate = {}
     comments = []
@@ -776,6 +777,20 @@ def summarize(config):
             by_item[item],
         ):
             add(bucket, row)
+
+        # Compact facility-by-commodity rows support the dashboard drill-down
+        # without repeating full object keys for every submitted tracer record.
+        commodity_facility_rows.append((
+            province,
+            district,
+            facility_level,
+            facility,
+            item,
+            program,
+            num(row.get("QUANTITY")),
+            num(row.get("AMC")),
+            num(row.get("MOS")),
+        ))
 
         mos = num(row.get("MOS"))
         alert_item = {
@@ -859,6 +874,32 @@ def summarize(config):
         report_date = config["reportDate"]
     elif hasattr(report_date, "strftime"):
         report_date = report_date.strftime("%Y-%m-%d")
+
+    compact_keys = ["provinces", "districts", "levels", "facilities", "items", "programmes"]
+    compact_values = {key: [] for key in compact_keys}
+    compact_lookup = {key: {} for key in compact_keys}
+
+    def compact_index(key, value):
+        lookup = compact_lookup[key]
+        if value not in lookup:
+            lookup[value] = len(compact_values[key])
+            compact_values[key].append(value)
+        return lookup[value]
+
+    compact_rows = [
+        [
+            compact_index("provinces", province),
+            compact_index("districts", district),
+            compact_index("levels", facility_level),
+            compact_index("facilities", facility),
+            compact_index("items", item),
+            compact_index("programmes", program),
+            quantity,
+            amc,
+            mos,
+        ]
+        for province, district, facility_level, facility, item, program, quantity, amc, mos in commodity_facility_rows
+    ]
     return {
         "id": report_date,
         "reportDate": report_date,
@@ -882,6 +923,10 @@ def summarize(config):
         "programmes": programs,
         "programmeScopes": program_scopes,
         "commodities": items,
+        "commodityFacilityData": {
+            "dictionaries": compact_values,
+            "rows": compact_rows,
+        },
         "comments": comments[:100],
     }
 
