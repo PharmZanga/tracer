@@ -1587,8 +1587,8 @@ function App() {
     `${comparisonWorst.name} is the lowest performer at ${formatComparisonMetric(comparisonMetricValue(comparisonWorst, comparisonMetric), comparisonMetric)}.`,
     `The performance gap across the selected comparison is ${formatComparisonMetric(comparisonGap, comparisonMetric)}.`,
     comparisonDelta >= 0
-      ? `The comparison range improved by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} against the selected baseline range.`
-      : `The comparison range declined by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} against the selected baseline range.`,
+      ? `The second period improved by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} compared with the first period.`
+      : `The second period declined by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} compared with the first period.`,
   ];
 
   function resetFieldHierarchy() {
@@ -2307,26 +2307,20 @@ function App() {
               </select>
             </label>}
             <label>
-              <span>Baseline start</span>
-              <select value={comparisonBaselineStart} onChange={(event) => setComparisonBaselineStart(event.target.value)}>
+              <span>First period</span>
+              <select value={comparisonBaselineStart} onChange={(event) => {
+                setComparisonBaselineStart(event.target.value);
+                setComparisonBaselineEnd(event.target.value);
+              }}>
                 {comparisonRangeOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}
               </select>
             </label>
             <label>
-              <span>Baseline end</span>
-              <select value={comparisonBaselineEnd} onChange={(event) => setComparisonBaselineEnd(event.target.value)}>
-                {comparisonRangeOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}
-              </select>
-            </label>
-            <label>
-              <span>Comparison start</span>
-              <select value={comparisonRangeStart} onChange={(event) => setComparisonRangeStart(event.target.value)}>
-                {comparisonRangeOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}
-              </select>
-            </label>
-            <label>
-              <span>Comparison end</span>
-              <select value={comparisonRangeEnd} onChange={(event) => setComparisonRangeEnd(event.target.value)}>
+              <span>Second period</span>
+              <select value={comparisonRangeStart} onChange={(event) => {
+                setComparisonRangeStart(event.target.value);
+                setComparisonRangeEnd(event.target.value);
+              }}>
                 {comparisonRangeOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}
               </select>
             </label>
