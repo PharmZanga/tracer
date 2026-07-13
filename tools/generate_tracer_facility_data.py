@@ -764,6 +764,10 @@ def summarize(config):
         if cancer_scope:
             facility = "CANCER DISEASES HOSPITAL"
             facility_level = "CANCER DISEASES HOSPITAL"
+            # Cancer performance is defined from the designated Cancer Diseases
+            # Hospital tracer submission, even where individual rows use a
+            # generic source-programme label.
+            program = "CANCER"
         if report_date is None:
             report_date = row.get("DATE")
 
