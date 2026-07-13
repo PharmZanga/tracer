@@ -422,6 +422,12 @@ function buildRedistributionCandidates(facilities) {
     .slice(0, 80);
 }
 
+function redistributionActionKey(item) {
+  return [item.province, item.commodity, item.sourceDistrict, item.sourceFacility, item.destinationDistrict, item.destinationFacility]
+    .map((value) => normalizeCommodity(String(value || "")))
+    .join("|");
+}
+
 function TopRowsTable({ title, rows, onSelect, detail = "riskRows" }) {
   return (
     <div className="panel">
@@ -1130,12 +1136,14 @@ function App() {
   const [qualityTablePage, setQualityTablePage] = useState(1);
   const [qualityPointFilter, setQualityPointFilter] = useState("all");
   const [openReportingFacility, setOpenReportingFacility] = useState(null);
-  const [actions, setActions] = useState([
-    { id: 1, issue: "Facility stockouts in highest-risk reporting units", action: "Validate counts and initiate redistribution", owner: "Provincial pharmacist", status: "In progress" },
-    { id: 2, issue: "Low-stock commodities below 2 MOS", action: "Prioritize replenishment before stockout", owner: "District pharmacist", status: "Open" },
-    { id: 3, issue: "Missing or inconsistent tracer submissions", action: "Send data-quality queries to reporting teams", owner: "NSCCU", status: "Open" },
-    { id: 4, issue: "Programme-level understocking", action: "Review affected facilities with programme managers", owner: "Control Tower", status: "In progress" },
-  ]);
+  const [actionCommodityQuery, setActionCommodityQuery] = useState("");
+  const [actionUpdates, setActionUpdates] = useState(() => {
+    try {
+      return JSON.parse(window.localStorage.getItem("tracer-action-updates") || "{}") || {};
+    } catch {
+      return {};
+    }
+  });
 
   const fieldData = tracerReportingPeriods.find((period) => period.id === fieldPeriodId) || tracerReportingPeriods.at(-1);
   const activePageLabel = dashboardPages.find((page) => page.id === activePage)?.label;
@@ -1268,7 +1276,12 @@ function App() {
   const stockoutFacilityCount = filteredFacilities.filter((facility) => facility.stockoutItemCount > 0).length;
   const lowStockFacilityCount = filteredFacilities.filter((facility) => facility.lowStockItemCount > 0).length;
   const redistributionCandidates = buildRedistributionCandidates(filteredFacilities);
-  const redistributionProvinceCount = new Set(redistributionCandidates.map((item) => item.province)).size;
+  const actionCommodityCandidates = redistributionCandidates.filter((item) => !actionCommodityQuery.trim() || item.commodity.toLowerCase().includes(actionCommodityQuery.trim().toLowerCase()));
+  const actionSummary = actionCommodityCandidates.reduce((summary, item) => {
+    const status = actionUpdates[redistributionActionKey(item)]?.status || "Open";
+    summary[status] = (summary[status] || 0) + 1;
+    return summary;
+  }, { Open: 0, "In progress": 0, Completed: 0 });
   const facilityAlerts = filteredFacilities
     .filter((facility) => facility.stockoutItemCount > 0 || facility.lowStockItemCount > 0)
     .sort((a, b) => Number(a.isAggregate) - Number(b.isAggregate) || b.stockoutItemCount - a.stockoutItemCount || b.lowStockItemCount - a.lowStockItemCount)
@@ -1656,8 +1669,17 @@ function App() {
     setReportDrillDistrict(district === "all" ? "" : district);
   }
 
-  function updateActionStatus(id, status) {
-    setActions((current) => current.map((item) => item.id === id ? { ...item, status } : item));
+  function updateRedistributionAction(item, changes) {
+    const key = redistributionActionKey(item);
+    setActionUpdates((current) => {
+      const next = { ...current, [key]: { ...current[key], ...changes, updatedAt: new Date().toISOString() } };
+      try {
+        window.localStorage.setItem("tracer-action-updates", JSON.stringify(next));
+      } catch {
+        // Keep the current browser-session update when local storage is unavailable.
+      }
+      return next;
+    });
   }
 
   function exportCsv() {
@@ -2903,50 +2925,31 @@ function App() {
           <div className="action-tracker-head">
             <div>
               <p className="eyebrow dark">Control Tower Action Tracker</p>
-              <h2>Turn tracer alerts into weekly actions</h2>
-              <p>Actions are based on facility stockout, low-stock, programme, and data-quality signals from tracer submissions.</p>
+              <h2>Commodity action tracker</h2>
+              <p>Search a medicine to see same-province redistribution recommendations from overstocked facilities to stockout or low-stock facilities.</p>
             </div>
             <div className="action-summary">
-              <span><b>{actions.filter((item) => item.status === "Open").length}</b> open</span>
-              <span><b>{actions.filter((item) => item.status === "In progress").length}</b> in progress</span>
-              <span><b>{actions.filter((item) => item.status === "Completed").length}</b> completed</span>
+              <span><b>{actionSummary.Open}</b> open</span>
+              <span><b>{actionSummary["In progress"]}</b> in progress</span>
+              <span><b>{actionSummary.Completed}</b> completed</span>
             </div>
-          </div>
-          <div className="action-table-wrap">
-            <table>
-              <thead>
-                <tr><th>Issue</th><th>Action</th><th>Owner</th><th>Status</th></tr>
-              </thead>
-              <tbody>
-                {actions.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.issue}</td>
-                    <td>{item.action}</td>
-                    <td>{item.owner}</td>
-                    <td>
-                      <select value={item.status} onChange={(event) => updateActionStatus(item.id, event.target.value)}>
-                        <option>Open</option>
-                        <option>In progress</option>
-                        <option>Completed</option>
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
           <div className="redistribution-panel">
             <div className="redistribution-head">
               <div>
                 <p className="eyebrow dark">Redistribution Recommendations</p>
-                <h3>Same-province commodity matches for provincial pharmacists</h3>
-                <p>Suggested from facilities reporting overstocked commodities to facilities in the same province reporting stockout or low stock for the same commodity.</p>
+                <h3>Searchable same-province commodity actions</h3>
+                <p>Each action can be updated by the responsible provincial team and saved with a comment in this browser.</p>
               </div>
               <div className="redistribution-summary">
-                <span><b>{redistributionCandidates.length}</b> suggested transfers</span>
-                <span><b>{redistributionProvinceCount}</b> provinces</span>
+                <span><b>{actionCommodityCandidates.length}</b> suggested transfers</span>
+                <span><b>{new Set(actionCommodityCandidates.map((item) => item.province)).size}</b> provinces</span>
               </div>
             </div>
+            <label className="action-commodity-search">
+              <span>Search medicine</span>
+              <input value={actionCommodityQuery} onChange={(event) => setActionCommodityQuery(event.target.value)} placeholder="Search by commodity name" />
+            </label>
             <div className="action-table-wrap redistribution-table">
               <table>
                 <thead>
@@ -2956,11 +2959,14 @@ function App() {
                     <th>Source overstock</th>
                     <th>Destination need</th>
                     <th>Suggested action</th>
+                    <th>Action status</th>
+                    <th>Comment status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {redistributionCandidates.length ? redistributionCandidates.map((item, index) => (
-                    <tr key={`${item.province}-${item.commodity}-${item.sourceFacility}-${item.destinationFacility}-${index}`}>
+                  {actionCommodityCandidates.length ? actionCommodityCandidates.map((item, index) => {
+                    const actionUpdate = actionUpdates[redistributionActionKey(item)] || {};
+                    return <tr key={`${redistributionActionKey(item)}-${index}`}>
                       <td>{item.province}</td>
                       <td>{item.commodity}</td>
                       <td>
@@ -2977,10 +2983,21 @@ function App() {
                         <span className={item.priority === "Stockout" ? "priority-pill critical" : "priority-pill monitor"}>{item.priority}</span>
                         <p>Province to validate physical stock and redistribute from source to destination.</p>
                       </td>
-                    </tr>
-                  )) : (
+                      <td>
+                        <select value={actionUpdate.status || "Open"} onChange={(event) => updateRedistributionAction(item, { status: event.target.value })}>
+                          <option>Open</option>
+                          <option>In progress</option>
+                          <option>Completed</option>
+                        </select>
+                      </td>
+                      <td>
+                        <textarea value={actionUpdate.comment || ""} onChange={(event) => updateRedistributionAction(item, { comment: event.target.value })} placeholder="Add action comment" aria-label={`Comment for ${item.commodity}`} />
+                        <small>{actionUpdate.updatedAt ? `Saved ${new Date(actionUpdate.updatedAt).toLocaleString()}` : "Not yet updated"}</small>
+                      </td>
+                    </tr>;
+                  }) : (
                     <tr>
-                      <td colSpan="5">No same-province overstock to stockout/low-stock commodity matches are available in the current filter.</td>
+                      <td colSpan="7">No same-province overstock to stockout/low-stock commodity matches match this medicine search.</td>
                     </tr>
                   )}
                 </tbody>

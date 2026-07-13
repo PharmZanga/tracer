@@ -717,6 +717,47 @@ select:focus-visible {
   font-size: 20px;
 }
 
+.action-commodity-search {
+  display: grid;
+  gap: 5px;
+  max-width: 440px;
+}
+
+.action-commodity-search span {
+  color: #51665a;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.action-commodity-search input,
+.redistribution-table textarea {
+  width: 100%;
+  border: 1px solid #cad8ce;
+  border-radius: 6px;
+  background: #fff;
+  color: #17211a;
+}
+
+.action-commodity-search input {
+  min-height: 40px;
+  padding: 8px 10px;
+}
+
+.redistribution-table textarea {
+  min-width: 190px;
+  min-height: 68px;
+  padding: 8px;
+  resize: vertical;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.redistribution-table textarea + small {
+  display: block;
+  margin-top: 5px;
+}
+
 .redistribution-table td strong,
 .redistribution-table td small {
   display: block;
