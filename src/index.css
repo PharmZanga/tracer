@@ -723,6 +723,30 @@ select:focus-visible {
   max-width: 440px;
 }
 
+.action-tracker-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 14px;
+}
+
+.action-sync {
+  padding-bottom: 10px;
+  color: #63736a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.action-sync.shared { color: #087e45; }
+.action-sync.offline { color: #b42318; }
+
+.action-comment-error {
+  margin: 10px 0 0;
+  color: #b42318;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .action-commodity-search span {
   color: #51665a;
   font-size: 11px;
@@ -756,6 +780,48 @@ select:focus-visible {
 .redistribution-table textarea + small {
   display: block;
   margin-top: 5px;
+}
+
+.action-comment-form {
+  display: grid;
+  gap: 6px;
+}
+
+.comment-add-button {
+  justify-self: start;
+  border: 1px solid #087e45;
+  border-radius: 5px;
+  background: #087e45;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 6px 12px;
+}
+
+.action-comment-list {
+  display: grid;
+  gap: 7px;
+  margin: 10px 0;
+}
+
+.action-comment {
+  border-left: 2px solid #8fc5a2;
+  padding-left: 8px;
+}
+
+.action-comment strong,
+.action-comment small,
+.action-comment p {
+  display: block;
+}
+
+.action-comment p {
+  margin: 3px 0 0;
+  color: #44564b;
+  font-size: 12px;
+  overflow-wrap: anywhere;
 }
 
 .redistribution-table td strong,

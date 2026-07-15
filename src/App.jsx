@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 
@@ -30,6 +30,8 @@ const stockStreamLabels = {
   EMMS: "Essential medicines (EMMS)",
   LAB: "Laboratory commodities (LAB)",
 };
+
+const actionApiUrl = import.meta.env.VITE_ACTION_API_URL || "https://tracer-comments-api.onrender.com";
 
 function normalizeRate(value) {
   const number = Number(value || 0);
@@ -1144,6 +1146,46 @@ function App() {
       return {};
     }
   });
+  const [actionComments, setActionComments] = useState({});
+  const [actionCommentDrafts, setActionCommentDrafts] = useState({});
+  const [actionAuthor, setActionAuthor] = useState(() => {
+    try {
+      return window.localStorage.getItem("tracer-action-author") || "";
+    } catch {
+      return "";
+    }
+  });
+  const [actionSyncState, setActionSyncState] = useState("loading");
+  const [actionCommentError, setActionCommentError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`${actionApiUrl}/api/action-updates`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Unable to load shared action updates");
+        return response.json();
+      })
+      .then((data) => {
+        if (cancelled) return;
+        setActionUpdates(data.updates || {});
+        setActionComments(data.comments || {});
+        setActionSyncState("shared");
+      })
+      .catch(() => {
+        if (!cancelled) setActionSyncState("offline");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("tracer-action-author", actionAuthor);
+    } catch {
+      // The author field remains usable when browser storage is unavailable.
+    }
+  }, [actionAuthor]);
 
   const fieldData = tracerReportingPeriods.find((period) => period.id === fieldPeriodId) || tracerReportingPeriods.at(-1);
   const activePageLabel = dashboardPages.find((page) => page.id === activePage)?.label;
@@ -1669,17 +1711,56 @@ function App() {
     setReportDrillDistrict(district === "all" ? "" : district);
   }
 
-  function updateRedistributionAction(item, changes) {
+  async function updateRedistributionAction(item, status) {
     const key = redistributionActionKey(item);
-    setActionUpdates((current) => {
-      const next = { ...current, [key]: { ...current[key], ...changes, updatedAt: new Date().toISOString() } };
-      try {
-        window.localStorage.setItem("tracer-action-updates", JSON.stringify(next));
-      } catch {
-        // Keep the current browser-session update when local storage is unavailable.
-      }
-      return next;
-    });
+    const localUpdate = { status, updatedBy: actionAuthor.trim() || "Unidentified user", updatedAt: new Date().toISOString() };
+    setActionUpdates((current) => ({ ...current, [key]: { ...current[key], ...localUpdate } }));
+    try {
+      const response = await fetch(`${actionApiUrl}/api/action-updates/${encodeURIComponent(key)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status, author: localUpdate.updatedBy }),
+      });
+      if (!response.ok) throw new Error("Unable to save status");
+      const update = await response.json();
+      setActionUpdates((current) => ({ ...current, [key]: update }));
+      setActionSyncState("shared");
+    } catch {
+      setActionSyncState("offline");
+    }
+  }
+
+  async function addActionComment(item) {
+    const key = redistributionActionKey(item);
+    const body = (actionCommentDrafts[key] || "").trim();
+    const author = actionAuthor.trim();
+    if (!author || !body) {
+      setActionCommentError("Enter your name or province and a comment.");
+      return;
+    }
+    setActionCommentError("");
+    const pendingComment = { id: `pending-${Date.now()}`, author, body, createdAt: new Date().toISOString(), pending: true };
+    setActionComments((current) => ({ ...current, [key]: [...(current[key] || []), pendingComment] }));
+    setActionCommentDrafts((current) => ({ ...current, [key]: "" }));
+    try {
+      const response = await fetch(`${actionApiUrl}/api/action-comments/${encodeURIComponent(key)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ author, body }),
+      });
+      if (!response.ok) throw new Error("Unable to save comment");
+      const comment = await response.json();
+      setActionComments((current) => ({
+        ...current,
+        [key]: (current[key] || []).map((entry) => entry.id === pendingComment.id ? comment : entry),
+      }));
+      setActionSyncState("shared");
+    } catch {
+      setActionCommentError("Shared comments are temporarily unavailable. Please try again.");
+      setActionComments((current) => ({ ...current, [key]: (current[key] || []).filter((entry) => entry.id !== pendingComment.id) }));
+      setActionCommentDrafts((current) => ({ ...current, [key]: body }));
+      setActionSyncState("offline");
+    }
   }
 
   function exportCsv() {
@@ -2933,17 +3014,25 @@ function App() {
               <div>
                 <p className="eyebrow dark">Redistribution Recommendations</p>
                 <h3>Searchable same-province commodity actions</h3>
-                <p>Each action can be updated by the responsible provincial team and saved with a comment in this browser.</p>
+                <p>Follow same-province redistribution recommendations and record action updates for the provincial team.</p>
               </div>
               <div className="redistribution-summary">
                 <span><b>{actionCommodityCandidates.length}</b> suggested transfers</span>
                 <span><b>{new Set(actionCommodityCandidates.map((item) => item.province)).size}</b> provinces</span>
               </div>
             </div>
-            <label className="action-commodity-search">
-              <span>Search medicine</span>
-              <input value={actionCommodityQuery} onChange={(event) => setActionCommodityQuery(event.target.value)} placeholder="Search by commodity name" />
-            </label>
+            <div className="action-tracker-tools">
+              <label className="action-commodity-search">
+                <span>Search medicine</span>
+                <input value={actionCommodityQuery} onChange={(event) => setActionCommodityQuery(event.target.value)} placeholder="Search by commodity name" />
+              </label>
+              <label className="action-commodity-search">
+                <span>Commenter / province</span>
+                <input value={actionAuthor} onChange={(event) => setActionAuthor(event.target.value)} placeholder="Name or province" maxLength="80" />
+              </label>
+              <span className={`action-sync ${actionSyncState}`}>{actionSyncState === "shared" ? "Shared comments connected" : actionSyncState === "loading" ? "Connecting comments" : "Comments unavailable"}</span>
+            </div>
+            {actionCommentError && <p className="action-comment-error">{actionCommentError}</p>}
             <div className="action-table-wrap redistribution-table">
               <table>
                 <thead>
@@ -2959,8 +3048,10 @@ function App() {
                 </thead>
                 <tbody>
                   {actionCommodityCandidates.length ? actionCommodityCandidates.map((item, index) => {
-                    const actionUpdate = actionUpdates[redistributionActionKey(item)] || {};
-                    return <tr key={`${redistributionActionKey(item)}-${index}`}>
+                    const actionKey = redistributionActionKey(item);
+                    const actionUpdate = actionUpdates[actionKey] || {};
+                    const comments = actionComments[actionKey] || [];
+                    return <tr key={`${actionKey}-${index}`}>
                       <td>{item.province}</td>
                       <td>{item.commodity}</td>
                       <td>
@@ -2978,15 +3069,25 @@ function App() {
                         <p>Province to validate physical stock and redistribute from source to destination.</p>
                       </td>
                       <td>
-                        <select value={actionUpdate.status || "Open"} onChange={(event) => updateRedistributionAction(item, { status: event.target.value })}>
+                        <select value={actionUpdate.status || "Open"} onChange={(event) => updateRedistributionAction(item, event.target.value)}>
                           <option>Open</option>
                           <option>In progress</option>
                           <option>Completed</option>
                         </select>
                       </td>
                       <td>
-                        <textarea value={actionUpdate.comment || ""} onChange={(event) => updateRedistributionAction(item, { comment: event.target.value })} placeholder="Add action comment" aria-label={`Comment for ${item.commodity}`} />
-                        <small>{actionUpdate.updatedAt ? `Saved ${new Date(actionUpdate.updatedAt).toLocaleString()}` : "Not yet updated"}</small>
+                        <div className="action-comment-form">
+                          <textarea value={actionCommentDrafts[actionKey] || ""} onChange={(event) => setActionCommentDrafts((current) => ({ ...current, [actionKey]: event.target.value }))} placeholder="Write a comment" aria-label={`Comment for ${item.commodity}`} maxLength="1600" />
+                          <button type="button" className="comment-add-button" onClick={() => addActionComment(item)}>Add</button>
+                        </div>
+                        <div className="action-comment-list">
+                          {comments.length ? comments.slice(-4).map((comment) => <div className="action-comment" key={comment.id}>
+                            <strong>{comment.author}</strong>
+                            <small>{new Date(comment.createdAt).toLocaleString()}</small>
+                            <p>{comment.body}</p>
+                          </div>) : <small>No comments yet</small>}
+                        </div>
+                        {actionUpdate.updatedAt && <small>Status updated by {actionUpdate.updatedBy || "user"} {new Date(actionUpdate.updatedAt).toLocaleString()}</small>}
                       </td>
                     </tr>;
                   }) : (
