@@ -123,7 +123,7 @@ select:focus-visible {
   background-position: left center;
   background-size: cover;
   color: #fff;
-  overflow-y: auto;
+  overflow: hidden;
   min-width: 0;
 }
 
@@ -166,8 +166,11 @@ select:focus-visible {
 
 .dashboard-sidebar nav {
   display: grid;
+  flex: 1 1 auto;
+  min-height: 0;
   gap: 4px;
   padding: 14px 10px;
+  overflow-y: auto;
 }
 
 .dashboard-sidebar nav button {
@@ -207,6 +210,7 @@ select:focus-visible {
 
 .sidebar-data {
   display: grid;
+  flex: 0 0 auto;
   gap: 5px;
   margin-top: auto;
   padding: 18px;
