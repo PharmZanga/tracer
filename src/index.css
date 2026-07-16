@@ -220,6 +220,19 @@ select:focus-visible {
   text-transform: uppercase;
 }
 
+.sidebar-credit {
+  display: grid;
+  gap: 3px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sidebar-credit small:last-child {
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 700;
+}
+
 .app-shell {
   grid-area: main;
   width: 100%;

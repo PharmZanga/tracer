@@ -1883,6 +1883,10 @@ function App() {
           <strong>{fieldData.label}</strong>
           <small>{fieldData.counts.facilityUnits} reporting units</small>
           <small>{fieldData.counts.rows.toLocaleString()} commodity rows</small>
+          <div className="sidebar-credit">
+            <small>&copy; 2026 Zanga Musakuzi</small>
+            <small>Principal Pharmacist - Data Analytics</small>
+          </div>
         </div>
       </aside>
 
