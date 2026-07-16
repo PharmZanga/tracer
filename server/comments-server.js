@@ -93,9 +93,9 @@ app.post("/api/action-updates/:actionKey", async (request, response, next) => {
 
 app.post("/api/action-comments/:actionKey", async (request, response, next) => {
   const actionKey = cleanText(request.params.actionKey, 800);
-  const author = cleanText(request.body?.author, 80);
+  const author = cleanText(request.body?.author, 80) || "Dashboard user";
   const body = cleanText(request.body?.body, 1600);
-  if (!actionKey || !author || !body) return response.status(400).json({ error: "Action, author, and comment are required." });
+  if (!actionKey || !body) return response.status(400).json({ error: "Action and comment are required." });
   try {
     const result = await pool.query(`
       INSERT INTO action_comments (action_key, author, body)

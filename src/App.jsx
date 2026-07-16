@@ -1733,9 +1733,9 @@ function App() {
   async function addActionComment(item) {
     const key = redistributionActionKey(item);
     const body = (actionCommentDrafts[key] || "").trim();
-    const author = actionAuthor.trim();
-    if (!author || !body) {
-      setActionCommentError("Enter your name or province and a comment.");
+    const author = actionAuthor.trim() || "Dashboard user";
+    if (!body) {
+      setActionCommentError("Write a comment before adding it.");
       return;
     }
     setActionCommentError("");
