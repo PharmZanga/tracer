@@ -1419,6 +1419,22 @@ function App() {
   const expectedFacilityUnits = fieldData.counts.expectedLevelReports || fieldData.counts.expectedFacilityUnits || fieldData.counts.facilityUnits;
   const missingDistricts = fieldData.counts.missingDistricts || 0;
   const missingFacilityUnits = fieldData.counts.missingFacilityUnits || 0;
+  const facilityAvailabilityTargetCount = filteredFacilities.filter((facility) => facility.availability >= 0.8).length;
+  const facilityAvailabilityTargetRate = filteredFacilities.length ? facilityAvailabilityTargetCount / filteredFacilities.length : 0;
+  const highRiskCommodityCount = new Set(commodityScopeRows
+    .filter((row) => row.mos !== null && row.mos < 2)
+    .map((row) => row.item)
+    .filter(Boolean)).size;
+  const actionTotal = actionSummary.Open + actionSummary["In progress"] + actionSummary.Completed;
+  const managementKpis = [
+    { label: "Medicine availability", value: formatPercent(fieldKpis.availability), sub: "Submitted tracer commodity rows", tone: "green" },
+    { label: "National stockout rate", value: formatPercent(fieldKpis.rows ? fieldKpis.stockout / fieldKpis.rows : 0), sub: `${fieldKpis.stockout.toLocaleString()} stockout rows`, tone: "red" },
+    { label: "High-risk commodities", value: highRiskCommodityCount.toLocaleString(), sub: "At least one row below 2 MOS", tone: "amber" },
+    { label: "Facilities at 80%+", value: formatPercent(facilityAvailabilityTargetRate), sub: `${facilityAvailabilityTargetCount} of ${filteredFacilities.length} reporting units`, tone: "green" },
+    { label: "Reporting coverage", value: formatPercent(expectedFacilityUnits ? (expectedFacilityUnits - missingFacilityUnits) / expectedFacilityUnits : 0), sub: `${expectedFacilityUnits - missingFacilityUnits} of ${expectedFacilityUnits} expected level reports`, tone: "blue" },
+    { label: "Missing reports", value: missingFacilityUnits.toLocaleString(), sub: `${missingDistricts} districts without a submission`, tone: missingFacilityUnits ? "red" : "green" },
+    { label: "Actions closed", value: actionTotal ? formatPercent(actionSummary.Completed / actionTotal) : "-", sub: actionTotal ? `${actionSummary.Completed} of ${actionTotal} redistribution actions` : "No active redistribution actions", tone: actionSummary.Completed ? "green" : "neutral" },
+  ];
   const dataQuality = fieldData.dataQuality || { provinces: [], districts: [], facilityTypes: [] };
   const qualityMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))].sort();
   const qualityRangeLower = qualityRangeStart <= qualityRangeEnd ? qualityRangeStart : qualityRangeEnd;
@@ -1980,6 +1996,26 @@ function App() {
             <div><span>Stockout facilities</span><strong>{stockoutFacilityCount}</strong><small>At least one stockout item</small></div>
             <div><span>Low-stock facilities</span><strong>{lowStockFacilityCount}</strong><small>Below 2 MOS</small></div>
             <div><span>Districts reporting</span><strong>{selectedProvince === "all" ? fieldData.counts.districts : districtsInScope.length}</strong><small>Province/district footprint</small></div>
+          </div>
+        </section>
+
+        <section className="management-kpi-summary">
+          <div className="management-kpi-head">
+            <div>
+              <p className="eyebrow dark">KPI Summary</p>
+              <h2>National supply chain management snapshot</h2>
+            </div>
+            <span>Selected reporting period: {fieldData.label}</span>
+          </div>
+          <div className="management-kpi-grid">
+            {managementKpis.map((kpi) => <div className={`management-kpi tone-${kpi.tone}`} key={kpi.label}>
+              <span>{kpi.label}</span>
+              <strong>{kpi.value}</strong>
+              <small>{kpi.sub}</small>
+            </div>)}
+          </div>
+          <div className="management-kpi-note">
+            <b>External feeds pending:</b> eLMIS variance, data timeliness, delivery adherence, central-edition coverage, connectivity, and pipeline milestones.
           </div>
         </section>
 

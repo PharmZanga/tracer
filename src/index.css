@@ -421,6 +421,65 @@ select:focus-visible {
   font-size: 27px;
 }
 
+.management-kpi-summary {
+  margin-top: 16px;
+  padding: 20px 22px;
+  border: 1px solid rgba(19, 43, 31, 0.09);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(18, 36, 25, 0.06);
+}
+
+.management-kpi-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.management-kpi-head .eyebrow { margin-bottom: 5px; }
+.management-kpi-head h2 { margin: 0; font-size: 20px; }
+.management-kpi-head > span { color: #5f7066; font-size: 12px; }
+
+.management-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.management-kpi {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-height: 118px;
+  padding: 14px;
+  border: 1px solid #e1ebe4;
+  border-left: 4px solid #7b8a81;
+  background: #fbfdfb;
+}
+
+.management-kpi span,
+.management-kpi small { color: #607168; font-size: 11px; line-height: 1.35; }
+.management-kpi strong { color: #173f29; font-size: 29px; line-height: 1; }
+.management-kpi.tone-red { border-left-color: #c93c2c; }
+.management-kpi.tone-red strong { color: #b42318; }
+.management-kpi.tone-amber { border-left-color: #d7891d; }
+.management-kpi.tone-amber strong { color: #a45a00; }
+.management-kpi.tone-blue { border-left-color: #276db4; }
+.management-kpi.tone-blue strong { color: #1b5fa7; }
+.management-kpi.tone-green { border-left-color: #1f7a4d; }
+
+.management-kpi-note {
+  margin-top: 12px;
+  padding: 9px 11px;
+  border-left: 3px solid #8aa397;
+  background: #f3f7f4;
+  color: #617169;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .level-care-performance {
   margin-top: 16px;
   padding: 18px 20px 16px;
@@ -5052,6 +5111,7 @@ td.neutral {
 
   .executive-brief,
   .action-tracker,
+  .management-kpi-summary,
   .level-care-performance,
   .tracer-overview,
   .field-visibility,
@@ -5067,7 +5127,8 @@ td.neutral {
   .commodity-kpis,
   .facility-alert-kpis,
   .forecast-cards,
-  .executive-kpis {
+  .executive-kpis,
+  .management-kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
     margin-top: 10px;
@@ -5086,7 +5147,12 @@ td.neutral {
   .section-head h2,
   .table-headline h2,
   .field-head h2,
-  .facility-alert-summary h3 { font-size: 21px; }
+  .facility-alert-summary h3,
+  .management-kpi-head h2 { font-size: 21px; }
+
+  .management-kpi-head { align-items: start; flex-direction: column; gap: 4px; }
+  .management-kpi { min-height: 104px; padding: 12px; }
+  .management-kpi strong { font-size: 25px; }
 
   .level-care-performance { overflow-x: auto; }
   .level-care-chart { min-width: 640px; }
