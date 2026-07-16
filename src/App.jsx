@@ -31,7 +31,9 @@ const stockStreamLabels = {
   LAB: "Laboratory commodities (LAB)",
 };
 
-const actionApiUrl = import.meta.env.VITE_ACTION_API_URL || "https://tracer-comments-api.onrender.com";
+const actionApiUrl = window.__TRACER_SECURE_DASHBOARD__
+  ? window.location.origin
+  : import.meta.env.VITE_ACTION_API_URL || "https://tracer-comments-api.onrender.com";
 
 function normalizeRate(value) {
   const number = Number(value || 0);

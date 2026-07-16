@@ -10,8 +10,11 @@
     "audit:data": "node tools/audit_dashboard_data.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.110.7",
     "@vitejs/plugin-react": "latest",
+    "connect-pg-simple": "^10.0.0",
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "pg": "^8.22.0",
     "react": "latest",
     "react-dom": "latest",
