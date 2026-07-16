@@ -927,12 +927,12 @@ select:focus-visible {
 }
 
 .hero {
-  min-height: 300px;
+  min-height: 218px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 20px;
   align-items: end;
-  padding: 32px;
+  padding: 22px 26px;
   border: 1px solid rgba(16, 80, 48, 0.12);
   border-radius: 8px;
   background:
@@ -967,18 +967,25 @@ h1 {
   font-weight: 760;
 }
 
+.hero h1 {
+  max-width: 650px;
+  margin-bottom: 8px;
+  font-size: 48px;
+  line-height: 1.02;
+}
+
 .lede {
   max-width: 660px;
   margin-bottom: 0;
   color: rgba(255, 255, 255, 0.84);
-  font-size: 18px;
-  line-height: 1.55;
+  font-size: 16px;
+  line-height: 1.4;
 }
 
 .report-card {
   display: grid;
-  gap: 6px;
-  padding: 18px;
+  gap: 4px;
+  padding: 14px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.12);
@@ -993,18 +1000,18 @@ h1 {
 }
 
 .report-card strong {
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .hero-export {
-  margin-top: 8px;
+  margin-top: 5px;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
   cursor: pointer;
   font-weight: 760;
-  padding: 10px 12px;
+  padding: 8px 12px;
 }
 
 .tracer-overview {
