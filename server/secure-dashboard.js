@@ -15,10 +15,13 @@ const distDir = path.join(rootDir, "dist");
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const PgSession = connectPgSimple(session);
 const adminEmails = new Set((process.env.ADMIN_EMAILS || "").split(",").map((email) => email.trim().toLowerCase()).filter(Boolean));
+const notificationEmails = [...new Set((process.env.ADMIN_NOTIFICATION_EMAILS || process.env.ADMIN_EMAILS || "").split(",").map((email) => email.trim().toLowerCase()).filter(Boolean))];
 const supabaseUrl = process.env.SUPABASE_URL || "";
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || "";
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const commentsApiUrl = process.env.COMMENTS_API_URL || "";
+const resendApiKey = process.env.RESEND_API_KEY || "";
+const emailFrom = process.env.EMAIL_FROM || "";
 const supabaseAdmin = supabaseUrl && supabaseServiceRoleKey
   ? createClient(supabaseUrl, supabaseServiceRoleKey, { auth: { autoRefreshToken: false, persistSession: false } })
   : null;
@@ -96,6 +99,22 @@ async function audit(email, event, actor = null) {
   await pool.query("INSERT INTO dashboard_access_audit (email, event, actor) VALUES ($1, $2, $3)", [email, event, actor]);
 }
 
+async function sendEmail({ to, subject, text, html }) {
+  if (!resendApiKey || !emailFrom || !to?.length) return false;
+  try {
+    const result = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: emailFrom, to, subject, text, html }),
+    });
+    if (!result.ok) console.error("Resend notification failed:", await result.text());
+    return result.ok;
+  } catch (error) {
+    console.error("Resend notification failed:", error);
+    return false;
+  }
+}
+
 app.get("/healthz", (_request, response) => response.json({ ok: true, authConfigured: Boolean(supabaseAdmin) }));
 app.get("/login", (request, response) => response.send(loginPage(request.query.message || "")));
 app.get("/auth/callback", (_request, response) => response.send(callbackPage()));
@@ -109,6 +128,12 @@ app.post("/request-access", async (request, response, next) => {
   try {
     await pool.query(`INSERT INTO dashboard_users (email, name, province, role, status) VALUES ($1, $2, $3, 'viewer', 'pending') ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name, province = EXCLUDED.province, requested_at = NOW() WHERE dashboard_users.status <> 'approved'`, [email, name, province]);
     await audit(email, "access_requested");
+    void sendEmail({
+      to: notificationEmails,
+      subject: "New National Tracer Dashboard access request",
+      text: `${name} (${email}) from ${province || "an unspecified organisation"} has requested dashboard access. Review the request at https://tracer-secure-dashboard.onrender.com/admin`,
+      html: `<p><strong>${escapeHtml(name)}</strong> (${escapeHtml(email)}) from ${escapeHtml(province || "an unspecified organisation")} has requested National Tracer Dashboard access.</p><p><a href="https://tracer-secure-dashboard.onrender.com/admin">Review access request</a></p>`,
+    });
     response.redirect("/request-access?message=Request submitted for administrator approval.");
   } catch (error) { next(error); }
 });
@@ -150,6 +175,17 @@ app.post("/admin/users/:email/:decision", requireSession, requireAdmin, async (r
     const approved = decision === "approve";
     await pool.query("UPDATE dashboard_users SET status = $2, approved_at = CASE WHEN $2 = 'approved' THEN NOW() ELSE NULL END, approved_by = $3 WHERE email = $1", [email, approved ? "approved" : "rejected", request.session.user.email]);
     await audit(email, approved ? "access_approved" : "access_rejected", request.session.user.email);
+    void sendEmail(approved ? {
+      to: [email],
+      subject: "Your National Tracer Dashboard access has been approved",
+      text: "Your dashboard access request has been approved. Sign in at https://tracer-secure-dashboard.onrender.com/login using this email address.",
+      html: '<p>Your National Tracer Dashboard access request has been approved.</p><p><a href="https://tracer-secure-dashboard.onrender.com/login">Sign in securely</a> using this email address.</p>',
+    } : {
+      to: [email],
+      subject: "National Tracer Dashboard access request update",
+      text: "Your dashboard access request was not approved. Contact the National Supply Chain Control Tower if you need assistance.",
+      html: "<p>Your National Tracer Dashboard access request was not approved.</p><p>Contact the National Supply Chain Control Tower if you need assistance.</p>",
+    });
     response.redirect("/admin");
   } catch (error) { next(error); }
 });

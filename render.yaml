@@ -45,6 +45,12 @@ services:
         generateValue: true
       - key: ADMIN_EMAILS
         sync: false
+      - key: ADMIN_NOTIFICATION_EMAILS
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
 
 databases:
   - name: tracer-comments-db
