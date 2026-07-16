@@ -4933,6 +4933,185 @@ td.neutral {
   .commodity-history-list > div { grid-template-columns: 1fr 1fr; }
 }
 
+@media (max-width: 640px) {
+  .national-header {
+    min-height: 66px;
+    padding: 6px 12px;
+  }
+
+  .national-brand { gap: 8px; }
+
+  .national-brand img {
+    width: 36px;
+    height: 48px;
+  }
+
+  .national-brand span { font-size: 8px; }
+
+  .national-brand strong {
+    max-width: 142px;
+    font-size: 10px;
+  }
+
+  .control-tower-brand div { display: none; }
+
+  .control-tower-brand img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .sidebar-brand { display: none; }
+
+  .dashboard-sidebar nav {
+    gap: 6px;
+    padding: 7px 8px 9px;
+  }
+
+  .dashboard-sidebar nav button {
+    flex: 0 0 48px;
+    min-height: 42px;
+    justify-content: center;
+    padding: 5px;
+    font-size: 0;
+  }
+
+  .dashboard-sidebar nav button > span {
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
+    font-size: 10px;
+  }
+
+  .app-shell { padding: 10px; }
+
+  .dashboard-topbar {
+    min-height: 0;
+    margin: -10px -10px 10px;
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .dashboard-topbar > div:first-child {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dashboard-topbar > div:first-child span { font-size: 10px; }
+  .dashboard-topbar strong { font-size: 16px; }
+
+  .global-filter-bar {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    width: calc(100% + 2px);
+    overflow-x: auto;
+    padding: 2px 0 7px;
+    scrollbar-width: thin;
+  }
+
+  .global-filter-bar label {
+    flex: 0 0 142px;
+    width: 142px;
+  }
+
+  .global-filter-bar button {
+    flex: 0 0 auto;
+    width: auto;
+    align-self: end;
+  }
+
+  .hero {
+    min-height: 0;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .hero .eyebrow {
+    margin-bottom: 7px;
+    font-size: 10px;
+  }
+
+  .hero h1 {
+    margin-bottom: 7px;
+    font-size: 32px;
+    line-height: 1.05;
+  }
+
+  .lede {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .hero .report-card {
+    gap: 3px;
+    padding: 12px;
+  }
+
+  .report-card strong { font-size: 20px; }
+  .report-card span, .report-card small { font-size: 11px; }
+  .hero-export { margin-top: 4px; min-height: 36px; padding: 7px 10px; }
+
+  .executive-brief,
+  .action-tracker,
+  .level-care-performance,
+  .tracer-overview,
+  .field-visibility,
+  .facility-alerts,
+  .weekly-stock-section,
+  .comparison-section,
+  .reporting-rate-section {
+    margin-top: 10px;
+    padding: 14px;
+  }
+
+  .stats-grid,
+  .commodity-kpis,
+  .facility-alert-kpis,
+  .forecast-cards,
+  .executive-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .stat {
+    min-height: 96px;
+    gap: 5px;
+    padding: 12px;
+  }
+
+  .stat span,
+  .stat small { font-size: 11px; }
+  .stat strong { font-size: 28px; }
+
+  .section-head h2,
+  .table-headline h2,
+  .field-head h2,
+  .facility-alert-summary h3 { font-size: 21px; }
+
+  .level-care-performance { overflow-x: auto; }
+  .level-care-chart { min-width: 640px; }
+
+  .comparison-combo-chart { min-width: 640px; height: 340px; }
+
+  .reporting-filter-bar,
+  .comparison-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .table-headline { gap: 10px; }
+  .table-headline input { width: 100%; min-width: 0; }
+  .table-scroll { margin: 0 -14px; padding: 0 14px; }
+  table { font-size: 12px; }
+  th, td { padding: 10px 11px; }
+
+  .modal {
+    width: calc(100% - 20px);
+    max-height: calc(100vh - 20px);
+    padding: 16px;
+  }
+}
+
 @media print {
   body {
     background: #fff;
