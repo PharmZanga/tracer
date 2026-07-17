@@ -60,9 +60,9 @@ function callbackPage() {
 
 function requestPage(message = "", alreadyApproved = false) {
   const notice = alreadyApproved
-    ? '<p class="success"><strong>This email has already been approved.</strong><br>Check the approval email for your one-click dashboard access link. If it has expired, ask the administrator to resend it.</p>'
+    ? '<p class="success"><strong>This email has already been approved.</strong><br>Use secure sign in to access the dashboard or request a replacement email link.</p><p><a class="button" href="/login">Go to secure sign in</a></p>'
     : message ? `<p class="success">${escapeHtml(message)}</p>` : "";
-  const form = alreadyApproved ? "" : '<form method="post" action="/request-access"><label>Work email<input name="email" type="email" required></label><label>Full name<input name="name" required maxlength="120"></label><label>Province / organisation<input name="province" maxlength="120"></label><button type="submit">Submit access request</button></form>';
+  const form = alreadyApproved ? "" : '<form method="post" action="/request-access"><label>Work email<input id="request-email" name="email" type="email" autocomplete="email" required></label><p id="email-status" class="muted"></p><label data-request-detail>Full name<input name="name" required maxlength="120"></label><label data-request-detail>Province / organisation<input name="province" maxlength="120"></label><p data-request-detail><button type="submit">Submit access request</button></p></form><script>const requestEmail=document.querySelector("#request-email"),emailStatus=document.querySelector("#email-status"),requestDetails=document.querySelectorAll("[data-request-detail]");async function checkRequestEmail(){const email=requestEmail.value.trim();if(!/^\\S+@\\S+\\.\\S+$/.test(email)){emailStatus.textContent="";return}const response=await fetch("/request-access/status?email="+encodeURIComponent(email));const data=await response.json();if(data.approved){emailStatus.innerHTML="<span class=success><strong>This email is already approved.</strong><br><a href=/login>Go to secure sign in</a></span>";requestDetails.forEach((element)=>element.hidden=true)}else{emailStatus.textContent="";requestDetails.forEach((element)=>element.hidden=false)}}requestEmail.addEventListener("change",checkRequestEmail);requestEmail.addEventListener("blur",checkRequestEmail)</script>';
   return layout("Request dashboard access", `<main class="card access-card"><div class="access-brand"><div class="brand-mark"><img src="/auth-assets/zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms"><div><small>Republic of Zambia</small><strong>Ministry of Health</strong></div></div><div class="brand-mark"><img src="/auth-assets/control-tower-logo.svg" alt="Control Tower"><div><small>Control Tower</small><strong>National Supply Chain<br>Coordinating Unit</strong></div></div></div><div class="access-content"><div class="header"><span>National Tracer Drug Availability</span><h1>Request dashboard access</h1><p>Your request will be reviewed by the National Supply Chain Control Tower administrator.</p><p class="muted">After your request is approved, check your email within 5 minutes for your secure access link.</p></div>${notice}${form}<p class="muted"><a href="/login">Return to sign in</a></p><footer class="access-footer">© 2026 Zanga Musakuzi<strong>Principal Pharmacist - Data Analytics</strong></footer></div></main>`);
 }
 
@@ -147,17 +147,26 @@ app.get("/auth-assets/:asset", (request, response) => {
 app.get("/login", (request, response) => response.send(loginPage(request.query.message || "")));
 app.get("/auth/callback", (_request, response) => response.send(callbackPage()));
 app.get("/request-access", (request, response) => response.send(requestPage(request.query.message || "", request.query.approved === "1")));
+app.get("/request-access/status", async (request, response, next) => {
+  const email = String(request.query.email || "").trim().toLowerCase();
+  if (!/^\S+@\S+\.\S+$/.test(email)) return response.json({ approved: false });
+  try {
+    const existing = await pool.query("SELECT status FROM dashboard_users WHERE email = $1", [email]);
+    response.json({ approved: adminEmails.has(email) || existing.rows[0]?.status === "approved" });
+  } catch (error) { next(error); }
+});
 
 app.post("/request-access", async (request, response, next) => {
   const email = String(request.body.email || "").trim().toLowerCase();
   const name = String(request.body.name || "").trim().slice(0, 120);
   const province = String(request.body.province || "").trim().slice(0, 120);
-  if (!/^\S+@\S+\.\S+$/.test(email) || !name) return response.status(400).send(requestPage("Enter a valid email address and full name."));
+  if (!/^\S+@\S+\.\S+$/.test(email)) return response.status(400).send(requestPage("Enter a valid email address."));
   try {
     const existing = await pool.query("SELECT status FROM dashboard_users WHERE email = $1", [email]);
     if (adminEmails.has(email) || existing.rows[0]?.status === "approved") {
       return response.redirect("/request-access?approved=1");
     }
+    if (!name) return response.status(400).send(requestPage("Enter your full name."));
     await pool.query(`INSERT INTO dashboard_users (email, name, province, role, status) VALUES ($1, $2, $3, 'viewer', 'pending') ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name, province = EXCLUDED.province, requested_at = NOW() WHERE dashboard_users.status <> 'approved'`, [email, name, province]);
     await audit(email, "access_requested");
     void sendEmail({
