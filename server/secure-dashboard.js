@@ -55,7 +55,7 @@ function loginPage(message = "") {
 }
 
 function callbackPage() {
-  return layout("Complete sign in", `<main class="card"><div class="header"><span>National Tracer Drug Availability</span><h1>Completing secure sign in</h1><p id="status">Verifying your email and access approval...</p></div></main><script type="module">import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';const supabase=createClient(${JSON.stringify(supabaseUrl)},${JSON.stringify(supabaseAnonKey)});const status=document.querySelector('#status');(async()=>{const url=new URL(window.location.href);if(url.searchParams.get('code'))await supabase.auth.exchangeCodeForSession(url.searchParams.get('code'));const {data:{session}}=await supabase.auth.getSession();if(!session){status.textContent='The sign-in link has expired. Request another link.';return}const response=await fetch('/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessToken:session.access_token})});const body=await response.json();if(response.ok){window.location.href='/';return}status.textContent=body.error||'Unable to complete sign in.'})()</script>`);
+  return layout("Complete sign in", `<main class="card"><div class="header"><span>National Tracer Drug Availability</span><h1>Confirm secure access</h1><p id="status">Verifying your access link...</p></div><div id="confirm" class="hidden"><p>Enter the email address that received this access link.</p><label>Approved email address<input id="email" type="email" autocomplete="email" required></label><button id="continue" type="button">Confirm and open dashboard</button></div></main><script type="module">import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';const supabase=createClient(${JSON.stringify(supabaseUrl)},${JSON.stringify(supabaseAnonKey)});const status=document.querySelector('#status'),confirm=document.querySelector('#confirm'),email=document.querySelector('#email');let accessToken='';document.querySelector('#continue').addEventListener('click',async()=>{status.textContent='Confirming approved email...';const response=await fetch('/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessToken,claimedEmail:email.value.trim()})});const body=await response.json();if(response.ok){window.location.href='/';return}status.textContent=body.error||'Unable to complete sign in.'});(async()=>{const url=new URL(window.location.href);if(url.searchParams.get('code'))await supabase.auth.exchangeCodeForSession(url.searchParams.get('code'));const {data:{session}}=await supabase.auth.getSession();if(!session){status.textContent='The sign-in link has expired. Request another link.';return}accessToken=session.access_token;status.textContent='Confirm the email address that received this link.';confirm.classList.remove('hidden')})()</script>`);
 }
 
 function requestPage(message = "", alreadyApproved = false) {
@@ -173,10 +173,12 @@ app.post("/request-access", async (request, response, next) => {
 app.post("/auth/session", async (request, response, next) => {
   if (!supabaseAdmin) return response.status(503).json({ error: "Authentication has not been configured." });
   const accessToken = String(request.body?.accessToken || "");
+  const claimedEmail = String(request.body?.claimedEmail || "").trim().toLowerCase();
   try {
     const { data, error } = await supabaseAdmin.auth.getUser(accessToken);
     if (error || !data.user?.email) return response.status(401).json({ error: "Email verification failed." });
     const email = data.user.email.toLowerCase();
+    if (!claimedEmail || claimedEmail !== email) return response.status(401).json({ error: "Enter the same email address that received the access link." });
     if (adminEmails.has(email)) {
       await pool.query(`INSERT INTO dashboard_users (email, name, role, status, approved_at, approved_by) VALUES ($1, $2, 'super_admin', 'approved', NOW(), $1) ON CONFLICT (email) DO UPDATE SET role = 'super_admin', status = 'approved', approved_at = COALESCE(dashboard_users.approved_at, NOW()), approved_by = $1`, [email, data.user.user_metadata?.full_name || "System administrator"]);
     }
