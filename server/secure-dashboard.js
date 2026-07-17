@@ -58,9 +58,12 @@ function callbackPage() {
   return layout("Complete sign in", `<main class="card"><div class="header"><span>National Tracer Drug Availability</span><h1>Completing secure sign in</h1><p id="status">Verifying your email and access approval...</p></div></main><script type="module">import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';const supabase=createClient(${JSON.stringify(supabaseUrl)},${JSON.stringify(supabaseAnonKey)});const status=document.querySelector('#status');(async()=>{const url=new URL(window.location.href);if(url.searchParams.get('code'))await supabase.auth.exchangeCodeForSession(url.searchParams.get('code'));const {data:{session}}=await supabase.auth.getSession();if(!session){status.textContent='The sign-in link has expired. Request another link.';return}const response=await fetch('/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessToken:session.access_token})});const body=await response.json();if(response.ok){window.location.href='/';return}status.textContent=body.error||'Unable to complete sign in.'})()</script>`);
 }
 
-function requestPage(message = "") {
-  const notice = message ? `<p class="success">${escapeHtml(message)}</p>` : "";
-  return layout("Request dashboard access", `<main class="card access-card"><div class="access-brand"><div class="brand-mark"><img src="/auth-assets/zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms"><div><small>Republic of Zambia</small><strong>Ministry of Health</strong></div></div><div class="brand-mark"><img src="/auth-assets/control-tower-logo.svg" alt="Control Tower"><div><small>Control Tower</small><strong>National Supply Chain<br>Coordinating Unit</strong></div></div></div><div class="access-content"><div class="header"><span>National Tracer Drug Availability</span><h1>Request dashboard access</h1><p>Your request will be reviewed by the National Supply Chain Control Tower administrator.</p></div>${notice}<form method="post" action="/request-access"><label>Work email<input name="email" type="email" required></label><label>Full name<input name="name" required maxlength="120"></label><label>Province / organisation<input name="province" maxlength="120"></label><button type="submit">Submit access request</button></form><p class="muted"><a href="/login">Return to sign in</a></p><footer class="access-footer">© 2026 Zanga Musakuzi<strong>Principal Pharmacist - Data Analytics</strong></footer></div></main>`);
+function requestPage(message = "", alreadyApproved = false) {
+  const notice = alreadyApproved
+    ? '<p class="success"><strong>This email has already been approved.</strong><br>Use the secure sign-in page to access the dashboard.</p><p><a class="button" href="/login">Go to secure sign in</a></p>'
+    : message ? `<p class="success">${escapeHtml(message)}</p>` : "";
+  const form = alreadyApproved ? "" : '<form method="post" action="/request-access"><label>Work email<input name="email" type="email" required></label><label>Full name<input name="name" required maxlength="120"></label><label>Province / organisation<input name="province" maxlength="120"></label><button type="submit">Submit access request</button></form>';
+  return layout("Request dashboard access", `<main class="card access-card"><div class="access-brand"><div class="brand-mark"><img src="/auth-assets/zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms"><div><small>Republic of Zambia</small><strong>Ministry of Health</strong></div></div><div class="brand-mark"><img src="/auth-assets/control-tower-logo.svg" alt="Control Tower"><div><small>Control Tower</small><strong>National Supply Chain<br>Coordinating Unit</strong></div></div></div><div class="access-content"><div class="header"><span>National Tracer Drug Availability</span><h1>Request dashboard access</h1><p>Your request will be reviewed by the National Supply Chain Control Tower administrator.</p></div>${notice}${form}<p class="muted"><a href="/login">Return to sign in</a></p><footer class="access-footer">© 2026 Zanga Musakuzi<strong>Principal Pharmacist - Data Analytics</strong></footer></div></main>`);
 }
 
 function requireSession(request, response, next) {
@@ -123,7 +126,7 @@ app.get("/auth-assets/:asset", (request, response) => {
 });
 app.get("/login", (request, response) => response.send(loginPage(request.query.message || "")));
 app.get("/auth/callback", (_request, response) => response.send(callbackPage()));
-app.get("/request-access", (request, response) => response.send(requestPage(request.query.message || "")));
+app.get("/request-access", (request, response) => response.send(requestPage(request.query.message || "", request.query.approved === "1")));
 
 app.post("/request-access", async (request, response, next) => {
   const email = String(request.body.email || "").trim().toLowerCase();
@@ -131,6 +134,10 @@ app.post("/request-access", async (request, response, next) => {
   const province = String(request.body.province || "").trim().slice(0, 120);
   if (!/^\S+@\S+\.\S+$/.test(email) || !name) return response.status(400).send(requestPage("Enter a valid email address and full name."));
   try {
+    const existing = await pool.query("SELECT status FROM dashboard_users WHERE email = $1", [email]);
+    if (adminEmails.has(email) || existing.rows[0]?.status === "approved") {
+      return response.redirect("/request-access?approved=1");
+    }
     await pool.query(`INSERT INTO dashboard_users (email, name, province, role, status) VALUES ($1, $2, $3, 'viewer', 'pending') ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name, province = EXCLUDED.province, requested_at = NOW() WHERE dashboard_users.status <> 'approved'`, [email, name, province]);
     await audit(email, "access_requested");
     void sendEmail({
