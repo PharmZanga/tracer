@@ -50,7 +50,7 @@ function layout(title, body) {
 function loginPage(message = "") {
   const configured = Boolean(supabaseUrl && supabaseAnonKey && supabaseAdmin);
   const notice = message ? `<p class="${message.startsWith("Error") ? "error" : "success"}">${escapeHtml(message.replace(/^Error:\s*/, ""))}</p>` : "";
-  const content = configured ? `<main class="card"><div class="header"><span>National Tracer Drug Availability</span><h1>Secure dashboard sign in</h1><p>Use your approved work email. A secure sign-in link will be sent to your inbox after your access request has been approved.</p></div>${notice}<label>Work email<input id="email" type="email" autocomplete="email" required></label><button id="sign-in" type="button">Send sign-in link</button><p id="status" class="muted"></p><p class="muted">Do not have access? <a href="/request-access">Request dashboard access</a></p></main><script type="module">import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';const supabase=createClient(${JSON.stringify(supabaseUrl)},${JSON.stringify(supabaseAnonKey)});const email=document.querySelector('#email'),status=document.querySelector('#status');document.querySelector('#sign-in').addEventListener('click',async()=>{status.textContent='Sending secure sign-in link...';const {error}=await supabase.auth.signInWithOtp({email:email.value.trim(),options:{emailRedirectTo:window.location.origin+'/auth/callback'}});status.textContent=error?error.message:'Check your email for the sign-in link.'});</script>` : `<main class="card"><div class="header"><span>National Tracer Drug Availability</span><h1>Secure dashboard setup required</h1><p>The Render service is running, but Supabase authentication credentials have not been configured yet.</p></div><p class="muted">Set SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, SESSION_SECRET, and ADMIN_EMAILS in Render before enabling this service.</p></main>`;
+  const content = configured ? `<main class="card"><div class="header"><span>National Tracer Drug Availability</span><h1>Secure dashboard sign in</h1><p>Your approval email contains the one-click dashboard access link. Use this page only if that link has expired and you need a replacement.</p></div>${notice}<label>Work email<input id="email" type="email" autocomplete="email" required></label><button id="sign-in" type="button">Send replacement sign-in link</button><p id="status" class="muted"></p><p class="muted">Do not have access? <a href="/request-access">Request dashboard access</a></p></main><script type="module">import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';const supabase=createClient(${JSON.stringify(supabaseUrl)},${JSON.stringify(supabaseAnonKey)});const email=document.querySelector('#email'),status=document.querySelector('#status');document.querySelector('#sign-in').addEventListener('click',async()=>{status.textContent='Sending replacement sign-in link...';const {error}=await supabase.auth.signInWithOtp({email:email.value.trim(),options:{emailRedirectTo:window.location.origin+'/auth/callback'}});status.textContent=error?error.message:'Check your email for the replacement sign-in link.'});</script>` : `<main class="card"><div class="header"><span>National Tracer Drug Availability</span><h1>Secure dashboard setup required</h1><p>The Render service is running, but Supabase authentication credentials have not been configured yet.</p></div><p class="muted">Set SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, SESSION_SECRET, and ADMIN_EMAILS in Render before enabling this service.</p></main>`;
   return layout("Secure dashboard sign in", content);
 }
 
@@ -60,10 +60,10 @@ function callbackPage() {
 
 function requestPage(message = "", alreadyApproved = false) {
   const notice = alreadyApproved
-    ? '<p class="success"><strong>This email has already been approved.</strong><br>Use the secure sign-in page to access the dashboard.</p><p><a class="button" href="/login">Go to secure sign in</a></p>'
+    ? '<p class="success"><strong>This email has already been approved.</strong><br>Check the approval email for your one-click dashboard access link. If it has expired, ask the administrator to resend it.</p>'
     : message ? `<p class="success">${escapeHtml(message)}</p>` : "";
   const form = alreadyApproved ? "" : '<form method="post" action="/request-access"><label>Work email<input name="email" type="email" required></label><label>Full name<input name="name" required maxlength="120"></label><label>Province / organisation<input name="province" maxlength="120"></label><button type="submit">Submit access request</button></form>';
-  return layout("Request dashboard access", `<main class="card access-card"><div class="access-brand"><div class="brand-mark"><img src="/auth-assets/zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms"><div><small>Republic of Zambia</small><strong>Ministry of Health</strong></div></div><div class="brand-mark"><img src="/auth-assets/control-tower-logo.svg" alt="Control Tower"><div><small>Control Tower</small><strong>National Supply Chain<br>Coordinating Unit</strong></div></div></div><div class="access-content"><div class="header"><span>National Tracer Drug Availability</span><h1>Request dashboard access</h1><p>Your request will be reviewed by the National Supply Chain Control Tower administrator.</p></div>${notice}${form}<p class="muted"><a href="/login">Return to sign in</a></p><footer class="access-footer">© 2026 Zanga Musakuzi<strong>Principal Pharmacist - Data Analytics</strong></footer></div></main>`);
+  return layout("Request dashboard access", `<main class="card access-card"><div class="access-brand"><div class="brand-mark"><img src="/auth-assets/zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms"><div><small>Republic of Zambia</small><strong>Ministry of Health</strong></div></div><div class="brand-mark"><img src="/auth-assets/control-tower-logo.svg" alt="Control Tower"><div><small>Control Tower</small><strong>National Supply Chain<br>Coordinating Unit</strong></div></div></div><div class="access-content"><div class="header"><span>National Tracer Drug Availability</span><h1>Request dashboard access</h1><p>Your request will be reviewed by the National Supply Chain Control Tower administrator.</p><p class="muted">After your request is approved, check your email within 5 minutes for your secure access link.</p></div>${notice}${form}<p class="muted"><a href="/login">Return to sign in</a></p><footer class="access-footer">© 2026 Zanga Musakuzi<strong>Principal Pharmacist - Data Analytics</strong></footer></div></main>`);
 }
 
 function requireSession(request, response, next) {
@@ -116,6 +116,26 @@ async function sendEmail({ to, subject, text, html }) {
     console.error("Resend notification failed:", error);
     return false;
   }
+}
+
+async function sendApprovedAccessEmail(email, name = "") {
+  if (!supabaseAdmin) return false;
+  const { data, error } = await supabaseAdmin.auth.admin.generateLink({
+    type: "magiclink",
+    email,
+    options: { redirectTo: "https://tracer-secure-dashboard.onrender.com/auth/callback", data: { full_name: name } },
+  });
+  if (error || !data?.properties?.action_link) {
+    console.error("Unable to create access link:", error?.message || "No link returned");
+    return false;
+  }
+  const accessLink = data.properties.action_link;
+  return sendEmail({
+    to: [email],
+    subject: "Your National Tracer Dashboard access has been approved",
+    text: `Your access has been approved. Open your secure dashboard link: ${accessLink}`,
+    html: `<p>Your National Tracer Dashboard access request has been approved.</p><p><a href="${escapeHtml(accessLink)}">Open the secure dashboard</a></p><p>This secure link is for your email address only.</p>`,
+  });
 }
 
 app.get("/healthz", (_request, response) => response.json({ ok: true, authConfigured: Boolean(supabaseAdmin) }));
@@ -174,8 +194,13 @@ app.post("/logout", requireSession, (request, response) => request.session.destr
 app.get("/admin", requireSession, requireAdmin, async (request, response, next) => {
   try {
     const users = (await pool.query("SELECT email, name, province, role, status, requested_at, approved_at, approved_by FROM dashboard_users ORDER BY CASE status WHEN 'pending' THEN 0 ELSE 1 END, requested_at DESC")).rows;
-    const rows = users.map((user) => `<tr><td>${escapeHtml(user.name)}</td><td>${escapeHtml(user.email)}</td><td>${escapeHtml(user.province)}</td><td>${escapeHtml(user.role)}</td><td>${escapeHtml(user.status)}</td><td>${new Date(user.requested_at).toLocaleString()}</td><td>${user.status === "pending" ? `<form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/approve"><button type="submit">Approve</button></form><form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/reject"><button class="reject" type="submit">Reject</button></form>` : escapeHtml(user.approved_by || "-")}</td></tr>`).join("");
-    response.send(layout("Dashboard access approvals", `<main class="card admin"><div class="nav"><a href="/">Dashboard</a><form method="post" action="/logout"><button type="submit">Sign out</button></form></div><div class="header"><span>Administration</span><h1>Dashboard access approvals</h1><p>Approve a request only after confirming the user is authorised to access national tracer data.</p></div><table><thead><tr><th>Name</th><th>Email</th><th>Province / organisation</th><th>Role</th><th>Status</th><th>Requested</th><th>Action</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No access requests.</td></tr>'}</tbody></table></main>`));
+    const rows = users.map((user) => {
+      const pendingActions = `<form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/approve"><button type="submit">Approve and email link</button></form><form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/reject"><button class="reject" type="submit">Reject</button></form>`;
+      const approvedActions = `<div>${escapeHtml(user.approved_by || "-")}</div><form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/resend"><button type="submit">Resend access link</button></form>`;
+      return `<tr><td>${escapeHtml(user.name)}</td><td>${escapeHtml(user.email)}</td><td>${escapeHtml(user.province)}</td><td>${escapeHtml(user.role)}</td><td>${escapeHtml(user.status)}</td><td>${new Date(user.requested_at).toLocaleString()}</td><td>${user.status === "pending" ? pendingActions : user.status === "approved" ? approvedActions : escapeHtml(user.approved_by || "-")}</td></tr>`;
+    }).join("");
+    const notice = request.query.message ? `<p class="success">${escapeHtml(request.query.message)}</p>` : "";
+    response.send(layout("Dashboard access approvals", `<main class="card admin"><div class="nav"><a href="/">Dashboard</a><form method="post" action="/logout"><button type="submit">Sign out</button></form></div><div class="header"><span>Administration</span><h1>Dashboard access approvals</h1><p>Approve a request only after confirming the user is authorised to access national tracer data. Approval sends the one-click access link by email.</p></div>${notice}<table><thead><tr><th>Name</th><th>Email</th><th>Province / organisation</th><th>Role</th><th>Status</th><th>Requested</th><th>Action</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No access requests.</td></tr>'}</tbody></table></main>`));
   } catch (error) { next(error); }
 });
 
@@ -187,18 +212,26 @@ app.post("/admin/users/:email/:decision", requireSession, requireAdmin, async (r
     const approved = decision === "approve";
     await pool.query("UPDATE dashboard_users SET status = $2, approved_at = CASE WHEN $2 = 'approved' THEN NOW() ELSE NULL END, approved_by = $3 WHERE email = $1", [email, approved ? "approved" : "rejected", request.session.user.email]);
     await audit(email, approved ? "access_approved" : "access_rejected", request.session.user.email);
-    void sendEmail(approved ? {
-      to: [email],
-      subject: "Your National Tracer Dashboard access has been approved",
-      text: "Your dashboard access request has been approved. Sign in at https://tracer-secure-dashboard.onrender.com/login using this email address.",
-      html: '<p>Your National Tracer Dashboard access request has been approved.</p><p><a href="https://tracer-secure-dashboard.onrender.com/login">Sign in securely</a> using this email address.</p>',
-    } : {
+    const delivered = approved ? await sendApprovedAccessEmail(email) : await sendEmail({
       to: [email],
       subject: "National Tracer Dashboard access request update",
       text: "Your dashboard access request was not approved. Contact the National Supply Chain Control Tower if you need assistance.",
       html: "<p>Your National Tracer Dashboard access request was not approved.</p><p>Contact the National Supply Chain Control Tower if you need assistance.</p>",
     });
-    response.redirect("/admin");
+    response.redirect(`/admin?message=${encodeURIComponent(approved ? (delivered ? "Access approved and secure link sent." : "Access approved, but the email link could not be sent. Check Resend settings.") : (delivered ? "Request rejected and update sent." : "Request rejected. The update email could not be sent."))}`);
+  } catch (error) { next(error); }
+});
+
+app.post("/admin/users/:email/resend", requireSession, requireAdmin, async (request, response, next) => {
+  const email = String(request.params.email || "").toLowerCase();
+  if (!/^\S+@\S+\.\S+$/.test(email)) return response.status(400).send("Invalid request.");
+  try {
+    const userResult = await pool.query("SELECT name, status FROM dashboard_users WHERE email = $1", [email]);
+    const user = userResult.rows[0];
+    if (!user || user.status !== "approved") return response.redirect("/admin?message=Only approved users can receive an access link.");
+    const delivered = await sendApprovedAccessEmail(email, user.name);
+    if (delivered) await audit(email, "access_link_resent", request.session.user.email);
+    response.redirect(`/admin?message=${encodeURIComponent(delivered ? "Secure access link resent." : "The access link could not be sent. Check Resend settings.")}`);
   } catch (error) { next(error); }
 });
 
