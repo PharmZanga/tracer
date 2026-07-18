@@ -120,6 +120,12 @@ function csvCell(value) {
   return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>'"]/g, (character) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;",
+  }[character]));
+}
+
 function normalizeCommodity(value) {
   return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
@@ -1100,6 +1106,7 @@ function App() {
   const [stockDate, setStockDate] = useState([...new Set(weeklyStockPeriods.map((period) => period.date))].sort().at(-1) || "");
   const [stockStream, setStockStream] = useState(weeklyStockPeriods.some((period) => period.stream === "EMMS") ? "EMMS" : weeklyStockPeriods.at(-1)?.stream || "LAB");
   const [stockCategory, setStockCategory] = useState("");
+  const [stockCategoryDialog, setStockCategoryDialog] = useState(false);
   const [reportPeriodId, setReportPeriodId] = useState(tracerReportingPeriods.at(-1).id);
   const [reportProvince, setReportProvince] = useState("all");
   const [reportDistrict, setReportDistrict] = useState("all");
@@ -1822,6 +1829,35 @@ function App() {
     }
   }
 
+  function exportStockCategoryExcel() {
+    if (!selectedStockCategory) return;
+    const rows = [
+      ["ZAMMSA weekly stock status"],
+      ["Programme", stockStreamLabels[stockStream] || stockStream],
+      ["Reporting week", stockData?.label || ""],
+      ["Category", selectedStockCategory],
+      [],
+      ["Commodity", "Availability", "Status"],
+      ...selectedStockItems.map((item) => [item.name, formatPercent(item.availability), item.status]),
+    ];
+    const blob = new Blob([rows.map((row) => row.map(csvCell).join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `zammsa-${selectedStockCategory.replaceAll(/[^a-z0-9]+/gi, "-").toLowerCase()}-${stockData?.date || "weekly-stock"}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportStockCategoryPdf() {
+    if (!selectedStockCategory) return;
+    const report = window.open("", "_blank", "noopener,noreferrer");
+    if (!report) return;
+    const rows = selectedStockItems.map((item) => `<tr><td>${escapeHtml(item.name)}</td><td>${escapeHtml(formatPercent(item.availability))}</td><td>${escapeHtml(item.status)}</td></tr>`).join("");
+    report.document.write(`<!doctype html><html><head><title>${escapeHtml(selectedStockCategory)} - ZAMMSA weekly stock status</title><style>body{font-family:Arial,sans-serif;color:#17251d;padding:28px}h1{font-size:22px;margin:0 0 6px}p{color:#52665a;margin:4px 0 18px}table{border-collapse:collapse;width:100%;font-size:12px}th,td{border:1px solid #cadbd0;padding:9px;text-align:left}th{background:#eaf3ed;color:#075e3b}@media print{body{padding:0}}</style></head><body><h1>${escapeHtml(selectedStockCategory)}</h1><p>${escapeHtml(stockStreamLabels[stockStream] || stockStream)} | ${escapeHtml(stockData?.label || "")}</p><table><thead><tr><th>Commodity</th><th>Availability</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=()=>window.print();</script></body></html>`);
+    report.document.close();
+  }
+
   function exportCsv() {
     const headers = ["Province", "District", "Facility level", "Reporting unit", "Availability", "MOS", "Stockout items", "Low stock items", "Rows"];
     const lines = [
@@ -2208,7 +2244,7 @@ function App() {
                   </div>
                   <div className="stock-category-list intelligence-category-list">
                     {stockCategoryRows.map((row) => (
-                      <button type="button" className={selectedStockCategory === row.name ? "stock-category-row active" : "stock-category-row"} key={row.name} onClick={() => setStockCategory(row.name)}>
+                      <button type="button" className={selectedStockCategory === row.name ? "stock-category-row active" : "stock-category-row"} key={row.name} onClick={() => { setStockCategory(row.name); setStockCategoryDialog(true); }}>
                         <span>{row.name}</span>
                         <div className="stock-category-track"><i style={{ width: `${Math.round(row.availability * 100)}%` }} /></div>
                         <b>{row.available !== null && row.total !== null ? `${row.available}/${row.total}` : formatPercent(row.availability)}</b>
@@ -2244,37 +2280,6 @@ function App() {
                     {!(stockChange?.recovered || []).length && <div className="empty-state small">No recovered items in this comparison.</div>}
                   </div>
                 </div>
-              </div>
-              <div className="weekly-stock-panel linked-stock">
-                <div className="quality-panel-head">
-                  <div>
-                    <h3>{selectedStockCategory || "Select a category"}</h3>
-                    <p>{currentStockPeriod ? "Related stock-status commodities appear here." : "Item names are available for the 19 and 26 June workbook periods."}</p>
-                  </div>
-                  <span>{selectedStockItems.length ? `${selectedStockItems.length} items` : ""}</span>
-                </div>
-                {selectedStockItems.length ? (
-                  <div className="table-scroll compact-table weekly-stock-table">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Item</th>
-                          <th>Availability</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {selectedStockItems.map((item) => (
-                          <tr key={`${item.category}-${item.name}`}>
-                            <td>{item.name}</td>
-                            <td>{formatPercent(item.availability)}</td>
-                            <td><span className={item.availability > 0 ? "status-pill reported" : "status-pill missing"}>{item.status}</span></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : <div className="empty-state">Select a 19 or 26 June category to see the submitted stock-status commodities.</div>}
               </div>
             </>
           ) : <div className="empty-state">No weekly stock data is available.</div>}
@@ -3225,6 +3230,13 @@ function App() {
         report={fieldData}
         onClose={() => setOpenFacility(null)}
       />
+      {stockCategoryDialog && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setStockCategoryDialog(false)}>
+        <section className="commodity-detail-panel stock-category-dialog" role="dialog" aria-modal="true" aria-label="ZAMMSA stock category details" onMouseDown={(event) => event.stopPropagation()}>
+          <div className="commodity-detail-head"><div><p className="eyebrow dark">ZAMMSA Weekly Stock Status</p><h2>{selectedStockCategory}</h2><span>{stockStreamLabels[stockStream] || stockStream} | {stockData?.label}</span></div><button type="button" onClick={() => setStockCategoryDialog(false)}>Close</button></div>
+          <div className="stock-category-dialog-actions"><span>{selectedStockItems.length} commodities in this category</span><div><button type="button" onClick={exportStockCategoryExcel}>Export Excel</button><button type="button" onClick={exportStockCategoryPdf}>Export PDF</button></div></div>
+          {selectedStockItems.length ? <div className="table-scroll compact-table weekly-stock-table"><table><thead><tr><th>Commodity</th><th>Availability</th><th>Status</th></tr></thead><tbody>{selectedStockItems.map((item) => <tr key={`${item.category}-${item.name}`}><td>{item.name}</td><td>{formatPercent(item.availability)}</td><td><span className={item.availability > 0 ? "status-pill reported" : "status-pill missing"}>{item.status}</span></td></tr>)}</tbody></table></div> : <div className="empty-state">No commodity rows are available for this category in the selected stock report.</div>}
+        </section>
+      </div>}
       {openCommodityFacility && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setOpenCommodityFacility(null)}>
         <section className="commodity-detail-panel" role="dialog" aria-modal="true" aria-label="Commodity facility details" onMouseDown={(event) => event.stopPropagation()}>
           <div className="commodity-detail-head">
