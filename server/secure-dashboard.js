@@ -202,6 +202,10 @@ app.post("/auth/session", async (request, response, next) => {
 
 app.post("/logout", requireSession, (request, response) => request.session.destroy(() => response.redirect("/login?message=Signed out.")));
 
+app.get("/api/current-user", requireSession, (request, response) => {
+  response.json({ email: request.session.user.email, name: request.session.user.name, role: request.session.user.role });
+});
+
 app.get("/admin", requireSession, requireAdmin, async (request, response, next) => {
   try {
     const users = (await pool.query("SELECT email, name, province, role, status, requested_at, approved_at, approved_by FROM dashboard_users ORDER BY CASE status WHEN 'pending' THEN 0 ELSE 1 END, requested_at DESC")).rows;
@@ -249,10 +253,14 @@ app.post("/admin/users/:email/resend", requireSession, requireAdmin, async (requ
 app.use("/api", requireSession, async (request, response, next) => {
   if (!commentsApiUrl) return response.status(503).json({ error: "Action service is not configured." });
   try {
+    const upstreamBody = request.method === "GET" ? undefined : {
+      ...(request.body || {}),
+      actorEmail: request.session.user.email,
+    };
     const upstream = await fetch(`${commentsApiUrl}${request.originalUrl}`, {
       method: request.method,
       headers: request.method === "GET" ? {} : { "Content-Type": "application/json" },
-      body: request.method === "GET" ? undefined : JSON.stringify(request.body || {}),
+      body: request.method === "GET" ? undefined : JSON.stringify(upstreamBody),
     });
     const body = await upstream.text();
     response.status(upstream.status).type(upstream.headers.get("content-type") || "application/json").send(body);

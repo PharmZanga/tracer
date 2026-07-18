@@ -1159,27 +1159,26 @@ function App() {
   });
   const [actionComments, setActionComments] = useState({});
   const [actionCommentDrafts, setActionCommentDrafts] = useState({});
-  const [actionAuthor, setActionAuthor] = useState(() => {
-    try {
-      return window.localStorage.getItem("tracer-action-author") || "";
-    } catch {
-      return "";
-    }
-  });
+  const [actionUserEmail, setActionUserEmail] = useState("");
   const [actionSyncState, setActionSyncState] = useState("loading");
   const [actionCommentError, setActionCommentError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`${actionApiUrl}/api/action-updates`)
-      .then((response) => {
+    Promise.all([
+      fetch(`${actionApiUrl}/api/action-updates`).then((response) => {
         if (!response.ok) throw new Error("Unable to load shared action updates");
         return response.json();
-      })
-      .then((data) => {
+      }),
+      window.__TRACER_SECURE_DASHBOARD__
+        ? fetch(`${actionApiUrl}/api/current-user`).then((response) => response.ok ? response.json() : null)
+        : Promise.resolve(null),
+    ])
+      .then(([data, user]) => {
         if (cancelled) return;
         setActionUpdates(data.updates || {});
         setActionComments(data.comments || {});
+        setActionUserEmail(user?.email || "");
         setActionSyncState("shared");
       })
       .catch(() => {
@@ -1189,14 +1188,6 @@ function App() {
       cancelled = true;
     };
   }, []);
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem("tracer-action-author", actionAuthor);
-    } catch {
-      // The author field remains usable when browser storage is unavailable.
-    }
-  }, [actionAuthor]);
 
   const fieldData = tracerReportingPeriods.find((period) => period.id === fieldPeriodId) || tracerReportingPeriods.at(-1);
   const activePageLabel = dashboardPages.find((page) => page.id === activePage)?.label;
@@ -1796,7 +1787,7 @@ function App() {
 
   async function updateRedistributionAction(item, status) {
     const key = redistributionActionKey(item);
-    const localUpdate = { status, updatedBy: actionAuthor.trim() || "Unidentified user", updatedAt: new Date().toISOString() };
+    const localUpdate = { status, updatedBy: actionUserEmail || "Unidentified user", updatedAt: new Date().toISOString() };
     setActionUpdates((current) => ({ ...current, [key]: { ...current[key], ...localUpdate } }));
     try {
       const response = await fetch(`${actionApiUrl}/api/action-updates/${encodeURIComponent(key)}`, {
@@ -1816,7 +1807,7 @@ function App() {
   async function addActionComment(item) {
     const key = redistributionActionKey(item);
     const body = (actionCommentDrafts[key] || "").trim();
-    const author = actionAuthor.trim() || "Dashboard user";
+    const author = actionUserEmail || "Dashboard user";
     if (!body) {
       setActionCommentError("Write a comment before adding it.");
       return;
@@ -1843,6 +1834,40 @@ function App() {
       setActionComments((current) => ({ ...current, [key]: (current[key] || []).filter((entry) => entry.id !== pendingComment.id) }));
       setActionCommentDrafts((current) => ({ ...current, [key]: body }));
       setActionSyncState("offline");
+    }
+  }
+
+  async function deleteActionComment(actionKey, commentId) {
+    if (!actionUserEmail || String(commentId).startsWith("pending-")) return;
+    setActionCommentError("");
+    try {
+      const response = await fetch(`${actionApiUrl}/api/action-comments/${encodeURIComponent(commentId)}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ actorEmail: actionUserEmail }),
+      });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error || "Unable to delete comment");
+      setActionComments((current) => ({ ...current, [actionKey]: (current[actionKey] || []).filter((comment) => String(comment.id) !== String(commentId)) }));
+    } catch (error) {
+      setActionCommentError(error.message || "Unable to delete this comment.");
+    }
+  }
+
+  async function voteOnActionComment(actionKey, commentId, vote) {
+    if (!actionUserEmail || String(commentId).startsWith("pending-")) return;
+    setActionCommentError("");
+    try {
+      const response = await fetch(`${actionApiUrl}/api/action-comments/${encodeURIComponent(commentId)}/vote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ actorEmail: actionUserEmail, vote }),
+      });
+      const comment = await response.json();
+      if (!response.ok) throw new Error(comment.error || "Unable to save reaction");
+      setActionComments((current) => ({ ...current, [actionKey]: (current[actionKey] || []).map((entry) => String(entry.id) === String(commentId) ? comment : entry) }));
+    } catch (error) {
+      setActionCommentError(error.message || "Unable to save this reaction.");
     }
   }
 
@@ -3159,10 +3184,7 @@ function App() {
                 <span>Search medicine</span>
                 <input value={actionCommodityQuery} onChange={(event) => setActionCommodityQuery(event.target.value)} placeholder="Search by commodity name" />
               </label>
-              <label className="action-commodity-search">
-                <span>Commenter / province</span>
-                <input value={actionAuthor} onChange={(event) => setActionAuthor(event.target.value)} placeholder="Name or province" maxLength="80" />
-              </label>
+              <div className="action-user-identity"><span>Commenting as</span><strong>{actionUserEmail || "Signed-in email loading..."}</strong></div>
               <span className={`action-sync ${actionSyncState}`}>{actionSyncState === "shared" ? "Shared comments connected" : actionSyncState === "loading" ? "Connecting comments" : "Comments unavailable"}</span>
             </div>
             {actionCommentError && <p className="action-comment-error">{actionCommentError}</p>}
@@ -3214,10 +3236,15 @@ function App() {
                           <button type="button" className="comment-add-button" onClick={() => addActionComment(item)}>Add</button>
                         </div>
                         <div className="action-comment-list">
-                          {comments.length ? comments.slice(-4).map((comment) => <div className="action-comment" key={comment.id}>
+                          {comments.length ? comments.map((comment) => <div className="action-comment" key={comment.id}>
                             <strong>{comment.author}</strong>
                             <small>{new Date(comment.createdAt).toLocaleString()}</small>
                             <p>{comment.body}</p>
+                            <div className="action-comment-actions">
+                              <button type="button" className="comment-vote" title="Agree" onClick={() => voteOnActionComment(actionKey, comment.id, 1)}>👍 {comment.upvotes || 0}</button>
+                              <button type="button" className="comment-vote" title="Disagree" onClick={() => voteOnActionComment(actionKey, comment.id, -1)}>👎 {comment.downvotes || 0}</button>
+                              {actionUserEmail && comment.author?.toLowerCase() === actionUserEmail.toLowerCase() ? <button type="button" className="comment-delete" onClick={() => deleteActionComment(actionKey, comment.id)}>Delete</button> : null}
+                            </div>
                           </div>) : <small>No comments yet</small>}
                         </div>
                         {actionUpdate.updatedAt && <small>Status updated by {actionUpdate.updatedBy || "user"} {new Date(actionUpdate.updatedAt).toLocaleString()}</small>}

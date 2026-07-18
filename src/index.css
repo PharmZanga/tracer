@@ -816,6 +816,18 @@ select:focus-visible {
 .action-sync.shared { color: #087e45; }
 .action-sync.offline { color: #b42318; }
 
+.action-user-identity {
+  display: grid;
+  gap: 4px;
+  min-width: 230px;
+  padding: 8px 10px;
+  border: 1px solid #cfe0d4;
+  border-radius: 6px;
+  background: #f7fbf8;
+}
+.action-user-identity span { color: #63736a; font-size: 11px; font-weight: 750; }
+.action-user-identity strong { color: #075e3b; font-size: 12px; overflow-wrap: anywhere; }
+
 .action-comment-error {
   margin: 10px 0 0;
   color: #b42318;
@@ -892,6 +904,23 @@ select:focus-visible {
 .action-comment p {
   display: block;
 }
+
+.action-comment-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+.comment-vote,
+.comment-delete {
+  border: 1px solid #c6d9cd;
+  border-radius: 5px;
+  background: #fff;
+  color: #365344;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 7px;
+}
+.comment-vote:hover { background: #edf7f0; color: #075e3b; }
+.comment-delete { border-color: #efb4aa; color: #b42318; }
+.comment-delete:hover { background: #fff0ed; }
 
 .action-comment p {
   margin: 3px 0 0;
