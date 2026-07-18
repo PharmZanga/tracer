@@ -1140,6 +1140,7 @@ function App() {
   const [qualityTablePage, setQualityTablePage] = useState(1);
   const [qualityPointFilter, setQualityPointFilter] = useState("all");
   const [openReportingFacility, setOpenReportingFacility] = useState(null);
+  const [qualityDetailDialog, setQualityDetailDialog] = useState("");
   const [actionCommodityQuery, setActionCommodityQuery] = useState("");
   const [actionUpdates, setActionUpdates] = useState(() => {
     try {
@@ -1526,6 +1527,17 @@ function App() {
     const y = 100 - normalizeRate(row.rate) * 100;
     return `${x},${y}`;
   }).join(" ");
+  const selectedQualityDistrictLabel = qualityDistrictFilter === "all" ? "Select a district" : qualityDistrictFilter;
+  const qualityTimelineMissingPeriods = qualityTrendRows.filter((row) => row.rate === 0);
+  const qualityTimelinePartialPeriods = qualityTrendRows.filter((row) => row.rate > 0 && row.rate < 1);
+  const qualityTimelineReportedPeriods = qualityTrendRows.filter((row) => row.rate >= 1);
+  const qualityTimelineNarrative = qualityDistrictFilter === "all"
+    ? "Choose a district to see its submitted and missing reporting weeks."
+    : qualityTimelineMissingPeriods.length
+      ? `${selectedQualityDistrictLabel} did not report in ${qualityTimelineMissingPeriods.map((row) => row.label.replace("Week ", "")).join(", ")}.`
+      : qualityTimelinePartialPeriods.length
+        ? `${selectedQualityDistrictLabel} submitted in every selected week, but ${qualityTimelinePartialPeriods.map((row) => row.label.replace("Week ", "")).join(", ")} had partial level-of-care reporting.`
+        : `${selectedQualityDistrictLabel} reported in every selected week for this level-of-care scope.`;
   const provinceQualityRows = dataQuality.provinces || [];
   const selectedProvinceQuality = selectedProvince === "all"
     ? null
@@ -2779,6 +2791,28 @@ function App() {
             <KpiCard label="Reporting rate" value={formatPercent((expectedFacilityUnits - missingFacilityUnits) / expectedFacilityUnits)} sub="Reported district-level footprint" />
             <KpiCard label="Selected scope" value={selectedProvince !== "all" ? selectedProvince : "Zambia"} sub="Click a province to expand details" />
           </div>
+          <div className="quality-compact-workspace">
+            <div className="reporting-filter-bar">
+              <label><span>Start month</span><select value={qualityRangeStart} onChange={(event) => setQualityRangeStart(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
+              <label><span>End month</span><select value={qualityRangeEnd} onChange={(event) => setQualityRangeEnd(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
+              <label><span>Reporting period</span><select value={qualityGranularity} onChange={(event) => { setQualityGranularity(event.target.value); setQualityPointFilter("all"); }}><option value="week">Reporting week</option><option value="month">Month</option></select></label>
+              <label><span>Province</span><select value={qualityProvinceFilter} onChange={(event) => { setQualityProvinceFilter(event.target.value); setQualityDistrictFilter("all"); }}><option value="all">All provinces</option>{qualityProvinceOptions.map((province) => <option value={province} key={province}>{province}</option>)}</select></label>
+              <label><span>District</span><select value={qualityDistrictFilter} onChange={(event) => setQualityDistrictFilter(event.target.value)}><option value="all">All districts</option>{qualityDistrictOptions.map((district) => <option value={district} key={district}>{district}</option>)}</select></label>
+              <label><span>Level of care</span><select value={qualityFacilityLevelFilter} onChange={(event) => setQualityFacilityLevelFilter(event.target.value)}><option value="all">All levels</option>{qualityFacilityLevelOptions.map((level) => <option value={level} key={level}>{level}</option>)}</select></label>
+            </div>
+            <div className="quality-compact-grid">
+              <div className="quality-panel">
+                <div className="quality-panel-head"><div><h3>District reporting timeline</h3><p>{qualityTimelineNarrative}</p></div><span>{qualityTimelineReportedPeriods.length}/{qualityTrendRows.length} reported</span></div>
+                <div className="reporting-trend-graph compact"><div className="reporting-trend-axis">Reporting rate (%)</div><div className="reporting-trend-grid" aria-hidden="true">{[0, 25, 50, 75, 100].map((value) => <i key={value} style={{ bottom: `${value}%` }}><small>{value}%</small></i>)}</div><div className="reporting-trend-points" style={{ "--trend-points": qualityTrendRows.length }}>{qualityTrendRows.map((row) => <button type="button" className={qualityPointFilter === row.id ? "active" : ""} key={row.id} style={{ "--trend-rate": `${100 - normalizeRate(row.rate) * 100}%` }} onClick={() => setQualityPointFilter((current) => current === row.id ? "all" : row.id)}><b>{formatPercent(row.rate)}</b><span>{qualityGranularity === "month" ? row.label.replace(" 2026", "") : row.label.replace("Week ", "W")}</span></button>)}</div><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points={qualityTrendPoints} /></svg></div>
+              </div>
+              <div className="quality-panel quality-compact-summary">
+                <div className="quality-panel-head"><div><h3>Selected reporting scope</h3><p>Health posts, health centres, Level 1, Level 2, Level 3, and specialised reporting units can be assessed separately.</p></div></div>
+                <div className="quality-summary-list"><span>Expected reports <b>{qualitySummary.expected.toLocaleString()}</b></span><span>Reports received <b>{qualitySummary.reported.toLocaleString()}</b></span><span>Reporting rate <b className={`reporting-tone-${reportingTone(qualitySummary.rate)}`}>{formatPercent(qualitySummary.rate)}</b></span><span>Missing periods <b>{qualitySummary.missing.toLocaleString()}</b></span></div>
+                <div className="quality-detail-actions"><button type="button" onClick={() => setQualityDetailDialog("districts")}>View province and district details</button><button type="button" onClick={() => setQualityDetailDialog("followup")}>View follow-up list</button></div>
+              </div>
+            </div>
+          </div>
+          <div className="dq-detail-source">
           <div className="quality-drill-path">
             <button type="button" onClick={() => {
               resetFieldHierarchy();
@@ -2867,6 +2901,7 @@ function App() {
               ))}
             </div>
           ) : <div className="empty-state">No submission comments were captured for this selected week.</div>}
+          </div>
         </section>
 
         <section className="reporting-rate-section">
@@ -3169,6 +3204,21 @@ function App() {
           </div>
           <div className="commodity-history"><h3>Submitted commodity trend</h3><p>Only periods with a submitted record are plotted. Missing submissions are not interpreted as stockouts.</p>{commodityFacilityHistory.length ? <div className="commodity-history-list">{commodityFacilityHistory.map((row) => <div key={row.reportDate}><span>{row.label}</span><b>SOH {Math.round(row.quantity).toLocaleString()}</b><b>AMC {Math.round(row.amc).toLocaleString()}</b><b>{formatMos(row.mos)} MOS</b><em>{commodityStockStatus(row.mos)}</em></div>)}</div> : <div className="empty-state">No submitted historical record was found for this commodity and facility.</div>}</div>
           <div className="commodity-detail-note"><b>Reporting status:</b> Reported for {fieldData.label}. Quantity received, dispensed/consumed, losses, adjustments, and days out of stock are not present in the submitted tracer source and are therefore not estimated.</div>
+        </section>
+      </div>}
+      {qualityDetailDialog && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setQualityDetailDialog("")}>
+        <section className="commodity-detail-panel quality-detail-dialog" role="dialog" aria-modal="true" aria-label="Data quality details" onMouseDown={(event) => event.stopPropagation()}>
+          <div className="commodity-detail-head"><div><p className="eyebrow dark">Data Quality</p><h2>{qualityDetailDialog === "districts" ? "Province and district reporting details" : "Reporting follow-up list"}</h2><span>{monthLabel(qualityRangeLower)} to {monthLabel(qualityRangeUpper)}</span></div><button type="button" onClick={() => setQualityDetailDialog("")}>Close</button></div>
+          {qualityDetailDialog === "districts" ? <>
+            <div className="quality-drill-path"><button type="button" onClick={() => { resetFieldHierarchy(); setActivePage("quality"); }}>Zambia</button><span>/</span><button type="button" disabled={selectedProvince === "all"} onClick={() => selectQualityProvince(selectedProvince)}>{selectedProvince === "all" ? "Select province" : selectedProvince}</button></div>
+            <div className="quality-grid"><QualityTable title="Provincial district-level reporting" rows={provinceQualityRows} firstColumn="Province" onSelect={(row) => selectQualityProvince(row.name)} /><ReportingBars title="Province reporting percentage" rows={[...provinceQualityRows].sort((a, b) => (a.rate || qualityRate(a)) - (b.rate || qualityRate(b)))} onSelect={(row) => selectQualityProvince(row.name)} /></div>
+            {selectedProvinceQuality ? <div className="quality-note"><strong>{selectedProvinceQuality.name}</strong><span>{selectedProvinceQuality.reported.toLocaleString()} of {selectedProvinceQuality.expected.toLocaleString()} expected district-level reports submitted, with {selectedProvinceQuality.missing.toLocaleString()} missing.</span></div> : null}
+            {selectedProvince === "all" ? <div className="empty-state">Select a province in the top dashboard filter to see its district-level reporting.</div> : <div className="quality-level-sections">{qualityLevelSections.map((section) => <QualityLevelSection section={section} key={section.level} />)}</div>}
+          </> : <>
+            <div className="reporting-filter-bar"><label><span>Reporting status</span><select value={qualityStatusFilter} onChange={(event) => setQualityStatusFilter(event.target.value)}><option value="non-reporting">Any reporting gap</option><option value="all">All reporting units</option><option value="Fully reported">Fully reported</option><option value="Minor reporting gaps">Minor reporting gaps</option><option value="Irregular reporting">Irregular reporting</option><option value="Persistent non-reporting">Persistent non-reporting</option><option value="No reporting">No reporting</option></select></label><label><span>Search</span><input value={qualitySearch} onChange={(event) => { setQualitySearch(event.target.value); setQualityTablePage(1); }} placeholder="Facility, district, or province" /></label><div className="export-actions"><button type="button" onClick={exportNonReportingCsv}>Export CSV</button><button type="button" onClick={() => window.print()}>Export PDF</button></div></div>
+            <div className="non-reporting-grid"><div className="quality-panel"><div className="quality-panel-head"><div><h3>District reporting rate</h3><p>Lowest to highest across the selected range.</p></div><span>{qualityDistrictTrendRows.length} districts</span></div><div className="quality-bars">{qualityDistrictTrendRows.map((row) => <button type="button" className={`quality-bar-row reporting-tone-${reportingTone(row.rate)}`} key={row.name} onClick={() => { setQualityDistrictFilter(row.name); setQualityDetailDialog(""); }}><span>{row.name}</span><div className="quality-bar-track"><i style={{ width: `${Math.round(row.rate * 100)}%` }} /></div><b>{formatPercent(row.rate)}</b></button>)}</div></div><div className="quality-panel"><div className="quality-panel-head"><div><h3>Reporting rate by level of care</h3><p>Expected reports versus reports received.</p></div></div><div className="quality-bars">{qualityLevelTrendRows.map((row) => <button type="button" className={`quality-bar-row reporting-tone-${reportingTone(row.rate)}`} key={row.name} onClick={() => { setQualityFacilityLevelFilter(row.name); setQualityDetailDialog(""); }}><span>{row.name}</span><div className="quality-bar-track"><i style={{ width: `${Math.round(row.rate * 100)}%` }} /></div><b>{formatPercent(row.rate)}</b></button>)}</div></div></div>
+            <div className="table-panel non-reporting-table"><div className="table-scroll"><table><thead><tr><th>Province</th><th>District</th><th>Facility / reporting unit</th><th>Facility level</th><th>Expected</th><th>Submitted</th><th>Missed</th><th>Rate</th><th>Latest report</th><th>Status</th><th /></tr></thead><tbody>{visibleNonReportingFacilityRows.length ? visibleNonReportingFacilityRows.map((row) => <tr key={`${row.province}-${row.district}-${row.facilityLevel}-${row.name}`}><td>{row.province}</td><td>{row.district}</td><td>{row.name}</td><td>{row.facilityLevel}</td><td>{row.expectedReports}</td><td>{row.reportsSubmitted}</td><td>{row.missedReports}</td><td>{formatPercent(row.rate)}</td><td>{row.latestReport}</td><td><span className={`comparison-signal ${row.missedReports ? "red" : "green"}`}>{row.consistency}</span></td><td><button type="button" className="ghost-button" onClick={() => setOpenReportingFacility(row)}>History</button></td></tr>) : <tr><td colSpan="11">No expected reporting units match the selected filters.</td></tr>}</tbody></table></div><div className="non-reporting-pagination"><button type="button" disabled={qualityTableCurrentPage <= 1} onClick={() => setQualityTablePage((page) => page - 1)}>Previous</button><span>Page {qualityTableCurrentPage} of {qualityTablePageCount}</span><button type="button" disabled={qualityTableCurrentPage >= qualityTablePageCount} onClick={() => setQualityTablePage((page) => page + 1)}>Next</button></div></div>
+          </>}
         </section>
       </div>}
       {openReportingFacility && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setOpenReportingFacility(null)}>

@@ -4922,6 +4922,79 @@ td.neutral {
   border-top: 2px solid #dce9e2;
 }
 
+.dq-detail-source { display: none; }
+
+.quality-compact-workspace {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #dce7df;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.quality-compact-workspace .reporting-filter-bar { margin: 0; }
+
+.quality-compact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.85fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.quality-compact-grid .quality-panel { min-height: 0; }
+
+.reporting-trend-graph.compact {
+  height: 150px;
+  margin-top: 24px;
+}
+
+.quality-summary-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: #e4eee7;
+}
+
+.quality-summary-list span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px;
+  background: #fff;
+  color: #607168;
+  font-size: 12px;
+}
+
+.quality-summary-list b { color: #173f29; }
+.quality-summary-list b.reporting-tone-red { color: #b42318; }
+.quality-summary-list b.reporting-tone-amber { color: #a66200; }
+.quality-summary-list b.reporting-tone-green { color: #08764b; }
+
+.quality-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px;
+}
+
+.quality-detail-actions button {
+  border: 1px solid #95bca4;
+  border-radius: 6px;
+  background: #fff;
+  color: #075e3b;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 9px 12px;
+  cursor: pointer;
+}
+
+.quality-detail-actions button:hover { background: #edf7f0; }
+.quality-detail-dialog { width: min(1240px, 100%); }
+.quality-detail-dialog .reporting-filter-bar { margin: 16px 0; }
+.quality-detail-dialog .quality-grid { margin-top: 16px; }
+.quality-detail-dialog .quality-level-sections { margin-top: 16px; }
+
 .non-reporting-kpis { margin-top: 16px; }
 
 .non-reporting-grid {
@@ -4986,6 +5059,7 @@ td.neutral {
   .commodity-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .commodity-chart-grid { grid-template-columns: 1fr; }
   .non-reporting-grid { grid-template-columns: 1fr; }
+  .quality-compact-grid { grid-template-columns: 1fr; }
   .commodity-search-row, .commodity-summary-heading { align-items: stretch; flex-direction: column; }
   .commodity-summary-heading small { text-align: left; }
   .commodity-detail-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
