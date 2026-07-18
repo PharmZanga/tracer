@@ -25,6 +25,10 @@ class DashboardErrorBoundary extends React.Component {
           <p>National Tracer Drug Availability</p>
           <h1>The dashboard could not load</h1>
           <p>Please refresh the page. If the problem continues, report the selected reporting period to the dashboard administrator.</p>
+          <details className="startup-error-detail">
+            <summary>Show diagnostic detail</summary>
+            <code>{this.state.error?.message || "No error detail was returned."}</code>
+          </details>
           <button type="button" onClick={() => window.location.reload()}>Refresh dashboard</button>
         </div>
       </main>

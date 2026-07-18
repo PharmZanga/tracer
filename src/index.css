@@ -5469,6 +5469,15 @@ td.neutral {
   line-height: 1.55;
 }
 
+.startup-error-detail {
+  margin: 14px 0;
+  color: #506158;
+  font-size: 13px;
+}
+
+.startup-error-detail summary { cursor: pointer; font-weight: 700; }
+.startup-error-detail code { display: block; margin-top: 8px; overflow-wrap: anywhere; color: #9b2c24; }
+
 .startup-error button {
   margin-top: 12px;
   padding: 10px 16px;
