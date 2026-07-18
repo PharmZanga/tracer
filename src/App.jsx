@@ -2820,13 +2820,6 @@ function App() {
             <label><span>District</span><select value={qualityDistrictFilter} onChange={(event) => setQualityDistrictFilter(event.target.value)}><option value="all">All districts</option>{qualityDistrictOptions.map((district) => <option value={district} key={district}>{district}</option>)}</select></label>
             <label><span>Level of care</span><select value={qualityFacilityLevelFilter} onChange={(event) => setQualityFacilityLevelFilter(event.target.value)}><option value="all">All levels</option>{qualityFacilityLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}</select></label>
           </div>
-          <div className="stats-grid">
-            <KpiCard label="Persistent gaps" value={persistentQualityRows.length.toLocaleString()} sub="Units with repeated or no reports" tone={persistentQualityRows.length ? "red" : "green"} />
-            <KpiCard label="Follow-up workload" value={nonReportingFacilityRows.length.toLocaleString()} sub="Units with at least one reporting gap" tone={nonReportingFacilityRows.length ? "amber" : "green"} />
-            <KpiCard label="Irregular reporting" value={qualitySummary.irregular.toLocaleString()} sub="Units needing a consistency review" tone={qualitySummary.irregular ? "amber" : "green"} />
-            <KpiCard label="Lowest period" value={lowestQualityPoint ? formatPercent(lowestQualityPoint.rate) : "-"} sub={lowestQualityPoint?.label || "No selected reporting periods"} tone={lowestQualityPoint ? reportingTone(lowestQualityPoint.rate) : "neutral"} />
-            <KpiCard label="Weekly reports in library" value={weeklyReportLibraryRows.length.toLocaleString()} sub="January to June 2026 submissions" />
-          </div>
           <div className="quality-compact-workspace">
             <div className="reporting-filter-bar quality-compact-redundant-filters">
               <label><span>Start month</span><select value={qualityRangeStart} onChange={(event) => setQualityRangeStart(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
