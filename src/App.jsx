@@ -1131,6 +1131,10 @@ function App() {
   const [selectedCommodity, setSelectedCommodity] = useState("");
   const [commodityOptionPage, setCommodityOptionPage] = useState(1);
   const [commodityStatusFilter, setCommodityStatusFilter] = useState("all");
+  const [commodityTableProvince, setCommodityTableProvince] = useState("all");
+  const [commodityTableDistrict, setCommodityTableDistrict] = useState("all");
+  const [commodityTableLevel, setCommodityTableLevel] = useState("all");
+  const [commodityTableReportingStatus, setCommodityTableReportingStatus] = useState("all");
   const [commodityFacilityQuery, setCommodityFacilityQuery] = useState("");
   const [commoditySort, setCommoditySort] = useState("mos");
   const [commodityPage, setCommodityPage] = useState(1);
@@ -1377,8 +1381,22 @@ function App() {
   const commodityAverageMos = selectedCommodityRows.length ? selectedCommodityRows.reduce((sum, row) => sum + (row.mos || 0), 0) / selectedCommodityRows.length : 0;
   const commodityTotalSoh = selectedCommodityRows.reduce((sum, row) => sum + row.quantity, 0);
   const commodityTotalAmc = selectedCommodityRows.reduce((sum, row) => sum + row.amc, 0);
+  const commodityTableProvinceOptions = [...new Set(selectedCommodityRows.map((row) => row.province).filter(Boolean))].sort(compareText);
+  const commodityTableDistrictOptions = [...new Set(selectedCommodityRows
+    .filter((row) => commodityTableProvince === "all" || row.province === commodityTableProvince)
+    .map((row) => row.district)
+    .filter(Boolean))].sort(compareText);
+  const commodityTableLevelOptions = [...new Set(selectedCommodityRows
+    .filter((row) => commodityTableProvince === "all" || row.province === commodityTableProvince)
+    .filter((row) => commodityTableDistrict === "all" || row.district === commodityTableDistrict)
+    .map((row) => row.facilityLevel)
+    .filter(Boolean))].sort(compareText);
   const commodityFacilityRows = useMemo(() => selectedCommodityRows
+    .filter((row) => commodityTableProvince === "all" || row.province === commodityTableProvince)
+    .filter((row) => commodityTableDistrict === "all" || row.district === commodityTableDistrict)
+    .filter((row) => commodityTableLevel === "all" || row.facilityLevel === commodityTableLevel)
     .filter((row) => commodityStatusFilter === "all" || commodityStockStatus(row.mos) === commodityStatusFilter)
+    .filter((row) => commodityTableReportingStatus === "all" || row.reportingStatus === commodityTableReportingStatus)
     .filter((row) => !commodityFacilityQuery.trim() || `${row.facility} ${row.district} ${row.province}`.toLowerCase().includes(commodityFacilityQuery.trim().toLowerCase()))
     .sort((a, b) => {
       if (commoditySort === "facility") return compareText(a.facility, b.facility);
@@ -1386,7 +1404,7 @@ function App() {
       if (commoditySort === "stock") return b.quantity - a.quantity;
       if (commoditySort === "status") return compareText(commodityStockStatus(a.mos), commodityStockStatus(b.mos));
       return (a.mos ?? -1) - (b.mos ?? -1);
-    }), [selectedCommodityRows, commodityStatusFilter, commodityFacilityQuery, commoditySort]);
+    }), [selectedCommodityRows, commodityTableProvince, commodityTableDistrict, commodityTableLevel, commodityStatusFilter, commodityTableReportingStatus, commodityFacilityQuery, commoditySort]);
   const commodityPageCount = Math.max(1, Math.ceil(commodityFacilityRows.length / commodityPageSize));
   const commodityVisibleRows = commodityFacilityRows.slice((Math.min(commodityPage, commodityPageCount) - 1) * commodityPageSize, Math.min(commodityPage, commodityPageCount) * commodityPageSize);
   const commodityTrendRows = useMemo(() => !selectedCommodity ? [] : tracerReportingPeriods.map((period) => {
@@ -2393,14 +2411,14 @@ function App() {
               <input id="commodity-search" value={query} onChange={(event) => { setQuery(event.target.value); setCommodityOptionPage(1); setCommodityPage(1); }} placeholder="Search for a commodity..." autoComplete="off" />
               {!selectedCommodity && <div className="commodity-match-list">
                 <div className="commodity-match-head"><span>{commodityMatches.length} commodities in current filters</span><span>Page {Math.min(commodityOptionPage, commodityOptionPageCount)} of {commodityOptionPageCount}</span></div>
-                {visibleCommodityMatches.length ? visibleCommodityMatches.map((item) => <button type="button" key={item} onClick={() => { setSelectedCommodity(item); setQuery(item); setCommodityPage(1); }}>{item}</button>) : <p>No matching commodity was found in the selected reporting period and filters.</p>}
+                {visibleCommodityMatches.length ? visibleCommodityMatches.map((item) => <button type="button" key={item} onClick={() => { setSelectedCommodity(item); setQuery(item); setCommodityPage(1); setCommodityStatusFilter("all"); setCommodityTableProvince("all"); setCommodityTableDistrict("all"); setCommodityTableLevel("all"); setCommodityTableReportingStatus("all"); }}>{item}</button>) : <p>No matching commodity was found in the selected reporting period and filters.</p>}
                 {commodityMatches.length > 10 && <div className="commodity-match-pagination"><button type="button" disabled={commodityOptionPage <= 1} onClick={() => setCommodityOptionPage((page) => page - 1)}>Previous</button><button type="button" disabled={commodityOptionPage >= commodityOptionPageCount} onClick={() => setCommodityOptionPage((page) => page + 1)}>Next</button></div>}
               </div>}
             </div>
             <div className="selected-commodity-control">
               <span>Selected reporting week</span>
               <strong>{fieldData.label}</strong>
-              {selectedCommodity && <button type="button" onClick={() => { setSelectedCommodity(""); setQuery(""); setCommodityOptionPage(1); setCommodityStatusFilter("all"); setOpenCommodityFacility(null); }}>Clear search</button>}
+              {selectedCommodity && <button type="button" onClick={() => { setSelectedCommodity(""); setQuery(""); setCommodityOptionPage(1); setCommodityStatusFilter("all"); setCommodityTableProvince("all"); setCommodityTableDistrict("all"); setCommodityTableLevel("all"); setCommodityTableReportingStatus("all"); setOpenCommodityFacility(null); }}>Clear search</button>}
             </div>
           </div>
 
@@ -2426,9 +2444,6 @@ function App() {
               <div className="blue"><span>Overstocked / excess</span><strong>{(commodityStatusCounts.Overstocked || 0) + (commodityStatusCounts["Excess stock"] || 0)}</strong><small>Above 4 MOS</small></div>
             </div>
             <div className="commodity-totals"><span>Total SOH: <b>{Math.round(commodityTotalSoh).toLocaleString()}</b></span><span>Total AMC: <b>{Math.round(commodityTotalAmc).toLocaleString()}</b></span><span>Reporting rate: <b>{formatPercent(selectedCommodityRows.length / Math.max(filteredFacilities.length, 1))}</b></span><span>Incomplete commodity records: <b>Not classified as stockout</b></span></div>
-            <div className="commodity-status-tabs" aria-label="Commodity stock status">
-              {["all", "Stocked out", "Emergency stock", "Understocked", "According to plan", "Overstocked", "Excess stock"].map((status) => <button type="button" className={commodityStatusFilter === status ? "active" : ""} key={status} onClick={() => { setCommodityStatusFilter(status); setCommodityPage(1); }}>{status === "all" ? "All statuses" : status} {status === "all" ? selectedCommodityRows.length : commodityStatusCounts[status] || 0}</button>)}
-            </div>
             <div className="commodity-chart-grid">
               <div className="commodity-chart-panel"><h3>Availability by province</h3>{commodityProvinceRows.map((row) => <button type="button" className="commodity-bar" key={row.name} onClick={() => changeProvinceFilter(row.name)}><span>{row.name}</span><i><b style={{ width: `${Math.round(row.availability * 100)}%` }} /></i><strong>{formatPercent(row.availability)}</strong></button>)}</div>
               <div className="commodity-chart-panel"><h3>Average MOS by level of care</h3>{commodityLevelRows.map((row) => <button type="button" className="commodity-bar" key={row.name} onClick={() => { const option = [...facilityCareLevelOptions, ...specialisedCareLevelOptions].find((item) => item.label.toUpperCase() === row.name.toUpperCase()); if (option) setSelectedFacilityLevel(option.value); }}><span>{row.name}</span><i><b style={{ width: `${Math.min((row.mos / 12) * 100, 100)}%` }} /></i><strong>{formatMos(row.mos)}</strong></button>)}</div>
@@ -2436,6 +2451,11 @@ function App() {
             </div>
             <div className="table-tools commodity-table-tools">
               <input value={commodityFacilityQuery} onChange={(event) => { setCommodityFacilityQuery(event.target.value); setCommodityPage(1); }} placeholder="Search facility, district, or province" />
+              <select aria-label="Filter commodity table by province" value={commodityTableProvince} onChange={(event) => { setCommodityTableProvince(event.target.value); setCommodityTableDistrict("all"); setCommodityTableLevel("all"); setCommodityPage(1); }}><option value="all">All provinces</option>{commodityTableProvinceOptions.map((province) => <option key={province} value={province}>{province}</option>)}</select>
+              <select aria-label="Filter commodity table by district" value={commodityTableDistrict} onChange={(event) => { setCommodityTableDistrict(event.target.value); setCommodityTableLevel("all"); setCommodityPage(1); }}><option value="all">All districts</option>{commodityTableDistrictOptions.map((district) => <option key={district} value={district}>{district}</option>)}</select>
+              <select aria-label="Filter commodity table by facility level" value={commodityTableLevel} onChange={(event) => { setCommodityTableLevel(event.target.value); setCommodityPage(1); }}><option value="all">All facility levels</option>{commodityTableLevelOptions.map((level) => <option key={level} value={level}>{level}</option>)}</select>
+              <select aria-label="Filter commodity table by stock status" value={commodityStatusFilter} onChange={(event) => { setCommodityStatusFilter(event.target.value); setCommodityPage(1); }}><option value="all">All stock statuses</option>{["Stocked out", "Emergency stock", "Understocked", "According to plan", "Overstocked", "Excess stock"].map((status) => <option key={status} value={status}>{status} ({commodityStatusCounts[status] || 0})</option>)}</select>
+              <select aria-label="Filter commodity table by reporting status" value={commodityTableReportingStatus} onChange={(event) => { setCommodityTableReportingStatus(event.target.value); setCommodityPage(1); }}><option value="all">All reporting statuses</option><option value="Reported">Reported</option></select>
               <select value={commoditySort} onChange={(event) => setCommoditySort(event.target.value)}><option value="mos">Sort by MOS</option><option value="stock">Sort by stock on hand</option><option value="province">Sort by geography</option><option value="facility">Sort by facility</option><option value="status">Sort by stock status</option></select>
               <select value={commodityPageSize} onChange={(event) => { setCommodityPageSize(Number(event.target.value)); setCommodityPage(1); }}><option value={25}>25 rows</option><option value={50}>50 rows</option><option value={100}>100 rows</option></select>
             </div>
