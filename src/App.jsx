@@ -1536,6 +1536,11 @@ function App() {
     });
     return [...groups.values()].map((row) => ({ ...row, missing: row.expected - row.reported, rate: row.expected ? row.reported / row.expected : 0 }));
   }, [qualityRangePeriods, qualityFacilityHistories, qualityGranularity]);
+  const qualityTrendPoints = qualityTrendRows.map((row, index) => {
+    const x = ((index + 0.5) / Math.max(qualityTrendRows.length, 1)) * 100;
+    const y = 100 - normalizeRate(row.rate) * 100;
+    return `${x},${y}`;
+  }).join(" ");
   // Match the Reporting Rate page: a district is counted once per reporting
   // period when it submitted a tracer report, rather than counting commodity rows.
   const qualityDistrictReportingTrendRows = useMemo(() => {
