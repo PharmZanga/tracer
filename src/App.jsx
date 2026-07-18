@@ -1276,7 +1276,13 @@ function App() {
     .sort((a, b) => a.province.localeCompare(b.province) || a.district.localeCompare(b.district) || a.facilityType.localeCompare(b.facilityType));
 
   const provinceOptions = fieldData.provinces.map((province) => province.name).sort();
-  const districtOptions = [...new Set(fieldData.districts
+  // Retain every expected district in the filter even when it did not submit
+  // during the selected week. This makes a reporting gap visible instead of
+  // making the district disappear from the dashboard.
+  const districtDirectory = fieldData.dataQuality?.districts?.length
+    ? fieldData.dataQuality.districts
+    : fieldData.districts;
+  const districtOptions = [...new Set(districtDirectory
     .filter((district) => selectedProvince === "all" || district.province === selectedProvince)
     .map((district) => district.name))].sort();
   const scopedFacilityLevelRows = fieldData.facilities
