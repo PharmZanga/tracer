@@ -5075,6 +5075,31 @@ td.neutral {
 .library-report-summary span, .library-report-summary small { color: #61746a; font-size: 11px; }
 .library-report-summary strong { color: #173f29; font-size: 18px; }
 .selected-library-row { background: #eaf5ed; }
+.national-report-pending {
+  display: grid;
+  gap: 12px;
+  max-width: 650px;
+  margin: 34px auto;
+  padding: 28px;
+  border: 1px solid #dce7df;
+  background: #f7fbf8;
+  text-align: center;
+}
+.national-report-pending h3 { margin: 0; color: #173f29; font-size: 24px; }
+.national-report-pending p { margin: 0; color: #607168; line-height: 1.5; }
+.national-report-pending .eyebrow { color: #08764b; }
+.national-report-pending button {
+  justify-self: center;
+  border: 1px solid #95bca4;
+  border-radius: 6px;
+  background: #fff;
+  color: #075e3b;
+  font: inherit;
+  font-weight: 800;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.national-report-pending button:hover { background: #edf7f0; }
 .quality-detail-dialog { width: min(1240px, 100%); }
 .quality-detail-dialog .reporting-filter-bar { margin: 16px 0; }
 .quality-detail-dialog .quality-grid { margin-top: 16px; }
