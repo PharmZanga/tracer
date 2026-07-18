@@ -51,6 +51,10 @@ services:
         sync: false
       - key: EMAIL_FROM
         sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4.1-mini
 
 databases:
   - name: tracer-comments-db

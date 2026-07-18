@@ -34,6 +34,14 @@ const stockStreamLabels = {
 const actionApiUrl = window.__TRACER_SECURE_DASHBOARD__
   ? window.location.origin
   : import.meta.env.VITE_ACTION_API_URL || "https://tracer-comments-api.onrender.com";
+const copilotApiUrl = window.__TRACER_SECURE_DASHBOARD__ ? window.location.origin : "";
+
+const copilotSuggestions = [
+  "What are the priority stockout risks in the current filters?",
+  "Which provinces need the most urgent follow-up?",
+  "Summarise reporting coverage for this reporting week.",
+  "What should a provincial pharmacist act on first?",
+];
 
 function normalizeRate(value) {
   const number = Number(value || 0);
@@ -1166,6 +1174,11 @@ function App() {
   const [actionUserEmail, setActionUserEmail] = useState("");
   const [actionSyncState, setActionSyncState] = useState("loading");
   const [actionCommentError, setActionCommentError] = useState("");
+  const [copilotOpen, setCopilotOpen] = useState(false);
+  const [copilotQuestion, setCopilotQuestion] = useState("");
+  const [copilotMessages, setCopilotMessages] = useState([]);
+  const [copilotLoading, setCopilotLoading] = useState(false);
+  const [copilotFeedback, setCopilotFeedback] = useState({});
 
   useEffect(() => {
     let cancelled = false;
@@ -1891,6 +1904,98 @@ function App() {
       setActionComments((current) => ({ ...current, [actionKey]: (current[actionKey] || []).map((entry) => String(entry.id) === String(commentId) ? comment : entry) }));
     } catch (error) {
       setActionCommentError(error.message || "Unable to save this reaction.");
+    }
+  }
+
+  function currentCopilotContext() {
+    const priorityFacilities = [...facilityAlerts]
+      .slice(0, 12)
+      .map((facility) => ({
+        facility: facility.name,
+        district: facility.district,
+        province: facility.province,
+        levelOfCare: facility.facilityLevel,
+        availability: formatPercent(facility.availability),
+        averageMos: formatMos(facility.mos),
+        stockoutItems: facility.stockoutItemCount || 0,
+        lowStockItems: facility.lowStockItemCount || 0,
+      }));
+    const lowestProvinces = [...scopedProvinceRows]
+      .sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)
+      .slice(0, 10)
+      .map((province) => ({ name: province.name, availability: formatPercent(province.availability), averageMos: formatMos(province.mos), stockoutRows: province.stockout || 0, riskRows: province.riskRows || 0 }));
+    const highRiskCommodities = commodityGroupRows(commodityScopeRows, "item")
+      .filter((commodity) => commodity.rows > 0)
+      .slice(0, 15)
+      .map((commodity) => ({ commodity: commodity.name, availability: formatPercent(commodity.availability), averageMos: formatMos(commodity.mos), reportingRows: commodity.rows }));
+    return {
+      reportingPeriod: fieldData.label,
+      activeDashboardPage: activePageLabel,
+      filters: {
+        province: selectedProvince === "all" ? "All provinces" : selectedProvince,
+        district: selectedDistrict === "all" ? "All districts" : selectedDistrict,
+        levelOfCare: facilityCareLevelLabel(selectedFacilityLevel),
+        reportingUnit: selectedFacility === "all" ? "All reporting units" : selectedFacility,
+      },
+      nationalSummary: {
+        availability: formatPercent(fieldKpis.availability),
+        averageMos: formatMos(fieldKpis.mos),
+        commodityRows: fieldKpis.rows || 0,
+        stockoutRows: fieldKpis.stockout || 0,
+        lowStockRows: (fieldKpis.nearCritical || 0) + (fieldKpis.understocked || 0),
+        reportingUnits: filteredFacilities.length,
+        reportingCoverage: formatPercent(expectedFacilityUnits ? (expectedFacilityUnits - missingFacilityUnits) / expectedFacilityUnits : 0),
+      },
+      lowestAvailabilityProvinces: lowestProvinces,
+      priorityFacilities,
+      highRiskCommodities,
+      dataDefinition: "Availability is submitted tracer rows with stock on hand above zero. MOS is stock on hand divided by average monthly consumption. Missing submissions are not stockouts.",
+    };
+  }
+
+  async function askCopilot(question = copilotQuestion) {
+    const message = question.trim();
+    if (!message || copilotLoading) return;
+    const requestMessage = { id: `question-${Date.now()}`, role: "user", text: message };
+    setCopilotMessages((current) => [...current, requestMessage]);
+    setCopilotQuestion("");
+    if (!copilotApiUrl) {
+      setCopilotMessages((current) => [...current, { id: `error-${Date.now()}`, role: "assistant", text: "Tracer Copilot is available from the secure dashboard. Sign in at the Render dashboard to use it." }]);
+      return;
+    }
+    setCopilotLoading(true);
+    try {
+      const response = await fetch(`${copilotApiUrl}/api/copilot/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: message, context: currentCopilotContext() }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Tracer Copilot could not answer right now.");
+      setCopilotMessages((current) => [...current, { id: data.id, role: "assistant", text: data.answer, evidence: `${fieldData.label} | ${selectedProvince === "all" ? "All provinces" : selectedProvince} | ${selectedDistrict === "all" ? "All districts" : selectedDistrict}` }]);
+    } catch (error) {
+      setCopilotMessages((current) => [...current, { id: `error-${Date.now()}`, role: "assistant", text: error.message || "Tracer Copilot could not answer right now." }]);
+    } finally {
+      setCopilotLoading(false);
+    }
+  }
+
+  async function rateCopilotAnswer(messageId, rating) {
+    if (!Number.isInteger(Number(messageId)) || !copilotApiUrl) return;
+    setCopilotFeedback((current) => ({ ...current, [messageId]: rating }));
+    try {
+      const response = await fetch(`${copilotApiUrl}/api/copilot/feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conversationId: Number(messageId), rating }),
+      });
+      if (!response.ok) throw new Error("Unable to save feedback");
+    } catch {
+      setCopilotFeedback((current) => {
+        const next = { ...current };
+        delete next[messageId];
+        return next;
+      });
     }
   }
 
@@ -3286,6 +3391,34 @@ function App() {
           </div>
         </section>
       </main>
+      <button type="button" className="copilot-launcher" onClick={() => setCopilotOpen(true)} aria-label="Open Tracer Copilot">
+        <span>AI</span> Ask Tracer Copilot
+      </button>
+      {copilotOpen && <div className="copilot-backdrop" role="presentation" onMouseDown={() => setCopilotOpen(false)}>
+        <aside className="copilot-drawer" role="dialog" aria-modal="true" aria-label="Tracer Copilot" onMouseDown={(event) => event.stopPropagation()}>
+          <div className="copilot-head">
+            <div><p className="eyebrow dark">Tracer Copilot</p><h2>Ask the selected tracer data</h2><span>{fieldData.label} | {selectedProvince === "all" ? "Zambia" : selectedProvince}</span></div>
+            <button type="button" className="ghost-button" onClick={() => setCopilotOpen(false)}>Close</button>
+          </div>
+          <p className="copilot-guidance">Answers use only the active reporting period and filters. Check the evidence line before taking action.</p>
+          <div className="copilot-suggestions">
+            {copilotSuggestions.map((suggestion) => <button type="button" key={suggestion} onClick={() => askCopilot(suggestion)} disabled={copilotLoading}>{suggestion}</button>)}
+          </div>
+          <div className="copilot-messages" aria-live="polite">
+            {copilotMessages.length ? copilotMessages.map((message) => <article className={`copilot-message ${message.role}`} key={message.id}>
+              <strong>{message.role === "user" ? "You" : "Tracer Copilot"}</strong>
+              <p>{message.text}</p>
+              {message.evidence && <small>Evidence: {message.evidence}</small>}
+              {message.role === "assistant" && Number.isInteger(Number(message.id)) && <div className="copilot-feedback"><span>Was this useful?</span><button type="button" className={copilotFeedback[message.id] === 1 ? "active" : ""} onClick={() => rateCopilotAnswer(message.id, 1)}>Helpful</button><button type="button" className={copilotFeedback[message.id] === -1 ? "active" : ""} onClick={() => rateCopilotAnswer(message.id, -1)}>Needs correction</button></div>}
+            </article>) : <div className="copilot-empty">Ask about availability, stockouts, reporting, commodities, provinces, districts, or immediate follow-up actions.</div>}
+            {copilotLoading && <div className="copilot-loading">Analysing the selected tracer data...</div>}
+          </div>
+          <form className="copilot-form" onSubmit={(event) => { event.preventDefault(); askCopilot(); }}>
+            <textarea value={copilotQuestion} onChange={(event) => setCopilotQuestion(event.target.value)} placeholder="Ask a question about the selected tracer data" maxLength="1200" />
+            <button type="submit" disabled={!copilotQuestion.trim() || copilotLoading}>Send</button>
+          </form>
+        </aside>
+      </div>}
       <FacilityTracerModal
         key={openFacility ? `${openFacility.province}-${openFacility.district}-${openFacility.facilityLevel}-${openFacility.name}` : "closed"}
         facility={openFacility}

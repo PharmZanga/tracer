@@ -5416,6 +5416,8 @@ td.neutral {
   .sparkline-button,
   .export-actions,
   .assistant-panel,
+  .copilot-launcher,
+  .copilot-backdrop,
   .ghost-button {
     display: none;
   }
@@ -5477,4 +5479,156 @@ td.neutral {
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+}
+
+.copilot-launcher {
+  position: fixed;
+  right: 24px;
+  bottom: 22px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 10px 15px;
+  border: 1px solid #075f3a;
+  border-radius: 6px;
+  background: #087e45;
+  box-shadow: 0 12px 26px rgba(5, 49, 31, 0.28);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.copilot-launcher span {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  place-items: center;
+  border-radius: 4px;
+  background: #d7f5e5;
+  color: #087e45;
+  font-size: 10px;
+}
+
+.copilot-backdrop {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(8, 30, 20, 0.36);
+}
+
+.copilot-drawer {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  width: min(560px, 100%);
+  min-height: 100vh;
+  padding: 22px;
+  background: #f7faf8;
+  box-shadow: -16px 0 38px rgba(5, 34, 21, 0.22);
+}
+
+.copilot-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #d9e5de;
+}
+
+.copilot-head h2 { margin: 3px 0 5px; font-size: 24px; }
+.copilot-head span, .copilot-guidance { color: #61746a; font-size: 13px; line-height: 1.45; }
+.copilot-guidance { margin: 13px 0; }
+
+.copilot-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding-bottom: 14px;
+}
+
+.copilot-suggestions button,
+.copilot-feedback button {
+  border: 1px solid #c8d9d0;
+  border-radius: 4px;
+  background: #fff;
+  color: #28503a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 9px;
+}
+
+.copilot-suggestions button:disabled { cursor: wait; opacity: 0.6; }
+
+.copilot-messages {
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 4px 2px 14px;
+}
+
+.copilot-message {
+  padding: 12px;
+  border: 1px solid #d9e5de;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.copilot-message.user { margin-left: 46px; border-color: #9bcfb0; background: #edf8f1; }
+.copilot-message strong { display: block; color: #087e45; font-size: 12px; }
+.copilot-message p { margin: 6px 0; color: #24382d; line-height: 1.5; white-space: pre-wrap; }
+.copilot-message small { color: #61746a; font-size: 11px; }
+
+.copilot-feedback { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.copilot-feedback span { color: #61746a; font-size: 12px; }
+.copilot-feedback button.active { border-color: #087e45; background: #dff3e7; color: #075f3a; }
+.copilot-empty, .copilot-loading { padding: 16px; border: 1px dashed #c8d9d0; color: #607168; font-size: 14px; line-height: 1.5; }
+.copilot-loading { border-style: solid; background: #edf8f1; color: #087e45; font-weight: 700; }
+
+.copilot-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  padding-top: 13px;
+  border-top: 1px solid #d9e5de;
+}
+
+.copilot-form textarea {
+  min-height: 48px;
+  resize: vertical;
+  border: 1px solid #b9cec1;
+  border-radius: 4px;
+  padding: 10px;
+  font: inherit;
+}
+
+.copilot-form button {
+  align-self: end;
+  min-height: 48px;
+  padding: 10px 15px;
+  border: 1px solid #087e45;
+  border-radius: 4px;
+  background: #087e45;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.copilot-form button:disabled { cursor: not-allowed; opacity: 0.55; }
+
+@media (max-width: 640px) {
+  .copilot-launcher { right: 12px; bottom: 12px; min-height: 42px; padding: 9px 12px; font-size: 13px; }
+  .copilot-drawer { padding: 16px; }
+  .copilot-head h2 { font-size: 21px; }
+  .copilot-form { grid-template-columns: 1fr; }
+  .copilot-form button { width: 100%; }
 }
