@@ -4933,6 +4933,8 @@ td.neutral {
 }
 
 .quality-compact-workspace .reporting-filter-bar { margin: 0; }
+.quality-compact-redundant-filters { display: none; }
+.quality-primary-filters { margin: 16px 0; }
 
 .quality-compact-grid {
   display: grid;

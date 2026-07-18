@@ -291,7 +291,7 @@ function careLevelBucket(facilityLevel = "") {
 function matchesFacilityCareLevel(facilityLevel = "", selectedLevel = "all") {
   if (selectedLevel === "all") return true;
   const text = String(facilityLevel).toUpperCase();
-  if (selectedLevel === "primary-combined") return text.includes("PRIMARY CARE");
+  if (selectedLevel === "primary-combined") return text.includes("PRIMARY CARE") || text.includes("HEALTH POST") || text.includes("HEALTH CENTRE");
   if (selectedLevel === "health-post") return text.includes("HEALTH POST");
   if (selectedLevel === "health-centre") return text.includes("HEALTH CENTRE");
   if (selectedLevel === "level-1") return careLevelBucket(text) === "level1";
@@ -1454,15 +1454,16 @@ function App() {
   const qualityDistrictOptions = [...new Set(qualityRoster
     .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
     .map((row) => row.district))].sort();
-  const qualityFacilityLevelOptions = [...new Set(qualityRoster
-    .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
-    .filter((row) => qualityDistrictFilter === "all" || row.district === qualityDistrictFilter)
-    .map((row) => row.facilityLevel))].sort();
+  const qualityFacilityLevelOptions = [...facilityCareLevelOptions, ...specialisedCareLevelOptions]
+    .filter((option) => qualityRoster
+      .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
+      .filter((row) => qualityDistrictFilter === "all" || row.district === qualityDistrictFilter)
+      .some((row) => matchesFacilityCareLevel(row.facilityLevel, option.value)));
   const qualityPeriodFacilityMaps = useMemo(() => new Map(qualityRangePeriods.map((period) => [period.id, new Map((period.dataQuality?.facilities || []).map((row) => [`${row.province}|${row.district}|${row.facilityLevel}|${row.name}`, row]))])), [qualityRangePeriods]);
   const qualityFacilityHistories = useMemo(() => qualityRoster
     .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
     .filter((row) => qualityDistrictFilter === "all" || row.district === qualityDistrictFilter)
-    .filter((row) => qualityFacilityLevelFilter === "all" || row.facilityLevel === qualityFacilityLevelFilter)
+    .filter((row) => matchesFacilityCareLevel(row.facilityLevel, qualityFacilityLevelFilter))
     .map((facility) => {
       const key = `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}`;
       const history = qualityRangePeriods.map((period) => {
@@ -2781,24 +2782,32 @@ function App() {
             <div>
               <p className="eyebrow dark">Data Quality</p>
               <h2>Province, district, and level-of-care reporting footprint</h2>
-              <p>Expected reports are checked by province, district, and level of care from the clean tracer universe. Reported means that district submitted that level of care in the selected week.</p>
+              <p>Reporting rate is facilities submitted divided by facilities expected. Filters apply to Zambia, a province, a district, or a selected level of care.</p>
             </div>
           </div>
+          <div className="reporting-filter-bar quality-primary-filters">
+            <label><span>Start month</span><select value={qualityRangeStart} onChange={(event) => setQualityRangeStart(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
+            <label><span>End month</span><select value={qualityRangeEnd} onChange={(event) => setQualityRangeEnd(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
+            <label><span>Reporting period</span><select value={qualityGranularity} onChange={(event) => { setQualityGranularity(event.target.value); setQualityPointFilter("all"); }}><option value="week">Reporting week</option><option value="month">Month</option></select></label>
+            <label><span>Province</span><select value={qualityProvinceFilter} onChange={(event) => { setQualityProvinceFilter(event.target.value); setQualityDistrictFilter("all"); }}><option value="all">Zambia - all provinces</option>{qualityProvinceOptions.map((province) => <option value={province} key={province}>{province}</option>)}</select></label>
+            <label><span>District</span><select value={qualityDistrictFilter} onChange={(event) => setQualityDistrictFilter(event.target.value)}><option value="all">All districts</option>{qualityDistrictOptions.map((district) => <option value={district} key={district}>{district}</option>)}</select></label>
+            <label><span>Level of care</span><select value={qualityFacilityLevelFilter} onChange={(event) => setQualityFacilityLevelFilter(event.target.value)}><option value="all">All levels</option>{qualityFacilityLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}</select></label>
+          </div>
           <div className="stats-grid">
-            <KpiCard label="Province reporting" value={`${fieldData.counts.provinces}/${expectedProvinces}`} sub={`${formatPercent(reportingRate)} provincial footprint`} />
-            <KpiCard label="District reporting" value={`${fieldData.counts.districts}/${expectedDistricts}`} sub={`${missingDistricts} districts did not submit`} />
-            <KpiCard label="Level reports" value={`${expectedFacilityUnits - missingFacilityUnits}/${expectedFacilityUnits}`} sub={`${missingFacilityUnits} district-level reports missing`} />
-            <KpiCard label="Reporting rate" value={formatPercent((expectedFacilityUnits - missingFacilityUnits) / expectedFacilityUnits)} sub="Reported district-level footprint" />
-            <KpiCard label="Selected scope" value={selectedProvince !== "all" ? selectedProvince : "Zambia"} sub="Click a province to expand details" />
+            <KpiCard label="Expected facility reports" value={qualitySummary.expected.toLocaleString()} sub="Facilities expected in the selected period or range" />
+            <KpiCard label="Facilities reported" value={qualitySummary.reported.toLocaleString()} sub="Submitted facility reports in the selected scope" />
+            <KpiCard label="Facilities not reported" value={qualitySummary.missing.toLocaleString()} sub="Expected facility reports not received" tone="red" />
+            <KpiCard label="Facility reporting rate" value={formatPercent(qualitySummary.rate)} sub="Facilities reported / facilities expected" tone={reportingTone(qualitySummary.rate)} />
+            <KpiCard label="Selected scope" value={qualityProvinceFilter === "all" ? "Zambia" : qualityProvinceFilter} sub={`${qualityDistrictFilter === "all" ? "All districts" : qualityDistrictFilter} | ${facilityCareLevelLabel(qualityFacilityLevelFilter)}`} />
           </div>
           <div className="quality-compact-workspace">
-            <div className="reporting-filter-bar">
+            <div className="reporting-filter-bar quality-compact-redundant-filters">
               <label><span>Start month</span><select value={qualityRangeStart} onChange={(event) => setQualityRangeStart(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
               <label><span>End month</span><select value={qualityRangeEnd} onChange={(event) => setQualityRangeEnd(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
               <label><span>Reporting period</span><select value={qualityGranularity} onChange={(event) => { setQualityGranularity(event.target.value); setQualityPointFilter("all"); }}><option value="week">Reporting week</option><option value="month">Month</option></select></label>
               <label><span>Province</span><select value={qualityProvinceFilter} onChange={(event) => { setQualityProvinceFilter(event.target.value); setQualityDistrictFilter("all"); }}><option value="all">All provinces</option>{qualityProvinceOptions.map((province) => <option value={province} key={province}>{province}</option>)}</select></label>
               <label><span>District</span><select value={qualityDistrictFilter} onChange={(event) => setQualityDistrictFilter(event.target.value)}><option value="all">All districts</option>{qualityDistrictOptions.map((district) => <option value={district} key={district}>{district}</option>)}</select></label>
-              <label><span>Level of care</span><select value={qualityFacilityLevelFilter} onChange={(event) => setQualityFacilityLevelFilter(event.target.value)}><option value="all">All levels</option>{qualityFacilityLevelOptions.map((level) => <option value={level} key={level}>{level}</option>)}</select></label>
+              <label><span>Level of care</span><select value={qualityFacilityLevelFilter} onChange={(event) => setQualityFacilityLevelFilter(event.target.value)}><option value="all">All levels</option>{qualityFacilityLevelOptions.map((level) => <option value={level.value} key={level.value}>{level.label}</option>)}</select></label>
             </div>
             <div className="quality-compact-grid">
               <div className="quality-panel">
