@@ -1180,8 +1180,13 @@ function App() {
     ])
       .then(([data, user]) => {
         if (cancelled) return;
-        setActionUpdates(data.updates || {});
-        setActionComments(data.comments || {});
+        setActionUpdates(data?.updates && typeof data.updates === "object" ? data.updates : {});
+        // Older shared-action records may not contain an array for every key.
+        // Keep a malformed response from preventing the dashboard from rendering.
+        setActionComments(Object.fromEntries(
+          Object.entries(data?.comments && typeof data.comments === "object" ? data.comments : {})
+            .map(([key, comments]) => [key, Array.isArray(comments) ? comments : []]),
+        ));
         setActionUserEmail(user?.email || "");
         setActionSyncState("shared");
       })
@@ -3225,7 +3230,7 @@ function App() {
                   {actionCommodityCandidates.length ? actionCommodityCandidates.map((item, index) => {
                     const actionKey = redistributionActionKey(item);
                     const actionUpdate = actionUpdates[actionKey] || {};
-                    const comments = actionComments[actionKey] || [];
+                    const comments = Array.isArray(actionComments[actionKey]) ? actionComments[actionKey] : [];
                     return <tr key={`${actionKey}-${index}`}>
                       <td>{item.province}</td>
                       <td>{item.commodity}</td>
