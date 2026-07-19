@@ -1171,6 +1171,7 @@ function App() {
   });
   const [actionComments, setActionComments] = useState({});
   const [actionCommentDrafts, setActionCommentDrafts] = useState({});
+  const [openActionComments, setOpenActionComments] = useState(null);
   const [actionUserEmail, setActionUserEmail] = useState("");
   const [actionSyncState, setActionSyncState] = useState("loading");
   const [actionCommentError, setActionCommentError] = useState("");
@@ -3408,22 +3409,7 @@ function App() {
                         </select>
                       </td>
                       <td>
-                        <div className="action-comment-form">
-                          <textarea value={actionCommentDrafts[actionKey] || ""} onChange={(event) => setActionCommentDrafts((current) => ({ ...current, [actionKey]: event.target.value }))} placeholder="Write a comment" aria-label={`Comment for ${item.commodity}`} maxLength="1600" />
-                          <button type="button" className="comment-add-button" onClick={() => addActionComment(item)}>Add</button>
-                        </div>
-                        <div className="action-comment-list">
-                          {comments.length ? comments.map((comment) => <div className="action-comment" key={comment.id}>
-                            <strong>{comment.author}</strong>
-                            <small>{new Date(comment.createdAt).toLocaleString()}</small>
-                            <p>{comment.body}</p>
-                            <div className="action-comment-actions">
-                              <button type="button" className="comment-vote" title="Agree" onClick={() => voteOnActionComment(actionKey, comment.id, 1)}>👍 {comment.upvotes || 0}</button>
-                              <button type="button" className="comment-vote" title="Disagree" onClick={() => voteOnActionComment(actionKey, comment.id, -1)}>👎 {comment.downvotes || 0}</button>
-                              {actionUserEmail && comment.author?.toLowerCase() === actionUserEmail.toLowerCase() ? <button type="button" className="comment-delete" onClick={() => deleteActionComment(actionKey, comment.id)}>Delete</button> : null}
-                            </div>
-                          </div>) : <small>No comments yet</small>}
-                        </div>
+                        <button type="button" className="action-comment-summary" onClick={() => setOpenActionComments({ actionKey, item })}>{comments.length} {comments.length === 1 ? "comment" : "comments"}</button>
                         {actionUpdate.updatedAt && <small>Status updated by {actionUpdate.updatedBy || "user"} {new Date(actionUpdate.updatedAt).toLocaleString()}</small>}
                       </td>
                     </tr>;
@@ -3473,6 +3459,30 @@ function App() {
         report={fieldData}
         onClose={() => setOpenFacility(null)}
       />
+      {openActionComments && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setOpenActionComments(null)}>
+        <section className="commodity-detail-panel action-comments-dialog" role="dialog" aria-modal="true" aria-label="Action comments" onMouseDown={(event) => event.stopPropagation()}>
+          <div className="commodity-detail-head">
+            <div><p className="eyebrow dark">Control Tower Action Tracker</p><h2>Comments</h2><span>{openActionComments.item.commodity} | {openActionComments.item.province}</span></div>
+            <button type="button" onClick={() => setOpenActionComments(null)}>Close</button>
+          </div>
+          <div className="action-comment-form action-comment-dialog-form">
+            <label htmlFor="action-comment-dialog"><span>Add a comment</span><textarea id="action-comment-dialog" value={actionCommentDrafts[openActionComments.actionKey] || ""} onChange={(event) => setActionCommentDrafts((current) => ({ ...current, [openActionComments.actionKey]: event.target.value }))} placeholder="Write a comment" maxLength="1600" /></label>
+            <button type="button" className="comment-add-button" onClick={() => addActionComment(openActionComments.item)}>Add comment</button>
+          </div>
+          <div className="action-comment-list action-comment-dialog-list">
+            {(actionComments[openActionComments.actionKey] || []).length ? (actionComments[openActionComments.actionKey] || []).map((comment) => <div className="action-comment" key={comment.id}>
+              <strong>{comment.author}</strong>
+              <small>{new Date(comment.createdAt).toLocaleString()}</small>
+              <p>{comment.body}</p>
+              <div className="action-comment-actions">
+                <button type="button" className="comment-vote" title="Agree" onClick={() => voteOnActionComment(openActionComments.actionKey, comment.id, 1)}>👍 {comment.upvotes || 0}</button>
+                <button type="button" className="comment-vote" title="Disagree" onClick={() => voteOnActionComment(openActionComments.actionKey, comment.id, -1)}>👎 {comment.downvotes || 0}</button>
+                {actionUserEmail && comment.author?.toLowerCase() === actionUserEmail.toLowerCase() ? <button type="button" className="comment-delete" onClick={() => deleteActionComment(openActionComments.actionKey, comment.id)}>Delete</button> : null}
+              </div>
+            </div>) : <div className="empty-state">No comments have been added to this action yet.</div>}
+          </div>
+        </section>
+      </div>}
       {stockCategoryDialog && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setStockCategoryDialog(false)}>
         <section className="commodity-detail-panel stock-category-dialog" role="dialog" aria-modal="true" aria-label="ZAMMSA stock category details" onMouseDown={(event) => event.stopPropagation()}>
           <div className="commodity-detail-head"><div><p className="eyebrow dark">ZAMMSA Weekly Stock Status</p><h2>{selectedStockCategory}</h2><span>{stockStreamLabels[stockStream] || stockStream} | {stockData?.label}</span></div><button type="button" onClick={() => setStockCategoryDialog(false)}>Close</button></div>

@@ -875,6 +875,28 @@ select:focus-visible {
   gap: 6px;
 }
 
+.action-comment-summary {
+  border: 1px solid #89bda0;
+  border-radius: 6px;
+  background: #f4fbf6;
+  color: #087e45;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 7px 10px;
+  white-space: nowrap;
+}
+
+.action-comment-summary:hover { background: #e7f5eb; }
+
+.action-comments-dialog { width: min(720px, 100%); }
+.action-comment-dialog-form { margin: 16px 0; }
+.action-comment-dialog-form label { display: grid; gap: 6px; color: #51665a; font-size: 12px; font-weight: 750; }
+.action-comment-dialog-form textarea { width: 100%; min-height: 104px; padding: 9px; border: 1px solid #cad8ce; border-radius: 6px; font: inherit; resize: vertical; }
+.action-comment-dialog-list { margin: 0; }
+.action-comment-dialog-list .action-comment { padding: 12px; border: 1px solid #dbe9df; border-left: 3px solid #62ab7d; border-radius: 6px; background: #fbfdfb; }
+
 .comment-add-button {
   justify-self: start;
   border: 1px solid #087e45;
