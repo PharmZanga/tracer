@@ -123,31 +123,48 @@ async function audit(email, event, actor = null) {
 }
 
 async function sendEmail({ to, subject, text, html }) {
-  if (!resendApiKey || !emailFrom || !to?.length) return false;
+  if (!resendApiKey) return { delivered: false, reason: "RESEND_API_KEY is not configured." };
+  if (!emailFrom) return { delivered: false, reason: "EMAIL_FROM is not configured." };
+  if (!to?.length) return { delivered: false, reason: "No recipient email was provided." };
   try {
     const result = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({ from: emailFrom, to, subject, text, html }),
     });
-    if (!result.ok) console.error("Resend notification failed:", await result.text());
-    return result.ok;
+    if (result.ok) return { delivered: true, reason: "" };
+
+    const responseText = await result.text();
+    let details = responseText;
+    try {
+      const parsed = JSON.parse(responseText);
+      details = parsed.message || parsed.name || responseText;
+    } catch {
+      // Keep the plain-text Resend response when it is not JSON.
+    }
+    const safeDetails = String(details || "No diagnostic response returned.")
+      .replace(/[\r\n]+/g, " ")
+      .slice(0, 220);
+    const reason = `Resend ${result.status}: ${safeDetails}`;
+    console.error("Resend notification failed:", reason);
+    return { delivered: false, reason };
   } catch (error) {
     console.error("Resend notification failed:", error);
-    return false;
+    return { delivered: false, reason: "Network error while contacting Resend." };
   }
 }
 
 async function sendApprovedAccessEmail(email, name = "") {
-  if (!supabaseAdmin) return false;
+  if (!supabaseAdmin) return { delivered: false, reason: "Supabase admin credentials are not configured." };
   const { data, error } = await supabaseAdmin.auth.admin.generateLink({
     type: "magiclink",
     email,
     options: { redirectTo: "https://tracer-secure-dashboard.onrender.com/auth/callback", data: { full_name: name } },
   });
   if (error || !data?.properties?.action_link) {
-    console.error("Unable to create access link:", error?.message || "No link returned");
-    return false;
+    const reason = `Supabase could not create the access link: ${String(error?.message || "No link returned").slice(0, 180)}`;
+    console.error("Unable to create access link:", reason);
+    return { delivered: false, reason };
   }
   const accessLink = data.properties.action_link;
   return sendEmail({
@@ -340,13 +357,17 @@ app.post("/admin/users/:email/:decision", requireSession, requireAdmin, async (r
     const approved = decision === "approve";
     await pool.query("UPDATE dashboard_users SET status = $2, approved_at = CASE WHEN $2 = 'approved' THEN NOW() ELSE NULL END, approved_by = $3 WHERE email = $1", [email, approved ? "approved" : "rejected", request.session.user.email]);
     await audit(email, approved ? "access_approved" : "access_rejected", request.session.user.email);
-    const delivered = approved ? await sendApprovedAccessEmail(email) : await sendEmail({
+    const emailResult = approved ? await sendApprovedAccessEmail(email) : await sendEmail({
       to: [email],
       subject: "National Tracer Dashboard access request update",
       text: "Your dashboard access request was not approved. Contact the National Supply Chain Control Tower if you need assistance.",
       html: "<p>Your National Tracer Dashboard access request was not approved.</p><p>Contact the National Supply Chain Control Tower if you need assistance.</p>",
     });
-    response.redirect(`/admin?message=${encodeURIComponent(approved ? (delivered ? "Access approved and secure link sent." : "Access approved, but the email link could not be sent. Check Resend settings.") : (delivered ? "Request rejected and update sent." : "Request rejected. The update email could not be sent."))}`);
+    if (!emailResult.delivered) await audit(email, "access_email_delivery_failed", request.session.user.email);
+    const message = approved
+      ? (emailResult.delivered ? "Access approved and secure link sent." : `Access approved, but delivery failed: ${emailResult.reason}`)
+      : (emailResult.delivered ? "Request rejected and update sent." : `Request rejected, but the update email could not be sent: ${emailResult.reason}`);
+    response.redirect(`/admin?message=${encodeURIComponent(message)}`);
   } catch (error) { next(error); }
 });
 
@@ -357,9 +378,10 @@ app.post("/admin/users/:email/resend", requireSession, requireAdmin, async (requ
     const userResult = await pool.query("SELECT name, status FROM dashboard_users WHERE email = $1", [email]);
     const user = userResult.rows[0];
     if (!user || user.status !== "approved") return response.redirect("/admin?message=Only approved users can receive an access link.");
-    const delivered = await sendApprovedAccessEmail(email, user.name);
-    if (delivered) await audit(email, "access_link_resent", request.session.user.email);
-    response.redirect(`/admin?message=${encodeURIComponent(delivered ? "Secure access link resent." : "The access link could not be sent. Check Resend settings.")}`);
+    const emailResult = await sendApprovedAccessEmail(email, user.name);
+    if (emailResult.delivered) await audit(email, "access_link_resent", request.session.user.email);
+    else await audit(email, "access_link_delivery_failed", request.session.user.email);
+    response.redirect(`/admin?message=${encodeURIComponent(emailResult.delivered ? "Secure access link resent." : `The access link could not be sent: ${emailResult.reason}`)}`);
   } catch (error) { next(error); }
 });
 
