@@ -13,6 +13,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background: #edf4ef;
+  font-size: 13px;
 }
 
 button,
@@ -4586,6 +4587,8 @@ td.neutral {
 }
 
 @media (max-width: 980px) {
+  body { font-size: 14px; }
+
   .control-tower-app {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto minmax(0, 1fr);
