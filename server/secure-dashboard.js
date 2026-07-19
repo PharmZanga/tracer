@@ -82,7 +82,7 @@ function requestPage(message = "", alreadyApproved = false) {
 
 function requireSession(request, response, next) {
   if (request.session?.user) return next();
-  return response.redirect("/login");
+  return response.redirect("/request-access");
 }
 
 function requireAdmin(request, response, next) {
