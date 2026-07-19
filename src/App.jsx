@@ -2032,7 +2032,7 @@ function App() {
         ? "Tracer Copilot took too long to respond. Try again in a moment."
         : error.message || "Tracer Copilot could not answer right now.";
       setCopilotMessages((current) => [...current, fallback
-        ? { id: `fallback-${Date.now()}`, role: "assistant", text: `${fallback.text}\n\nFull AI analysis is temporarily unavailable: ${text}`, evidence: fallback.evidence, retryQuestion: message }
+        ? { id: `fallback-${Date.now()}`, role: "assistant", text: fallback.text, evidence: fallback.evidence, retryQuestion: message }
         : { id: `error-${Date.now()}`, role: "assistant", text, retryQuestion: message }]);
     } finally {
       window.clearTimeout(timeout);
