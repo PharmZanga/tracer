@@ -244,6 +244,7 @@ RAW_FACILITY_REFERENCE_SOURCES = [
     {"province": "SOUTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 26.06.26 -final.xlsx")},
 ]
 RAW_FACILITY_IDENTITIES = {}
+TRUSTED_RAW_FACILITY_KEYS = set()
 
 # Authoritative corrections for named hospitals whose copied labels appear in
 # unrelated province/district rows in the clean source workbook. These take
@@ -348,7 +349,17 @@ def facility_match_key(value):
         "kabwe central": "kabwe central hospital",
         "kafue gorge": "kafue gorge hospital",
     }
-    return aliases.get(text, text)
+    text = aliases.get(text, text)
+    district_hospital = re.fullmatch(r"(.+?)\s+(?:dh|district hos|district hosp)", text)
+    if district_hospital:
+        return f"{district_hospital.group(1)} district hospital"
+    return text
+
+
+def matches_named_district(facility_key, district):
+    """True only when a district hospital is recorded against its own district."""
+    match = re.fullmatch(r"(.+?)\s+district\s+hospital", facility_key)
+    return bool(match and normalize_district(match.group(1)) == normalize_district(district))
 
 
 def normalize_province(value):
@@ -604,7 +615,10 @@ def load_raw_facility_identities():
         path = source["path"]
         if not path.exists() or path.name.startswith("~$"):
             continue
-        wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+        # Some provincial templates have an invalid saved worksheet dimension.
+        # A full read is required here; read-only mode reports no max columns and
+        # silently skips valid reporting-unit headers such as Chavuma DH.
+        wb = openpyxl.load_workbook(path, read_only=False, data_only=True)
         province = normalize_province(source["province"])
         for ws in wb.worksheets:
             sheet_name = ws.title.strip()
@@ -627,7 +641,21 @@ def load_raw_facility_identities():
                 facility_level = canonical_facility_level_for_facility(raw_level, facility)
                 candidates[facility_key].add((province, normalize_district(district), facility_level))
         wb.close()
-    return {key: next(iter(values)) for key, values in candidates.items() if len(values) == 1}
+    identities = {}
+    trusted_keys = set()
+    for key, values in candidates.items():
+        matching_districts = {value for value in values if matches_named_district(key, value[1])}
+        if len(matching_districts) == 1:
+            identities[key] = next(iter(matching_districts))
+            trusted_keys.add(key)
+        elif len(values) == 1 and key in VERIFIED_FACILITY_IDENTITIES:
+            # A curated named facility is allowed to use its provincial raw
+            # submission even when its title does not include the district.
+            identities[key] = next(iter(values))
+            trusted_keys.add(key)
+    TRUSTED_RAW_FACILITY_KEYS.clear()
+    TRUSTED_RAW_FACILITY_KEYS.update(trusted_keys)
+    return identities
 
 
 def load_raw_availability_overrides():
@@ -1170,7 +1198,10 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
     expected_named_reports = {
         (province, district, facility_level, facility)
         for province, district, facility_level, facility in expected_facilities
-        if district != "UNKNOWN"
+        if district != "UNKNOWN" and (
+            facility_match_key(facility) in VERIFIED_FACILITY_IDENTITIES
+            or facility_match_key(facility) in TRUSTED_RAW_FACILITY_KEYS
+        )
     }
 
     for period in periods:
