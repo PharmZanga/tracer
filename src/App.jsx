@@ -1541,23 +1541,10 @@ function App() {
     const y = 100 - normalizeRate(row.rate) * 100;
     return `${x},${y}`;
   }).join(" ");
-  // Match the Reporting Rate page: a district is counted once per reporting
-  // period when it submitted a tracer report, rather than counting commodity rows.
-  const qualityDistrictReportingTrendRows = useMemo(() => {
-    const groups = new Map();
-    qualityRangePeriods.forEach((period) => {
-      const key = qualityGranularity === "month" ? period.month : period.id;
-      const current = groups.get(key) || { id: key, label: qualityGranularity === "month" ? monthLabel(period.month) : period.label, expected: 0, reported: 0 };
-      const expectedRows = (period.dataQuality?.districts || [])
-        .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
-        .filter((row) => qualityDistrictFilter === "all" || row.name === qualityDistrictFilter);
-      const submittedKeys = new Set((period.districts || []).map((row) => `${row.province}|${row.name}`));
-      current.expected += expectedRows.length;
-      current.reported += expectedRows.filter((row) => submittedKeys.has(`${row.province}|${row.name}`)).length;
-      groups.set(key, current);
-    });
-    return [...groups.values()].map((row) => ({ ...row, missing: row.expected - row.reported, rate: row.expected ? row.reported / row.expected : 0 }));
-  }, [qualityRangePeriods, qualityGranularity, qualityProvinceFilter, qualityDistrictFilter]);
+  // Use the same expected-versus-reported reporting-unit measure as the
+  // Reporting Rate page. A district with a single commodity row is not
+  // automatically treated as fully reported.
+  const qualityDistrictReportingTrendRows = qualityTrendRows;
   const qualitySummary = qualityFacilityHistories.reduce((summary, facility) => {
     summary.expected += facility.expectedReports;
     summary.reported += facility.reportsSubmitted;
@@ -1590,7 +1577,7 @@ function App() {
   const qualityTimelinePartialPeriods = qualityDistrictReportingTrendRows.filter((row) => row.rate > 0 && row.rate < 1);
   const qualityTimelineReportedPeriods = qualityDistrictReportingTrendRows.filter((row) => row.rate >= 1);
   const qualityTimelineNarrative = qualityDistrictFilter === "all"
-    ? "District reporting rate across the selected provinces and reporting period."
+    ? "Expected reporting units submitted across the selected provinces and reporting period."
     : qualityTimelineMissingPeriods.length
       ? `${selectedQualityDistrictLabel} did not report in ${qualityTimelineMissingPeriods.map((row) => row.label.replace("Week ", "")).join(", ")}.`
       : qualityTimelinePartialPeriods.length
@@ -3063,8 +3050,8 @@ function App() {
             </div>
             <div className="quality-compact-grid">
               <div className="quality-panel">
-                <div className="quality-panel-head"><div><h3>District reporting rate trend</h3><p>{qualityTimelineNarrative}</p></div><span>{qualityDistrictReportingTrendRows.length} periods</span></div>
-                <div className="reporting-trend-graph compact"><div className="reporting-trend-axis">District reporting rate (%)</div><div className="reporting-trend-grid" aria-hidden="true">{[0, 25, 50, 75, 100].map((value) => <i key={value} style={{ bottom: `${value}%` }}><small>{value}%</small></i>)}</div><div className="reporting-trend-points" style={{ "--trend-points": qualityDistrictReportingTrendRows.length }}>{qualityDistrictReportingTrendRows.map((row) => <button type="button" className={qualityPointFilter === row.id ? "active" : ""} key={row.id} style={{ "--trend-rate": `${100 - normalizeRate(row.rate) * 100}%` }} onClick={() => setQualityPointFilter((current) => current === row.id ? "all" : row.id)}><b>{formatPercent(row.rate)}</b><span>{qualityGranularity === "month" ? row.label.replace(" 2026", "") : row.label.replace("Week ", "W")}</span></button>)}</div><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points={qualityDistrictReportingTrendPoints} /></svg></div>
+                <div className="quality-panel-head"><div><h3>Facility reporting rate trend</h3><p>{qualityTimelineNarrative}</p></div><span>{qualityDistrictReportingTrendRows.length} periods</span></div>
+                <div className="reporting-trend-graph compact"><div className="reporting-trend-axis">Facility reporting rate (%)</div><div className="reporting-trend-grid" aria-hidden="true">{[0, 25, 50, 75, 100].map((value) => <i key={value} style={{ bottom: `${value}%` }}><small>{value}%</small></i>)}</div><div className="reporting-trend-points" style={{ "--trend-points": qualityDistrictReportingTrendRows.length }}>{qualityDistrictReportingTrendRows.map((row) => <button type="button" className={qualityPointFilter === row.id ? "active" : ""} key={row.id} style={{ "--trend-rate": `${100 - normalizeRate(row.rate) * 100}%` }} onClick={() => setQualityPointFilter((current) => current === row.id ? "all" : row.id)}><b>{formatPercent(row.rate)}</b><span>{qualityGranularity === "month" ? row.label.replace(" 2026", "") : row.label.replace("Week ", "W")}</span></button>)}</div><svg viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points={qualityDistrictReportingTrendPoints} /></svg></div>
               </div>
               <div className="quality-panel quality-compact-summary">
                 <div className="quality-panel-head"><div><h3>Follow-up priority</h3><p>Most persistent gaps in the current filters. Open a history to see exactly which reporting weeks were missed.</p></div><span>{qualityFollowupRows.length} shown</span></div>
