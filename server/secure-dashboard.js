@@ -43,6 +43,14 @@ function escapeHtml(value = "") {
   return String(value).replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]);
 }
 
+function normalizeRouteEmail(value = "") {
+  try {
+    return decodeURIComponent(String(value)).trim().toLowerCase();
+  } catch {
+    return String(value).trim().toLowerCase();
+  }
+}
+
 function layout(title, body) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(title)}</title><style>
     :root{font-family:Inter,system-ui,sans-serif;color:#15281d;background:#edf4ef}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(rgba(5,47,37,.94),rgba(5,47,37,.9)),url('https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=1800&q=80') center/cover}.card{width:min(620px,100%);padding:28px;border-top:5px solid #1d9c58;background:#fff;box-shadow:0 22px 55px rgba(0,0,0,.25)}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 14px}p{color:#5b6c62;line-height:1.5}label{display:grid;gap:6px;margin:14px 0;color:#3f5548;font-size:13px;font-weight:700}input,select,textarea{width:100%;min-height:42px;padding:9px 10px;border:1px solid #c4d5ca;font:inherit}button,a.button{display:inline-flex;justify-content:center;align-items:center;min-height:42px;padding:9px 14px;border:0;background:#087e45;color:#fff;cursor:pointer;font:inherit;font-weight:800;text-decoration:none}.muted{font-size:12px;color:#68786f}.error{padding:10px;background:#fff0ed;color:#b42318}.success{padding:10px;background:#e7f5ed;color:#087e45}.grid{display:grid;gap:12px}.header{margin-bottom:20px}.header span{color:#087e45;font-size:12px;font-weight:800;text-transform:uppercase}.admin{width:min(1100px,100%)}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;text-align:left;border-bottom:1px solid #e0e9e3}th{background:#f4f8f5;color:#4a5f51;font-size:11px;text-transform:uppercase}.row-actions{display:flex;gap:6px}.row-actions button{min-height:32px;padding:6px 9px}.reject{background:#b42318}.nav{display:flex;justify-content:space-between;gap:12px;margin-bottom:16px}.nav a{color:#087e45;font-weight:800}.qr svg{max-width:210px;height:auto}.hidden{display:none}.access-card{padding:0;overflow:hidden}.access-content{padding:28px}.access-brand{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 24px;background:#053d2f;color:#fff}.brand-mark{display:flex;align-items:center;gap:10px;min-width:0}.brand-mark:last-child{text-align:right;justify-content:flex-end}.brand-mark img{width:50px;height:58px;object-fit:contain}.brand-mark:last-child img{width:54px}.brand-mark small{display:block;color:#b7dbcb;font-size:10px;font-weight:800;text-transform:uppercase}.brand-mark strong{display:block;font-size:13px;line-height:1.18}.access-footer{margin:28px -28px -28px;padding:15px 28px;background:#f1f6f3;color:#4b6255;font-size:12px}.access-footer strong{display:block;color:#1d3626}@media(max-width:640px){body{padding:12px}.card{padding:20px}.admin{overflow-x:auto}.row-actions{flex-direction:column}.access-card{padding:0}.access-content{padding:20px}.access-brand{padding:14px;gap:9px}.brand-mark{gap:6px}.brand-mark img{width:38px;height:44px}.brand-mark:last-child img{width:42px}.brand-mark small{font-size:8px}.brand-mark strong{font-size:10px}.access-footer{margin:22px -20px -20px;padding:13px 20px}}
@@ -350,7 +358,7 @@ app.get("/admin", requireSession, requireAdmin, async (request, response, next) 
 });
 
 app.post("/admin/users/:email/:decision", requireSession, requireAdmin, async (request, response, next) => {
-  const email = String(request.params.email || "").toLowerCase();
+  const email = normalizeRouteEmail(request.params.email);
   const decision = request.params.decision;
   if (!/^\S+@\S+\.\S+$/.test(email) || !["approve", "reject"].includes(decision)) return response.status(400).send("Invalid request.");
   try {
@@ -372,7 +380,7 @@ app.post("/admin/users/:email/:decision", requireSession, requireAdmin, async (r
 });
 
 app.post("/admin/users/:email/resend", requireSession, requireAdmin, async (request, response, next) => {
-  const email = String(request.params.email || "").toLowerCase();
+  const email = normalizeRouteEmail(request.params.email);
   if (!/^\S+@\S+\.\S+$/.test(email)) return response.status(400).send("Invalid request.");
   try {
     const userResult = await pool.query("SELECT name, status FROM dashboard_users WHERE email = $1", [email]);
