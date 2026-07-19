@@ -229,6 +229,22 @@ RAW_AVAILABILITY_SOURCES = [
     },
 ]
 
+# Provincial Week 4 submissions provide the verified facility-to-district
+# reference used to correct copied facility labels in the clean Jan-Jun file.
+RAW_FACILITY_REFERENCE_SOURCES = [
+    {"province": "MUCHINGA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\26.6.26 MUCHINGA 2026 TRACER WEEKLY REPORT.xlsx")},
+    {"province": "NORTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\27.06.26 NORTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx")},
+    {"province": "COPPERBELT PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\28.6.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx")},
+    {"province": "CENTRAL PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\28_6_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx")},
+    {"province": "NORTH-WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\28-06-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx")},
+    {"province": "WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\28-06-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT.xlsx")},
+    {"province": "EASTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\28th June EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (27).xlsx")},
+    {"province": "LUAPULA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT 27 6 26.xlsx")},
+    {"province": "LUSAKA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-26.06.2026.xlsx")},
+    {"province": "SOUTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 26.06.26 -final.xlsx")},
+]
+RAW_FACILITY_IDENTITIES = {}
+
 
 def clean(value):
     if value is None:
@@ -260,6 +276,8 @@ def facility_match_key(value):
     text = norm_text(value)
     aliases = {
         "levy mwanawasa uth": "levy mwanawasa university teaching hospital",
+        "chadiza district hos": "chadiza district hospital",
+        "chamboli level 1": "chamboli 1st level hospital",
     }
     return aliases.get(text, text)
 
@@ -285,6 +303,12 @@ def normalize_district(value):
     text = (clean(value) or "Unknown district").upper()
     text = text.replace("`", "'")
     text = re.sub(r"\s+DISTRICT$", "", text).strip()
+    if text in {
+        "CENTRAL PROVINCE", "COPPERBELT PROVINCE", "EASTERN PROVINCE", "LUAPULA PROVINCE",
+        "LUSAKA PROVINCE", "MUCHINGA PROVINCE", "NORTH-WESTERN PROVINCE", "NORTHERN PROVINCE",
+        "SOUTHERN PROVINCE", "WESTERN PROVINCE",
+    }:
+        return "UNKNOWN"
     aliases = {
         "SINZONGWE": "SINAZONGWE",
         "CHKANKATA": "CHIKANKATA",
@@ -452,6 +476,11 @@ def canonical_facility_identity(province, district, facility_level, facility_nam
             "Arthur Children's Davison Hospital",
         )
 
+    verified_identity = RAW_FACILITY_IDENTITIES.get(facility_key)
+    if verified_identity:
+        verified_province, verified_district, verified_level = verified_identity
+        return verified_province, verified_district, verified_level, facility_text
+
     return province, district, facility_level, facility_text
 
 
@@ -482,6 +511,45 @@ def raw_facility_level(sheet_name, sheet_title):
 
 def normalize_raw_facility_level(sheet_name, sheet_title):
     return canonical_facility_level(raw_facility_level(sheet_name, sheet_title))
+
+
+def load_raw_facility_identities():
+    """Build a verified named-hospital roster from the provincial tracer files.
+
+    Only unique named facilities are used. Aggregate health-post/health-centre
+    rows are intentionally excluded because their submitted files do not name
+    individual facilities.
+    """
+    candidates = defaultdict(set)
+    skip = {"SITUATION BOARD", "SUMMARY", "COMMENTS", "COMMENT", "RECOMMENDATIONS", "RECOMEDATIONS"}
+    for source in RAW_FACILITY_REFERENCE_SOURCES:
+        path = source["path"]
+        if not path.exists() or path.name.startswith("~$"):
+            continue
+        wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+        province = normalize_province(source["province"])
+        for ws in wb.worksheets:
+            sheet_name = ws.title.strip()
+            if any(token in sheet_name.upper() for token in skip):
+                continue
+            if (ws.max_row or 0) < 4 or (ws.max_column or 0) < 7:
+                continue
+            item_header = str(ws.cell(3, 2).value or "").upper()
+            if "DESCRIPTION" not in item_header and "PRODUCT" not in item_header:
+                continue
+            raw_level = normalize_raw_facility_level(sheet_name, ws.cell(1, 1).value)
+            if raw_level in {"HEALTH POST", "HEALTH CENTRE", "PRIMARY CARE - NOT SPECIFIED"}:
+                continue
+            for start_col in range(5, (ws.max_column or 0) + 1, 4):
+                district = clean(ws.cell(2, start_col).value)
+                facility = clean(ws.cell(2, start_col + 1).value)
+                facility_key = facility_match_key(facility)
+                if not district or not facility_key or facility_key in {"all", "hc hp", "ref"} or str(facility).startswith("="):
+                    continue
+                facility_level = canonical_facility_level_for_facility(raw_level, facility)
+                candidates[facility_key].add((province, normalize_district(district), facility_level))
+        wb.close()
+    return {key: next(iter(values)) for key, values in candidates.items() if len(values) == 1}
 
 
 def load_raw_availability_overrides():
@@ -1131,6 +1199,9 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
 
 
 def main():
+    RAW_FACILITY_IDENTITIES.clear()
+    RAW_FACILITY_IDENTITIES.update(load_raw_facility_identities())
+    print(f"Loaded {len(RAW_FACILITY_IDENTITIES)} verified named-facility identities from provincial submissions.")
     availability_overrides = load_raw_availability_overrides()
     configs = []
     # The approved clean workbook begins on 22 February. January is retained
