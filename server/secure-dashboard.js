@@ -6,6 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { readFile } from "node:fs/promises";
+import { createHash, randomInt } from "node:crypto";
 
 const { Pool } = pg;
 const app = express();
@@ -60,7 +61,7 @@ function layout(title, body) {
 function loginPage(message = "") {
   const configured = Boolean(supabaseUrl && supabaseAnonKey && supabaseAdmin);
   if (configured) {
-    return layout("Secure dashboard sign in", `<main class="card"><div class="header"><span>National Tracer Drug Availability</span><h1>Secure dashboard sign in</h1><p>Enter your approved work email and the six-digit access code from your approval email.</p></div><label>Work email<input id="email" type="email" autocomplete="email" required></label><label>Access code<input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required></label><button id="sign-in" type="button">Verify and open dashboard</button><p id="status" class="muted"></p><p class="muted">Need a new code? Ask the dashboard administrator to resend your access email.</p><p class="muted">Do not have access? <a href="/request-access">Request dashboard access</a></p></main><script type="module">import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';const supabase=createClient(${JSON.stringify(supabaseUrl)},${JSON.stringify(supabaseAnonKey)}),email=document.querySelector('#email'),code=document.querySelector('#code'),status=document.querySelector('#status');document.querySelector('#sign-in').addEventListener('click',async()=>{const emailValue=email.value.trim(),token=code.value.trim();if(!emailValue||!token){status.textContent='Enter your approved email and six-digit access code.';return}status.textContent='Verifying access code...';const {data,error}=await supabase.auth.verifyOtp({email:emailValue,token,type:'email'});if(error||!data.session){status.textContent=error?.message||'The code is invalid or has expired. Ask the administrator to resend it.';return}const response=await fetch('/auth/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessToken:data.session.access_token,claimedEmail:emailValue})});const body=await response.json();if(response.ok){window.location.href='/';return}status.textContent=body.error||'Unable to complete sign in.'});</script>`);
+    return layout("Secure dashboard sign in", `<main class="card"><div class="header"><span>National Tracer Drug Availability</span><h1>Secure dashboard sign in</h1><p>Enter your approved work email and the six-digit access code from your approval email.</p></div><label>Work email<input id="email" type="email" autocomplete="email" required></label><label>Access code<input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required></label><button id="sign-in" type="button">Verify and open dashboard</button><p id="status" class="muted"></p><p class="muted">Need a new code? Ask the dashboard administrator to resend your access email.</p><p class="muted">Do not have access? <a href="/request-access">Request dashboard access</a></p></main><script>const email=document.querySelector('#email'),code=document.querySelector('#code'),status=document.querySelector('#status');document.querySelector('#sign-in').addEventListener('click',async()=>{const emailValue=email.value.trim(),accessCode=code.value.trim();if(!emailValue||!accessCode){status.textContent='Enter your approved email and six-digit access code.';return}status.textContent='Verifying access code...';const response=await fetch('/auth/verify-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:emailValue,code:accessCode})});const body=await response.json();if(response.ok){window.location.href='/';return}status.textContent=body.error||'The code is invalid or has expired. Ask the administrator to resend it.';});</script>`);
   }
   const notice = message ? `<p class="${message.startsWith("Error") ? "error" : "success"}">${escapeHtml(message.replace(/^Error:\s*/, ""))}</p>` : "";
   const content = configured ? `<main class="card"><div class="header"><span>National Tracer Drug Availability</span><h1>Secure dashboard sign in</h1><p>Your approval email contains the one-click dashboard access link. Use this page only if that link has expired and you need a replacement.</p></div>${notice}<label>Work email<input id="email" type="email" autocomplete="email" required></label><button id="sign-in" type="button">Send replacement sign-in link</button><p id="status" class="muted"></p><p class="muted">Do not have access? <a href="/request-access">Request dashboard access</a></p></main><script type="module">import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';const supabase=createClient(${JSON.stringify(supabaseUrl)},${JSON.stringify(supabaseAnonKey)});const email=document.querySelector('#email'),status=document.querySelector('#status');document.querySelector('#sign-in').addEventListener('click',async()=>{status.textContent='Sending replacement sign-in link...';const {error}=await supabase.auth.signInWithOtp({email:email.value.trim(),options:{emailRedirectTo:window.location.origin+'/auth/callback'}});status.textContent=error?error.message:'Check your email for the replacement sign-in link.'});</script>` : `<main class="card"><div class="header"><span>National Tracer Drug Availability</span><h1>Secure dashboard setup required</h1><p>The Render service is running, but Supabase authentication credentials have not been configured yet.</p></div><p class="muted">Set SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, SESSION_SECRET, and ADMIN_EMAILS in Render before enabling this service.</p></main>`;
@@ -106,6 +107,13 @@ async function initializeDatabase() {
       email TEXT NOT NULL,
       event TEXT NOT NULL,
       actor TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE TABLE IF NOT EXISTS dashboard_access_codes (
+      email TEXT PRIMARY KEY REFERENCES dashboard_users(email) ON DELETE CASCADE,
+      code_hash TEXT NOT NULL,
+      expires_at TIMESTAMPTZ NOT NULL,
+      used_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
     CREATE TABLE IF NOT EXISTS copilot_conversations (
@@ -166,23 +174,19 @@ async function sendEmail({ to, subject, text, html }) {
 }
 
 async function sendApprovedAccessEmail(email, name = "") {
-  if (!supabaseAdmin) return { delivered: false, reason: "Supabase admin credentials are not configured." };
-  const { data, error } = await supabaseAdmin.auth.admin.generateLink({
-    type: "magiclink",
-    email,
-    options: { redirectTo: "https://tracer-secure-dashboard.onrender.com/auth/callback", data: { full_name: name } },
-  });
-  const accessCode = data?.properties?.email_otp;
-  if (error || !accessCode) {
-    const reason = `Supabase could not create the access code: ${String(error?.message || "No code returned").slice(0, 180)}`;
-    console.error("Unable to create access code:", reason);
-    return { delivered: false, reason };
-  }
+  const accessCode = String(randomInt(0, 1_000_000)).padStart(6, "0");
+  const codeHash = createHash("sha256").update(`${email.toLowerCase()}:${accessCode}:${process.env.SESSION_SECRET || ""}`).digest("hex");
+  await pool.query(
+    `INSERT INTO dashboard_access_codes (email, code_hash, expires_at, used_at, created_at)
+     VALUES ($1, $2, NOW() + INTERVAL '30 minutes', NULL, NOW())
+     ON CONFLICT (email) DO UPDATE SET code_hash = EXCLUDED.code_hash, expires_at = EXCLUDED.expires_at, used_at = NULL, created_at = NOW()`,
+    [email.toLowerCase(), codeHash],
+  );
   return sendEmail({
     to: [email],
     subject: "Your National Tracer Dashboard access code",
-    text: `Your dashboard access has been approved. Go to https://tracer-secure-dashboard.onrender.com/login and enter this six-digit access code: ${accessCode}`,
-    html: `<p>Your National Tracer Dashboard access request has been approved.</p><p>Go to <a href="https://tracer-secure-dashboard.onrender.com/login">secure sign in</a> and enter this access code:</p><p style="font-size:28px;font-weight:700;letter-spacing:5px">${escapeHtml(accessCode)}</p><p>This code is for your approved email address only.</p>`,
+    text: `Your dashboard access has been approved. Go to https://tracer-secure-dashboard.onrender.com/login and enter this six-digit access code: ${accessCode}. The code expires in 30 minutes and can be used once.`,
+    html: `<p>Your National Tracer Dashboard access request has been approved.</p><p>Go to <a href="https://tracer-secure-dashboard.onrender.com/login">secure sign in</a> and enter this access code:</p><p style="font-size:28px;font-weight:700;letter-spacing:5px">${escapeHtml(accessCode)}</p><p>This code expires in 30 minutes and can be used once. It is for your approved email address only.</p>`,
   });
 }
 
@@ -225,6 +229,33 @@ app.post("/request-access", async (request, response, next) => {
     });
     response.redirect("/request-access?message=Request submitted for administrator approval.");
   } catch (error) { next(error); }
+});
+
+app.post("/auth/verify-code", async (request, response, next) => {
+  const email = String(request.body?.email || "").trim().toLowerCase();
+  const accessCode = String(request.body?.code || "").trim();
+  if (!/^\S+@\S+\.\S+$/.test(email) || !/^\d{6}$/.test(accessCode)) {
+    return response.status(400).json({ error: "Enter the approved email address and six-digit access code." });
+  }
+  try {
+    const userResult = await pool.query("SELECT email, name, province, role, status FROM dashboard_users WHERE email = $1", [email]);
+    const user = userResult.rows[0];
+    if (!user || user.status !== "approved") {
+      return response.status(403).json({ error: "This email is not approved for dashboard access." });
+    }
+    const codeResult = await pool.query("SELECT code_hash, expires_at, used_at FROM dashboard_access_codes WHERE email = $1", [email]);
+    const access = codeResult.rows[0];
+    const codeHash = createHash("sha256").update(`${email}:${accessCode}:${process.env.SESSION_SECRET || ""}`).digest("hex");
+    if (!access || access.used_at || new Date(access.expires_at) <= new Date() || access.code_hash !== codeHash) {
+      return response.status(401).json({ error: "The code is invalid or has expired. Ask the administrator to resend it." });
+    }
+    await pool.query("UPDATE dashboard_access_codes SET used_at = NOW() WHERE email = $1", [email]);
+    request.session.user = user;
+    await audit(email, "signed_in_with_access_code", email);
+    return response.json({ ok: true, role: user.role });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.post("/auth/session", async (request, response, next) => {
