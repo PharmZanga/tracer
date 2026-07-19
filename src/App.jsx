@@ -1958,6 +1958,47 @@ function App() {
     };
   }
 
+  function localCopilotReply(question) {
+    const text = question.toLowerCase().trim();
+    const context = currentCopilotContext();
+    const scope = `${context.reportingPeriod} | ${context.filters.province} | ${context.filters.district}`;
+    if (/^(hi|hello|hey|good morning|good afternoon|good evening)[!. ]*$/.test(text)) {
+      return {
+        text: `Hello. I can help analyse ${context.reportingPeriod} tracer data for ${context.filters.province}. Ask about stockouts, availability, MOS, reporting coverage, commodities, facilities, or priority follow-up actions.`,
+        evidence: scope,
+      };
+    }
+    if (/report|submission|compliance|missing/.test(text)) {
+      return {
+        text: `Reporting coverage in the active scope is ${context.nationalSummary.reportingCoverage}, based on ${context.nationalSummary.reportingUnits} submitted reporting units. Missing submissions are tracked separately and are not treated as stockouts.`,
+        evidence: scope,
+      };
+    }
+    if (/stockout|stock out|risk|urgent|priority|act/.test(text)) {
+      const facilities = context.priorityFacilities.slice(0, 3)
+        .map((facility) => `${facility.facility} (${facility.province}: ${facility.stockoutItems} stockout, ${facility.lowStockItems} low-stock items)`)
+        .join("; ");
+      return {
+        text: facilities
+          ? `Start with the highest-risk reporting facilities: ${facilities}. Validate physical stock, check the submitted AMC, then consider redistribution from facilities with excess stock for the same commodity.`
+          : "No priority facility alerts are available in the active scope. Try widening the filters or select another reporting period.",
+        evidence: scope,
+      };
+    }
+    if (/province|availability|mos|month.?s? of stock/.test(text)) {
+      const provinces = context.lowestAvailabilityProvinces.slice(0, 3)
+        .map((province) => `${province.name}: ${province.availability} availability, ${province.averageMos} MOS`)
+        .join("; ");
+      return {
+        text: provinces
+          ? `The lowest availability in the active scope is: ${provinces}. The selected scope overall is ${context.nationalSummary.availability} availability with ${context.nationalSummary.averageMos} average MOS.`
+          : "No provincial performance rows are available for the active filters.",
+        evidence: scope,
+      };
+    }
+    return null;
+  }
+
   async function askCopilot(question = copilotQuestion) {
     const message = question.trim();
     if (!message || copilotLoading) return;
@@ -1986,10 +2027,13 @@ function App() {
       if (!response.ok) throw new Error(data.error || "Tracer Copilot could not answer right now.");
       setCopilotMessages((current) => [...current, { id: data.id, role: "assistant", text: data.answer, evidence: `${fieldData.label} | ${selectedProvince === "all" ? "All provinces" : selectedProvince} | ${selectedDistrict === "all" ? "All districts" : selectedDistrict}` }]);
     } catch (error) {
+      const fallback = localCopilotReply(message);
       const text = error.name === "AbortError"
         ? "Tracer Copilot took too long to respond. Try again in a moment."
         : error.message || "Tracer Copilot could not answer right now.";
-      setCopilotMessages((current) => [...current, { id: `error-${Date.now()}`, role: "assistant", text, retryQuestion: message }]);
+      setCopilotMessages((current) => [...current, fallback
+        ? { id: `fallback-${Date.now()}`, role: "assistant", text: `${fallback.text}\n\nFull AI analysis is temporarily unavailable: ${text}`, evidence: fallback.evidence, retryQuestion: message }
+        : { id: `error-${Date.now()}`, role: "assistant", text, retryQuestion: message }]);
     } finally {
       window.clearTimeout(timeout);
       setCopilotLoading(false);

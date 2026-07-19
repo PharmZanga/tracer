@@ -278,7 +278,14 @@ app.post("/api/copilot/chat", requireSession, async (request, response, next) =>
     const payload = await completion.json();
     if (!completion.ok) {
       console.error("Tracer Copilot API error:", payload);
-      return response.status(502).json({ error: "Tracer Copilot could not answer right now. Please try again." });
+      const diagnostic = completion.status === 401 || completion.status === 403
+        ? { code: "OPENAI_AUTH", error: "Tracer Copilot could not authenticate with OpenAI. Replace the OPENAI_API_KEY in Render and redeploy." }
+        : completion.status === 404
+          ? { code: "OPENAI_MODEL", error: `The configured OpenAI model (${openaiModel}) is not available to this API key. Check OPENAI_MODEL in Render.` }
+          : completion.status === 429
+            ? { code: "OPENAI_BILLING", error: "Tracer Copilot has no available OpenAI API capacity. Check the OpenAI project billing and usage limits, then try again." }
+            : { code: "OPENAI_UPSTREAM", error: "Tracer Copilot could not answer right now. Please try again." };
+      return response.status(502).json(diagnostic);
     }
     const answer = responseText(payload);
     if (!answer) return response.status(502).json({ error: "Tracer Copilot returned no answer. Please try again." });
