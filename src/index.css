@@ -5600,6 +5600,7 @@ td.neutral {
 .copilot-feedback { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
 .copilot-feedback span { color: #61746a; font-size: 12px; }
 .copilot-feedback button.active { border-color: #087e45; background: #dff3e7; color: #075f3a; }
+.copilot-retry { margin-top: 10px; min-height: 32px; padding: 6px 10px; border: 1px solid #087e45; background: #fff; color: #087e45; font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; }
 .copilot-empty, .copilot-loading { padding: 16px; border: 1px dashed #c8d9d0; color: #607168; font-size: 14px; line-height: 1.5; }
 .copilot-loading { border-style: solid; background: #edf8f1; color: #087e45; font-weight: 700; }
 

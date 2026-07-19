@@ -1962,6 +1962,10 @@ function App() {
     const message = question.trim();
     if (!message || copilotLoading) return;
     const requestMessage = { id: `question-${Date.now()}`, role: "user", text: message };
+    const conversation = copilotMessages
+      .filter((entry) => entry.role === "user" || (entry.role === "assistant" && Number.isInteger(Number(entry.id))))
+      .slice(-6)
+      .map((entry) => ({ role: entry.role, text: entry.text }));
     setCopilotMessages((current) => [...current, requestMessage]);
     setCopilotQuestion("");
     if (!copilotApiUrl) {
@@ -1969,18 +1973,25 @@ function App() {
       return;
     }
     setCopilotLoading(true);
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 45000);
     try {
       const response = await fetch(`${copilotApiUrl}/api/copilot/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: message, context: currentCopilotContext() }),
+        signal: controller.signal,
+        body: JSON.stringify({ question: message, context: { ...currentCopilotContext(), conversation } }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Tracer Copilot could not answer right now.");
       setCopilotMessages((current) => [...current, { id: data.id, role: "assistant", text: data.answer, evidence: `${fieldData.label} | ${selectedProvince === "all" ? "All provinces" : selectedProvince} | ${selectedDistrict === "all" ? "All districts" : selectedDistrict}` }]);
     } catch (error) {
-      setCopilotMessages((current) => [...current, { id: `error-${Date.now()}`, role: "assistant", text: error.message || "Tracer Copilot could not answer right now." }]);
+      const text = error.name === "AbortError"
+        ? "Tracer Copilot took too long to respond. Try again in a moment."
+        : error.message || "Tracer Copilot could not answer right now.";
+      setCopilotMessages((current) => [...current, { id: `error-${Date.now()}`, role: "assistant", text, retryQuestion: message }]);
     } finally {
+      window.clearTimeout(timeout);
       setCopilotLoading(false);
     }
   }
@@ -3414,6 +3425,7 @@ function App() {
               <strong>{message.role === "user" ? "You" : "Tracer Copilot"}</strong>
               <p>{message.text}</p>
               {message.evidence && <small>Evidence: {message.evidence}</small>}
+              {message.retryQuestion && <button type="button" className="copilot-retry" onClick={() => askCopilot(message.retryQuestion)}>Try again</button>}
               {message.role === "assistant" && Number.isInteger(Number(message.id)) && <div className="copilot-feedback"><span>Was this useful?</span><button type="button" className={copilotFeedback[message.id] === 1 ? "active" : ""} onClick={() => rateCopilotAnswer(message.id, 1)}>Helpful</button><button type="button" className={copilotFeedback[message.id] === -1 ? "active" : ""} onClick={() => rateCopilotAnswer(message.id, -1)}>Needs correction</button></div>}
             </article>) : <div className="copilot-empty">Ask about availability, stockouts, reporting, commodities, provinces, districts, or immediate follow-up actions.</div>}
             {copilotLoading && <div className="copilot-loading">Analysing the selected tracer data...</div>}
