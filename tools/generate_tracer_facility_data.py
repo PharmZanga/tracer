@@ -432,6 +432,29 @@ def canonical_facility_level_for_facility(level, facility_name):
     return canonical_facility_level(level)
 
 
+def canonical_facility_identity(province, district, facility_level, facility_name):
+    """Apply verified facility identities and reject spreadsheet formula artefacts.
+
+    The clean source workbook carries a small number of copied facility labels in
+    unrelated province/district rows. These must not become reporting gaps. The
+    identities below are verified from the provincial tracer submissions.
+    """
+    facility_text = str(clean(facility_name) or "").strip()
+    facility_key = facility_match_key(facility_text)
+    if not facility_text or facility_text.startswith("=") or facility_key in {"program a3", "ref"}:
+        return None
+
+    if "arthur" in facility_key and ("davison" in facility_key or "davidson" in facility_key):
+        return (
+            "COPPERBELT PROVINCE",
+            "NDOLA",
+            "LEVEL 3 HOSPITAL",
+            "Arthur Children's Davison Hospital",
+        )
+
+    return province, district, facility_level, facility_text
+
+
 def raw_facility_level(sheet_name, sheet_title):
     title = f"{sheet_name} {sheet_title or ''}".upper()
     if sheet_name.upper() == "HP" or "HEALTH POST" in title:
@@ -526,6 +549,10 @@ def iter_raw_matrix_rows(source, report_date):
             else:
                 facility_name = str(facility or district).strip()
                 is_aggregate = False
+            identity = canonical_facility_identity(province, district, facility_level, facility_name)
+            if identity is None:
+                continue
+            province, district, facility_level, facility_name = identity
             for row_index in range(4, ws.max_row + 1):
                 item = clean(ws.cell(row_index, 2).value)
                 if not item:
@@ -643,6 +670,11 @@ def load_clean_workbook_configs():
         if is_aggregate and facility_level in {"HEALTH POST", "HEALTH CENTRE"}:
             facility_name = f"{district} {facility_level.title()} facilities"
 
+        identity = canonical_facility_identity(province, district, facility_level, facility_name)
+        if identity is None:
+            continue
+        province, district, facility_level, facility_name = identity
+
         quantity = num(values[9] if len(values) > 9 else None)
         rows_by_date[report_id].append({
             "DATE": report_id,
@@ -746,6 +778,10 @@ def summarize(config):
         district = normalize_district(row.get("DISTRICT"))
         facility = clean(row.get("FACILITY NAME")) or "Unknown reporting unit"
         facility_level = canonical_facility_level(row.get("FACILITY LEVEL"))
+        identity = canonical_facility_identity(province, district, facility_level, facility)
+        if identity is None:
+            continue
+        province, district, facility_level, facility = identity
         item = clean(row.get("DESCRIPTION OF ITEM")) or "Unknown commodity"
         program = normalize_program(row.get("PROGRAM"), item)
         cancer_scope = (
