@@ -245,6 +245,24 @@ RAW_FACILITY_REFERENCE_SOURCES = [
 ]
 RAW_FACILITY_IDENTITIES = {}
 
+# Authoritative corrections for named hospitals whose copied labels appear in
+# unrelated province/district rows in the clean source workbook. These take
+# precedence over a later raw-sheet match so one facility has one home.
+VERIFIED_FACILITY_IDENTITIES = {
+    "chainama hills hospital": (
+        "LUSAKA PROVINCE",
+        "LUSAKA",
+        "MENTAL HEALTH UNITS",
+        "Chainama Hills Hospital",
+    ),
+    "chama district hospital": (
+        "MUCHINGA PROVINCE",
+        "CHAMA",
+        "LEVEL 1 HOSPITAL",
+        "Chama District Hospital",
+    ),
+}
+
 
 def clean(value):
     if value is None:
@@ -277,6 +295,7 @@ def facility_match_key(value):
     aliases = {
         "levy mwanawasa uth": "levy mwanawasa university teaching hospital",
         "chadiza district hos": "chadiza district hospital",
+        "chama district hos": "chama district hospital",
         "chamboli level 1": "chamboli 1st level hospital",
     }
     return aliases.get(text, text)
@@ -467,6 +486,15 @@ def canonical_facility_identity(province, district, facility_level, facility_nam
     facility_key = facility_match_key(facility_text)
     if not facility_text or facility_text.startswith("=") or facility_key in {"program a3", "ref"}:
         return None
+
+    # Chama is a Muchinga district. Older copied source rows still label it as
+    # Eastern Province, which would incorrectly create a 117th district.
+    if district == "CHAMA":
+        province = "MUCHINGA PROVINCE"
+
+    verified_identity = VERIFIED_FACILITY_IDENTITIES.get(facility_key)
+    if verified_identity:
+        return verified_identity
 
     if "arthur" in facility_key and ("davison" in facility_key or "davidson" in facility_key):
         return (
