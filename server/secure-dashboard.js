@@ -238,6 +238,14 @@ app.post("/auth/verify-code", async (request, response, next) => {
     return response.status(400).json({ error: "Enter the approved email address and six-digit access code." });
   }
   try {
+    if (adminEmails.has(email)) {
+      await pool.query(
+        `INSERT INTO dashboard_users (email, name, role, status, approved_at, approved_by)
+         VALUES ($1, 'System administrator', 'super_admin', 'approved', NOW(), $1)
+         ON CONFLICT (email) DO UPDATE SET role = 'super_admin', status = 'approved', approved_at = COALESCE(dashboard_users.approved_at, NOW()), approved_by = $1`,
+        [email],
+      );
+    }
     const userResult = await pool.query("SELECT email, name, province, role, status FROM dashboard_users WHERE email = $1", [email]);
     const user = userResult.rows[0];
     if (!user || user.status !== "approved") {
