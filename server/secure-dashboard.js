@@ -253,6 +253,14 @@ app.post("/auth/request-link", async (request, response, next) => {
   const email = String(request.body?.email || "").trim().toLowerCase();
   if (!/^\S+@\S+\.\S+$/.test(email)) return response.status(400).json({ error: "Enter a valid approved email address." });
   try {
+    if (adminEmails.has(email)) {
+      await pool.query(
+        `INSERT INTO dashboard_users (email, name, role, status, approved_at, approved_by)
+         VALUES ($1, 'System administrator', 'super_admin', 'approved', NOW(), $1)
+         ON CONFLICT (email) DO UPDATE SET role = 'super_admin', status = 'approved', approved_at = COALESCE(dashboard_users.approved_at, NOW()), approved_by = $1`,
+        [email],
+      );
+    }
     const userResult = await pool.query("SELECT name, status FROM dashboard_users WHERE email = $1", [email]);
     const user = userResult.rows[0];
     if (!user || user.status !== "approved") return response.status(403).json({ error: "This email is not approved. Submit an access request first." });
