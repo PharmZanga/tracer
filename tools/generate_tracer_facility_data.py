@@ -261,6 +261,48 @@ VERIFIED_FACILITY_IDENTITIES = {
         "LEVEL 1 HOSPITAL",
         "Chama District Hospital",
     ),
+    "chikuni mission hospital": (
+        "SOUTHERN PROVINCE",
+        "MONZE",
+        "LEVEL 1 HOSPITAL",
+        "Chikuni Mission Hospital",
+    ),
+    "chipata district hospital": (
+        "EASTERN PROVINCE",
+        "CHIPATA",
+        "LEVEL 1 HOSPITAL",
+        "Chipata District Hospital",
+    ),
+    "chitambo district hospital": (
+        "CENTRAL PROVINCE",
+        "CHITAMBO",
+        "LEVEL 1 HOSPITAL",
+        "Chitambo District Hospital",
+    ),
+    "gwembe district hospital": (
+        "SOUTHERN PROVINCE",
+        "GWEMBE",
+        "LEVEL 1 HOSPITAL",
+        "Gwembe District Hospital",
+    ),
+    "itezhi tezhi district hospital": (
+        "SOUTHERN PROVINCE",
+        "ITEZHI TEZHI",
+        "LEVEL 1 HOSPITAL",
+        "Itezhi-tezhi District Hospital",
+    ),
+    "kabwe central hospital": (
+        "CENTRAL PROVINCE",
+        "KABWE",
+        "LEVEL 3 HOSPITAL",
+        "Kabwe Central Hospital",
+    ),
+    "kafue gorge hospital": (
+        "SOUTHERN PROVINCE",
+        "CHIKANKATA",
+        "LEVEL 1 HOSPITAL",
+        "Kafue Gorge Hospital",
+    ),
 }
 
 
@@ -297,6 +339,14 @@ def facility_match_key(value):
         "chadiza district hos": "chadiza district hospital",
         "chama district hos": "chama district hospital",
         "chamboli level 1": "chamboli 1st level hospital",
+        "chikuni": "chikuni mission hospital",
+        "chikuni hospital": "chikuni mission hospital",
+        "chipata district hos": "chipata district hospital",
+        "chitambo district hos": "chitambo district hospital",
+        "gwembe district hos": "gwembe district hospital",
+        "itezhi tezhi district hos": "itezhi tezhi district hospital",
+        "kabwe central": "kabwe central hospital",
+        "kafue gorge": "kafue gorge hospital",
     }
     return aliases.get(text, text)
 
