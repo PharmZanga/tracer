@@ -360,8 +360,21 @@ app.get("/admin", requireSession, requireAdmin, async (request, response, next) 
 app.post("/admin/users/:email/:decision", requireSession, requireAdmin, async (request, response, next) => {
   const email = normalizeRouteEmail(request.params.email);
   const decision = request.params.decision;
-  if (!/^\S+@\S+\.\S+$/.test(email) || !["approve", "reject"].includes(decision)) return response.status(400).send("Invalid request.");
+  if (!/^\S+@\S+\.\S+$/.test(email)) return response.status(400).send("Invalid request.");
   try {
+    // This route also receives /resend because it is parameterised. Handle it here
+    // before the approval/rejection branch so the request is never rejected as invalid.
+    if (decision === "resend") {
+      const userResult = await pool.query("SELECT name, status FROM dashboard_users WHERE email = $1", [email]);
+      const user = userResult.rows[0];
+      if (!user || user.status !== "approved") return response.redirect("/admin?message=Only approved users can receive an access link.");
+      const emailResult = await sendApprovedAccessEmail(email, user.name);
+      if (emailResult.delivered) await audit(email, "access_link_resent", request.session.user.email);
+      else await audit(email, "access_link_delivery_failed", request.session.user.email);
+      return response.redirect(`/admin?message=${encodeURIComponent(emailResult.delivered ? "Secure access link resent." : `The access link could not be sent: ${emailResult.reason}`)}`);
+    }
+
+    if (!["approve", "reject"].includes(decision)) return response.status(400).send("Invalid request.");
     const approved = decision === "approve";
     await pool.query("UPDATE dashboard_users SET status = $2, approved_at = CASE WHEN $2 = 'approved' THEN NOW() ELSE NULL END, approved_by = $3 WHERE email = $1", [email, approved ? "approved" : "rejected", request.session.user.email]);
     await audit(email, approved ? "access_approved" : "access_rejected", request.session.user.email);
