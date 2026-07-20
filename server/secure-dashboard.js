@@ -84,9 +84,20 @@ function requestPage(message = "", alreadyApproved = false) {
   return layout("Request dashboard access", `<main class="card access-card"><div class="access-brand"><div class="brand-mark"><img src="/auth-assets/zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms"><div><small>Republic of Zambia</small><strong>Ministry of Health</strong></div></div><div class="brand-mark"><img src="/auth-assets/control-tower-logo.svg" alt="Control Tower"><div><small>Control Tower</small><strong>National Supply Chain<br>Coordinating Unit</strong></div></div></div><div class="access-content"><div class="header"><span>National Tracer Drug Availability</span><h1>Request dashboard access</h1><p>Your request will be reviewed by the National Supply Chain Control Tower administrator.</p><p class="muted">After your request is approved, check your email within 5 minutes for your secure access link.</p></div>${notice}${form}<p class="muted"><a href="/login">Return to sign in</a></p><footer class="access-footer">© 2026 Zanga Musakuzi<strong>Principal Pharmacist - Data Analytics</strong></footer></div></main>`);
 }
 
-function requireSession(request, response, next) {
-  if (request.session?.user) return next();
-  return response.redirect("/request-access");
+async function requireSession(request, response, next) {
+  const email = request.session?.user?.email;
+  if (!email) return response.redirect("/request-access");
+  try {
+    const result = await pool.query("SELECT email, name, province, role, status FROM dashboard_users WHERE email = $1", [email]);
+    const user = result.rows[0];
+    if (!user || user.status !== "approved") {
+      return request.session.destroy(() => response.redirect("/request-access"));
+    }
+    request.session.user = user;
+    return next();
+  } catch (error) {
+    return next(error);
+  }
 }
 
 function requireAdmin(request, response, next) {
@@ -465,7 +476,7 @@ app.get("/admin", requireSession, requireAdmin, async (request, response, next) 
     const users = (await pool.query("SELECT email, name, province, role, status, requested_at, approved_at, approved_by FROM dashboard_users ORDER BY CASE status WHEN 'pending' THEN 0 ELSE 1 END, requested_at DESC")).rows;
     const rows = users.map((user) => {
       const pendingActions = `<form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/approve"><button type="submit">Approve and email link</button></form><form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/reject"><button class="reject" type="submit">Reject</button></form>`;
-      const approvedActions = `<div>${escapeHtml(user.approved_by || "-")}</div><form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/resend"><button type="submit">Resend access link</button></form>`;
+      const approvedActions = `<div>${escapeHtml(user.approved_by || "-")}</div><form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/resend"><button type="submit">Resend access link</button></form><form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/delete" onsubmit="return confirm('Delete this approved user and revoke dashboard access?')"><button class="reject" type="submit">Delete access</button></form>`;
       return `<tr><td>${escapeHtml(user.name)}</td><td>${escapeHtml(user.email)}</td><td>${escapeHtml(user.province)}</td><td>${escapeHtml(user.role)}</td><td>${escapeHtml(user.status)}</td><td>${new Date(user.requested_at).toLocaleString()}</td><td>${user.status === "pending" ? pendingActions : user.status === "approved" ? approvedActions : escapeHtml(user.approved_by || "-")}</td></tr>`;
     }).join("");
     const notice = request.query.message ? `<p class="success">${escapeHtml(request.query.message)}</p>` : "";
@@ -488,6 +499,13 @@ app.post("/admin/users/:email/:decision", requireSession, requireAdmin, async (r
       if (emailResult.delivered) await audit(email, "access_link_resent", request.session.user.email);
       else await audit(email, "access_link_delivery_failed", request.session.user.email);
       return response.redirect(`/admin?message=${encodeURIComponent(emailResult.delivered ? "Secure access link resent." : `The access link could not be sent: ${emailResult.reason}`)}`);
+    }
+
+    if (decision === "delete") {
+      if (adminEmails.has(email)) return response.redirect("/admin?message=The configured administrator email cannot be deleted here. Remove it from ADMIN_EMAILS in Render first.");
+      await pool.query("DELETE FROM dashboard_users WHERE email = $1", [email]);
+      await audit(email, "access_deleted", request.session.user.email);
+      return response.redirect("/admin?message=Approved user deleted and dashboard access revoked.");
     }
 
     if (!["approve", "reject"].includes(decision)) return response.status(400).send("Invalid request.");
