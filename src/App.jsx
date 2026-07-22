@@ -855,6 +855,54 @@ function buildForecastImpact(periods, filters) {
   return { current, projected: Math.max(0, Math.round(current + weeklyChange * 4)), weeklyChange };
 }
 
+function buildForecastFeedback(periods, filters) {
+  const cycles = [];
+  for (let index = 1; index < periods.length; index += 1) {
+    const forecastPeriod = periods[index - 1];
+    const actualPeriod = periods[index];
+    const forecasts = buildProvinceForecast(periods.slice(0, index), filters);
+    const actuals = new Map(forecastRollupsForPeriod(actualPeriod, filters)
+      .filter((row) => row.rows > 0)
+      .map((row) => [row.name || row.province, row]));
+
+    forecasts.forEach((forecast) => {
+      const actual = actuals.get(forecast.province);
+      if (!actual?.rows) return;
+      const actualStockoutRate = actual.stockoutRate ?? actual.stockout / actual.rows;
+      const actualRiskRate = (actual.riskRows || 0) / actual.rows;
+      const forecastHigh = forecast.likelihood >= 0.35;
+      const actualHigh = actualStockoutRate >= 0.15;
+      cycles.push({
+        province: forecast.province,
+        forecastLabel: forecastPeriod.label,
+        actualLabel: actualPeriod.label,
+        predictedLikelihood: forecast.likelihood,
+        actualStockoutRate,
+        actualRiskRate,
+        accuracy: Math.max(0, 1 - Math.abs(forecast.likelihood - actualStockoutRate)),
+        forecastHigh,
+        actualHigh,
+        confirmed: forecastHigh && actualHigh,
+        missedAction: forecastHigh && actualHigh && actualStockoutRate >= forecast.currentStockoutRate,
+      });
+    });
+  }
+
+  const latestActualLabel = periods.at(-1)?.label || "";
+  const latestCycle = cycles.filter((row) => row.actualLabel === latestActualLabel);
+  const evaluated = latestCycle.length ? latestCycle : cycles;
+  return {
+    evaluated,
+    total: evaluated.length,
+    latestActualLabel,
+    accuracy: evaluated.length ? evaluated.reduce((total, row) => total + row.accuracy, 0) / evaluated.length : 0,
+    confirmed: evaluated.filter((row) => row.confirmed).length,
+    highForecasts: evaluated.filter((row) => row.forecastHigh).length,
+    missedActions: evaluated.filter((row) => row.missedAction)
+      .sort((a, b) => b.actualStockoutRate - a.actualStockoutRate),
+  };
+}
+
 function qualityLevelGroup(type = "") {
   if (type === "Health Posts" || type === "Health Centres") return "Health Posts & Health Centres";
   return type;
@@ -1519,6 +1567,16 @@ function App() {
   const predictiveTopProvince = predictiveProvinceRows[0];
   const predictiveWorseningCount = predictiveProvinceRows.filter((row) => row.worsening > 0.02).length;
   const predictiveTopTransfer = redistributionCandidates[0];
+  const predictiveFeedback = useMemo(() => buildForecastFeedback(predictiveHistoryPeriods, predictiveFilters), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const predictiveFeedbackRows = predictiveFeedback.evaluated.slice(0, 8);
+  const predictiveRecommendations = predictiveProvinceRows.slice(0, 5).map((row) => {
+    const transfer = redistributionCandidates.find((candidate) => candidate.province === row.province);
+    return {
+      ...row,
+      transfer,
+      actionStatus: transfer ? actionUpdates[redistributionActionKey(transfer)]?.status || "Open" : "Needs validation",
+    };
+  });
 
   const commodityScopeRows = useMemo(() => commodityRowsFromPeriod(fieldData)
     .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
@@ -3586,6 +3644,48 @@ function App() {
                 <div><b>8%</b><span>Worsening stockout trend</span></div>
               </div>
               <p className="predictive-method-note">The likelihood is a transparent prioritisation score, not a clinical forecast. It improves as more complete weekly tracer submissions are added.</p>
+            </div>
+          </div>
+
+          <div className="predictive-feedback-section">
+            <div className="table-headline predictive-feedback-headline">
+              <div>
+                <p className="eyebrow dark">Weekly Feedback Loop</p>
+                <h2>Forecast versus actual stockouts</h2>
+                <p>Each completed week tests the preceding week's province forecast against the actual submitted stockout rate. This refreshes automatically when a new weekly tracer report is added.</p>
+              </div>
+              <span>Latest outcome: <b>{predictiveFeedback.latestActualLabel || "No completed comparison"}</b></span>
+            </div>
+            <div className="stats-grid predictive-feedback-kpis">
+              <KpiCard label="Forecast calibration" value={predictiveFeedback.total ? formatPercent(predictiveFeedback.accuracy) : "-"} sub="Score compared with actual province stockout rate" tone={predictiveFeedback.accuracy >= 0.75 ? "green" : predictiveFeedback.accuracy >= 0.55 ? "amber" : "red"} />
+              <KpiCard label="Forecasts tested" value={predictiveFeedback.total.toLocaleString()} sub="Province forecasts with a next-week outcome" />
+              <KpiCard label="Confirmed high risk" value={predictiveFeedback.confirmed.toLocaleString()} sub={`${predictiveFeedback.highForecasts} high-risk alerts issued`} tone="red" />
+              <KpiCard label="Follow-up flags" value={predictiveFeedback.missedActions.length.toLocaleString()} sub="High risk persisted into the next submitted week" tone={predictiveFeedback.missedActions.length ? "amber" : "green"} />
+            </div>
+            <div className="predictive-feedback-grid">
+              <div className="quality-panel predictive-feedback-panel">
+                <div className="quality-panel-head"><div><h3>Latest forecast scorecard</h3><p>Predicted likelihood is compared directly with the actual stockout outcome.</p></div></div>
+                <div className="predictive-feedback-list">
+                  {predictiveFeedbackRows.map((row) => <button type="button" key={`${row.province}-${row.actualLabel}`} onClick={() => selectProvince(row.province)}>
+                    <span><b>{row.province}</b><small>{row.forecastLabel} forecast to {row.actualLabel} outcome</small></span>
+                    <span><small>Predicted</small><b>{formatPercent(row.predictedLikelihood)}</b></span>
+                    <span><small>Actual stockout</small><b>{formatPercent(row.actualStockoutRate)}</b></span>
+                    <span className={`comparison-signal ${row.confirmed ? "red" : row.accuracy >= 0.75 ? "green" : "amber"}`}>{formatPercent(row.accuracy)}</span>
+                  </button>)}
+                  {!predictiveFeedbackRows.length && <div className="empty-state">At least two submitted reporting weeks are needed before the forecast can be tested against an actual outcome.</div>}
+                </div>
+              </div>
+              <div className="quality-panel predictive-recommendation-panel">
+                <div className="quality-panel-head"><div><h3>Updated next-week recommendations</h3><p>Priorities combine the current forecast, the latest feedback, and available same-province redistribution options.</p></div></div>
+                <div className="predictive-recommendation-list">
+                  {predictiveRecommendations.map((row, index) => <div key={row.province} className={`risk-${row.tone}`}>
+                    <b>{index + 1}</b>
+                    <span><strong>{row.province}</strong><small>{formatPercent(row.likelihood)} likelihood | {row.label}</small>{row.transfer ? <em>Validate {row.transfer.commodity} from {row.transfer.sourceFacility} to {row.transfer.destinationFacility}. Action: {row.actionStatus}.</em> : <em>Validate physical counts and prepare replenishment; no same-province overstock transfer is currently identified.</em>}</span>
+                  </div>)}
+                  {!predictiveRecommendations.length && <div className="empty-state">No recommendation is available for the selected scope.</div>}
+                </div>
+                <p className="predictive-feedback-note">Follow-up flags show a high-risk forecast where the following week's stockout rate did not improve. The tracer does not yet record whether an action was completed, so confirm the response in the Action Tracker.</p>
+              </div>
             </div>
           </div>
 
