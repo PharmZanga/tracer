@@ -13,6 +13,7 @@ const dashboardPages = [
   { id: "programmes", short: "PR", label: "Programme Performance" },
   { id: "reporting", short: "RR", label: "Reporting Rate" },
   { id: "quality", short: "DQ", label: "Data Quality" },
+  { id: "predictive", short: "PA", label: "Predictive Analysis" },
   { id: "actions", short: "AT", label: "Action Tracker" },
 ];
 
@@ -725,6 +726,90 @@ function aggregateComparisonRows(periods, filters) {
   }));
 }
 
+function forecastRiskTone(likelihood) {
+  if (likelihood >= 0.6) return "red";
+  if (likelihood >= 0.35) return "amber";
+  return "green";
+}
+
+function forecastRiskLabel(likelihood) {
+  if (likelihood >= 0.6) return "High risk";
+  if (likelihood >= 0.35) return "Moderate risk";
+  return "Lower risk";
+}
+
+function forecastRollupsForPeriod(period, filters) {
+  const provinceMatches = (row) => filters.province === "all" || row.province === filters.province || row.name === filters.province;
+  const hasDetailedScope = filters.district !== "all" || filters.facilityLevel !== "all" || filters.facility !== "all";
+
+  if (!hasDetailedScope) {
+    return (period.provinces || [])
+      .filter(provinceMatches)
+      .map((row) => ({ ...row, name: row.name, province: row.name }));
+  }
+
+  return aggregateRollups(
+    (period.facilities || [])
+      .filter(provinceMatches)
+      .filter((row) => filters.district === "all" || row.district === filters.district)
+      .filter((row) => matchesFacilityCareLevel(row.facilityLevel, filters.facilityLevel))
+      .filter((row) => filters.facility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.name}` === filters.facility),
+    "province",
+  );
+}
+
+function buildProvinceForecast(periods, filters) {
+  const historyByProvince = new Map();
+  periods.forEach((period) => {
+    forecastRollupsForPeriod(period, filters).forEach((row) => {
+      if (!row.rows) return;
+      const key = row.name || row.province;
+      if (!historyByProvince.has(key)) historyByProvince.set(key, []);
+      historyByProvince.get(key).push({ ...row, label: period.label, reportDate: period.reportDate });
+    });
+  });
+
+  return [...historyByProvince.entries()].map(([province, history]) => {
+    const current = history.at(-1);
+    const recent = history.slice(-4);
+    const earlier = recent.slice(0, -1);
+    const average = (rows, selector) => rows.length ? rows.reduce((total, row) => total + selector(row), 0) / rows.length : 0;
+    const stockoutRate = current.stockoutRate ?? (current.rows ? current.stockout / current.rows : 0);
+    const riskRate = current.rows ? (current.riskRows || 0) / current.rows : 0;
+    const emergencyRate = current.rows ? (current.nearCritical || 0) / current.rows : 0;
+    const recentRiskRate = average(recent, (row) => row.rows ? (row.riskRows || 0) / row.rows : 0);
+    const earlierStockoutRate = average(earlier, (row) => row.stockoutRate ?? (row.rows ? row.stockout / row.rows : 0));
+    const worsening = Math.max(0, stockoutRate - earlierStockoutRate);
+
+    // The score is deliberately transparent: it is a next-reporting-period risk estimate,
+    // not a replacement for provincial stock verification or clinical supply planning.
+    const likelihood = Math.min(1, Math.max(0,
+      stockoutRate * 0.42
+      + riskRate * 0.24
+      + recentRiskRate * 0.18
+      + emergencyRate * 0.08
+      + worsening * 0.08,
+    ));
+
+    return {
+      province,
+      likelihood,
+      label: forecastRiskLabel(likelihood),
+      tone: forecastRiskTone(likelihood),
+      currentStockoutRate: stockoutRate,
+      currentRiskRate: riskRate,
+      recentRiskRate,
+      emergencyRate,
+      worsening,
+      availability: current.availability || 0,
+      mos: current.mos,
+      rows: current.rows || 0,
+      observations: history.length,
+      lastReport: current.label,
+    };
+  }).sort((a, b) => b.likelihood - a.likelihood || b.currentStockoutRate - a.currentStockoutRate || a.province.localeCompare(b.province));
+}
+
 function qualityLevelGroup(type = "") {
   if (type === "Health Posts" || type === "Health Centres") return "Health Posts & Health Centres";
   return type;
@@ -1360,6 +1445,19 @@ function App() {
     .sort((a, b) => Number(a.isAggregate) - Number(b.isAggregate) || b.stockoutItemCount - a.stockoutItemCount || b.lowStockItemCount - a.lowStockItemCount)
     .slice(0, 48);
   const districtsInScope = scopedDistrictRows;
+  const predictiveHistoryPeriods = useMemo(() => tracerReportingPeriods
+    .filter((period) => period.reportDate <= fieldData.reportDate)
+    .sort((a, b) => a.reportDate.localeCompare(b.reportDate)), [fieldData.reportDate]);
+  const predictiveProvinceRows = useMemo(() => buildProvinceForecast(predictiveHistoryPeriods, {
+    province: selectedProvince,
+    district: selectedDistrict,
+    facilityLevel: selectedFacilityLevel,
+    facility: selectedFacility,
+  }), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const predictiveHighRiskRows = predictiveProvinceRows.filter((row) => row.tone === "red");
+  const predictiveAverageLikelihood = predictiveProvinceRows.length
+    ? predictiveProvinceRows.reduce((total, row) => total + row.likelihood, 0) / predictiveProvinceRows.length
+    : 0;
 
   const commodityScopeRows = useMemo(() => commodityRowsFromPeriod(fieldData)
     .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
@@ -3342,6 +3440,71 @@ function App() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </section>
+
+        <section className="predictive-analysis">
+          <div className="section-head predictive-head">
+            <div>
+              <p className="eyebrow dark">Predictive Analysis</p>
+              <h2>Province stockout risk forecast</h2>
+              <p>Ranked estimates for the next reporting period, based on submitted tracer stockout history through {fieldData.label}. Use this as an early-warning signal and validate with the province before taking action.</p>
+            </div>
+            <div className="predictive-cutoff">
+              <span>Forecast cut-off</span>
+              <strong>{fieldData.reportDate}</strong>
+              <small>{predictiveHistoryPeriods.length} reporting weeks analysed</small>
+            </div>
+          </div>
+
+          <div className="stats-grid predictive-kpis">
+            <KpiCard label="Provinces ranked" value={predictiveProvinceRows.length.toLocaleString()} sub="With submitted historical stock data" />
+            <KpiCard label="High predicted risk" value={predictiveHighRiskRows.length.toLocaleString()} sub="Estimated likelihood of 60% or above" tone="red" />
+            <KpiCard label="Average risk likelihood" value={formatPercent(predictiveAverageLikelihood)} sub="Across the current province scope" tone={forecastRiskTone(predictiveAverageLikelihood)} />
+            <KpiCard label="Highest-risk province" value={predictiveProvinceRows[0]?.province || "-"} sub={predictiveProvinceRows[0] ? formatPercent(predictiveProvinceRows[0].likelihood) + " estimated likelihood" : "No matching historical reports"} tone={predictiveProvinceRows[0]?.tone || "neutral"} />
+          </div>
+
+          <div className="predictive-layout">
+            <div className="quality-panel predictive-ranking-panel">
+              <div className="quality-panel-head">
+                <div>
+                  <h3>Ranked province risk</h3>
+                  <p>Click a province to apply it to the dashboard filters.</p>
+                </div>
+                <span>{predictiveProvinceRows.length} provinces</span>
+              </div>
+              <div className="predictive-ranking-list">
+                {predictiveProvinceRows.map((row, index) => (
+                  <button type="button" key={row.province} className={`predictive-rank-row risk-${row.tone}`} onClick={() => selectProvince(row.province)}>
+                    <b className="predictive-rank-number">{index + 1}</b>
+                    <span>{row.province}<small>{row.label} | {row.observations} submitted weeks</small></span>
+                    <div className="predictive-risk-track"><i style={{ width: `${Math.round(row.likelihood * 100)}%` }} /></div>
+                    <strong>{formatPercent(row.likelihood)}</strong>
+                  </button>
+                ))}
+                {!predictiveProvinceRows.length && <div className="empty-state">No historical province stock reports match the current filters.</div>}
+              </div>
+            </div>
+
+            <div className="quality-panel predictive-method-panel">
+              <div className="quality-panel-head"><div><h3>Forecast signals</h3><p>Each percentage is calculated from the submitted commodity rows in the selected historical scope.</p></div></div>
+              <div className="predictive-method-list">
+                <div><b>42%</b><span>Latest stockout rate</span></div>
+                <div><b>24%</b><span>Latest total risk rate below 2 MOS</span></div>
+                <div><b>18%</b><span>Recent four-report risk pattern</span></div>
+                <div><b>8%</b><span>Emergency stock pressure at or below 0.5 MOS</span></div>
+                <div><b>8%</b><span>Worsening stockout trend</span></div>
+              </div>
+              <p className="predictive-method-note">The likelihood is a transparent prioritisation score, not a clinical forecast. It improves as more complete weekly tracer submissions are added.</p>
+            </div>
+          </div>
+
+          <div className="table-panel predictive-table">
+            <div className="table-headline"><div><h2>Forecast evidence by province</h2><p>Use the underlying submitted stock indicators to validate the priority ranking.</p></div></div>
+            <div className="table-scroll"><table><thead><tr><th>Rank</th><th>Province</th><th>Likelihood</th><th>Risk band</th><th>Latest stockout</th><th>Below 2 MOS</th><th>Recent risk average</th><th>Emergency stock</th><th>Trend increase</th><th>Availability</th><th>Avg MOS</th><th>Latest submitted report</th></tr></thead><tbody>
+              {predictiveProvinceRows.map((row, index) => <tr key={row.province}><td>{index + 1}</td><td>{row.province}</td><td><span className={`comparison-signal ${row.tone}`}>{formatPercent(row.likelihood)}</span></td><td>{row.label}</td><td>{formatPercent(row.currentStockoutRate)}</td><td>{formatPercent(row.currentRiskRate)}</td><td>{formatPercent(row.recentRiskRate)}</td><td>{formatPercent(row.emergencyRate)}</td><td>{formatPercent(row.worsening)}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.lastReport}</td></tr>)}
+              {!predictiveProvinceRows.length && <tr><td colSpan="12">No forecast rows are available for the selected scope.</td></tr>}
+            </tbody></table></div>
           </div>
         </section>
 
