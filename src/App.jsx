@@ -805,9 +805,54 @@ function buildProvinceForecast(periods, filters) {
       mos: current.mos,
       rows: current.rows || 0,
       observations: history.length,
+      confidence: Math.min(0.95, (Math.min(history.length, 8) / 8) * 0.7 + Math.min((current.rows || 0) / 1000, 1) * 0.3),
       lastReport: current.label,
     };
   }).sort((a, b) => b.likelihood - a.likelihood || b.currentStockoutRate - a.currentStockoutRate || a.province.localeCompare(b.province));
+}
+
+function buildCommodityForecast(periods) {
+  const historyByCommodity = new Map();
+  periods.forEach((period) => {
+    (period.commodities || []).forEach((row) => {
+      if (!row.rows) return;
+      const key = row.normalized || normalizeCommodity(row.name);
+      if (!historyByCommodity.has(key)) historyByCommodity.set(key, []);
+      historyByCommodity.get(key).push({ ...row, label: period.label });
+    });
+  });
+
+  return [...historyByCommodity.values()].map((history) => {
+    const current = history.at(-1);
+    const recent = history.slice(-4);
+    const stockoutRate = current.stockoutRate ?? (current.stockout / current.rows);
+    const riskRate = current.riskRows / current.rows;
+    const historicalRisk = recent.reduce((total, row) => total + row.riskRows / row.rows, 0) / recent.length;
+    const likelihood = Math.min(1, stockoutRate * 0.46 + riskRate * 0.32 + historicalRisk * 0.22);
+    return {
+      name: current.name,
+      programme: current.programme || "Tracer commodity",
+      likelihood,
+      tone: forecastRiskTone(likelihood),
+      stockoutRate,
+      riskRate,
+      mos: current.mos,
+      observations: history.length,
+    };
+  }).sort((a, b) => b.likelihood - a.likelihood || b.stockoutRate - a.stockoutRate || a.name.localeCompare(b.name));
+}
+
+function buildForecastImpact(periods, filters) {
+  const atRiskCounts = periods.map((period) => (period.facilities || [])
+    .filter((row) => filters.province === "all" || row.province === filters.province)
+    .filter((row) => filters.district === "all" || row.district === filters.district)
+    .filter((row) => matchesFacilityCareLevel(row.facilityLevel, filters.facilityLevel))
+    .filter((row) => filters.facility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.name}` === filters.facility)
+    .filter((row) => (row.stockoutItemCount || 0) > 0 || (row.lowStockItemCount || 0) > 0).length);
+  const current = atRiskCounts.at(-1) || 0;
+  const recentChanges = atRiskCounts.slice(-4).slice(1).map((value, index, values) => value - atRiskCounts.slice(-4)[index]);
+  const weeklyChange = recentChanges.length ? recentChanges.reduce((total, value) => total + value, 0) / recentChanges.length : 0;
+  return { current, projected: Math.max(0, Math.round(current + weeklyChange * 4)), weeklyChange };
 }
 
 function qualityLevelGroup(type = "") {
@@ -1458,6 +1503,22 @@ function App() {
   const predictiveAverageLikelihood = predictiveProvinceRows.length
     ? predictiveProvinceRows.reduce((total, row) => total + row.likelihood, 0) / predictiveProvinceRows.length
     : 0;
+  const predictiveFilters = {
+    province: selectedProvince,
+    district: selectedDistrict,
+    facilityLevel: selectedFacilityLevel,
+    facility: selectedFacility,
+  };
+  const predictiveCommodityRows = useMemo(() => buildCommodityForecast(predictiveHistoryPeriods).slice(0, 8), [predictiveHistoryPeriods]);
+  const predictiveImpact = useMemo(() => buildForecastImpact(predictiveHistoryPeriods, predictiveFilters), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const predictiveTimeline = useMemo(() => predictiveHistoryPeriods.map((period) => {
+    const rollup = combineRollups(forecastRollupsForPeriod(period, predictiveFilters), makeEmptyRollup());
+    return { label: period.label, rate: rollup.rows ? rollup.riskRows / rollup.rows : 0 };
+  }), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const predictiveTimelineVisible = predictiveTimeline.slice(-12);
+  const predictiveTopProvince = predictiveProvinceRows[0];
+  const predictiveWorseningCount = predictiveProvinceRows.filter((row) => row.worsening > 0.02).length;
+  const predictiveTopTransfer = redistributionCandidates[0];
 
   const commodityScopeRows = useMemo(() => commodityRowsFromPeriod(fieldData)
     .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
@@ -3464,6 +3525,35 @@ function App() {
             <KpiCard label="Highest-risk province" value={predictiveProvinceRows[0]?.province || "-"} sub={predictiveProvinceRows[0] ? formatPercent(predictiveProvinceRows[0].likelihood) + " estimated likelihood" : "No matching historical reports"} tone={predictiveProvinceRows[0]?.tone || "neutral"} />
           </div>
 
+          <div className="predictive-briefing">
+            <div>
+              <p className="eyebrow dark">Executive Briefing</p>
+              <h3>National supply chain intelligence report</h3>
+              <p><b>{fieldData.label}.</b> Overall forecast risk is <b>{forecastRiskLabel(predictiveAverageLikelihood).toLowerCase()}</b> at {formatPercent(predictiveAverageLikelihood)}. {predictiveTopProvince ? `${predictiveTopProvince.province} is the highest-ranked province at ${formatPercent(predictiveTopProvince.likelihood)}.` : "No province forecast is available for the selected filters."} {predictiveWorseningCount ? `${predictiveWorseningCount} province${predictiveWorseningCount === 1 ? " is" : "s are"} worsening compared with its recent stockout pattern.` : "No province has a material worsening stockout trend in this scope."}</p>
+            </div>
+            <div className="predictive-briefing-actions">
+              <strong>Recommended immediate action</strong>
+              {predictiveTopTransfer ? <span>Validate redistribution of <b>{predictiveTopTransfer.commodity}</b> from <b>{predictiveTopTransfer.sourceFacility}</b> in {predictiveTopTransfer.sourceDistrict} to <b>{predictiveTopTransfer.destinationFacility}</b> in {predictiveTopTransfer.destinationDistrict}.</span> : <span>No same-province overstock-to-shortage transfer is available in the current filter. Validate procurement or inter-provincial options.</span>}
+              <button type="button" onClick={() => setActivePage("actions")}>Open action tracker</button>
+            </div>
+          </div>
+
+          <div className="predictive-intelligence-grid">
+            <div className="quality-panel predictive-impact-panel">
+              <div className="quality-panel-head"><div><h3>Four-week facility alert scenario</h3><p>Trend extrapolation from the last four submitted reporting periods in the current scope.</p></div></div>
+              <div className="predictive-impact-values"><div><span>Current</span><strong>{predictiveImpact.current}</strong><small>facilities with a stockout or low-stock alert</small></div><b>to</b><div><span>Projected in 4 weeks</span><strong>{predictiveImpact.projected}</strong><small>{predictiveImpact.weeklyChange >= 0 ? "+" : ""}{predictiveImpact.weeklyChange.toFixed(1)} facilities per reporting week</small></div></div>
+              <p className="predictive-method-note">This is a scenario based on observed alert movement, not an estimate of patients affected. Patient coverage requires service-utilisation data not present in the tracer.</p>
+            </div>
+            <div className="quality-panel predictive-commodity-panel">
+              <div className="quality-panel-head"><div><h3>Highest-risk commodities</h3><p>National commodity forecast from current and recent submitted stock risk.</p></div><span>{predictiveCommodityRows.length} shown</span></div>
+              <div className="predictive-commodity-list">{predictiveCommodityRows.map((row) => <button type="button" className={`risk-${row.tone}`} key={row.name} onClick={() => { setSelectedCommodity(row.name); setQuery(row.name); setActivePage("commodities"); }}><span>{row.name}<small>{formatPercent(row.stockoutRate)} stocked out | MOS {formatMos(row.mos)}</small></span><div className="predictive-risk-track"><i style={{ width: `${Math.round(row.likelihood * 100)}%` }} /></div><b>{formatPercent(row.likelihood)}</b></button>)}</div>
+            </div>
+            <div className="quality-panel predictive-timeline-panel">
+              <div className="quality-panel-head"><div><h3>National risk timeline</h3><p>Submitted tracer risk below 2 MOS over the last 12 reporting weeks.</p></div></div>
+              <div className="predictive-timeline">{predictiveTimelineVisible.map((row) => <div key={row.label}><i style={{ height: `${Math.max(6, Math.round(row.rate * 150))}px` }} /><b>{formatPercent(row.rate)}</b><span>{row.label.replace("Week ", "W")}</span></div>)}</div>
+            </div>
+          </div>
+
           <div className="predictive-layout">
             <div className="quality-panel predictive-ranking-panel">
               <div className="quality-panel-head">
@@ -3477,7 +3567,7 @@ function App() {
                 {predictiveProvinceRows.map((row, index) => (
                   <button type="button" key={row.province} className={`predictive-rank-row risk-${row.tone}`} onClick={() => selectProvince(row.province)}>
                     <b className="predictive-rank-number">{index + 1}</b>
-                    <span>{row.province}<small>{row.label} | {row.observations} submitted weeks</small></span>
+                    <span>{row.province}<small>{row.label} | {row.observations} submitted weeks | confidence {formatPercent(row.confidence)}</small></span>
                     <div className="predictive-risk-track"><i style={{ width: `${Math.round(row.likelihood * 100)}%` }} /></div>
                     <strong>{formatPercent(row.likelihood)}</strong>
                   </button>
@@ -3501,9 +3591,9 @@ function App() {
 
           <div className="table-panel predictive-table">
             <div className="table-headline"><div><h2>Forecast evidence by province</h2><p>Use the underlying submitted stock indicators to validate the priority ranking.</p></div></div>
-            <div className="table-scroll"><table><thead><tr><th>Rank</th><th>Province</th><th>Likelihood</th><th>Risk band</th><th>Latest stockout</th><th>Below 2 MOS</th><th>Recent risk average</th><th>Emergency stock</th><th>Trend increase</th><th>Availability</th><th>Avg MOS</th><th>Latest submitted report</th></tr></thead><tbody>
-              {predictiveProvinceRows.map((row, index) => <tr key={row.province}><td>{index + 1}</td><td>{row.province}</td><td><span className={`comparison-signal ${row.tone}`}>{formatPercent(row.likelihood)}</span></td><td>{row.label}</td><td>{formatPercent(row.currentStockoutRate)}</td><td>{formatPercent(row.currentRiskRate)}</td><td>{formatPercent(row.recentRiskRate)}</td><td>{formatPercent(row.emergencyRate)}</td><td>{formatPercent(row.worsening)}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.lastReport}</td></tr>)}
-              {!predictiveProvinceRows.length && <tr><td colSpan="12">No forecast rows are available for the selected scope.</td></tr>}
+            <div className="table-scroll"><table><thead><tr><th>Rank</th><th>Province</th><th>Likelihood</th><th>Confidence</th><th>Risk band</th><th>Latest stockout</th><th>Below 2 MOS</th><th>Recent risk average</th><th>Emergency stock</th><th>Trend increase</th><th>Availability</th><th>Avg MOS</th><th>Latest submitted report</th></tr></thead><tbody>
+              {predictiveProvinceRows.map((row, index) => <tr key={row.province}><td>{index + 1}</td><td>{row.province}</td><td><span className={`comparison-signal ${row.tone}`}>{formatPercent(row.likelihood)}</span></td><td>{formatPercent(row.confidence)}</td><td>{row.label}</td><td>{formatPercent(row.currentStockoutRate)}</td><td>{formatPercent(row.currentRiskRate)}</td><td>{formatPercent(row.recentRiskRate)}</td><td>{formatPercent(row.emergencyRate)}</td><td>{formatPercent(row.worsening)}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.lastReport}</td></tr>)}
+              {!predictiveProvinceRows.length && <tr><td colSpan="13">No forecast rows are available for the selected scope.</td></tr>}
             </tbody></table></div>
           </div>
         </section>
