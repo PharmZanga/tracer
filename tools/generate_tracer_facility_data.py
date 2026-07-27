@@ -219,7 +219,7 @@ WORKBOOKS = [
 ]
 OUT = Path(__file__).resolve().parents[1] / "src" / "tracerFacilityData.js"
 OUT_DIR = OUT.parent
-CLEAN_DATA_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\tracer dashboard\JANUARY-DECEMBER TRACER 2026.xlsx")
+CLEAN_DATA_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\tracer dashboard\JANUARY-DECEMBER TRACER 2026 19.07.26.xlsx")
 CLEAN_DATA_SHEET = "SUMMARY SHEET"
 RAW_AVAILABILITY_SOURCES = [
     {
@@ -394,6 +394,8 @@ def normalize_district(value):
         "CHKANKATA": "CHIKANKATA",
         "NAWMALA": "NAMWALA",
         "MWENSE D HOSP": "MWENSE",
+        "0": "UNKNOWN",
+        "0.0": "UNKNOWN",
         # Loloma is a locality/ward and Loloma Mission Hospital reports under
         # Manyinga District; it is not a separate North-Western district.
         "LOLOMA": "MANYINGA",
@@ -822,6 +824,10 @@ def load_clean_workbook_configs():
         date_values[report_id] = report_date
         province = normalize_province(values[2])
         district = normalize_district(values[3])
+        # Do not carry spreadsheet placeholder values such as a numeric zero
+        # into the national reporting geography.
+        if district == "UNKNOWN":
+            continue
         original_level = clean(values[4])
         original_facility = clean(values[5])
         original_item = clean(values[7])
@@ -1338,7 +1344,7 @@ def main():
     period_groups = {
         "JanFeb": [period for period in periods if period["month"] in {"2026-01", "2026-02"}],
         "MarApr": [period for period in periods if period["month"] in {"2026-03", "2026-04"}],
-        "MayJun": [period for period in periods if period["month"] in {"2026-05", "2026-06"}],
+        "MayJun": [period for period in periods if period["month"] >= "2026-05"],             
     }
     module_names = []
     for suffix, group in period_groups.items():
