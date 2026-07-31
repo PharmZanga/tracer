@@ -94,6 +94,17 @@ async function requireSession(request, response, next) {
   const email = request.session?.user?.email;
   if (!email) return response.redirect("/request-access");
   try {
+    // An administrator may receive the ADMIN_EMAILS setting after an existing
+    // session was created. Refresh the database role on every protected load
+    // so the admin-only dashboard tools become available immediately.
+    if (adminEmails.has(email)) {
+      await pool.query(
+        `INSERT INTO dashboard_users (email, name, role, status, approved_at, approved_by)
+         VALUES ($1, $2, 'super_admin', 'approved', NOW(), $1)
+         ON CONFLICT (email) DO UPDATE SET role = 'super_admin', status = 'approved', approved_at = COALESCE(dashboard_users.approved_at, NOW()), approved_by = $1`,
+        [email, request.session?.user?.name || "System administrator"],
+      );
+    }
     const result = await pool.query("SELECT email, name, province, role, status FROM dashboard_users WHERE email = $1", [email]);
     const user = result.rows[0];
     if (!user || user.status !== "approved") {

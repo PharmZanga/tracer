@@ -216,6 +216,25 @@ WORKBOOKS = [
         "month": "2026-06",
         "week": "Week 3",
     },
+    {
+        "rawSources": [
+            {"province": "COPPERBELT PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\24.7.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES (1).xlsx")},
+            {"province": "MUCHINGA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\25.7.26 MUCHINGA 2026 TRACER WEEKLY REPORT.xlsx")},
+            {"province": "EASTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\25th July EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (32).xlsx")},
+            {"province": "NORTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26.07.26 NORTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx")},
+            {"province": "CENTRAL PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26_7_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx")},
+            {"province": "NORTH-WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26-07-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx")},
+            {"province": "WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26-07-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT.xlsx")},
+            {"province": "LUAPULA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT 25 7 26.xlsx")},
+            {"province": "LUSAKA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-24.07.2026.xlsx")},
+            {"province": "SOUTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 24.07.26 (.xlsx")},
+        ],
+        "source": "July Week 4 provincial raw submissions",
+        "reportDate": "2026-07-26",
+        "label": "Week 4 - 26 July 2026",
+        "month": "2026-07",
+        "week": "Week 4",
+    },
 ]
 OUT = Path(__file__).resolve().parents[1] / "src" / "tracerFacilityData.js"
 OUT_DIR = OUT.parent
@@ -242,6 +261,16 @@ RAW_FACILITY_REFERENCE_SOURCES = [
     {"province": "LUAPULA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT 27 6 26.xlsx")},
     {"province": "LUSAKA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-26.06.2026.xlsx")},
     {"province": "SOUTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\june province submission\week 4\SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 26.06.26 -final.xlsx")},
+    {"province": "COPPERBELT PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\24.7.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES (1).xlsx")},
+    {"province": "MUCHINGA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\25.7.26 MUCHINGA 2026 TRACER WEEKLY REPORT.xlsx")},
+    {"province": "EASTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\25th July EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (32).xlsx")},
+    {"province": "NORTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26.07.26 NORTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx")},
+    {"province": "CENTRAL PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26_7_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx")},
+    {"province": "NORTH-WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26-07-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx")},
+    {"province": "WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26-07-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT.xlsx")},
+    {"province": "LUAPULA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT 25 7 26.xlsx")},
+    {"province": "LUSAKA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-24.07.2026.xlsx")},
+    {"province": "SOUTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 24.07.26 (.xlsx")},
 ]
 RAW_FACILITY_IDENTITIES = {}
 TRUSTED_RAW_FACILITY_KEYS = set()
@@ -402,6 +431,64 @@ def normalize_district(value):
         "UNKNOWN DISTRICT": "UNKNOWN",
     }
     return aliases.get(text, text)
+
+
+# Authoritative national district roster. Raw provincial templates sometimes
+# retain extra facility columns after their real district sections; enforcing
+# this roster prevents facility names, comments, and copied labels from being
+# counted as districts or assigned to the wrong province.
+VALID_DISTRICTS_BY_PROVINCE = {
+    "CENTRAL PROVINCE": {
+        "CHIBOMBO", "CHISAMBA", "CHITAMBO", "KABWE", "KAPIRI MPOSHI",
+        "LUANO", "MKUSHI", "MUMBWA", "NGABWE", "SERENJE", "SHIBUYUNJI",
+    },
+    "COPPERBELT PROVINCE": {
+        "CHILILABOMBWE", "CHINGOLA", "KALULUSHI", "KITWE", "LUANSHYA",
+        "LUFWANYAMA", "MASAITI", "MPONGWE", "MUFULIRA", "NDOLA",
+    },
+    "EASTERN PROVINCE": {
+        "CHADIZA", "CHASEFU", "CHIPANGALI", "CHIPATA", "KASENENGWA",
+        "KATETE", "LUMEZI", "LUNDAZI", "LUSANGAZI", "MAMBWE", "NYIMBA",
+        "PETAUKE", "SINDA", "VUBWI", "LUNDAZI",
+    },
+    "LUAPULA PROVINCE": {
+        "CHEMBE", "CHIENGE", "CHIFUNABULI", "CHIPILI", "KAWAMBWA", "LUNGA",
+        "MANSA", "MILENGE", "MWANSABOMBWE", "MWENSE", "NCHELENGE", "SAMFYA",
+    },
+    "LUSAKA PROVINCE": {"CHILANGA", "CHONGWE", "KAFUE", "LUANGWA", "LUSAKA", "RUFUNSA"},
+    "MUCHINGA PROVINCE": {
+        "CHAMA", "CHINSALI", "ISOKA", "KANCHIBIYA", "LAVUSHIMANDA", "MAFINGA",
+        "MPIKA", "NAKONDE", "SHIWANG'ANDU",
+    },
+    "NORTH-WESTERN PROVINCE": {
+        "CHAVUMA", "IKELENGE", "KABOMPO", "KALUMBILA", "KASEMPA", "MANYINGA",
+        "MUFUMBWE", "MUSHINDAMO", "MWINILUNGA", "SOLWEZI", "ZAMBEZI",
+    },
+    "NORTHERN PROVINCE": {
+        "CHILUBI", "KAPUTA", "KASAMA", "LUNTE", "LUPOSOSHI", "LUWINGU", "MBALA",
+        "MPOROKOSO", "MPULUNGU", "MUNGWI", "NSAMA", "SENGA",
+    },
+    "SOUTHERN PROVINCE": {
+        "CHIKANKATA", "CHIRUNDU", "CHOMA", "GWEMBE", "ITEZHI-TEZHI", "KALOMO",
+        "KAZUNGULA", "LIVINGSTONE", "MAZABUKA", "MONZE", "NAMWALA", "PEMBA",
+        "SIAVONGA", "SINAZONGWE", "ZIMBA",
+    },
+    "WESTERN PROVINCE": {
+        "KALABO", "KAOMA", "LIMULUNGA", "LUAMPA", "LUKULU", "MITETE", "MONGU",
+        "MULOBEZI", "MWANDI", "NALOLO", "NKEYEMA", "SENANGA", "SESHEKE", "SHANGOMBO",
+        "SIKONGO", "SIOMA",
+    },
+}
+
+
+def canonical_district(province, district):
+    district = normalize_district(district)
+    aliases = {
+        "KAPIRI": "KAPIRI MPOSHI",
+        "ITEZHI TEZHI": "ITEZHI-TEZHI",
+    }
+    district = aliases.get(district, district)
+    return district if district in VALID_DISTRICTS_BY_PROVINCE.get(province, set()) else None
 
 
 def normalize_program(value, item=None):
@@ -572,6 +659,10 @@ def canonical_facility_identity(province, district, facility_level, facility_nam
         verified_province, verified_district, verified_level = verified_identity
         return verified_province, verified_district, verified_level, facility_text
 
+    province = normalize_province(province)
+    district = canonical_district(province, district)
+    if district is None:
+        return None
     return province, district, facility_level, facility_text
 
 
@@ -640,8 +731,11 @@ def load_raw_facility_identities():
                 facility_key = facility_match_key(facility)
                 if not district or not facility_key or facility_key in {"all", "hc hp", "ref"} or str(facility).startswith("="):
                     continue
+                district = canonical_district(province, district)
+                if district is None:
+                    continue
                 facility_level = canonical_facility_level_for_facility(raw_level, facility)
-                candidates[facility_key].add((province, normalize_district(district), facility_level))
+                candidates[facility_key].add((province, district, facility_level))
         wb.close()
     identities = {}
     trusted_keys = set()
@@ -717,7 +811,9 @@ def iter_raw_matrix_rows(source, report_date):
             facility = clean(ws.cell(2, start_col + 1).value)
             if not district:
                 continue
-            district = normalize_district(district)
+            district = canonical_district(province, district)
+            if district is None:
+                continue
             facility_level = canonical_facility_level_for_facility(source_facility_level, facility)
             if facility_level in {"HEALTH POST", "HEALTH CENTRE"}:
                 facility_name = f"{district} {facility_level.title()} facilities"
@@ -1329,9 +1425,20 @@ def main():
     for config in load_clean_workbook_configs():
         config["availabilityOverrides"] = availability_overrides
         configs.append(config)
+    clean_period_ids = {config["reportDate"] for config in configs}
+    # Retain the clean master as the source of record for its existing dates,
+    # then add provincial submissions only for new reporting periods not yet
+    # present in that master workbook.
+    for config in WORKBOOKS:
+        if config.get("rawSources") and config["reportDate"] not in clean_period_ids:
+            configs.append(dict(config))
     periods = [summarize(config) for config in configs]
     periods.sort(key=lambda item: item["reportDate"])
-    expected_districts = {(district["province"], district["name"]) for period in periods for district in period["districts"] if district["name"] != "UNKNOWN"}
+    expected_districts = {
+        (province, district)
+        for province, districts in VALID_DISTRICTS_BY_PROVINCE.items()
+        for district in districts
+    }
     expected_facilities = {
         (facility["province"], facility["district"], facility["facilityLevel"], facility["name"])
         for period in periods
