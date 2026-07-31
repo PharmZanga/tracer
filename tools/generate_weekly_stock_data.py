@@ -64,6 +64,15 @@ SOURCES = [
             {"sheet": "LAB 4-JULY", "date": "2026-07-04", "label": "4 July 2026", "stream": "LAB"},
         ],
     },
+    {
+        "file": ROOT / "july" / "EMMS and LAB Stock Position.xlsx",
+        "periods": [
+            {"sheet": "EMMS JULY10", "date": "2026-07-10", "label": "10 July 2026", "stream": "EMMS"},
+            {"sheet": "LAB JULY 10", "date": "2026-07-10", "label": "10 July 2026", "stream": "LAB"},
+            {"sheet": "EMMS JULY17", "date": "2026-07-17", "label": "17 July 2026", "stream": "EMMS"},
+            {"sheet": "LAB JULY17", "date": "2026-07-17", "label": "17 July 2026", "stream": "LAB"},
+        ],
+    },
 ]
 
 
@@ -96,28 +105,35 @@ def header_text(value):
     return str(value or "").strip().lower()
 
 
-def find_overall(ws):
+def matrix_cell(rows, row, col):
+    if row < 1 or col < 1 or row > len(rows):
+        return None
+    values = rows[row - 1]
+    return values[col - 1] if col <= len(values) else None
+
+
+def find_overall(rows):
     for row in range(1, 12):
         for col in range(1, 8):
-            if "overall" in header_text(ws.cell(row, col).value):
+            if "overall" in header_text(matrix_cell(rows, row, col)):
                 for offset in range(1, 4):
-                    value = num(ws.cell(row, col + offset).value)
+                    value = num(matrix_cell(rows, row, col + offset))
                     if value is not None:
                         return pct(value)
-    for cell in ("C3", "B3", "C2", "B2"):
-        value = num(ws[cell].value)
+    for row, col in ((3, 3), (3, 2), (2, 3), (2, 2)):
+        value = num(matrix_cell(rows, row, col))
         if value is not None:
             return pct(value)
     return 0
 
 
-def find_layout(ws):
+def find_layout(rows):
     category = None
     item = None
     for row in range(1, 45):
         for col in range(1, 9):
-            current = header_text(ws.cell(row, col).value)
-            nxt = header_text(ws.cell(row, col + 1).value)
+            current = header_text(matrix_cell(rows, row, col))
+            nxt = header_text(matrix_cell(rows, row, col + 1))
             if current in {"product category", "category"} and ("availability" in nxt or "stock availability" in nxt):
                 if category is None:
                     category = {"row": row + 1, "name_col": col, "availability_col": col + 1}
@@ -140,20 +156,28 @@ def is_item_index(value):
 
 
 def parse_sheet(ws, config, source_name):
-    category_layout, item_layout = find_layout(ws)
+    rows = list(
+        ws.iter_rows(
+            min_row=1,
+            max_row=min(ws.max_row, 1100),
+            max_col=min(ws.max_column, 9),
+            values_only=True,
+        )
+    )
+    category_layout, item_layout = find_layout(rows)
     start_row = min(category_layout["row"], item_layout["row"])
-    end_row = min(ws.max_row, 1100)
+    end_row = len(rows)
     categories = []
     items = []
     current_category = None
     blank_streak = 0
 
     for row in range(start_row, end_row + 1):
-        category_name = clean(ws.cell(row, category_layout["name_col"]).value)
-        category_availability = num(ws.cell(row, category_layout["availability_col"]).value)
-        item_index = ws.cell(row, item_layout["index_col"]).value
-        item_name = clean(ws.cell(row, item_layout["name_col"]).value)
-        item_availability = num(ws.cell(row, item_layout["availability_col"]).value)
+        category_name = clean(matrix_cell(rows, row, category_layout["name_col"]))
+        category_availability = num(matrix_cell(rows, row, category_layout["availability_col"]))
+        item_index = matrix_cell(rows, row, item_layout["index_col"])
+        item_name = clean(matrix_cell(rows, row, item_layout["name_col"]))
+        item_availability = num(matrix_cell(rows, row, item_layout["availability_col"]))
 
         has_data = any(value not in (None, "") for value in (category_name, category_availability, item_index, item_name, item_availability))
         blank_streak = 0 if has_data else blank_streak + 1
@@ -188,7 +212,7 @@ def parse_sheet(ws, config, source_name):
         "label": config["label"],
         "stream": config["stream"],
         "source": source_name,
-        "overallAvailability": round(find_overall(ws), 4),
+        "overallAvailability": round(find_overall(rows), 4),
         "counts": {
             "categories": len(categories),
             "items": len(items),
@@ -214,7 +238,7 @@ def main():
         path = source["file"]
         if not path.exists():
             raise FileNotFoundError(path)
-        workbook = openpyxl.load_workbook(path, read_only=False, data_only=True, keep_links=False)
+        workbook = openpyxl.load_workbook(path, read_only=True, data_only=True, keep_links=False)
         try:
             for config in source["periods"]:
                 key = (config["stream"], config["date"])

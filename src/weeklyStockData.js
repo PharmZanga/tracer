@@ -43430,6 +43430,8982 @@ export const weeklyStockPeriods = [
         "status": "Available"
       }
     ]
+  },
+  {
+    "id": "emms-2026-07-10",
+    "date": "2026-07-10",
+    "label": "10 July 2026",
+    "stream": "EMMS",
+    "source": "EMMS and LAB Stock Position.xlsx",
+    "overallAvailability": 0.4528,
+    "counts": {
+      "categories": 40,
+      "items": 477,
+      "availableItems": 216,
+      "stockoutItems": 261
+    },
+    "categories": [
+      {
+        "name": "GLOVES",
+        "availability": 0
+      },
+      {
+        "name": "VACCINES",
+        "availability": 0
+      },
+      {
+        "name": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "availability": 0.11
+      },
+      {
+        "name": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "availability": 0.17
+      },
+      {
+        "name": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "availability": 0.25
+      },
+      {
+        "name": "IMAGING",
+        "availability": 0.25
+      },
+      {
+        "name": "CONSUMABLES",
+        "availability": 0.29
+      },
+      {
+        "name": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "availability": 0.29
+      },
+      {
+        "name": "ANTIINFECTIVE MEDICINES",
+        "availability": 0.31
+      },
+      {
+        "name": "EPIDEMIC SUPPLIES",
+        "availability": 0.31
+      },
+      {
+        "name": "GENERAL MED-SURG",
+        "availability": 0.31
+      },
+      {
+        "name": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "availability": 0.33
+      },
+      {
+        "name": "SUTURES",
+        "availability": 0.33
+      },
+      {
+        "name": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "availability": 0.38
+      },
+      {
+        "name": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "availability": 0.38
+      },
+      {
+        "name": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "availability": 0.4
+      },
+      {
+        "name": "GASTROINTESTINAL MEDICINES",
+        "availability": 0.44
+      },
+      {
+        "name": "IV CANNULAE & GIVING SETS",
+        "availability": 0.44
+      },
+      {
+        "name": "CARDIOVASCULAR MEDICINES",
+        "availability": 0.45
+      },
+      {
+        "name": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "availability": 0.5
+      },
+      {
+        "name": "ANTISEPTICS AND DISINFECTANTS",
+        "availability": 0.5
+      },
+      {
+        "name": "CONDOMS",
+        "availability": 0.5
+      },
+      {
+        "name": "DIURETICS",
+        "availability": 0.5
+      },
+      {
+        "name": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "availability": 0.5
+      },
+      {
+        "name": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "availability": 0.5
+      },
+      {
+        "name": "SYRINGES AND NEEDLES",
+        "availability": 0.5
+      },
+      {
+        "name": "DENTAL",
+        "availability": 0.56
+      },
+      {
+        "name": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "availability": 0.56
+      },
+      {
+        "name": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "availability": 0.57
+      },
+      {
+        "name": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "availability": 0.57
+      },
+      {
+        "name": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "availability": 0.6
+      },
+      {
+        "name": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "availability": 0.63
+      },
+      {
+        "name": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "availability": 0.64
+      },
+      {
+        "name": "MEDICINES AFFECTING THE BLOOD",
+        "availability": 0.67
+      },
+      {
+        "name": "MEDICINES FOR DISEASES OF JOINTS & BONES",
+        "availability": 0.67
+      },
+      {
+        "name": "VITAMINS AND MINERALS",
+        "availability": 0.67
+      },
+      {
+        "name": "RENAL",
+        "availability": 0.77
+      },
+      {
+        "name": "ANTIMALARIAL",
+        "availability": 0.86
+      },
+      {
+        "name": "MEDICINES USED IN DIARRHOEA",
+        "availability": 1.0
+      },
+      {
+        "name": "NUTRITIONAL PRODUCTS",
+        "availability": 1.0
+      }
+    ],
+    "items": [
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Bupivacaine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Ketamine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Lignocaine/Lidocaine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Thiopental Sodium",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Cetirizine tab/syrup",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Dexamethasone Inj/tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Hydrocortisone Inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Methylprednisolone",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Promethazine inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Triamcinolone Injection",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Diazepam tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Gabapentin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Phenobarbitone inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Phenobarbitone tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "name": "Acetylcysteine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "name": "Atropine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "name": "Calcium gluconate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Acyclovir",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Albendazole/Mebendazole",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Amoxycillin + Clavulanate tab/susp",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Azithromycin susp",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Azithromycin tab/cap",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Benzylpenicilin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cefotaxime",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cefuroxime susp/tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cephalexin susp",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Chloramphenicol",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Ciprofloxacin tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cloxacillin Caps",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cloxacillin Sodium 500mg Injection, 10ml (50)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cloxacillin Susp",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Diethylcarbamazine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Doxycycline",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Erythromycin Suspension",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Erythromycin Tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Gentamycin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Metronidazole tabs",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Nitrofurantoin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Nystatin oral",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Phenoxymethypenicillin susp",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Phenoxymethypenicillin tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Sulphadoxine / Pyrimethamine 500/25mg Tab(1000)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "5-flouro uracil",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Bevacizumab inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Bicalutamide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Bleomycin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Calcium Folinate/leucovorin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Carboplatin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Cyclophosphamide inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Dactinomycin 0.5mg for Injection (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Docetaxel Injection",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Doxorubicin inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Etoposide inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Ifosfamide injection",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "L-Asparaginase",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Leuprolide 5",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Mesna Injection I.V, inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Methotrexate inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Oxaliplatin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Paclitaxel",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Temozolomide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Vincristine Inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Abacavir Suphate 300mg Tablet(60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Darunavir 150mg tablet (240)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Darunavir 600mg tablet (60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Lamivudine 150mg Tablet(60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Lamivudine/Zidovudine 150/300mg Tablet(60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Lamivudine/Zidovudine Dispersible 30/60mg Tablet(60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Lopinavir/Ritonavir 200/50mg Tablet(120)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Nevirapine 50mg/5ml 100ml Suspension(1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Ritonavir 100mg Tablet",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Chlorhexidine gluconate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Methylated Spirit",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Povidone Iodine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Amikacin Ampule Injection 500mg/2ml Ampule(10)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Bedaquiline 100mg Tablet(188)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Delamanid 50mg Tablet(672)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Imipenem/Cilastatin 500mg/500mg Pwd For Infusion(10)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Isoniazid 100mg / 300mg tablet",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Meropenem 1g Powder For Injection(10)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Moxifloxacin 400mg Tablet(100)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Pyridoxine (Vitamin B6) 50mg tablet",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Adrenaline",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Amiloride Hcl 5mg + Hydrochlorothiazide 50mg, Tab(1000)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Amlodipine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Atenolol",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Atorvastatin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Clopidogrel",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Digoxin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Enalapril",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Isosorbide Dinitrate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Methyldopa",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Propranolol",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONDOMS",
+        "name": "Female condoms",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Acetazolamide Sodium Tablets",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Acyclovir eye ointment",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Betamethazone/Dexamethasone eye",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Cataracts Kits",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Chloramphenicol 0.5% eye/ear drops, 10ml (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Chloramphenicol 1% Eye Ointment 5gm(1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Ciprofloxacin Eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Cyclopentolate HCL Eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Dorzolamide 2%,5ml Eye Drops(1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Gentamycin/dexamethasone eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Homatropine eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Hydrocortisone 1% eye ointment",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Latanoprost Maleate eye drop (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Moxifloxacin hydrochloride 0.5% Ophthalmic Solution USP W/V, 5ml (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Natamycin eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Povidone eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Tacrolimus Eye Drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Tetracycline eye ointment",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Timolol",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Tropicamide Eye Drops 1%,0.5ml(20)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Abdominal swabs",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Adhesive tape zinc oxide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Bandages POP",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Bandages crepe",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Cotton wool",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Gauze compress",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Gauze roll",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Paraffin gauze",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Assorted guta percha and paper points",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Calcium Hydroxide Paste",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Dental Needles",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Glass Ionomer cement",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Benzyl benzoate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Betamethasone 0.1% cream",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Calamine lotion",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Silver Sulfadiazine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Sunscreen cream",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Frusemide Inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Frusemide tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Mannitol",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Bio-hazard bags",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "COVID 19 rapid test kits",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Cadaver Bags Paediatric",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Cadaver bags Adult",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Chlorine Granules",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Chlorine liquid",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Cholera Rapid Test kits",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Coveralls",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Disposable Head cover",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Disposable gowns",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Gloves examination, powder free nitrile L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Gloves examination, powder free nitrile M",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Heavy Duty Gloves",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "N95/KN95/FFP2 face masks",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Nirmatrelvir/ritonavir",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Non-Rebreathing Oxygen Masks Adult (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Overalls/Work suits",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Remdesivir Injection 100mg",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Hyoscine N Butyl Bromide Inj/tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Lactulose",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Magnesium trisilicate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Metochlopromide inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Ondansentron inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Catheter Foley, FR16",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Feeding tube Ch 14-24",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Feeding tube Ch 8-12",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Mini grips",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Sharp/Safety Boxes",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Surgical Face masks",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Surgical blades",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Umbilical cord clamps",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Urine collecting bags adults",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GLOVES",
+        "name": "Examination gloves latex powder free Large",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GLOVES",
+        "name": "Examination gloves latex powder free Medium",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GLOVES",
+        "name": "Surgical gloves 7.5",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GLOVES",
+        "name": "Surgical gloves 8",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Digital films",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Gadopentetate Dimeglumine (Magnevist)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Iopromide Injection (Ultravist)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Lohexol for Injection",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Sono Paper",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Ultrasound Gel",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "Burette giving set",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "IV Cannular size 18",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "IV Cannular size 24",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "Infusion Giving set",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "name": "Aminophylline injection 25 mg/mL",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "name": "Caffeine Citrate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Folic Acid",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Phytomenadione (Vit K)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Glibenclamide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Glimepiride",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Glimepiride/Metformin 2mg/500mg Tablet (20)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Insulin Injection intermediate - Isophane",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Insulin short acting + intermediate (biphasic)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DISEASES OF JOINTS & BONES",
+        "name": "Colchicine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Chlordiazepoxide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Chlorpromazine inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Chlorpromazine tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Escitalopram",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Fluoxetine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Naltrexone",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Risperidone inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Diclofenac Inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Morphine Powder",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Morphine sulphate 10mg Tablet (60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Paracetamol, For IV Inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Pethidine Inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Tramadol",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Etonogestrel 68Mg(Implanon)(1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "IUD Copper T, 380 Piece(50)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Levonogestrel 0.75mg (Emergency Pill)(2)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Levonogestrel Implant Contraceptive 10 rods 750mcg/rod Sub-dermal(10) 5 years/3 years",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Medroxyprogesterone Acetate 104Mg/0.65Ml,(Sayana ) 200pcs",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Mifepristone 200mg + Misoprostol 0.2mg Vaginal Tablets(5)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Mifepristone tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "NorethisteroneEnanthate , 1ML Amp 200mg/ml Injection(100)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Tranexamic acid Tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Amphotericin B, 50mg Injection Powder",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Fluconazole 200mg Tab/Cap",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Fluconazole infusion 2mg/ml,100ml (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Atracurium",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Neostigmine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Pancuronium bromide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Trihexyphenidyl",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "1.5%N Ca2+ 2L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "1.5%N Ca2+ 5L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "4.25%N Ca2+ 2L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Acid Concentrate 5ltrs",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Catheter Adaptor Luer Locks",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Citrosteril 5L (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Dialylsate System",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Filtrate Collection Bag 10L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Fistula needle 17G",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Organiser set",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Puristeril",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sodium Polystyrene Sulphonate Powder 464gm (1)- RN",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Dextrose 10%",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Dextrose 5% + Sodium Chloride 0.9%",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Ringers Lactate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin 0 RB",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin 2/0 RB",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin 2/0 RC",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin U.S.P 1 RC",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin U.S.P 2, RB,",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin U.S.P 2, RC",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin, U.S.P 3/0, RB,",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin, U.S.P 6/0, RC",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Chromic Catgut Natural Absorbable 1 R/B (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Chromic Catgut Natural Absorbable 2/0 R/B (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Chromic Catgut Natural Absorbable 2R/B (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Nylon Monofilament Non Absorbable 0 R/C (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Nylon Monofilament Non Absorbable 2 R/B (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Nylon Monofilament Non Absorbable 2/0 R/B (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Polyglactine U.S.P 1, CN",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Silk, U.S.P 1 R/C",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Silk, U.S.P 4/0 R/C",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Needles 21G",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Needles 23G",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Syringes 10ml",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Syringes 20ml",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "VACCINES",
+        "name": "Anti-Rabies",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "VACCINES",
+        "name": "Tetanus",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Ascorbic Acid",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Vitamin B Complex",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Isoflurane",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Midazolam inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Propofol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Sevoflurane",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Chlorpheniramine tab/syrup",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Prednisolone",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Carbamazepine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Diazepam inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Lamotrigine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Levetiracetam",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Lorazepam",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Sodium Divalporate 500mg tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Sodium Valproate 100/200mg tab/susp",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "name": "Anti-Snake Venom",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "name": "Naloxone",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Amoxycillin susp/disp tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Amoxycillin tab/capsules",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Benzathine Benzylpenicillin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cefixime susp/tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Ceftriaxone",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cephalexin Caps",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Ciprofloxacin inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Griseofulvin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Metronidazole inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Metronidazole susp",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Praziquantel",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Artemether + Lumefantrine 20/120 mg (12) Tab(30)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Artemether + Lumefantrine 20/120 mg 24's Tab(30)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Artesunate 60mg Pwd For Inj(1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "ITNS",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Rapid Diagnostic Test for Malaria Strip(25)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Rectal Artesunate",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Cisplatin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Filgrastim inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Tamoxifen tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Zoledronic Acid Injection",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Abacavir Sulfate +Lamivudine+Dolutegravir Tablet 60/30/5mg(180)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Darunavir/Ritonavir 400/50mg Tab(60)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Dolutegravir 10mg disp tablet",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Dolutegravir 50mg Tablet(30)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Tenofovir/Emtricitabine 300/200mg Tablet(30)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Cetrimide/Chlorhexidine gluconate",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Glutaraldehyde (Cidex)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Sodium Hypochlorite",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Clofazimine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Cycloserine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Ethambutol 100mg / 400mg",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Ethionamide 250mg Tablet(100)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Levofloxacin 100mg Dispersible Tablet(100)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Levofloxacin 250mg Tablet(100)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Linezolid",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "MDT MB Blister Adult (Rifampicin/Clofazimine/Dapsone) 300/100/100mg Tablet(6)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Pretomanid Tablet 200mg",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Pyrazinamide 500mg Tablet(672)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Rifampicin/Isoniazid/Pyrazinamide 75/50/150mg Tablet(84)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol 150/75/400/275mg Tablet(672)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Rifapentine/Isoniazid 300/300mg Tablet(36)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Acetylsalicylic acid 75mg tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Amiodarone",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Carvedilol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Dobutamine Inj/Dopamine Injection",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Hydralazine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Labetalol inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Metoprolol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Nifedipine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Telmisartan + Hydrochlorothizide",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONDOMS",
+        "name": "Male Condoms",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Carboxymethylcellulose/Hypromellose",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Dexamethasone/Ofloxacin 0.1%/0.3% Ophthalmic Solution, 5mL (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Dorzolamide 2% + Timolol 1%, Ophthalmic Solution 5mls (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Fluorometholone 0.1% Ophthalmic Suspension, 5ml (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Nepafenac eye drops",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Olopatadine 0.2% Eye Drops 10ml (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Prednisolone eye drops",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Sodium Cromoglycate drops",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Bandages triangular",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Acrylic Teeth",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Alveogyl dressing",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Heat Cure liquid/powder",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Lignocaine + adrenaline / Mepivacaine dental cartridge",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Rapid Repair Powder",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Clotrimazole/Miconazole cream",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Hydrocortisone cream",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Hydrochlorthiazide",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Potassium Chloride inj,",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Spironolactone tablet",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Aprons PVC",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Disposable Shoe Cover",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Ethanol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Gumboots",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Infrared Thermometer",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Medical face shields",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Pulse Oximeter",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Safety goggles",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Scrubs",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Esomeprazole Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Omeprazole or esomeprazole cap/tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Ondansentron tabs",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Sodium Bicarbonate Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Catheter Foley, FR18.",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Endotracheal tube 4-7.5mm",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Surgical drapes",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Urine collecting bags pediatric",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "IMAGING",
+        "name": "X-Ray Films 35 X 43cm (Blue Sensitive ) (100)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "IMAGING",
+        "name": "X-Ray films 35cm x 35 cm",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "IV Cannular size 16",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "IV Cannular size 20",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "IV Cannular size 22",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "name": "Beclomethasone inhaler",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "name": "Ipratropium Bromide",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "name": "Salbutamol inhaler/nebuliser",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Enoxaparin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Erythropoetin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Ferrous Sulphate",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Ferrous/Folic tab/syr",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Glucagon",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Insulin short acting soluble inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Metformin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR DISEASES OF JOINTS & BONES",
+        "name": "Allopurinol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR DISEASES OF JOINTS & BONES",
+        "name": "Sulfasalazine Tablet",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Amitriptyline",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Disulfiram",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Fluphenazine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Haloperidol Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Haloperidol tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Imipramine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Mirtazapine Tablet",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Quetiapine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Risperidone tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Diclofenac tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Fentanyl",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Ibuprofen tab/cap",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Morphine Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Paracetamol 500mg tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Paracetamol Syrup or 100mg tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Carbetocin Injection",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Ethinyloestradiol/Levonorgestrel Blister of 28 tab 30mcg/150mcg Tablet(3)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Levonogestrel 0.03mg tablet(3)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Levonorgestrel 52mg IUD (5)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Magnesium Sulphate inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Medroxyprogesterone Acetate 150mg/ml injection 1ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Misoprostol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Oxytocin IV Inj, 10IU/ml 1ml Amp(10)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Tranexamic acid Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Co-Trimoxazole 480mg tablet(1000)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Co-Trimoxazole,100ml 240mg/5ml suspension (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Flucytosine tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Valacyclovir/ Ganciclovir",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES USED IN DIARRHOEA",
+        "name": "ORS",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES USED IN DIARRHOEA",
+        "name": "Zinc Sulfate",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Glycopyrronium Bromide",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Suxamethonium",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "NUTRITIONAL PRODUCTS",
+        "name": "F-100 Therap.milk CAN 400g/CAR-24",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "NUTRITIONAL PRODUCTS",
+        "name": "F-75 Therap.milk CAN 400g/CAR-24",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "NUTRITIONAL PRODUCTS",
+        "name": "ReSoMal,42g sachet for 1 litre/CAR-100",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "NUTRITIONAL PRODUCTS",
+        "name": "Therapeutic CMV,tin 800g/CAR-6",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "NUTRITIONAL PRODUCTS",
+        "name": "Therapeutic spread,sachet 92g/CAR-150",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "2.3%N Ca2+ 2L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "2.3%N Ca2+ 5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "4.25%N Ca2+ 5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Bi-bag 5008 (Fresenius)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Catheter Extension line 32CM",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Diasafe",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Disinfectant Caps",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Dual cap",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Elisio Dialyser 15H",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Elisio Dialyser 17H",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Elisio Dialyser 19H",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Elisio Dialyser 21H",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "FX Cordiax 100 Dialysers",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "FX Cordiax 40 Dialysers",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "FX Cordiax 50 Dialysers",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "FX Cordiax 60 Dialysers",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "FX Cordiax 80 Dialysers",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Fistula needle 15G",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Fistula needle 16G",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Fresenius: AV-Set Online Plus 5008-R (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Fresenius: AV-Set SRB-R 4008 (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Heparin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Human Albumin 20% infusion",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Iron Sucrose",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Membrane Plasma Separation Line",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Mupirocin Oint 2%",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Nipro Citric Acid 10L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Nipro: AV Blood Line Set (Blood Tubing Set) (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Nipro: B - Cartridge 760g Sodium Bicarbonate (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "PD catheter",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Permanent catheter",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Prohd Set-M",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Renal acid smart bag 211.25 low Calcium",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Renal acid smart bag 211.75 high Calcium",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sevelamer",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sleep safe (clip for stay safe organizer)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sleep safe Drainage bag (APD Drainage Set)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sleep safe set plus",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sporotal",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Substitute System line",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Temporary catheter",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Dextrose 5%",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Dextrose 50%",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Sodium Chloride 0.9%",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Water for injection",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Nylon Monofilament Non Absorbable 1 R/B (12)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Silk, U.S.P 0 R/C",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Silk, U.S.P 2/0 R/C",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Spinal needles",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Syringes 2ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Syringes 50ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Syringes 5ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Hydroxocobalamin Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Multivitamin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Thiamine Tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Thiamine inj",
+        "availability": 1.0,
+        "status": "Available"
+      }
+    ]
+  },
+  {
+    "id": "lab-2026-07-10",
+    "date": "2026-07-10",
+    "label": "10 July 2026",
+    "stream": "LAB",
+    "source": "EMMS and LAB Stock Position.xlsx",
+    "overallAvailability": 0.6343,
+    "counts": {
+      "categories": 14,
+      "items": 229,
+      "availableItems": 146,
+      "stockoutItems": 83
+    },
+    "categories": [
+      {
+        "name": "Pipettes & Tips",
+        "availability": 0.17
+      },
+      {
+        "name": "Acids & Alcochols",
+        "availability": 0.25
+      },
+      {
+        "name": "Histopthology & Cytology",
+        "availability": 0.36
+      },
+      {
+        "name": "General Labs",
+        "availability": 0.4
+      },
+      {
+        "name": "RDTs",
+        "availability": 0.57
+      },
+      {
+        "name": "Microbiology & Parasitology",
+        "availability": 0.58
+      },
+      {
+        "name": "CD4 Testing",
+        "availability": 0.67
+      },
+      {
+        "name": "Microscope Slides & Coverslips",
+        "availability": 0.67
+      },
+      {
+        "name": "Specimen Containers",
+        "availability": 0.67
+      },
+      {
+        "name": "Biochemistry",
+        "availability": 0.7
+      },
+      {
+        "name": "Haematology & Blood Transfusion",
+        "availability": 0.84
+      },
+      {
+        "name": "Gene Xpert",
+        "availability": 1.0
+      },
+      {
+        "name": "HIV Test Kits",
+        "availability": 1.0
+      },
+      {
+        "name": "Infection Prevention Products",
+        "availability": 1.0
+      }
+    ],
+    "items": [
+      {
+        "category": "Acids & Alcochols",
+        "name": "Acetone liquid, Analytical Reagent",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Acids & Alcochols",
+        "name": "Glycerol, Liquid, Analytical Grade",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Acids & Alcochols",
+        "name": "Methanol 99%",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Albumin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Alkaline Phosphate ALP 2S",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: GGT",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Micro Cuvettes Segments",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Micro Sample Cups",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Potassium electrode",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-REF filling solution",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Reference electrode",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Sodium electrode",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Weekly Cleaning solution",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus Reagent Pack with Sample Cups",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte plus 3-Thermal Paper rolls",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600-Reaction Cuvettes",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600-Uric Acid liquicolour",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: AFP (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: CA 125 (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: CA 19-9 (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: CA 72-4 (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: CEA (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: CRP (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: EBV EA IgG (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: Estradiol (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: FSH (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: HCG/\u03b2-HCG (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: LH (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: T3 (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: T4 (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: TSH (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: Total PSA (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: \u03b22-MG (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CD4 Testing",
+        "name": "PIMA CD4 Catridges",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Applicator Sticks",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Auramine O Dye Content 85%,25g",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Blood Collection Needle,23G 100Pieces",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Cross match tubes (water wettable Khan tubes)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Filter Paper 125mm",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Hemocue: HB 201 microcuvette, 4 x 50 Pieces",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Hemocue: HB 301 microcuvette, 4 x 50 Pieces",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Phosphate Buffered Saline PH 6.8-7.4 1L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Potassium Permanganate, Analytical Grade",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Haematology",
+        "name": "ABX Cuvette Racks PC200",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Haematology",
+        "name": "Fluorocel Ret 12ml",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex Thermal Printer Paper roll",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Formalin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Hematoxyline and Eosin solution",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Orange G 6 Solution",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Papanicolaou stain EA-50",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Paraffin wax",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Toluidine Blue O Stain",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Xylene, AR, 25L -",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Disc Piperacillin/Tazobactam",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Cefotaxime",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Nitrocefin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Optochin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc,Furazolidone",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Clofazimine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Ertapenem",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Imipenem",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Levofloxacin 98-102% Anhydrous Basis",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Meropenem",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Moxifloxacin Hydrochloride",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Blood Culture Bottles Paed Plus Medium",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Indian Ink Liquid, Biological Stain",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "MacConkey Lactose Agar 500g",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Oxidase reagent 25g",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Petri Dish.99mm Diameter (plastic)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Sterile Swab with transport Media",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Xylose Lysine Deoxycholate (XLD) 500G",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "kovacs reagent",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microscope Slides & Coverslips",
+        "name": "Microscope Cover slips 22 x 40mm/ 22mmX 22 mm",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Pipette Tips 1250 \u00b5l",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Pipette Tips Filtered, 50-1000\u00b5l",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Pipette Tips, Yellow 20-200\u00b5l Non Filter",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Pipette tips with filters 1000\u00b5l",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Universal Pipette Tips Filtered 200\u00b5l",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RDTs",
+        "name": "Determine TB LAM AG 25T",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RDTs",
+        "name": "Helicobacter Pylori Ag Rapid Test",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RDTs",
+        "name": "Rapid Plasma Reagin (RPR) tests",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "Lithium Heparin Blood Collection tubes With A Vacuum",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "Vacutainer Blood Collection Tube EDTA/Fluoride Oxalate 4ml",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Acids & Alcochols",
+        "name": "Ethanol - Absolute 99.9%",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX PENTRA C200: AST CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX PENTRA C200: Urea CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: ALT CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Albumin CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Bilirubin Direct",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Bilirubin Total",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Cholesterol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Clean Chem",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Glucose CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: N control",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: P control",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Triglycerides CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200:Creatinine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra Multical",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra Total Protein TP3",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra Uric acid CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Abx Pentra Deproteinizer CP 29ML",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: ALT (GPT)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: AST (GOT)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Bilirubin Direct",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Bilirubin Total",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Cholesterol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Creatinine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Glucose",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Thermal Printer Paper Roll",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Triglycerides",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Urea",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Uric Acid",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111:Total Protein",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas Cleaner 1 Litre",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Chloride electrode",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Daily Cleaning solution",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-K-filling solution",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-NA conditioner",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-NA/CL/PH filling solution",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-QC solution",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 - Auto-creatinine liquicolor",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 - Autocal",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 - CK MB liquid UV",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 - Wash Additive",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 -Diluent",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 Cuvette Clean",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Alkaline Phosphatase liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Auto Bilirubin D liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Auto Bilirubin T liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- CK MB calibrator",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- GGT liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- GOT/AST liqui UV",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- GPT/ALT liqui UV",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Glucose liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- LDH liqui UV",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Lipase liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Magnesium liquicolur",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Phosphorous liquirapid",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Serodos",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Serodos Plus",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Total Protein liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Tryglyceride liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Urea liqui UV",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600-Albumin liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600-Cholesterol liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastare 600 -Tip Cleaning solution",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I -Chroma CK-MB Reagent",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I Chroma II CRP Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I Chroma II D-Dimer Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I Chroma II HBAIC Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I-Chroma AFP Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I-Chroma ASO Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I-Chroma CEA Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I-Chroma PSA Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CD4 Testing",
+        "name": "CD4 Advanced Disease(RDT)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CD4 Testing",
+        "name": "PIMA Bead Standard, L and N",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Gene Xpert/TB",
+        "name": "Gene Xpert HIV-1 Viral Load",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Gene Xpert/TB",
+        "name": "Gene Xpert: (Xpert MTB/RIF Ultra)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Gene Xpert/TB",
+        "name": "GeneXpert : (XPERT MTB/XDR) Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Gene Xpert/TB",
+        "name": "GeneXpert HIV-1 Qual",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Gene Xpert/TB",
+        "name": "GeneXpert HPV",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "General Labs",
+        "name": "Blood Collection Needle,21G 100Pieces",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "General Labs",
+        "name": "Centrifuge Tube Conical Bottom",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "General Labs",
+        "name": "Crystal Violet Powder Stain, ACS 90+% 25g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "General Labs",
+        "name": "DBS Cards-Watman Proteinsaver Card 903",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "General Labs",
+        "name": "Safety Lancet 28Gx1.8mm",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "General Labs",
+        "name": "Sharp Containers with Lid",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "HIV Test Kits",
+        "name": "Determine HIV 1/2 Rapid Test inc chase buffer",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "HIV Test Kits",
+        "name": "Oral Quick HIV Self Test Kit (25 tests) 1/2",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "HIV Test Kits",
+        "name": "SD Bioline HIV-1/2.3.0 , 25 Tests",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "HIV Test Kits",
+        "name": "Standard Q HIV/Syphilis Combo",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "ABX Minilyse LMG, 1L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "ABX mini clean 1L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "ABX minidil LMG 20L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Cell Pack DFL, 1.5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "LyserCell WNR 5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex 1000i/1800i/2000i: Cell Clean, 50ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex Cell Pack, 20L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex Fluorocell WDF 42ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex flourocell WNR 2x82ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex stromatolyser WH 500ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex sulfolyser, 5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex: Xn-Cell Pack Dcl, 20l",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Yumizen: ABX Cleaner 1L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Yumizen: ABX Diluent, 20L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Yumizen: ABX Minoclair 0.5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Yumizen: ABX WhiteDiff 1L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "DPX Mountant",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Eosin powder",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Histopathology Microtome blades",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Tissue Embedding Cassette",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Infection Prevention Products",
+        "name": "Biohazard Bags Red/ Black",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Ampicilin AMP 10mcg Susceptibility Test Disc",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sens Disc Cefepime",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitive Disc, Ciprofloxacin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc Amoxyclav",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Cefoxitin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Ceftazidine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Ceftriaxone",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Chloramphenicol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Gentamycin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Nalidixic Acid",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Nitrofurantoin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Penicillin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Tetracycline",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc,Ampicillin Sulbactam",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc,Azithromycin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc,Cotrimoxazole",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Cephazolin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Blood Culture Bottles Adult Plus Medium",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Blood agar base 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "CLED agar base 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Cary-Blair transport medium 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Cholera Medium 500g TCBS",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Lysine Iron Agar 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Mueller Hinton Agar 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Sulphide indole Motility (SIM) 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Tripple Sugar iron agar 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microscope Slides & Coverslips",
+        "name": "Immersion Oil, tropical grade,100ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microscope Slides & Coverslips",
+        "name": "Microscope slide, frosted end/ Precleaned",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Plastic pastuer pipette, graduated 3ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RDTs",
+        "name": "Accu-check blood glucose test strips",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RDTs",
+        "name": "Cryptococcus Antigen Test Kit",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RDTs",
+        "name": "Hepatitis B Rapid (HBsAg) Serum/Plasma tests",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RDTs",
+        "name": "Pregnancy test kit (HCG) latex",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "EDTAK2/K3 Blood Collection Tubes With A Vacuum 4mls",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "Plain Blood Collection Tubes",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "Sterile Universal Container",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "Stool container",
+        "availability": 1.0,
+        "status": "Available"
+      }
+    ]
+  },
+  {
+    "id": "emms-2026-07-17",
+    "date": "2026-07-17",
+    "label": "17 July 2026",
+    "stream": "EMMS",
+    "source": "EMMS and LAB Stock Position.xlsx",
+    "overallAvailability": 0.4759,
+    "counts": {
+      "categories": 40,
+      "items": 477,
+      "availableItems": 227,
+      "stockoutItems": 250
+    },
+    "categories": [
+      {
+        "name": "VACCINES",
+        "availability": 0
+      },
+      {
+        "name": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "availability": 0.11
+      },
+      {
+        "name": "SUTURES",
+        "availability": 0.15
+      },
+      {
+        "name": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "availability": 0.21
+      },
+      {
+        "name": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "availability": 0.25
+      },
+      {
+        "name": "GLOVES",
+        "availability": 0.25
+      },
+      {
+        "name": "IMAGING",
+        "availability": 0.25
+      },
+      {
+        "name": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "availability": 0.29
+      },
+      {
+        "name": "GENERAL MED-SURG",
+        "availability": 0.31
+      },
+      {
+        "name": "CONSUMABLES",
+        "availability": 0.32
+      },
+      {
+        "name": "EPIDEMIC SUPPLIES",
+        "availability": 0.33
+      },
+      {
+        "name": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "availability": 0.33
+      },
+      {
+        "name": "ANTIINFECTIVE MEDICINES",
+        "availability": 0.37
+      },
+      {
+        "name": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "availability": 0.38
+      },
+      {
+        "name": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "availability": 0.38
+      },
+      {
+        "name": "SYRINGES AND NEEDLES",
+        "availability": 0.38
+      },
+      {
+        "name": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "availability": 0.4
+      },
+      {
+        "name": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "availability": 0.4
+      },
+      {
+        "name": "IV CANNULAE & GIVING SETS",
+        "availability": 0.43
+      },
+      {
+        "name": "ANTISEPTICS AND DISINFECTANTS",
+        "availability": 0.5
+      },
+      {
+        "name": "CARDIOVASCULAR MEDICINES",
+        "availability": 0.5
+      },
+      {
+        "name": "CONDOMS",
+        "availability": 0.5
+      },
+      {
+        "name": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "availability": 0.5
+      },
+      {
+        "name": "VITAMINS AND MINERALS",
+        "availability": 0.5
+      },
+      {
+        "name": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "availability": 0.55
+      },
+      {
+        "name": "DENTAL",
+        "availability": 0.56
+      },
+      {
+        "name": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "availability": 0.57
+      },
+      {
+        "name": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "availability": 0.57
+      },
+      {
+        "name": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "availability": 0.58
+      },
+      {
+        "name": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "availability": 0.6
+      },
+      {
+        "name": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "availability": 0.63
+      },
+      {
+        "name": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "availability": 0.63
+      },
+      {
+        "name": "MEDICINES AFFECTING THE BLOOD",
+        "availability": 0.67
+      },
+      {
+        "name": "MEDICINES FOR DISEASES OF JOINTS & BONES",
+        "availability": 0.67
+      },
+      {
+        "name": "RENAL",
+        "availability": 0.77
+      },
+      {
+        "name": "GASTROINTESTINAL MEDICINES",
+        "availability": 0.78
+      },
+      {
+        "name": "ANTIMALARIAL",
+        "availability": 0.86
+      },
+      {
+        "name": "DIURETICS",
+        "availability": 1.0
+      },
+      {
+        "name": "MEDICINES USED IN DIARRHOEA",
+        "availability": 1.0
+      },
+      {
+        "name": "NUTRITIONAL PRODUCTS",
+        "availability": 1.0
+      }
+    ],
+    "items": [
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Bupivacaine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Ketamine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Lignocaine/Lidocaine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Thiopental Sodium",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Cetirizine tab/syrup",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Dexamethasone Inj/tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Hydrocortisone Inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Methylprednisolone",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Promethazine inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Triamcinolone Injection",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Carbamazepine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Diazepam tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Gabapentin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Phenobarbitone inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Phenobarbitone tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "name": "Acetylcysteine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "name": "Atropine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "name": "Calcium gluconate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Acyclovir",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Albendazole/Mebendazole",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Amoxycillin + Clavulanate tab/susp",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Azithromycin susp",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Benzylpenicilin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cefotaxime",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cefuroxime susp/tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cephalexin susp",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Chloramphenicol",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Ciprofloxacin inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cloxacillin Sodium 500mg Injection, 10ml (50)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Diethylcarbamazine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Doxycycline",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Erythromycin Suspension",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Erythromycin Tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Gentamycin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Metronidazole susp",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Metronidazole tabs",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Nitrofurantoin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Nystatin oral",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Phenoxymethypenicillin susp",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Phenoxymethypenicillin tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Sulphadoxine / Pyrimethamine 500/25mg Tab(1000)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "5-flouro uracil",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Bevacizumab inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Bicalutamide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Bleomycin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Calcium Folinate/leucovorin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Carboplatin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Cyclophosphamide inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Dactinomycin 0.5mg for Injection (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Docetaxel Injection",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Doxorubicin inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Etoposide inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Ifosfamide injection",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "L-Asparaginase",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Leuprolide 5",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Mesna Injection I.V, inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Oxaliplatin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Paclitaxel",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Temozolomide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Vincristine Inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Abacavir Suphate 300mg Tablet(60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Darunavir 150mg tablet (240)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Darunavir 600mg tablet (60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Lamivudine 150mg Tablet(60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Lamivudine/Zidovudine 150/300mg Tablet(60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Lamivudine/Zidovudine Dispersible 30/60mg Tablet(60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Lopinavir/Ritonavir 200/50mg Tablet(120)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Nevirapine 50mg/5ml 100ml Suspension(1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Ritonavir 100mg Tablet",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(30)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Chlorhexidine gluconate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Methylated Spirit",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Povidone Iodine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Amikacin Ampule Injection 500mg/2ml Ampule(10)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Bedaquiline 100mg Tablet(188)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Delamanid 50mg Tablet(672)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Imipenem/Cilastatin 500mg/500mg Pwd For Infusion(10)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Isoniazid 100mg / 300mg tablet",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Meropenem 1g Powder For Injection(10)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Moxifloxacin 400mg Tablet(100)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Pyridoxine (Vitamin B6) 50mg tablet",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Rifampicin/Isoniazid 75/50mg Tablet(84)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Adrenaline",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Amiloride Hcl 5mg + Hydrochlorothiazide 50mg, Tab(1000)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Amlodipine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Atenolol",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Clopidogrel",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Digoxin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Enalapril",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Isosorbide Dinitrate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Methyldopa",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Propranolol",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONDOMS",
+        "name": "Female condoms",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Acetazolamide Sodium Tablets",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Acyclovir eye ointment",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Betamethazone/Dexamethasone eye",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Cataracts Kits",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Chloramphenicol 0.5% eye/ear drops, 10ml (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Chloramphenicol 1% Eye Ointment 5gm(1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Ciprofloxacin Eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Cyclopentolate HCL Eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Dorzolamide 2%,5ml Eye Drops(1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Gentamycin/dexamethasone eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Homatropine eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Hydrocortisone 1% eye ointment",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Latanoprost Maleate eye drop (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Moxifloxacin hydrochloride 0.5% Ophthalmic Solution USP W/V, 5ml (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Natamycin eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Povidone eye drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Tacrolimus Eye Drops",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Timolol",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Tropicamide Eye Drops 1%,0.5ml(20)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Abdominal swabs",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Adhesive tape zinc oxide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Bandages POP",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Bandages crepe",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Cotton wool",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Gauze compress",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Gauze roll",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Paraffin gauze",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Assorted guta percha and paper points",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Calcium Hydroxide Paste",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Dental Needles",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Glass Ionomer cement",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Benzyl benzoate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Betamethasone 0.1% cream",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Calamine lotion",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Silver Sulfadiazine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Sunscreen cream",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Bio-hazard bags",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "COVID 19 rapid test kits",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Cadaver Bags Paediatric",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Cadaver bags Adult",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Chlorine Granules",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Chlorine liquid",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Cholera Rapid Test kits",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Coveralls",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Disposable Head cover",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Disposable gowns",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Gloves examination, powder free nitrile L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Gloves examination, powder free nitrile M",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Heavy Duty Gloves",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "N95/KN95/FFP2 face masks",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Nirmatrelvir/ritonavir",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Non-Rebreathing Oxygen Masks Adult (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Overalls/Work suits",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Remdesivir Injection 100mg",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Hyoscine N Butyl Bromide Inj/tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Magnesium trisilicate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Catheter Foley, FR16",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Feeding tube Ch 14-24",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Feeding tube Ch 8-12",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Mini grips",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Sharp/Safety Boxes",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Surgical Face masks",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Surgical blades",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Umbilical cord clamps",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Urine collecting bags adults",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GLOVES",
+        "name": "Examination gloves latex powder free Medium",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GLOVES",
+        "name": "Surgical gloves 7.5",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "GLOVES",
+        "name": "Surgical gloves 8",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Digital films",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Gadopentetate Dimeglumine (Magnevist)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Iopromide Injection (Ultravist)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Lohexol for Injection",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Sono Paper",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IMAGING",
+        "name": "Ultrasound Gel",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "Burette giving set",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "IV Cannular size 18",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "IV Cannular size 24",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "Infusion Giving set",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "name": "Aminophylline injection 25 mg/mL",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "name": "Caffeine Citrate",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Folic Acid",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Phytomenadione (Vit K)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Glibenclamide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Glimepiride",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Glimepiride/Metformin 2mg/500mg Tablet (20)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Insulin Injection intermediate - Isophane",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Insulin short acting + intermediate (biphasic)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR DISEASES OF JOINTS & BONES",
+        "name": "Colchicine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Chlordiazepoxide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Chlorpromazine inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Chlorpromazine tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Escitalopram",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Fluoxetine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Risperidone inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Morphine Powder",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Morphine sulphate 10mg Tablet (60)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Paracetamol, For IV Inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Pethidine Inj",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Tramadol",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Etonogestrel 68Mg(Implanon)(1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "IUD Copper T, 380 Piece(50)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Levonogestrel 0.03mg tablet(3)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Levonogestrel Implant Contraceptive 10 rods 750mcg/rod Sub-dermal(10) 5 years/3 years",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Medroxyprogesterone Acetate 104Mg/0.65Ml,(Sayana ) 200pcs",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Mifepristone 200mg + Misoprostol 0.2mg Vaginal Tablets(5)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Mifepristone tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "NorethisteroneEnanthate , 1ML Amp 200mg/ml Injection(100)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Tranexamic acid Tab",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Amphotericin B, 50mg Injection Powder",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Fluconazole 200mg Tab/Cap",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Fluconazole infusion 2mg/ml,100ml (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Atracurium",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Neostigmine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Pancuronium bromide",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Trihexyphenidyl",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "1.5%N Ca2+ 2L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "1.5%N Ca2+ 5L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "4.25%N Ca2+ 2L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Acid Concentrate 5ltrs",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Catheter Adaptor Luer Locks",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Citrosteril 5L (1)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Dialylsate System",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Filtrate Collection Bag 10L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Fistula needle 17G",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Organiser set",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Puristeril",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sodium Polystyrene Sulphonate Powder 464gm (1)- RN",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Dextrose 10%",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Dextrose 5% + Sodium Chloride 0.9%",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Sodium Chloride 0.9%",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin 0 RB",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin 2/0 RB",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin 2/0 RC",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin U.S.P 1 RC",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin U.S.P 2, RB,",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin U.S.P 2, RC",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin, U.S.P 3/0, RB,",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Polyglactin, U.S.P 6/0, RC",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Chromic Catgut Natural Absorbable 1 R/B (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Chromic Catgut Natural Absorbable 2/0 R/B (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Chromic Catgut Natural Absorbable 2R/B (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Nylon Monofilament Non Absorbable 0 R/C (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Nylon Monofilament Non Absorbable 2 R/B (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Nylon Monofilament Non Absorbable 2/0 R/B (12)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Polyglactine U.S.P 1, CN",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Silk, U.S.P 1 R/C",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Silk, U.S.P 4/0 R/C",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Needles 21G",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Needles 23G",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Syringes 10ml",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Syringes 20ml",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Syringes 50ml",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "VACCINES",
+        "name": "Anti-Rabies",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "VACCINES",
+        "name": "Tetanus",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Ascorbic Acid",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Multivitamin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Vitamin B Complex",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Isoflurane",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Midazolam inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Propofol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANAESTHETICS, PREOPERATIVE MEDICINES AND MEDICAL GASES",
+        "name": "Sevoflurane",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Chlorpheniramine tab/syrup",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIALLERGICS AND MEDICINES USED IN ANAPHYLAXIS",
+        "name": "Prednisolone",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Diazepam inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Lamotrigine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Levetiracetam",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Lorazepam",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Sodium Divalporate 500mg tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTICONVULSANTS/ANTIEPILEPTICS/ANXIOLYTICS",
+        "name": "Sodium Valproate 100/200mg tab/susp",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "name": "Anti-Snake Venom",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIDOTES AND OTHER SUBSTANCES USED IN POISONINGS",
+        "name": "Naloxone",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Amoxycillin susp/disp tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Amoxycillin tab/capsules",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Azithromycin tab/cap",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Benzathine Benzylpenicillin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cefixime susp/tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Ceftriaxone",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cephalexin Caps",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Ciprofloxacin tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cloxacillin Caps",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Cloxacillin Susp",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Griseofulvin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Metronidazole inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIINFECTIVE MEDICINES",
+        "name": "Praziquantel",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Artemether + Lumefantrine 20/120 mg (12) Tab(30)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Artemether + Lumefantrine 20/120 mg 24's Tab(30)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Artesunate 60mg Pwd For Inj(1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "ITNS",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Rapid Diagnostic Test for Malaria Strip(25)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIMALARIAL",
+        "name": "Rectal Artesunate",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Cisplatin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Filgrastim inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Methotrexate inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Tamoxifen tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTINEOPLASTICS AND IMMUNOMODULATORS",
+        "name": "Zoledronic Acid Injection",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Abacavir Sulfate +Lamivudine+Dolutegravir Tablet 60/30/5mg(180)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Darunavir/Ritonavir 400/50mg Tab(60)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Dolutegravir 10mg disp tablet",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Dolutegravir 50mg Tablet(30)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTIRETROVIRAL THERAPY MEDICINES",
+        "name": "Tenofovir/Emtricitabine 300/200mg Tablet(30)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Cetrimide/Chlorhexidine gluconate",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Glutaraldehyde (Cidex)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTISEPTICS AND DISINFECTANTS",
+        "name": "Sodium Hypochlorite",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Clofazimine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Cycloserine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Ethambutol 100mg / 400mg",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Ethionamide 250mg Tablet(100)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Levofloxacin 100mg Dispersible Tablet(100)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Levofloxacin 250mg Tablet(100)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Linezolid",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "MDT MB Blister Adult (Rifampicin/Clofazimine/Dapsone) 300/100/100mg Tablet(6)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Pretomanid Tablet 200mg",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Pyrazinamide 500mg Tablet(672)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Rifampicin/Isoniazid/Pyrazinamide 75/50/150mg Tablet(84)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol 150/75/400/275mg Tablet(672)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "ANTITUBERCULOSIS AND ANTILEPROSY MEDICINES",
+        "name": "Rifapentine/Isoniazid 300/300mg Tablet(36)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Acetylsalicylic acid 75mg tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Amiodarone",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Atorvastatin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Carvedilol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Dobutamine Inj/Dopamine Injection",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Hydralazine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Labetalol inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Metoprolol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Nifedipine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CARDIOVASCULAR MEDICINES",
+        "name": "Telmisartan + Hydrochlorothizide",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONDOMS",
+        "name": "Male Condoms",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Carboxymethylcellulose/Hypromellose",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Dexamethasone/Ofloxacin 0.1%/0.3% Ophthalmic Solution, 5mL (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Dorzolamide 2% + Timolol 1%, Ophthalmic Solution 5mls (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Fluorometholone 0.1% Ophthalmic Suspension, 5ml (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Nepafenac eye drops",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Olopatadine 0.2% Eye Drops 10ml (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Prednisolone eye drops",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Sodium Cromoglycate drops",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CONSUMABLES",
+        "name": "Tetracycline eye ointment",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "COTTON WOOL, DRESSING, SWABS & BANDAGES",
+        "name": "Bandages triangular",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Acrylic Teeth",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Alveogyl dressing",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Heat Cure liquid/powder",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Lignocaine + adrenaline / Mepivacaine dental cartridge",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DENTAL",
+        "name": "Rapid Repair Powder",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Clotrimazole/Miconazole cream",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DERMATOLOGICAL/TOPICAL MEDICINES",
+        "name": "Hydrocortisone cream",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Frusemide Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Frusemide tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Hydrochlorthiazide",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Mannitol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Potassium Chloride inj,",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "DIURETICS",
+        "name": "Spironolactone tablet",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Aprons PVC",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Disposable Shoe Cover",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Ethanol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Gumboots",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Infrared Thermometer",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Medical face shields",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Pulse Oximeter",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Safety goggles",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "EPIDEMIC SUPPLIES",
+        "name": "Scrubs",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Esomeprazole Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Lactulose",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Metochlopromide inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Omeprazole or esomeprazole cap/tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Ondansentron inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Ondansentron tabs",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GASTROINTESTINAL MEDICINES",
+        "name": "Sodium Bicarbonate Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Catheter Foley, FR18.",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Endotracheal tube 4-7.5mm",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Surgical drapes",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GENERAL MED-SURG",
+        "name": "Urine collecting bags pediatric",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "GLOVES",
+        "name": "Examination gloves latex powder free Large",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "IMAGING",
+        "name": "X-Ray Films 35 X 43cm (Blue Sensitive ) (100)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "IMAGING",
+        "name": "X-Ray films 35cm x 35 cm",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "IV Cannular size 16",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "IV Cannular size 20",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "IV CANNULAE & GIVING SETS",
+        "name": "IV Cannular size 22",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "name": "Beclomethasone inhaler",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "name": "Ipratropium Bromide",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES ACTING ON THE RESPIRATORY TRACT",
+        "name": "Salbutamol inhaler/nebuliser",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Enoxaparin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Erythropoetin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Ferrous Sulphate",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES AFFECTING THE BLOOD",
+        "name": "Ferrous/Folic tab/syr",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Glucagon",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Insulin short acting soluble inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR DIABETES/ACTING ON ENDOCRINE",
+        "name": "Metformin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR DISEASES OF JOINTS & BONES",
+        "name": "Allopurinol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR DISEASES OF JOINTS & BONES",
+        "name": "Sulfasalazine Tablet",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Amitriptyline",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Disulfiram",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Fluphenazine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Haloperidol Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Haloperidol tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Imipramine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Mirtazapine Tablet",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Naltrexone",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Quetiapine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR MENTAL AND BEHAVIOURAL DISORDERS",
+        "name": "Risperidone tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Diclofenac Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Diclofenac tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Fentanyl",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Ibuprofen tab/cap",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Morphine Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Paracetamol 500mg tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR PAIN AND PALLIATIVE CARE",
+        "name": "Paracetamol Syrup or 100mg tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Carbetocin Injection",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Ethinyloestradiol/Levonorgestrel Blister of 28 tab 30mcg/150mcg Tablet(3)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Levonogestrel 0.75mg (Emergency Pill)(2)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Levonorgestrel 52mg IUD (5)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Magnesium Sulphate inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Medroxyprogesterone Acetate 150mg/ml injection 1ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Misoprostol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Oxytocin IV Inj, 10IU/ml 1ml Amp(10)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR REPRODUCTIVE HEALTH AND PERINATAL CARE",
+        "name": "Tranexamic acid Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Co-Trimoxazole 480mg tablet(1000)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Co-Trimoxazole,100ml 240mg/5ml suspension (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Flucytosine tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES FOR TREATMENT OF OPPORTUNISTIC INFECTIONS",
+        "name": "Valacyclovir/ Ganciclovir",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES USED IN DIARRHOEA",
+        "name": "ORS",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MEDICINES USED IN DIARRHOEA",
+        "name": "Zinc Sulfate",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Glycopyrronium Bromide",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "MUSCLE RELAXANTS (PERIPHERALLY-ACTING) AND CHOLINESTERASE INHIBITORS",
+        "name": "Suxamethonium",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "NUTRITIONAL PRODUCTS",
+        "name": "F-100 Therap.milk CAN 400g/CAR-24",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "NUTRITIONAL PRODUCTS",
+        "name": "F-75 Therap.milk CAN 400g/CAR-24",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "NUTRITIONAL PRODUCTS",
+        "name": "ReSoMal,42g sachet for 1 litre/CAR-100",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "NUTRITIONAL PRODUCTS",
+        "name": "Therapeutic CMV,tin 800g/CAR-6",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "NUTRITIONAL PRODUCTS",
+        "name": "Therapeutic spread,sachet 92g/CAR-150",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "2.3%N Ca2+ 2L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "2.3%N Ca2+ 5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "4.25%N Ca2+ 5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Bi-bag 5008 (Fresenius)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Catheter Extension line 32CM",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Diasafe",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Disinfectant Caps",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Dual cap",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Elisio Dialyser 15H",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Elisio Dialyser 17H",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Elisio Dialyser 19H",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Elisio Dialyser 21H",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "FX Cordiax 100 Dialysers",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "FX Cordiax 40 Dialysers",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "FX Cordiax 50 Dialysers",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "FX Cordiax 60 Dialysers",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "FX Cordiax 80 Dialysers",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Fistula needle 15G",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Fistula needle 16G",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Fresenius: AV-Set Online Plus 5008-R (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Fresenius: AV-Set SRB-R 4008 (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Heparin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Human Albumin 20% infusion",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Iron Sucrose",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Membrane Plasma Separation Line",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Mupirocin Oint 2%",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Nipro Citric Acid 10L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Nipro: AV Blood Line Set (Blood Tubing Set) (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Nipro: B - Cartridge 760g Sodium Bicarbonate (1)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "PD catheter",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Permanent catheter",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Prohd Set-M",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Renal acid smart bag 211.25 low Calcium",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Renal acid smart bag 211.75 high Calcium",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sevelamer",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sleep safe (clip for stay safe organizer)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sleep safe Drainage bag (APD Drainage Set)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sleep safe set plus",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Sporotal",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Substitute System line",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RENAL",
+        "name": "Temporary catheter",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Dextrose 5%",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Dextrose 50%",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Ringers Lactate",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SOLUTIONS CORRECTING WATER, ELECTROLYTE AND ACID\u2013BASE DISTURBANCES",
+        "name": "Water for injection",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Nylon Monofilament Non Absorbable 1 R/B (12)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Silk, U.S.P 0 R/C",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SUTURES",
+        "name": "Suture Silk, U.S.P 2/0 R/C",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Spinal needles",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Syringes 2ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "SYRINGES AND NEEDLES",
+        "name": "Syringes 5ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Hydroxocobalamin Inj",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Thiamine Tab",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "VITAMINS AND MINERALS",
+        "name": "Thiamine inj",
+        "availability": 1.0,
+        "status": "Available"
+      }
+    ]
+  },
+  {
+    "id": "lab-2026-07-17",
+    "date": "2026-07-17",
+    "label": "17 July 2026",
+    "stream": "LAB",
+    "source": "EMMS and LAB Stock Position.xlsx",
+    "overallAvailability": 0.615,
+    "counts": {
+      "categories": 14,
+      "items": 229,
+      "availableItems": 142,
+      "stockoutItems": 87
+    },
+    "categories": [
+      {
+        "name": "Pipettes & Tips",
+        "availability": 0.17
+      },
+      {
+        "name": "Acids & Alcochols",
+        "availability": 0.25
+      },
+      {
+        "name": "Histopthology & Cytology",
+        "availability": 0.36
+      },
+      {
+        "name": "General Labs",
+        "availability": 0.4
+      },
+      {
+        "name": "RDTs",
+        "availability": 0.57
+      },
+      {
+        "name": "Microbiology & Parasitology",
+        "availability": 0.58
+      },
+      {
+        "name": "CD4 Testing",
+        "availability": 0.67
+      },
+      {
+        "name": "Microscope Slides & Coverslips",
+        "availability": 0.67
+      },
+      {
+        "name": "Specimen Containers",
+        "availability": 0.67
+      },
+      {
+        "name": "Biochemistry",
+        "availability": 0.68
+      },
+      {
+        "name": "HIV Test Kits",
+        "availability": 0.75
+      },
+      {
+        "name": "Haematology & Blood Transfusion",
+        "availability": 0.84
+      },
+      {
+        "name": "Gene Xpert",
+        "availability": 1.0
+      },
+      {
+        "name": "Infection Prevention Products",
+        "availability": 1.0
+      }
+    ],
+    "items": [
+      {
+        "category": "Acids & Alcochols",
+        "name": "Acetone liquid, Analytical Reagent",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Acids & Alcochols",
+        "name": "Glycerol, Liquid, Analytical Grade",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Acids & Alcochols",
+        "name": "Methanol 99%",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Glucose CP",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Albumin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Alkaline Phosphate ALP 2S",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: GGT",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Micro Cuvettes Segments",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Micro Sample Cups",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Potassium electrode",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-REF filling solution",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Reference electrode",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Sodium electrode",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Weekly Cleaning solution",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus Reagent Pack with Sample Cups",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte plus 3-Thermal Paper rolls",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- GOT/AST liqui UV",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600-Reaction Cuvettes",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600-Uric Acid liquicolour",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: AFP (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: CA 125 (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: CA 19-9 (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: CA 72-4 (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: CEA (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: CRP (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: EBV EA IgG (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: Estradiol (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: FSH (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: HCG/\u03b2-HCG (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: LH (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: T3 (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: T4 (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: TSH (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: Total PSA (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Maglumi: \u03b22-MG (CLIA)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "CD4 Testing",
+        "name": "PIMA CD4 Catridges",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Applicator Sticks",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Auramine O Dye Content 85%,25g",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Blood Collection Needle,23G 100Pieces",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Cross match tubes (water wettable Khan tubes)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Filter Paper 125mm",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Hemocue: HB 201 microcuvette, 4 x 50 Pieces",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Hemocue: HB 301 microcuvette, 4 x 50 Pieces",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Phosphate Buffered Saline PH 6.8-7.4 1L",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Potassium Permanganate, Analytical Grade",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "General Labs",
+        "name": "Safety Lancet 28Gx1.8mm",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "HIV Test Kits",
+        "name": "Oral Quick HIV Self Test Kit (25 tests) 1/2",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Haematology",
+        "name": "ABX Cuvette Racks PC200",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Haematology",
+        "name": "Fluorocel Ret 12ml",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex Thermal Printer Paper roll",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Formalin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Hematoxyline and Eosin solution",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Orange G 6 Solution",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Papanicolaou stain EA-50",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Paraffin wax",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Toluidine Blue O Stain",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Xylene, AR, 25L -",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Disc Piperacillin/Tazobactam",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Cefotaxime",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Nitrocefin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Optochin",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc,Furazolidone",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Clofazimine",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Ertapenem",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Imipenem",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Levofloxacin 98-102% Anhydrous Basis",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Meropenem",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Moxifloxacin Hydrochloride",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Blood Culture Bottles Paed Plus Medium",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Indian Ink Liquid, Biological Stain",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "MacConkey Lactose Agar 500g",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Oxidase reagent 25g",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Petri Dish.99mm Diameter (plastic)",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Sterile Swab with transport Media",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Xylose Lysine Deoxycholate (XLD) 500G",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "kovacs reagent",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Microscope Slides & Coverslips",
+        "name": "Microscope Cover slips 22 x 40mm/ 22mmX 22 mm",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Pipette Tips 1250 \u00b5l",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Pipette Tips Filtered, 50-1000\u00b5l",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Pipette Tips, Yellow 20-200\u00b5l Non Filter",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Pipette tips with filters 1000\u00b5l",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Universal Pipette Tips Filtered 200\u00b5l",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RDTs",
+        "name": "Determine TB LAM AG 25T",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RDTs",
+        "name": "Helicobacter Pylori Ag Rapid Test",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "RDTs",
+        "name": "Rapid Plasma Reagin (RPR) tests",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "Lithium Heparin Blood Collection tubes With A Vacuum",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "Vacutainer Blood Collection Tube EDTA/Fluoride Oxalate 4ml",
+        "availability": 0,
+        "status": "Stockout"
+      },
+      {
+        "category": "Acids & Alcochols",
+        "name": "Ethanol - Absolute 99.9%",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX PENTRA C200: AST CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX PENTRA C200: Urea CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: ALT CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Albumin CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Bilirubin Direct",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Bilirubin Total",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Cholesterol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Clean Chem",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: N control",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: P control",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200: Triglycerides CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra C200:Creatinine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra Multical",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra Total Protein TP3",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "ABX Pentra Uric acid CP",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Abx Pentra Deproteinizer CP 29ML",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: ALT (GPT)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: AST (GOT)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Bilirubin Direct",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Bilirubin Total",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Cholesterol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Creatinine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Glucose",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Thermal Printer Paper Roll",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Triglycerides",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Urea",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111: Uric Acid",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas C111:Total Protein",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Cobas Cleaner 1 Litre",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Chloride electrode",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-Daily Cleaning solution",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-K-filling solution",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-NA conditioner",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-NA/CL/PH filling solution",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humalyte Plus 3-QC solution",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 - Auto-creatinine liquicolor",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 - Autocal",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 - CK MB liquid UV",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 - Wash Additive",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 -Diluent",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600 Cuvette Clean",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Alkaline Phosphatase liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Auto Bilirubin D liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Auto Bilirubin T liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- CK MB calibrator",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- GGT liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- GPT/ALT liqui UV",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Glucose liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- LDH liqui UV",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Lipase liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Magnesium liquicolur",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Phosphorous liquirapid",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Serodos",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Serodos Plus",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Total Protein liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Tryglyceride liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600- Urea liqui UV",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600-Albumin liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastar 600-Cholesterol liquicolour",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "Humastare 600 -Tip Cleaning solution",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I -Chroma CK-MB Reagent",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I Chroma II CRP Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I Chroma II D-Dimer Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I Chroma II HBAIC Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I-Chroma AFP Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I-Chroma ASO Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I-Chroma CEA Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Biochemistry",
+        "name": "I-Chroma PSA Reagent Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CD4 Testing",
+        "name": "CD4 Advanced Disease(RDT)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "CD4 Testing",
+        "name": "PIMA Bead Standard, L and N",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Gene Xpert/TB",
+        "name": "Gene Xpert HIV-1 Viral Load",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Gene Xpert/TB",
+        "name": "Gene Xpert: (Xpert MTB/RIF Ultra)",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Gene Xpert/TB",
+        "name": "GeneXpert : (XPERT MTB/XDR) Cartridges",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Gene Xpert/TB",
+        "name": "GeneXpert HIV-1 Qual",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Gene Xpert/TB",
+        "name": "GeneXpert HPV",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "General Labs",
+        "name": "Blood Collection Needle,21G 100Pieces",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "General Labs",
+        "name": "Centrifuge Tube Conical Bottom",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "General Labs",
+        "name": "Crystal Violet Powder Stain, ACS 90+% 25g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "General Labs",
+        "name": "DBS Cards-Watman Proteinsaver Card 903",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "General Labs",
+        "name": "Sharp Containers with Lid",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "HIV Test Kits",
+        "name": "Determine HIV 1/2 Rapid Test inc chase buffer",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "HIV Test Kits",
+        "name": "SD Bioline HIV-1/2.3.0 , 25 Tests",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "HIV Test Kits",
+        "name": "Standard Q HIV/Syphilis Combo",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "ABX Minilyse LMG, 1L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "ABX mini clean 1L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "ABX minidil LMG 20L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Cell Pack DFL, 1.5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "LyserCell WNR 5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex 1000i/1800i/2000i: Cell Clean, 50ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex Cell Pack, 20L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex Fluorocell WDF 42ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex flourocell WNR 2x82ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex stromatolyser WH 500ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex sulfolyser, 5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Sysmex: Xn-Cell Pack Dcl, 20l",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Yumizen: ABX Cleaner 1L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Yumizen: ABX Diluent, 20L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Yumizen: ABX Minoclair 0.5L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Haematology",
+        "name": "Yumizen: ABX WhiteDiff 1L",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "DPX Mountant",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Eosin powder",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Histopathology Microtome blades",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Histopthology & Cytology",
+        "name": "Tissue Embedding Cassette",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Infection Prevention Products",
+        "name": "Biohazard Bags Red/ Black",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Ampicilin AMP 10mcg Susceptibility Test Disc",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sens Disc Cefepime",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitive Disc, Ciprofloxacin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc Amoxyclav",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Cefoxitin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Ceftazidine",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Ceftriaxone",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Chloramphenicol",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Gentamycin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Nalidixic Acid",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Nitrofurantoin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Penicillin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc, Tetracycline",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc,Ampicillin Sulbactam",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc,Azithromycin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc,Cotrimoxazole",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Antibiotic Sensitivity Disc: Cephazolin",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Blood Culture Bottles Adult Plus Medium",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Blood agar base 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "CLED agar base 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Cary-Blair transport medium 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Cholera Medium 500g TCBS",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Lysine Iron Agar 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Mueller Hinton Agar 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Sulphide indole Motility (SIM) 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microbiology & Parasitology",
+        "name": "Tripple Sugar iron agar 500g",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microscope Slides & Coverslips",
+        "name": "Immersion Oil, tropical grade,100ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Microscope Slides & Coverslips",
+        "name": "Microscope slide, frosted end/ Precleaned",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Pipettes & Tips",
+        "name": "Plastic pastuer pipette, graduated 3ml",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RDTs",
+        "name": "Accu-check blood glucose test strips",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RDTs",
+        "name": "Cryptococcus Antigen Test Kit",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RDTs",
+        "name": "Hepatitis B Rapid (HBsAg) Serum/Plasma tests",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "RDTs",
+        "name": "Pregnancy test kit (HCG) latex",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "EDTAK2/K3 Blood Collection Tubes With A Vacuum 4mls",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "Plain Blood Collection Tubes",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "Sterile Universal Container",
+        "availability": 1.0,
+        "status": "Available"
+      },
+      {
+        "category": "Specimen Containers",
+        "name": "Stool container",
+        "availability": 1.0,
+        "status": "Available"
+      }
+    ]
   }
 ];
 
