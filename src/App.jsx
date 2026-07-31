@@ -15,6 +15,7 @@ const dashboardPages = [
   { id: "quality", short: "DQ", label: "Data Quality" },
   { id: "predictive", short: "PA", label: "Predictive Analysis" },
   { id: "actions", short: "AT", label: "Action Tracker" },
+  { id: "imports", short: "IM", label: "Submission Import", adminOnly: true },
 ];
 
 const statusLabels = {
@@ -1358,6 +1359,12 @@ function App() {
   const [copilotMessages, setCopilotMessages] = useState([]);
   const [copilotLoading, setCopilotLoading] = useState(false);
   const [copilotFeedback, setCopilotFeedback] = useState({});
+  const [dashboardUser, setDashboardUser] = useState(null);
+  const [importFiles, setImportFiles] = useState([]);
+  const [importPeriod, setImportPeriod] = useState("");
+  const [importResult, setImportResult] = useState(null);
+  const [importBusy, setImportBusy] = useState("");
+  const [importError, setImportError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -1380,6 +1387,7 @@ function App() {
             .map(([key, comments]) => [key, Array.isArray(comments) ? comments : []]),
         ));
         setActionUserEmail(user?.email || "");
+        setDashboardUser(user || null);
         setActionSyncState("shared");
       })
       .catch(() => {
@@ -1390,8 +1398,44 @@ function App() {
     };
   }, []);
 
+  const isDashboardAdmin = ["admin", "super_admin"].includes(dashboardUser?.role);
+  const visibleDashboardPages = dashboardPages.filter((page) => !page.adminOnly || isDashboardAdmin);
+
+  async function submitProvincialImport(action) {
+    if (!importFiles.length) {
+      setImportError("Choose one or more provincial .xlsx submissions first.");
+      return;
+    }
+    setImportBusy(action);
+    setImportError("");
+    const body = new FormData();
+    importFiles.forEach((file) => body.append("reports", file));
+    body.append("reportingPeriod", importPeriod || fieldData.id);
+    try {
+      const endpoint = action === "validate" ? "/api/admin/submissions/validate" : action === "master" ? "/api/admin/submissions/master-workbook" : "/api/admin/submissions/publish";
+      const response = await fetch(endpoint, { method: "POST", body });
+      if (action === "master") {
+        if (!response.ok) throw new Error((await response.json()).error || "Unable to create the master workbook.");
+        const url = URL.createObjectURL(await response.blob());
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = `tracer-master-${importPeriod || fieldData.id}.xlsx`;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      } else {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "The submission could not be processed.");
+        setImportResult(data);
+      }
+    } catch (error) {
+      setImportError(error.message || "The submission could not be processed.");
+    } finally {
+      setImportBusy("");
+    }
+  }
+
   const fieldData = tracerReportingPeriods.find((period) => period.id === fieldPeriodId) || tracerReportingPeriods.at(-1);
-  const activePageLabel = dashboardPages.find((page) => page.id === activePage)?.label;
+  const activePageLabel = dashboardPages.find((page) => page.id === activePage)?.label || "Tracer Dashboard";
   const fieldMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))];
   const selectedMonth = fieldData.month;
   const weeksInMonth = tracerReportingPeriods.filter((period) => period.month === selectedMonth);
@@ -2414,7 +2458,7 @@ function App() {
           </div>
         </div>
         <nav aria-label="Dashboard pages">
-          {dashboardPages.map((page) => (
+          {visibleDashboardPages.map((page) => (
             <button className={activePage === page.id ? "active" : ""} type="button" key={page.id} onClick={() => setActivePage(page.id)}>
               <span>{page.short}</span>
               {page.label}
@@ -3788,6 +3832,25 @@ function App() {
               </table>
             </div>
           </div>
+        </section>
+        <section className="submission-import-section">
+          <div className="section-head">
+            <div>
+              <p className="eyebrow dark">Administrator workspace</p>
+              <h2>Import provincial tracer submissions</h2>
+              <p>Upload all provincial Excel reports for one reporting week. The dashboard checks each workbook, creates a consolidated master list for review, and can commit the original reports to the protected GitHub repository.</p>
+            </div>
+            <span>{dashboardUser?.email || "Administrator sign-in required"}</span>
+          </div>
+          {isDashboardAdmin ? <>
+            <div className="submission-import-form">
+              <label><span>Reporting week</span><input value={importPeriod} onChange={(event) => setImportPeriod(event.target.value)} placeholder={fieldData.label} /></label>
+              <label className="submission-file-input"><span>Provincial Excel reports</span><input type="file" accept=".xlsx" multiple onChange={(event) => { setImportFiles([...event.target.files]); setImportResult(null); setImportError(""); }} /><small>{importFiles.length ? `${importFiles.length} file(s): ${importFiles.map((file) => file.name).join(", ")}` : "Choose the provincial .xlsx tracer submissions for this reporting week."}</small></label>
+              <div className="submission-import-actions"><button type="button" onClick={() => submitProvincialImport("validate")} disabled={Boolean(importBusy)}>{importBusy === "validate" ? "Validating..." : "Validate submissions"}</button><button type="button" className="ghost-button" onClick={() => submitProvincialImport("master")} disabled={Boolean(importBusy)}>Download master Excel</button><button type="button" className="publish-button" onClick={() => submitProvincialImport("publish")} disabled={Boolean(importBusy)}>{importBusy === "publish" ? "Publishing..." : "Commit reports to GitHub"}</button></div>
+            </div>
+            {importError && <div className="submission-import-message error">{importError}</div>}
+            {importResult && <div className="submission-import-result"><div className="submission-import-summary"><strong>{importResult.totalRecords?.toLocaleString() || 0}</strong><span>recognised tracer rows</span><strong>{importResult.recognisedSheets || 0}</strong><span>recognised worksheets</span></div>{importResult.message && <p className="success">{importResult.message}</p>}{!importResult.githubConfigured && <p className="submission-import-warning">GitHub publishing is not configured yet. The administrator can still validate submissions and download the consolidated master workbook. Add `GITHUB_TOKEN` in Render to enable repository commits.</p>}{importResult.warnings?.map((warning) => <p className="submission-import-warning" key={warning}>{warning}</p>)}<div className="table-scroll compact-table"><table><thead><tr><th>Provincial workbook</th><th>Tracer rows</th><th>Recognised sheets</th></tr></thead><tbody>{importResult.files?.map((file) => <tr key={file.name}><td>{file.name}</td><td>{file.records.toLocaleString()}</td><td>{file.sheets.map((sheet) => `${sheet.sheetName} (${sheet.rows})`).join(", ") || "No recognised tracer table"}</td></tr>)}</tbody></table></div></div>}
+          </> : <div className="empty-state">Only a signed-in dashboard administrator can upload or publish provincial tracer submissions.</div>}
         </section>
       </main>
       <button type="button" className="copilot-launcher" onClick={() => setCopilotOpen(true)} aria-label="Open Tracer Copilot">

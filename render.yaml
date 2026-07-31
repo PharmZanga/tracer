@@ -55,6 +55,12 @@ services:
         sync: false
       - key: OPENAI_MODEL
         value: gpt-4.1-mini
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: GITHUB_REPOSITORY
+        value: PharmZanga/tracer
+      - key: GITHUB_BRANCH
+        value: main
 
 databases:
   - name: tracer-comments-db

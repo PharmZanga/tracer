@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { readFile } from "node:fs/promises";
 import { createHash, randomBytes } from "node:crypto";
+import multer from "multer";
+import * as XLSX from "xlsx";
 
 const { Pool } = pg;
 const app = express();
@@ -25,6 +27,10 @@ const resendApiKey = process.env.RESEND_API_KEY || "";
 const emailFrom = process.env.EMAIL_FROM || "";
 const openaiApiKey = process.env.OPENAI_API_KEY || "";
 const openaiModel = process.env.OPENAI_MODEL || "gpt-4.1-mini";
+const githubToken = process.env.GITHUB_TOKEN || "";
+const githubRepository = process.env.GITHUB_REPOSITORY || "PharmZanga/tracer";
+const githubBranch = process.env.GITHUB_BRANCH || "main";
+const upload = multer({ storage: multer.memoryStorage(), limits: { files: 12, fileSize: 25 * 1024 * 1024 } });
 const supabaseAdmin = supabaseUrl && supabaseServiceRoleKey
   ? createClient(supabaseUrl, supabaseServiceRoleKey, { auth: { autoRefreshToken: false, persistSession: false } })
   : null;
@@ -193,6 +199,69 @@ async function sendEmail({ to, subject, text, html }) {
     console.error("Resend notification failed:", error);
     return { delivered: false, reason: "Network error while contacting Resend." };
   }
+}
+
+function safeUploadName(value = "") {
+  return String(value).replace(/[^a-zA-Z0-9._-]+/g, "_").replace(/^_+|_+$/g, "") || "provincial-tracer.xlsx";
+}
+
+function cellText(value) {
+  return String(value ?? "").trim();
+}
+
+function looksLikeTracerHeader(row) {
+  const text = row.map(cellText).join(" ").toLowerCase();
+  return (text.includes("product") || text.includes("commodity") || text.includes("description"))
+    && (text.includes("amc") || text.includes("quantity") || text.includes("stock"));
+}
+
+function inspectTracerWorkbook(file) {
+  const workbook = XLSX.read(file.buffer, { type: "buffer", cellDates: true });
+  const sheets = [];
+  let records = 0;
+  workbook.SheetNames.forEach((sheetName) => {
+    const matrix = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: "", raw: false });
+    const headerIndex = matrix.slice(0, 14).findIndex((row) => Array.isArray(row) && looksLikeTracerHeader(row));
+    const dataRows = headerIndex >= 0
+      ? matrix.slice(headerIndex + 1).filter((row) => row.some((cell) => cellText(cell)))
+      : [];
+    if (headerIndex >= 0) {
+      sheets.push({ sheetName, headerRow: headerIndex + 1, rows: dataRows.length, columns: matrix[headerIndex].filter((cell) => cellText(cell)).length, dataRows });
+      records += dataRows.length;
+    }
+  });
+  return { workbook, sheets, records };
+}
+
+function makeConsolidatedWorkbook(importResult) {
+  const workbook = XLSX.utils.book_new();
+  const auditRows = [["File", "Sheets recognised", "Tracer rows recognised", "Validation"]];
+  const rows = [["Source file", "Worksheet", "Header row", "Row number", "Submitted values"]];
+  importResult.files.forEach((file) => {
+    auditRows.push([file.name, file.sheets.length, file.records, file.records ? "Ready for review" : "No tracer table recognised"]);
+    file.sheets.forEach((sheet) => sheet.dataRows.forEach((row, index) => {
+      rows.push([file.name, sheet.sheetName, sheet.headerRow, sheet.headerRow + index + 1, row.map(cellText).join(" | ")]);
+    }));
+  });
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(auditRows), "Import audit");
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), "Consolidated rows");
+  return XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+}
+
+async function commitFileToGitHub(repositoryPath, content, message) {
+  if (!githubToken) throw new Error("GITHUB_TOKEN is not configured in Render.");
+  const url = `https://api.github.com/repos/${githubRepository}/contents/${repositoryPath}`;
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${githubToken}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    body: JSON.stringify({ message, branch: githubBranch, content: content.toString("base64") }),
+  });
+  if (!response.ok) throw new Error(`GitHub upload failed: ${await response.text()}`);
 }
 
 async function sendApprovedAccessEmail(email, name = "") {
@@ -469,6 +538,62 @@ app.post("/api/copilot/feedback", requireSession, async (request, response, next
   } catch (error) {
     next(error);
   }
+});
+
+app.post("/api/admin/submissions/validate", requireSession, requireAdmin, upload.array("reports", 12), async (request, response, next) => {
+  try {
+    const files = request.files || [];
+    if (!files.length) return response.status(400).json({ error: "Choose at least one provincial Excel report." });
+    const nonExcel = files.find((file) => !/\.xlsx$/i.test(file.originalname));
+    if (nonExcel) return response.status(400).json({ error: `${nonExcel.originalname} is not an .xlsx workbook.` });
+    const inspected = files.map((file) => ({ name: safeUploadName(file.originalname), ...inspectTracerWorkbook(file) }));
+    const empty = inspected.filter((file) => !file.records).map((file) => file.name);
+    const duplicateNames = inspected.filter((file, index, all) => all.findIndex((entry) => entry.name.toLowerCase() === file.name.toLowerCase()) !== index).map((file) => file.name);
+    await audit(request.session.user.email, `submission_validation:${inspected.length}_files`, request.session.user.email);
+    response.json({
+      ok: true,
+      files: inspected.map(({ name, records, sheets }) => ({ name, records, sheets: sheets.map(({ sheetName, headerRow, rows, columns }) => ({ sheetName, headerRow, rows, columns })) })),
+      totalRecords: inspected.reduce((total, file) => total + file.records, 0),
+      recognisedSheets: inspected.reduce((total, file) => total + file.sheets.length, 0),
+      warnings: [
+        ...(empty.length ? [`No tracer table recognised in: ${empty.join(", ")}`] : []),
+        ...(duplicateNames.length ? [`Duplicate upload name: ${duplicateNames.join(", ")}`] : []),
+      ],
+      githubConfigured: Boolean(githubToken),
+    });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/admin/submissions/master-workbook", requireSession, requireAdmin, upload.array("reports", 12), async (request, response, next) => {
+  try {
+    const files = request.files || [];
+    if (!files.length) return response.status(400).json({ error: "Choose at least one provincial Excel report." });
+    const inspected = files.map((file) => ({ name: safeUploadName(file.originalname), ...inspectTracerWorkbook(file) }));
+    const output = makeConsolidatedWorkbook({ files: inspected });
+    const dateLabel = safeUploadName(request.body?.reportingPeriod || new Date().toISOString().slice(0, 10));
+    await audit(request.session.user.email, `submission_master_download:${inspected.length}_files`, request.session.user.email);
+    response.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    response.setHeader("Content-Disposition", `attachment; filename="tracer-master-${dateLabel}.xlsx"`);
+    response.send(output);
+  } catch (error) { next(error); }
+});
+
+app.post("/api/admin/submissions/publish", requireSession, requireAdmin, upload.array("reports", 12), async (request, response, next) => {
+  try {
+    if (!githubToken) return response.status(503).json({ error: "GitHub publishing is not configured. Add GITHUB_TOKEN in Render first." });
+    const files = request.files || [];
+    if (!files.length) return response.status(400).json({ error: "Choose at least one provincial Excel report." });
+    const reportingPeriod = safeUploadName(request.body?.reportingPeriod || new Date().toISOString().slice(0, 10));
+    const inspected = files.map((file) => ({ name: safeUploadName(file.originalname), raw: file.buffer, ...inspectTracerWorkbook(file) }));
+    if (inspected.some((file) => !file.records)) return response.status(400).json({ error: "One or more files does not contain a recognised tracer table. Correct the file before publishing." });
+    for (const file of inspected) {
+      await commitFileToGitHub(`data/provincial-submissions/${reportingPeriod}/${file.name}`, file.raw, `Add ${reportingPeriod} provincial tracer submission: ${file.name}`);
+    }
+    const master = makeConsolidatedWorkbook({ files: inspected });
+    await commitFileToGitHub(`data/master-imports/tracer-master-${reportingPeriod}.xlsx`, master, `Add consolidated tracer master import for ${reportingPeriod}`);
+    await audit(request.session.user.email, `submission_published:${reportingPeriod}:${inspected.length}_files`, request.session.user.email);
+    response.json({ ok: true, message: `${inspected.length} provincial report(s) and the consolidated master workbook were committed to ${githubRepository}.` });
+  } catch (error) { next(error); }
 });
 
 app.get("/admin", requireSession, requireAdmin, async (request, response, next) => {

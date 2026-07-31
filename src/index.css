@@ -1006,9 +1006,26 @@ select:focus-visible {
 .page-quality > .concerns-section,
 .page-reporting > .reporting-rate-section,
 .page-predictive > .predictive-analysis,
-.page-actions > .action-tracker {
+.page-actions > .action-tracker,
+.page-imports > .submission-import-section {
   display: grid;
 }
+
+.submission-import-section { gap: 16px; }
+.submission-import-form, .submission-import-result { display: grid; gap: 14px; padding: 18px; border: 1px solid #d7e5dc; background: #fff; }
+.submission-import-form { grid-template-columns: minmax(210px, .35fr) minmax(320px, 1fr); align-items: end; }
+.submission-import-form label { display: grid; gap: 6px; color: #496057; font-size: 12px; font-weight: 800; }
+.submission-import-form input { min-height: 42px; padding: 9px 10px; border: 1px solid #bcd1c3; border-radius: 4px; font: inherit; color: #15281d; background: #fff; }
+.submission-file-input small { color: #65776d; font-weight: 500; line-height: 1.4; }
+.submission-import-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.submission-import-actions button { min-height: 40px; padding: 9px 13px; border: 1px solid #087e45; border-radius: 4px; background: #087e45; color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+.submission-import-actions .ghost-button { background: #fff; color: #087e45; }
+.submission-import-actions .publish-button { background: #064d35; }
+.submission-import-actions button:disabled { opacity: .55; cursor: not-allowed; }
+.submission-import-message, .submission-import-warning { margin: 0; padding: 11px 13px; border: 1px solid #efd4c9; background: #fff5f0; color: #b42318; font-size: 13px; }
+.submission-import-summary { display: flex; align-items: baseline; flex-wrap: wrap; gap: 7px; color: #587064; font-size: 13px; }
+.submission-import-summary strong { color: #087e45; font-size: 28px; }
+@media (max-width: 760px) { .submission-import-form { grid-template-columns: 1fr; } .submission-import-actions { grid-column: auto; } }
 
 .page-provincial .field-commodity-panel,
 .page-facilities .field-kpis,
