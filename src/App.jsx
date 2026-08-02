@@ -750,6 +750,12 @@ function forecastRiskLabel(likelihood) {
   return "Lower risk";
 }
 
+function forecastHorizon(likelihood) {
+  if (likelihood >= 0.6) return "Next 1-2 weeks";
+  if (likelihood >= 0.35) return "Next 3-4 weeks";
+  return "Monitor over 4 weeks";
+}
+
 function shortProvinceName(value = "") {
   return value
     .replace(/\s+PROVINCE$/i, "")
@@ -832,7 +838,7 @@ function buildProvinceForecast(periods, filters) {
   }).sort((a, b) => b.likelihood - a.likelihood || b.currentStockoutRate - a.currentStockoutRate || a.province.localeCompare(b.province));
 }
 
-function buildCommodityForecast(periods) {
+function buildCommodityForecast(periods, filters) {
   const historyByCommodity = new Map();
   const currentImpact = new Map();
   periods.forEach((period) => {
@@ -844,11 +850,28 @@ function buildCommodityForecast(periods) {
     });
   });
 
-  commodityRowsFromPeriod(periods.at(-1) || {}).forEach((row) => {
+  const currentRows = commodityRowsFromPeriod(periods.at(-1) || {})
+    .filter((row) => filters.province === "all" || row.province === filters.province)
+    .filter((row) => filters.district === "all" || row.district === filters.district)
+    .filter((row) => matchesFacilityCareLevel(row.facilityLevel, filters.facilityLevel))
+    .filter((row) => filters.facility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === filters.facility);
+
+  currentRows.forEach((row) => {
     const key = normalizeCommodity(row.item);
-    if (!currentImpact.has(key)) currentImpact.set(key, { facilities: new Set(), provinces: new Set() });
-    if ((row.quantity || 0) <= 0 || (row.mos !== null && row.mos < 2)) {
-      const impact = currentImpact.get(key);
+    if (!currentImpact.has(key)) currentImpact.set(key, {
+      facilities: new Set(), provinces: new Set(), rows: 0, stockout: 0, emergency: 0, lowStock: 0, mosTotal: 0, mosCount: 0,
+    });
+    const impact = currentImpact.get(key);
+    const mos = Number(row.mos);
+    impact.rows += 1;
+    if (Number.isFinite(mos)) {
+      impact.mosTotal += Math.min(12, Math.max(0, mos));
+      impact.mosCount += 1;
+    }
+    if ((row.quantity || 0) <= 0 || mos <= 0) impact.stockout += 1;
+    else if (mos <= 0.5) impact.emergency += 1;
+    else if (mos < 2) impact.lowStock += 1;
+    if ((row.quantity || 0) <= 0 || mos < 2) {
       impact.facilities.add(`${row.province}|${row.district}|${row.facilityLevel}|${row.facility}`);
       impact.provinces.add(row.province);
     }
@@ -857,11 +880,14 @@ function buildCommodityForecast(periods) {
   return [...historyByCommodity.values()].map((history) => {
     const current = history.at(-1);
     const recent = history.slice(-4);
-    const stockoutRate = current.stockoutRate ?? (current.stockout / current.rows);
-    const riskRate = current.riskRows / current.rows;
+    const impact = currentImpact.get(current.normalized || normalizeCommodity(current.name));
+    if (!impact) return null;
+    const stockoutRate = impact.rows ? impact.stockout / impact.rows : 0;
+    const emergencyRate = impact.rows ? impact.emergency / impact.rows : 0;
+    const lowStockRate = impact.rows ? impact.lowStock / impact.rows : 0;
+    const riskRate = impact.rows ? (impact.stockout + impact.emergency + impact.lowStock) / impact.rows : 0;
     const historicalRisk = recent.reduce((total, row) => total + row.riskRows / row.rows, 0) / recent.length;
     const likelihood = Math.min(1, stockoutRate * 0.46 + riskRate * 0.32 + historicalRisk * 0.22);
-    const impact = currentImpact.get(current.normalized || normalizeCommodity(current.name));
     return {
       name: current.name,
       programme: current.programme || "Tracer commodity",
@@ -869,12 +895,15 @@ function buildCommodityForecast(periods) {
       tone: forecastRiskTone(likelihood),
       stockoutRate,
       riskRate,
-      mos: current.mos,
+      emergencyRate,
+      lowStockRate,
+      mos: impact.mosCount ? impact.mosTotal / impact.mosCount : 0,
       observations: history.length,
       affectedFacilities: impact?.facilities.size || 0,
       affectedProvinces: impact?.provinces.size || 0,
+      horizon: forecastHorizon(likelihood),
     };
-  }).sort((a, b) => b.likelihood - a.likelihood || b.stockoutRate - a.stockoutRate || a.name.localeCompare(b.name));
+  }).filter(Boolean).sort((a, b) => b.likelihood - a.likelihood || b.stockoutRate - a.stockoutRate || a.name.localeCompare(b.name));
 }
 
 function buildForecastImpact(periods, filters) {
@@ -1375,6 +1404,9 @@ function App() {
   const [qualityDetailDialog, setQualityDetailDialog] = useState("");
   const [selectedLibraryPeriodId, setSelectedLibraryPeriodId] = useState("");
   const [predictiveTab, setPredictiveTab] = useState("overview");
+  const [predictiveCommodityQuery, setPredictiveCommodityQuery] = useState("");
+  const [predictiveCommodityStatus, setPredictiveCommodityStatus] = useState("at-risk");
+  const [predictiveCommodityPage, setPredictiveCommodityPage] = useState(1);
   const [actionCommodityQuery, setActionCommodityQuery] = useState("");
   const [actionUpdates, setActionUpdates] = useState(() => {
     try {
@@ -1643,8 +1675,22 @@ function App() {
     facilityLevel: selectedFacilityLevel,
     facility: selectedFacility,
   };
-  const predictiveCommodityRows = useMemo(() => buildCommodityForecast(predictiveHistoryPeriods), [predictiveHistoryPeriods]);
+  const predictiveCommodityRows = useMemo(() => buildCommodityForecast(predictiveHistoryPeriods, predictiveFilters), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const predictiveCommodityTopFive = predictiveCommodityRows.filter((row) => row.affectedFacilities > 0).slice(0, 5);
+  const predictiveThreatRows = useMemo(() => {
+    const search = predictiveCommodityQuery.trim().toLowerCase();
+    return predictiveCommodityRows.filter((row) => {
+      if (search && !`${row.name} ${row.programme}`.toLowerCase().includes(search)) return false;
+      if (predictiveCommodityStatus === "stockout") return row.stockoutRate > 0;
+      if (predictiveCommodityStatus === "emergency") return row.emergencyRate > 0;
+      if (predictiveCommodityStatus === "low-stock") return row.lowStockRate > 0;
+      if (predictiveCommodityStatus === "high-risk") return row.tone === "red";
+      return row.riskRate > 0;
+    });
+  }, [predictiveCommodityRows, predictiveCommodityQuery, predictiveCommodityStatus]);
+  const predictiveThreatPageSize = 20;
+  const predictiveThreatPages = Math.max(1, Math.ceil(predictiveThreatRows.length / predictiveThreatPageSize));
+  const predictiveThreatPageRows = predictiveThreatRows.slice((Math.min(predictiveCommodityPage, predictiveThreatPages) - 1) * predictiveThreatPageSize, Math.min(predictiveCommodityPage, predictiveThreatPages) * predictiveThreatPageSize);
   const predictiveImpact = useMemo(() => buildForecastImpact(predictiveHistoryPeriods, predictiveFilters), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const predictiveTimeline = useMemo(() => predictiveHistoryPeriods.map((period) => {
     const rollup = combineRollups(forecastRollupsForPeriod(period, predictiveFilters), makeEmptyRollup());
@@ -3688,6 +3734,7 @@ function App() {
               ["overview", "Risk overview"],
               ["evidence", "Province evidence"],
               ["performance", "Forecast performance"],
+              ["commodities", "All commodities"],
               ["actions", "Recommended actions"],
             ].map(([id, label]) => <button type="button" role="tab" aria-selected={predictiveTab === id} className={predictiveTab === id ? "active" : ""} onClick={() => setPredictiveTab(id)} key={id}>{label}</button>)}
           </div>
@@ -3771,6 +3818,36 @@ function App() {
             <div className="table-headline predictive-feedback-headline"><div><p className="eyebrow dark">Model validation</p><h2>Priority score versus actual stockouts</h2><p>Each completed week compares the preceding priority score with the next submitted stockout rate.</p></div><span>Latest outcome: <b>{predictiveFeedback.latestActualLabel || "No completed comparison"}</b></span></div>
             <div className="stats-grid predictive-feedback-kpis"><KpiCard label="Score agreement" value={predictiveFeedback.total ? formatPercent(predictiveFeedback.accuracy) : "-"} sub="1 minus the absolute difference between score and actual stockout rate" tone={predictiveFeedback.accuracy >= 0.75 ? "green" : predictiveFeedback.accuracy >= 0.55 ? "amber" : "red"} /><KpiCard label="Scores tested" value={predictiveFeedback.total.toLocaleString()} sub="Province scores with a next-week outcome" /><KpiCard label="Confirmed high risk" value={predictiveFeedback.confirmed.toLocaleString()} sub={`${predictiveFeedback.highForecasts} high-risk alerts issued`} tone="red" /><KpiCard label="Follow-up flags" value={predictiveFeedback.missedActions.length.toLocaleString()} sub="High risk persisted into the next week" tone={predictiveFeedback.missedActions.length ? "amber" : "green"} /></div>
             <div className="quality-panel predictive-feedback-panel"><div className="quality-panel-head"><div><h3>Latest scorecard</h3><p>Priority score compared directly with submitted stockout outcome.</p></div></div><div className="predictive-feedback-list">{predictiveFeedbackRows.map((row) => <button type="button" key={`${row.province}-${row.actualLabel}`} onClick={() => selectProvince(row.province)}><span><b>{shortProvinceName(row.province)}</b><small>{row.forecastLabel} score to {row.actualLabel} outcome</small></span><span><small>Score</small><b>{formatPercent(row.predictedLikelihood)}</b></span><span><small>Actual stockout</small><b>{formatPercent(row.actualStockoutRate)}</b></span><span className={`comparison-signal ${row.confirmed ? "red" : row.accuracy >= 0.75 ? "green" : "amber"}`}>{formatPercent(row.accuracy)}</span></button>)}{!predictiveFeedbackRows.length && <div className="empty-state">At least two submitted weeks are needed for validation.</div>}</div></div>
+          </div>}
+
+          {predictiveTab === "commodities" && <div className="predictive-tab-panel predictive-commodity-workspace">
+            <div className="table-headline predictive-commodity-headline">
+              <div>
+                <p className="eyebrow dark">Priority commodities</p>
+                <h2>All commodities under threat</h2>
+                <p>Ranked from the selected reporting scope. A threat is a submitted commodity with stockout, emergency, or low-stock pressure.</p>
+              </div>
+              <span>{predictiveThreatRows.length} commodities</span>
+            </div>
+
+            <div className="predictive-commodity-controls">
+              <label>Search commodity<input value={predictiveCommodityQuery} onChange={(event) => { setPredictiveCommodityQuery(event.target.value); setPredictiveCommodityPage(1); }} placeholder="Search commodity or programme" /></label>
+              <label>Risk filter<select value={predictiveCommodityStatus} onChange={(event) => { setPredictiveCommodityStatus(event.target.value); setPredictiveCommodityPage(1); }}><option value="at-risk">All under threat</option><option value="stockout">Stocked out</option><option value="emergency">Emergency (0.5 MOS or less)</option><option value="low-stock">Low stock (0.5 to below 2 MOS)</option><option value="high-risk">High priority score</option></select></label>
+            </div>
+
+            <div className="predictive-commodity-chart quality-panel">
+              <div className="quality-panel-head"><div><h3>Top commodity risk scores</h3><p>Highest priority commodities in the current selection.</p></div></div>
+              <div className="predictive-commodity-bars">{predictiveThreatRows.slice(0, 10).map((row, index) => <button type="button" key={row.name} className={`risk-${row.tone}`} onClick={() => { setSelectedCommodity(row.name); setQuery(row.name); setActivePage("commodities"); }}><b>{index + 1}</b><span title={row.name}>{row.name}<small>{row.affectedFacilities} facilities affected · {row.affectedProvinces} provinces</small></span><div className="predictive-risk-track"><i style={{ width: `${Math.round(row.likelihood * 100)}%` }} /></div><strong>{formatPercent(row.likelihood)}</strong></button>)}{!predictiveThreatRows.length && <div className="empty-state">No threatened commodities match the current filters.</div>}</div>
+            </div>
+
+            <div className="table-panel predictive-threat-table">
+              <div className="table-headline"><div><h2>Commodity risk register</h2><p>Use the commodity name to open facility-level evidence in Commodity Intelligence.</p></div></div>
+              <div className="table-scroll"><table><thead><tr><th>Rank</th><th>Commodity</th><th>Programme</th><th>Priority score</th><th>Risk band</th><th>Stockout</th><th>Emergency</th><th>Low stock</th><th>Average MOS</th><th>Facilities affected</th><th>Provinces affected</th><th>Likely timeframe</th><th></th></tr></thead><tbody>
+                {predictiveThreatPageRows.map((row, index) => <tr key={row.name}><td>{((Math.min(predictiveCommodityPage, predictiveThreatPages) - 1) * predictiveThreatPageSize) + index + 1}</td><td><strong>{row.name}</strong></td><td>{row.programme}</td><td><span className={`comparison-signal ${row.tone}`}>{formatPercent(row.likelihood)}</span></td><td>{row.label}</td><td>{formatPercent(row.stockoutRate)}</td><td>{formatPercent(row.emergencyRate)}</td><td>{formatPercent(row.lowStockRate)}</td><td>{formatMos(row.mos)}</td><td>{row.affectedFacilities}</td><td>{row.affectedProvinces}</td><td>{row.horizon}</td><td><button type="button" className="table-link" onClick={() => { setSelectedCommodity(row.name); setQuery(row.name); setActivePage("commodities"); }}>View details</button></td></tr>)}
+                {!predictiveThreatPageRows.length && <tr><td colSpan="13">No commodities match the selected threat filter.</td></tr>}
+              </tbody></table></div>
+              <div className="predictive-pagination"><button type="button" disabled={predictiveCommodityPage <= 1} onClick={() => setPredictiveCommodityPage((page) => Math.max(1, page - 1))}>Previous</button><span>Page {Math.min(predictiveCommodityPage, predictiveThreatPages)} of {predictiveThreatPages}</span><button type="button" disabled={predictiveCommodityPage >= predictiveThreatPages} onClick={() => setPredictiveCommodityPage((page) => Math.min(predictiveThreatPages, page + 1))}>Next</button></div>
+            </div>
           </div>}
 
           {predictiveTab === "actions" && <div className="predictive-tab-panel predictive-actions-view">

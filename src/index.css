@@ -5468,6 +5468,26 @@ td.neutral {
 .predictive-actions-view { grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr); align-items: start; }
 .predictive-action-card.expanded { min-height: 100%; }
 
+.predictive-commodity-workspace { margin-top: 14px; }
+.predictive-commodity-headline { align-items: start; }
+.predictive-commodity-headline > span { padding: 7px 10px; border: 1px solid #d6e4db; background: #fff; color: #287450; font-size: 11px; font-weight: 850; white-space: nowrap; }
+.predictive-commodity-controls { display: grid; grid-template-columns: minmax(240px, 1.4fr) minmax(220px, 0.8fr); gap: 12px; padding: 13px; border: 1px solid #dce5df; background: #fff; }
+.predictive-commodity-controls label { display: grid; gap: 5px; color: #52675a; font-size: 10px; font-weight: 850; }
+.predictive-commodity-controls input,
+.predictive-commodity-controls select { min-width: 0; min-height: 38px; padding: 8px 10px; border: 1px solid #bed3c5; background: #fff; color: #173a28; font: inherit; font-size: 12px; }
+.predictive-commodity-chart { padding-bottom: 6px; }
+.predictive-commodity-bars { display: grid; }
+.predictive-commodity-bars button { display: grid; grid-template-columns: 22px minmax(170px, 1.25fr) minmax(150px, 1fr) 58px; gap: 10px; align-items: center; width: 100%; padding: 9px 11px; border: 0; border-bottom: 1px solid #e4ebe6; background: transparent; color: #1a3d2a; cursor: pointer; text-align: left; }
+.predictive-commodity-bars button:hover { background: #f2f7f4; }
+.predictive-commodity-bars button > b { color: #718077; font-size: 11px; }
+.predictive-commodity-bars button > span { min-width: 0; overflow: hidden; font-size: 12px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.predictive-commodity-bars button small { display: block; overflow: hidden; margin-top: 2px; color: #708076; font-size: 9px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.predictive-commodity-bars button > strong { text-align: right; font-size: 12px; }
+.predictive-threat-table .table-link { min-height: 30px; padding: 5px 8px; border: 1px solid #8ebfa1; background: #fff; color: #12633d; cursor: pointer; font: inherit; font-size: 10px; font-weight: 850; white-space: nowrap; }
+.predictive-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 13px; border-top: 1px solid #e2e9e4; color: #607267; font-size: 11px; }
+.predictive-pagination button { min-width: 78px; min-height: 32px; border: 1px solid #9dc6ab; background: #fff; color: #16693f; cursor: pointer; font: inherit; font-size: 11px; font-weight: 850; }
+.predictive-pagination button:disabled { cursor: not-allowed; opacity: .45; }
+
 @media (max-width: 1050px) {
   .predictive-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .predictive-overview-grid,
@@ -5483,6 +5503,9 @@ td.neutral {
   .predictive-rank-row .predictive-risk-track { grid-column: 2 / -1; grid-row: 2; }
   .predictive-tab-panel .predictive-layout { grid-template-columns: 1fr; }
   .predictive-tabs { margin-right: -12px; margin-left: -12px; }
+  .predictive-commodity-controls { grid-template-columns: 1fr; }
+  .predictive-commodity-bars button { grid-template-columns: 20px minmax(0, 1fr) 52px; }
+  .predictive-commodity-bars .predictive-risk-track { grid-column: 2 / -1; grid-row: 2; }
 }
 
 .quality-compact-workspace {
