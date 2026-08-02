@@ -121,6 +121,16 @@ function formatMos(value) {
   return Number(value).toFixed(1);
 }
 
+function cappedAverageMos(rows) {
+  const values = rows
+    .map((row) => Number(row.mos))
+    .filter(Number.isFinite)
+    .map((value) => Math.min(12, Math.max(0, value)));
+  if (!values.length) return null;
+  const average = values.reduce((total, value) => total + value, 0) / values.length;
+  return Math.round(average * 100) / 100;
+}
+
 function monthLabel(month) {
   return new Date(`${month}-01T00:00:00`).toLocaleDateString(undefined, { month: "long", year: "numeric" });
 }
@@ -375,13 +385,14 @@ function LevelOfCarePerformance({ rows }) {
         </div>
       </div>
       <div className="level-care-legend">
-        <span><i className="mos-key" />Availability bar, MOS shown inside</span>
-        <span><i className="availability-key" />Average of Availability</span>
+        <span><i className="mos-key" />Availability bar, average MOS shown inside (12-month cap)</span>
+        <span><i className="availability-key" />Submitted-row availability</span>
       </div>
       {level3Row ? (
         <div className="level-care-inclusions">
           <strong>Level 3/Specialised calculation includes</strong>
           <span>{level3Levels.length ? level3Levels.join(", ") : "No Level 3/Specialised facility levels in the current filter."}</span>
+          <small>{formatPercent(level3Row.availability)} availability across {level3Row.rows.toLocaleString()} submitted rows, with {level3Row.stockout.toLocaleString()} stockout rows and {level3Row.dataGap.toLocaleString()} data-gap rows.</small>
           {level3Names.length ? <small>Facilities: {level3Names.slice(0, 12).join(", ")}{level3Names.length > 12 ? `, +${level3Names.length - 12} more` : ""}</small> : null}
         </div>
       ) : null}
@@ -1548,6 +1559,11 @@ function App() {
     .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict)
     .filter((facility) => matchesFacilityCareLevel(facility.facilityLevel, selectedFacilityLevel))
     .filter((facility) => selectedFacility === "all" || `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}` === selectedFacility);
+  const filteredCommodityRows = commodityRowsFromPeriod(fieldData)
+    .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
+    .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
+    .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
+    .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility);
 
   const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
   const scopedProvinceRows = aggregateRollups(filteredFacilities, "province")
@@ -1556,8 +1572,10 @@ function App() {
     .sort((a, b) => b.riskRows - a.riskRows || a.availability - b.availability);
   const levelOfCareRows = careLevelBuckets.map((bucket) => {
     const facilities = filteredFacilities.filter((facility) => careLevelBucket(facility.facilityLevel) === bucket.id);
+    const commodityRows = filteredCommodityRows.filter((row) => careLevelBucket(row.facilityLevel) === bucket.id);
     return {
       ...combineRollups(facilities, makeEmptyRollup(bucket.label)),
+      mos: cappedAverageMos(commodityRows),
       id: bucket.id,
       label: bucket.label,
       facilityLevels: [...new Set(facilities.map((facility) => facility.facilityLevel))].sort(),

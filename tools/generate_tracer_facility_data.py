@@ -248,6 +248,12 @@ RAW_AVAILABILITY_SOURCES = [
     },
 ]
 
+# Values confirmed by the programme team when a submitted workbook has been
+# altered or its saved formula result is not the approved reporting value.
+AUTHORITATIVE_AVAILABILITY_OVERRIDES = {
+    ("2026-07-26", "CENTRAL PROVINCE", "KABWE", "LEVEL 3 HOSPITAL", "kabwe central hospital"): 0.70,
+}
+
 # Provincial Week 4 submissions provide the verified facility-to-district
 # reference used to correct copied facility labels in the clean Jan-Jun file.
 RAW_FACILITY_REFERENCE_SOURCES = [
@@ -327,6 +333,24 @@ VERIFIED_FACILITY_IDENTITIES = {
         "LEVEL 3 HOSPITAL",
         "Kabwe Central Hospital",
     ),
+    "national heart hospital": (
+        "LUSAKA PROVINCE",
+        "LUSAKA",
+        "NATIONAL HEART HOSPITAL",
+        "National Heart Hospital",
+    ),
+    "uth children": (
+        "LUSAKA PROVINCE",
+        "LUSAKA",
+        "LEVEL 3 HOSPITAL",
+        "UTH Children",
+    ),
+    "women and new born": (
+        "LUSAKA PROVINCE",
+        "LUSAKA",
+        "WOMEN AND NEWBORN HOSPITAL",
+        "Women and Newborn Hospital",
+    ),
     "kafue gorge hospital": (
         "SOUTHERN PROVINCE",
         "CHIKANKATA",
@@ -376,7 +400,10 @@ def facility_match_key(value):
         "gwembe district hos": "gwembe district hospital",
         "itezhi tezhi district hos": "itezhi tezhi district hospital",
         "kabwe central": "kabwe central hospital",
+        "kabwe central hopital": "kabwe central hospital",
         "kafue gorge": "kafue gorge hospital",
+        "women and newborn": "women and new born",
+        "women and newborn hospital": "women and new born",
     }
     text = aliases.get(text, text)
     district_hospital = re.fullmatch(r"(.+?)\s+(?:dh|district hos|district hosp)", text)
@@ -606,11 +633,11 @@ def canonical_facility_level(value):
         return "EYE/OPHTHALMOLOGY HOSPITAL"
     if "TB" in text or "MDR" in text:
         return "TB-DS/TB-MDR UNITS"
-    if "LEVEL 1" in text or "DISTRICT LEVEL" in text:
+    if "LEVEL 1" in text or "L-1" in text or "DISTRICT LEVEL" in text:
         return "LEVEL 1 HOSPITAL"
-    if "LEVEL 2" in text or "GENERAL HOSPITAL" in text:
+    if "LEVEL 2" in text or "L-2" in text or "GENERAL HOSPITAL" in text:
         return "LEVEL 2/GENERAL HOSPITAL"
-    if "LEVEL 3" in text or "TERTIARY" in text or "PAEDIATRIC" in text or "ADULT HOSPITAL" in text:
+    if "LEVEL 3" in text or "L-3" in text or "TERTIARY" in text or "PAEDIATRIC" in text or "ADULT HOSPITAL" in text:
         return "LEVEL 3 HOSPITAL"
     if "PRIMARY FACILITY" in text:
         return "PRIMARY CARE - NOT SPECIFIED"
@@ -695,6 +722,16 @@ def normalize_raw_facility_level(sheet_name, sheet_title):
     return canonical_facility_level(raw_facility_level(sheet_name, sheet_title))
 
 
+def raw_sheet_facility_blocks(ws):
+    """Return quantity, district and facility columns for each reporting block."""
+    sheet_name = ws.title.strip().upper()
+    if sheet_name in {"HEART", "CANCER"}:
+        return [(4, 3, 4)]
+    if sheet_name in {"PSYCH", "WNB", "W & NB"}:
+        return [(4, 4, 5)]
+    return [(start_col, start_col, start_col + 1) for start_col in range(5, (ws.max_column or 0) + 1, 4)]
+
+
 def load_raw_facility_identities():
     """Build a verified named-hospital roster from the provincial tracer files.
 
@@ -725,10 +762,13 @@ def load_raw_facility_identities():
             raw_level = normalize_raw_facility_level(sheet_name, ws.cell(1, 1).value)
             if raw_level in {"HEALTH POST", "HEALTH CENTRE", "PRIMARY CARE - NOT SPECIFIED"}:
                 continue
-            for start_col in range(5, (ws.max_column or 0) + 1, 4):
-                district = clean(ws.cell(2, start_col).value)
-                facility = clean(ws.cell(2, start_col + 1).value)
+            for start_col, district_col, facility_col in raw_sheet_facility_blocks(ws):
+                district = clean(ws.cell(2, district_col).value)
+                facility = clean(ws.cell(2, facility_col).value)
                 facility_key = facility_match_key(facility)
+                verified = VERIFIED_FACILITY_IDENTITIES.get(facility_key)
+                if not district and verified:
+                    district = verified[1]
                 if not district or not facility_key or facility_key in {"all", "hc hp", "ref"} or str(facility).startswith("="):
                     continue
                 district = canonical_district(province, district)
@@ -806,10 +846,13 @@ def iter_raw_matrix_rows(source, report_date):
         if "DESCRIPTION" not in item_header and "PRODUCT" not in item_header:
             continue
         source_facility_level = raw_facility_level(sheet_name, ws.cell(1, 1).value)
-        for start_col in range(5, ws.max_column + 1, 4):
-            district = clean(ws.cell(2, start_col).value)
-            facility = clean(ws.cell(2, start_col + 1).value)
-            if not district:
+        for start_col, district_col, facility_col in raw_sheet_facility_blocks(ws):
+            district = clean(ws.cell(2, district_col).value)
+            facility = clean(ws.cell(2, facility_col).value)
+            verified = VERIFIED_FACILITY_IDENTITIES.get(facility_match_key(facility))
+            if not district and verified:
+                district = verified[1]
+            if not district or not facility:
                 continue
             district = canonical_district(province, district)
             if district is None:
@@ -828,6 +871,8 @@ def iter_raw_matrix_rows(source, report_date):
             for row_index in range(4, ws.max_row + 1):
                 item = clean(ws.cell(row_index, 2).value)
                 if not item:
+                    continue
+                if "PERCENTAGE AVAILABILITY" in str(item).upper():
                     continue
                 quantity = num(ws.cell(row_index, start_col).value)
                 amc = num(ws.cell(row_index, start_col + 1).value)
@@ -1058,6 +1103,8 @@ def summarize(config):
         if identity is None:
             continue
         province, district, facility_level, facility = identity
+        if facility_level in {"NATIONAL HEART HOSPITAL", "WOMEN AND NEWBORN HOSPITAL"} and province != "LUSAKA PROVINCE":
+            continue
         item = clean(row.get("DESCRIPTION OF ITEM")) or "Unknown commodity"
         program = normalize_program(row.get("PROGRAM"), item)
         cancer_scope = (
@@ -1414,6 +1461,7 @@ def main():
     RAW_FACILITY_IDENTITIES.update(load_raw_facility_identities())
     print(f"Loaded {len(RAW_FACILITY_IDENTITIES)} verified named-facility identities from provincial submissions.")
     availability_overrides = load_raw_availability_overrides()
+    availability_overrides.update(AUTHORITATIVE_AVAILABILITY_OVERRIDES)
     configs = []
     # The approved clean workbook begins on 22 February. January is retained
     # from its validated weekly summary workbook so the dashboard covers Jan-Jun.
@@ -1431,7 +1479,9 @@ def main():
     # present in that master workbook.
     for config in WORKBOOKS:
         if config.get("rawSources") and config["reportDate"] not in clean_period_ids:
-            configs.append(dict(config))
+            config = dict(config)
+            config["availabilityOverrides"] = availability_overrides
+            configs.append(config)
     periods = [summarize(config) for config in configs]
     periods.sort(key=lambda item: item["reportDate"])
     expected_districts = {
@@ -1451,7 +1501,8 @@ def main():
     period_groups = {
         "JanFeb": [period for period in periods if period["month"] in {"2026-01", "2026-02"}],
         "MarApr": [period for period in periods if period["month"] in {"2026-03", "2026-04"}],
-        "MayJun": [period for period in periods if period["month"] >= "2026-05"],             
+        "MayJun": [period for period in periods if period["month"] in {"2026-05", "2026-06"}],
+        "Jul": [period for period in periods if period["month"] >= "2026-07"],
     }
     module_names = []
     for suffix, group in period_groups.items():
