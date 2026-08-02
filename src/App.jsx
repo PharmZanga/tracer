@@ -3734,7 +3734,7 @@ function App() {
               ["overview", "Risk overview"],
               ["evidence", "Province evidence"],
               ["performance", "Forecast performance"],
-              ["commodities", "All commodities"],
+              ["commodities", "All Commodities Under Threat"],
               ["actions", "Recommended actions"],
             ].map(([id, label]) => <button type="button" role="tab" aria-selected={predictiveTab === id} className={predictiveTab === id ? "active" : ""} onClick={() => setPredictiveTab(id)} key={id}>{label}</button>)}
           </div>
@@ -3824,7 +3824,7 @@ function App() {
             <div className="table-headline predictive-commodity-headline">
               <div>
                 <p className="eyebrow dark">Priority commodities</p>
-                <h2>All commodities under threat</h2>
+                <h2>All Commodities Under Threat</h2>
                 <p>Ranked from the selected reporting scope. A threat is a submitted commodity with stockout, emergency, or low-stock pressure.</p>
               </div>
               <span>{predictiveThreatRows.length} commodities</span>
