@@ -5292,6 +5292,199 @@ td.neutral {
   .predictive-feedback-list .comparison-signal { grid-column: 2 / -1; justify-self: start; }
 }
 
+/* Predictive workspace: compact overview with drill-down tabs. */
+.page-predictive {
+  padding-bottom: 96px;
+  background: #f3f6f4;
+  background-image: none;
+}
+
+.predictive-analysis {
+  padding: 18px;
+  border: 1px solid #dce5df;
+  background: #f6f8f7;
+}
+
+.predictive-head { margin-bottom: 0; }
+.predictive-head h2 { margin: 2px 0 4px; font-size: 24px; }
+.predictive-head p { max-width: 760px; margin: 0; color: #54685c; font-size: 12px; }
+.predictive-head small { display: block; margin-top: 5px; color: #6d7d74; font-size: 10px; }
+
+.predictive-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 5px;
+  border: 1px solid #d7e2db;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.predictive-tabs button {
+  min-height: 34px;
+  padding: 7px 13px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #53675b;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.predictive-tabs button:hover { background: #f0f5f2; color: #125f3d; }
+.predictive-tabs button.active { border-color: #9fc7ad; background: #e7f2eb; color: #0d6540; }
+
+.predictive-kpis {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.predictive-kpis .stat {
+  min-width: 0;
+  min-height: 112px;
+  padding: 14px;
+  border-color: #dbe5df;
+  background: #fff;
+  box-shadow: none;
+}
+
+.predictive-kpis .stat strong {
+  overflow: hidden;
+  font-size: clamp(22px, 2vw, 29px);
+  line-height: 1.08;
+  text-overflow: ellipsis;
+}
+
+.predictive-insight-strip {
+  padding: 11px 14px;
+  border: 1px solid #cfe0d5;
+  border-left: 4px solid #287b54;
+  background: #fff;
+  color: #43584c;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.predictive-insight-strip b { color: #183f2b; }
+
+.predictive-overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(260px, 3fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.predictive-ranking-panel,
+.predictive-action-card,
+.predictive-support-grid .quality-panel,
+.predictive-tab-panel .quality-panel,
+.predictive-tab-panel .table-panel {
+  border-color: #dbe5df;
+  background: #fff;
+  box-shadow: none;
+}
+
+.predictive-rank-row {
+  grid-template-columns: 28px minmax(145px, 1fr) minmax(120px, 1.35fr) 28px 58px;
+  gap: 9px;
+  padding: 9px 10px;
+  border-color: #e3eae6;
+}
+
+.predictive-rank-row > span { min-width: 0; }
+.predictive-rank-row > span small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.predictive-movement { text-align: center; font-size: 17px; font-style: normal; font-weight: 900; }
+.predictive-movement.up { color: #b42318; }
+.predictive-movement.down { color: #16734a; }
+.predictive-movement.steady { color: #6a7a71; }
+
+.predictive-action-card {
+  display: grid;
+  gap: 11px;
+  padding: 17px;
+  border: 1px solid #c8dacf;
+  border-top: 4px solid #217b51;
+}
+
+.predictive-action-card h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: #153d28;
+  font-size: 17px;
+  line-height: 1.3;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.predictive-action-card > p:not(.eyebrow) { margin: 0; color: #53675b; font-size: 12px; line-height: 1.5; }
+.predictive-action-card dl { display: grid; gap: 0; margin: 0; }
+.predictive-action-card dl > div { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 9px; padding: 8px 0; border-bottom: 1px solid #e5ece8; }
+.predictive-action-card dt { color: #6a7c72; font-size: 10px; }
+.predictive-action-card dd { min-width: 0; margin: 0; color: #223d2e; font-size: 11px; font-weight: 800; }
+.predictive-action-card dd small { display: block; margin-top: 2px; color: #6a7b71; font-size: 9px; font-weight: 500; }
+.predictive-action-card > button { min-height: 36px; border: 0; background: #167348; color: #fff; cursor: pointer; font: inherit; font-size: 11px; font-weight: 900; }
+.predictive-action-card > button:hover { background: #0e5e39; }
+
+.predictive-support-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(330px, 0.95fr);
+  gap: 14px;
+}
+
+.predictive-line-chart {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 8px;
+  height: 230px;
+  padding-top: 6px;
+}
+
+.predictive-line-axis { display: flex; flex-direction: column; justify-content: space-between; padding: 0 0 24px; color: #718078; font-size: 9px; text-align: right; }
+.predictive-line-plot { position: relative; min-width: 0; height: 100%; }
+.predictive-line-plot .grid { position: absolute; right: 0; left: 0; height: 1px; background: #e1e8e4; }
+.predictive-line-plot .grid.top { top: 0; }
+.predictive-line-plot .grid.middle { top: 40%; }
+.predictive-line-plot .grid.bottom { top: 80%; }
+.predictive-line-plot svg { position: absolute; top: 0; right: 0; left: 0; width: 100%; height: calc(100% - 25px); overflow: visible; }
+.predictive-line-plot polyline { fill: none; stroke: #2763a8; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.predictive-line-plot > span { position: absolute; bottom: 0; max-width: 48px; transform: translateX(-50%); overflow: hidden; color: #697a70; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+
+.predictive-commodity-list button { grid-template-columns: minmax(0, 1fr) minmax(70px, 0.8fr) 48px; }
+.predictive-commodity-list button > span { min-width: 0; overflow: hidden; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+.predictive-commodity-list button > span small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.predictive-commodity-panel .quality-panel-head > button { border: 0; background: transparent; }
+
+.predictive-tab-panel { display: grid; gap: 14px; }
+.predictive-tab-panel .predictive-layout { grid-template-columns: minmax(0, 1.2fr) minmax(270px, 0.8fr); }
+.predictive-data-warning { padding: 17px; border-left: 4px solid #c27a00 !important; }
+.predictive-data-warning h3 { margin: 0 0 7px; font-size: 16px; }
+.predictive-data-warning p { margin: 0; color: #586b60; font-size: 11px; line-height: 1.55; }
+.data-warning-label { display: block; margin-top: 2px; color: #a15f00; font-size: 8px; font-weight: 800; white-space: nowrap; }
+.predictive-actions-view { grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr); align-items: start; }
+.predictive-action-card.expanded { min-height: 100%; }
+
+@media (max-width: 1050px) {
+  .predictive-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .predictive-overview-grid,
+  .predictive-support-grid,
+  .predictive-actions-view { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .predictive-analysis { padding: 12px; }
+  .predictive-kpis { grid-template-columns: 1fr; }
+  .predictive-kpis .stat { min-height: 0; }
+  .predictive-rank-row { grid-template-columns: 26px minmax(0, 1fr) 28px 54px; }
+  .predictive-rank-row .predictive-risk-track { grid-column: 2 / -1; grid-row: 2; }
+  .predictive-tab-panel .predictive-layout { grid-template-columns: 1fr; }
+  .predictive-tabs { margin-right: -12px; margin-left: -12px; }
+}
+
 .quality-compact-workspace {
   margin-top: 16px;
   padding: 16px;
@@ -5833,6 +6026,24 @@ td.neutral {
   font-size: 10px;
 }
 
+.copilot-launcher-compact {
+  width: 46px;
+  overflow: hidden;
+  gap: 0;
+  padding: 10px;
+  white-space: nowrap;
+  color: transparent;
+  transition: width 160ms ease, gap 160ms ease, padding 160ms ease, color 160ms ease;
+}
+
+.copilot-launcher-compact:hover,
+.copilot-launcher-compact:focus-visible {
+  width: auto;
+  gap: 9px;
+  padding: 10px 15px;
+  color: #fff;
+}
+
 .copilot-backdrop {
   position: fixed;
   z-index: 80;
@@ -5953,4 +6164,21 @@ td.neutral {
   .copilot-head h2 { font-size: 21px; }
   .copilot-form { grid-template-columns: 1fr; }
   .copilot-form button { width: 100%; }
+}
+
+.copilot-launcher.copilot-launcher-compact {
+  width: 46px;
+  overflow: hidden;
+  gap: 0;
+  padding: 10px;
+  white-space: nowrap;
+  color: transparent;
+}
+
+.copilot-launcher.copilot-launcher-compact:hover,
+.copilot-launcher.copilot-launcher-compact:focus-visible {
+  width: auto;
+  gap: 9px;
+  padding: 10px 15px;
+  color: #fff;
 }
