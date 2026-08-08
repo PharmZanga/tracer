@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { fitForecast, reorderRecommendation } from "../src/forecasting.js";
 
 test("uses Holt linear when fewer than two seasonal cycles exist", () => {
@@ -26,4 +27,12 @@ test("turns the demand forecast into a buffered reorder recommendation", () => {
   const recommendation = reorderRecommendation(forecast, 50, 1.5, 1.15);
   assert.ok(recommendation.reorderPoint > recommendation.demandDuringLeadTime);
   assert.equal(recommendation.recommendedOrderQty, Math.max(0, recommendation.reorderPoint - 50));
+});
+
+test("makes the active forecasting engine obvious on the tracer landing view", () => {
+  const app = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+  assert.match(app, /FORECAST ENGINE ACTIVE/);
+  assert.match(app, /Optimized forecasting is live in Tracer/);
+  assert.match(app, /Open forecast warning register/);
+  assert.match(app, /setPredictiveTab\("commodities"\)/);
 });
