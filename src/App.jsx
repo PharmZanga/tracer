@@ -3758,6 +3758,23 @@ function App() {
             </div>
           </div>
 
+          <section className="predictive-model-banner" aria-label="Live predictive forecasting status">
+            <div className="predictive-model-banner-head">
+              <div>
+                <span>FORECAST ENGINE ACTIVE</span>
+                <h3>Optimized forecasting is live in Tracer</h3>
+                <p>Weekly AMC history now drives projected MOS, six-week demand forecasts, 95% uncertainty intervals and buffered reorder recommendations. Current facility evidence is blended with model risk to surface earlier warnings.</p>
+              </div>
+              <button type="button" onClick={() => setPredictiveTab("commodities")}>Open forecast warning register</button>
+            </div>
+            <div className="predictive-model-banner-metrics">
+              <article><span>Commodities modelled</span><strong>{predictiveModelSummary.modelled.toLocaleString()}</strong><small>Holt trend and seasonal models</small></article>
+              <article><span>Seasonal fits</span><strong>{predictiveModelSummary.seasonal.toLocaleString()}</strong><small>Six-week Holt-Winters cycle</small></article>
+              <article><span>Median model MAPE</span><strong>{predictiveModelSummary.medianMape === null ? "-" : `${predictiveModelSummary.medianMape.toFixed(1)}%`}</strong><small>Forecast error diagnostic</small></article>
+              <article><span>Recommended units</span><strong>{Math.round(predictiveModelSummary.reorderUnits).toLocaleString()}</strong><small>Before confirmed pipeline</small></article>
+            </div>
+          </section>
+
           <div className="predictive-tabs" role="tablist" aria-label="Predictive analysis views">
             {[
               ["overview", "Risk overview"],
