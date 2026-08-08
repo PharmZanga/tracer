@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
+import { fitForecast, reorderRecommendation } from "./forecasting.js";
 
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary" },
@@ -887,7 +888,13 @@ function buildCommodityForecast(periods, filters) {
     const lowStockRate = impact.rows ? impact.lowStock / impact.rows : 0;
     const riskRate = impact.rows ? (impact.stockout + impact.emergency + impact.lowStock) / impact.rows : 0;
     const historicalRisk = recent.reduce((total, row) => total + row.riskRows / row.rows, 0) / recent.length;
-    const likelihood = Math.min(1, stockoutRate * 0.46 + riskRate * 0.32 + historicalRisk * 0.22);
+    const demandForecast = fitForecast(history.map((row) => row.amc), { horizon: 6, seasonalPeriod: 6 });
+    const nextDemand = demandForecast.forecast[0] ?? current.amc ?? 0;
+    const projectedMos = nextDemand > 0 ? (current.quantity || 0) / nextDemand : current.mos || 0;
+    const modelRisk = projectedMos <= 0 ? 1 : projectedMos <= 0.5 ? 0.85 : projectedMos < 2 ? 0.65 : projectedMos <= 4 ? 0.25 : 0.1;
+    const currentRiskScore = stockoutRate * 0.46 + riskRate * 0.32 + historicalRisk * 0.22;
+    const likelihood = Math.min(1, currentRiskScore * 0.65 + modelRisk * 0.35);
+    const reorder = reorderRecommendation(demandForecast, current.quantity || 0, 1.5, 1.15);
     return {
       name: current.name,
       programme: current.programme || "Tracer commodity",
@@ -902,6 +909,17 @@ function buildCommodityForecast(periods, filters) {
       affectedFacilities: impact?.facilities.size || 0,
       affectedProvinces: impact?.provinces.size || 0,
       horizon: forecastHorizon(likelihood),
+      projectedMos,
+      forecastMethod: demandForecast.method,
+      forecastDemand: nextDemand,
+      forecastLower95: demandForecast.lower95[0] ?? null,
+      forecastUpper95: demandForecast.upper95[0] ?? null,
+      forecastRmse: demandForecast.rmse,
+      forecastMape: demandForecast.mape,
+      forecastParams: demandForecast.params,
+      forecastSeasonalPeriod: demandForecast.seasonalPeriod,
+      reorderPoint: reorder.reorderPoint,
+      recommendedOrderQty: reorder.recommendedOrderQty,
     };
   }).filter(Boolean).sort((a, b) => b.likelihood - a.likelihood || b.stockoutRate - a.stockoutRate || a.name.localeCompare(b.name));
 }
@@ -1676,6 +1694,17 @@ function App() {
     facility: selectedFacility,
   };
   const predictiveCommodityRows = useMemo(() => buildCommodityForecast(predictiveHistoryPeriods, predictiveFilters), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const predictiveModelSummary = useMemo(() => {
+    const errors = predictiveCommodityRows.map((row) => row.forecastMape).filter(Number.isFinite).sort((a, b) => a - b);
+    const middle = Math.floor(errors.length / 2);
+    const medianMape = errors.length ? (errors.length % 2 ? errors[middle] : (errors[middle - 1] + errors[middle]) / 2) : null;
+    return {
+      modelled: predictiveCommodityRows.filter((row) => Number.isFinite(row.forecastDemand)).length,
+      seasonal: predictiveCommodityRows.filter((row) => row.forecastMethod === "holt_winters_additive").length,
+      medianMape,
+      reorderUnits: predictiveCommodityRows.reduce((sum, row) => sum + (row.recommendedOrderQty || 0), 0),
+    };
+  }, [predictiveCommodityRows]);
   const predictiveCommodityTopFive = predictiveCommodityRows.filter((row) => row.affectedFacilities > 0).slice(0, 5);
   const predictiveThreatRows = useMemo(() => {
     const search = predictiveCommodityQuery.trim().toLowerCase();
@@ -3724,7 +3753,7 @@ function App() {
             <div>
               <p className="eyebrow dark">Predictive analysis</p>
               <h2>Stockout risk overview</h2>
-              <p>Prioritisation scores from submitted tracer stock history. Validate physical stock before action.</p>
+              <p>Optimized Holt/Holt-Winters demand forecasts combined with submitted stockout evidence. Validate physical stock before action.</p>
               <small>Cut-off: {fieldData.reportDate} · {predictiveHistoryPeriods.length} reporting weeks analysed</small>
             </div>
           </div>
@@ -3747,7 +3776,7 @@ function App() {
               <KpiCard label="Facilities requiring attention" value={predictiveImpact.current.toLocaleString()} sub="Stockout or low-stock alert" tone={predictiveImpact.current ? "amber" : "green"} />
             </div>
 
-            <div className="predictive-insight-strip"><b>Current outlook:</b> National priority score is {formatPercent(predictiveAverageLikelihood)} ({forecastRiskLabel(predictiveAverageLikelihood).toLowerCase()}). {predictiveTopProvince ? `${shortProvinceName(predictiveTopProvince.province)} ranks highest at ${formatPercent(predictiveTopProvince.likelihood)}.` : "No province ranking is available."} {predictiveWorseningCount} province{predictiveWorseningCount === 1 ? " has" : "s have"} a worsening pattern. {predictiveTopTransfer ? "One immediate redistribution opportunity is highlighted." : "No same-province redistribution opportunity is currently identified."}</div>
+            <div className="predictive-insight-strip"><b>Current outlook:</b> National priority score is {formatPercent(predictiveAverageLikelihood)} ({forecastRiskLabel(predictiveAverageLikelihood).toLowerCase()}). {predictiveTopProvince ? `${shortProvinceName(predictiveTopProvince.province)} ranks highest at ${formatPercent(predictiveTopProvince.likelihood)}.` : "No province ranking is available."} {predictiveWorseningCount} province{predictiveWorseningCount === 1 ? " has" : "s have"} a worsening pattern. Holt models cover {predictiveModelSummary.modelled} commodities; {predictiveModelSummary.seasonal} use an identified six-week seasonal cycle. {predictiveTopTransfer ? "One immediate redistribution opportunity is highlighted." : "No same-province redistribution opportunity is currently identified."}</div>
 
             <div className="predictive-overview-grid">
               <div className="quality-panel predictive-ranking-panel">
@@ -3800,8 +3829,8 @@ function App() {
           {predictiveTab === "evidence" && <div className="predictive-tab-panel">
             <div className="predictive-layout">
               <div className="quality-panel predictive-method-panel">
-                <div className="quality-panel-head"><div><h3>Priority-score signals</h3><p>The score is a transparent prioritisation measure, not a clinical forecast.</p></div></div>
-                <div className="predictive-method-list"><div><b>42%</b><span>Latest stockout rate</span></div><div><b>24%</b><span>Latest total risk below 2 MOS</span></div><div><b>18%</b><span>Recent four-report risk pattern</span></div><div><b>8%</b><span>Emergency pressure at or below 0.5 MOS</span></div><div><b>8%</b><span>Worsening stockout trend</span></div></div>
+                <div className="quality-panel-head"><div><h3>Optimized forecasting model</h3><p>Parameters are selected per commodity by minimizing in-sample squared error.</p></div></div>
+                <div className="predictive-method-list"><div><b>{predictiveModelSummary.modelled}</b><span>Commodities modelled</span></div><div><b>{predictiveModelSummary.seasonal}</b><span>Holt-Winters seasonal fits</span></div><div><b>{predictiveModelSummary.medianMape === null ? "-" : `${predictiveModelSummary.medianMape.toFixed(1)}%`}</b><span>Median MAPE</span></div><div><b>95%</b><span>Residual-based prediction interval</span></div><div><b>{Math.round(predictiveModelSummary.reorderUnits).toLocaleString()}</b><span>Aggregate recommended units</span></div></div>
               </div>
               <div className="quality-panel predictive-data-warning"><h3>Data quality treatment</h3><p>MOS is calculated from submitted commodity rows and capped at 12 months for display. Zero or extremely low AMC can produce implausible uncapped values, so these should be validated at source.</p></div>
             </div>
@@ -3842,9 +3871,9 @@ function App() {
 
             <div className="table-panel predictive-threat-table">
               <div className="table-headline"><div><h2>Commodity risk register</h2><p>Use the commodity name to open facility-level evidence in Commodity Intelligence.</p></div></div>
-              <div className="table-scroll"><table><thead><tr><th>Rank</th><th>Commodity</th><th>Programme</th><th>Priority score</th><th>Risk band</th><th>Stockout</th><th>Emergency</th><th>Low stock</th><th>Average MOS</th><th>Facilities affected</th><th>Provinces affected</th><th>Likely timeframe</th><th></th></tr></thead><tbody>
-                {predictiveThreatPageRows.map((row, index) => <tr key={row.name}><td>{((Math.min(predictiveCommodityPage, predictiveThreatPages) - 1) * predictiveThreatPageSize) + index + 1}</td><td><strong>{row.name}</strong></td><td>{row.programme}</td><td><span className={`comparison-signal ${row.tone}`}>{formatPercent(row.likelihood)}</span></td><td>{row.label}</td><td>{formatPercent(row.stockoutRate)}</td><td>{formatPercent(row.emergencyRate)}</td><td>{formatPercent(row.lowStockRate)}</td><td>{formatMos(row.mos)}</td><td>{row.affectedFacilities}</td><td>{row.affectedProvinces}</td><td>{row.horizon}</td><td><button type="button" className="table-link" onClick={() => { setSelectedCommodity(row.name); setQuery(row.name); setActivePage("commodities"); }}>View details</button></td></tr>)}
-                {!predictiveThreatPageRows.length && <tr><td colSpan="13">No commodities match the selected threat filter.</td></tr>}
+              <div className="table-scroll"><table><thead><tr><th>Rank</th><th>Commodity</th><th>Programme</th><th>Priority score</th><th>Risk band</th><th>Stockout</th><th>Current MOS</th><th>Projected MOS</th><th>Forecast AMC</th><th>95% interval</th><th>Model</th><th>Recommended order</th><th>Facilities affected</th><th>Likely timeframe</th><th></th></tr></thead><tbody>
+                {predictiveThreatPageRows.map((row, index) => <tr key={row.name}><td>{((Math.min(predictiveCommodityPage, predictiveThreatPages) - 1) * predictiveThreatPageSize) + index + 1}</td><td><strong>{row.name}</strong></td><td>{row.programme}</td><td><span className={`comparison-signal ${row.tone}`}>{formatPercent(row.likelihood)}</span></td><td>{row.label}</td><td>{formatPercent(row.stockoutRate)}</td><td>{formatMos(row.mos)}</td><td>{formatMos(row.projectedMos)}</td><td>{Math.round(row.forecastDemand || 0).toLocaleString()}</td><td>{Math.round(row.forecastLower95 || 0).toLocaleString()}–{Math.round(row.forecastUpper95 || 0).toLocaleString()}</td><td>{row.forecastMethod === "holt_winters_additive" ? "Holt-Winters" : "Holt linear"}<small className="data-warning-label">MAPE {Number.isFinite(row.forecastMape) ? `${row.forecastMape.toFixed(1)}%` : "-"}</small></td><td>{Math.round(row.recommendedOrderQty || 0).toLocaleString()}</td><td>{row.affectedFacilities}</td><td>{row.horizon}</td><td><button type="button" className="table-link" onClick={() => { setSelectedCommodity(row.name); setQuery(row.name); setActivePage("commodities"); }}>View details</button></td></tr>)}
+                {!predictiveThreatPageRows.length && <tr><td colSpan="15">No commodities match the selected threat filter.</td></tr>}
               </tbody></table></div>
               <div className="predictive-pagination"><button type="button" disabled={predictiveCommodityPage <= 1} onClick={() => setPredictiveCommodityPage((page) => Math.max(1, page - 1))}>Previous</button><span>Page {Math.min(predictiveCommodityPage, predictiveThreatPages)} of {predictiveThreatPages}</span><button type="button" disabled={predictiveCommodityPage >= predictiveThreatPages} onClick={() => setPredictiveCommodityPage((page) => Math.min(predictiveThreatPages, page + 1))}>Next</button></div>
             </div>
