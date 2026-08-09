@@ -73,6 +73,15 @@ SOURCES = [
             {"sheet": "LAB JULY17", "date": "2026-07-17", "label": "17 July 2026", "stream": "LAB"},
         ],
     },
+    {
+        "file": ROOT / "july" / "Stock position 24-31 july.xlsx",
+        "periods": [
+            {"sheet": "EMMS 24 JULY", "date": "2026-07-24", "label": "24 July 2026", "stream": "EMMS"},
+            {"sheet": "LAB- July 24", "date": "2026-07-24", "label": "24 July 2026", "stream": "LAB"},
+            {"sheet": "31 July", "date": "2026-07-31", "label": "31 July 2026", "stream": "EMMS"},
+            {"sheet": "LAB July31", "date": "2026-07-31", "label": "31 July 2026", "stream": "LAB"},
+        ],
+    },
 ]
 
 
@@ -169,20 +178,10 @@ def parse_sheet(ws, config, source_name):
     end_row = len(rows)
     categories = []
     items = []
-    current_category = None
-    blank_streak = 0
 
     for row in range(start_row, end_row + 1):
         category_name = clean(matrix_cell(rows, row, category_layout["name_col"]))
         category_availability = num(matrix_cell(rows, row, category_layout["availability_col"]))
-        item_index = matrix_cell(rows, row, item_layout["index_col"])
-        item_name = clean(matrix_cell(rows, row, item_layout["name_col"]))
-        item_availability = num(matrix_cell(rows, row, item_layout["availability_col"]))
-
-        has_data = any(value not in (None, "") for value in (category_name, category_availability, item_index, item_name, item_availability))
-        blank_streak = 0 if has_data else blank_streak + 1
-        if blank_streak > 30:
-            break
 
         if category_name and category_availability is not None and header_text(category_name) not in {"product category", "category"}:
             categories.append({
@@ -190,18 +189,28 @@ def parse_sheet(ws, config, source_name):
                 "availability": round(pct(category_availability), 4),
             })
 
+    categories = dedupe_rows(categories, "name")
+    category_lookup = {header_text(category["name"]): category["name"] for category in categories}
+    current_category = None
+    for row in range(start_row, end_row + 1):
+        item_index = matrix_cell(rows, row, item_layout["index_col"])
+        item_name = clean(matrix_cell(rows, row, item_layout["name_col"]))
+        item_availability = num(matrix_cell(rows, row, item_layout["availability_col"]))
+
         if item_name and item_availability is not None:
-            if is_item_index(item_index):
+            normalized_name = header_text(item_name)
+            if normalized_name in category_lookup:
+                current_category = category_lookup[normalized_name]
+            elif is_item_index(item_index):
                 items.append({
                     "category": current_category or "Uncategorised",
                     "name": item_name,
                     "availability": round(pct(item_availability), 4),
                     "status": "Available" if pct(item_availability) > 0 else "Stockout",
                 })
-            elif header_text(item_name) not in {"category"}:
+            elif normalized_name not in {"category"}:
                 current_category = item_name
 
-    categories = dedupe_rows(categories, "name")
     items = dedupe_rows(items, "name")
     categories.sort(key=lambda item: (item["availability"], item["name"]))
     items.sort(key=lambda item: (item["availability"], item["category"], item["name"]))
