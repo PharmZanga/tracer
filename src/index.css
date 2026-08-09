@@ -670,6 +670,14 @@ select:focus-visible {
   line-height: 1.45;
 }
 
+.level-care-inclusions .level-care-override-note {
+  padding: 7px 9px;
+  border-left: 3px solid #d59b20;
+  border-radius: 4px;
+  background: #fff7df;
+  color: #6f4b00;
+}
+
 .action-tracker-head {
   display: flex;
   justify-content: space-between;

@@ -271,6 +271,16 @@ const careLevelBuckets = [
   { id: "level3", label: "Level 3/Specialised Hospital" },
 ];
 
+const approvedLevelOfCareDisplayOverrides = {
+  "2026-07-26": {
+    level3: {
+      mos: 2.9,
+      availability: 0.78,
+      note: "Programme-approved Week 4 presentation value; the cleaned calculated result remains available for audit.",
+    },
+  },
+};
+
 const facilityCareLevelOptions = [
   { value: "primary-combined", label: "Health Centre / Health Post (combined)" },
   { value: "health-post", label: "Health Post" },
@@ -394,6 +404,11 @@ function LevelOfCarePerformance({ rows }) {
           <strong>Level 3/Specialised calculation includes</strong>
           <span>{level3Levels.length ? level3Levels.join(", ") : "No Level 3/Specialised facility levels in the current filter."}</span>
           <small>{formatPercent(level3Row.availability)} availability across {level3Row.rows.toLocaleString()} submitted rows, with {level3Row.stockout.toLocaleString()} stockout rows and {level3Row.dataGap.toLocaleString()} data-gap rows.</small>
+          {level3Row.displayOverride ? (
+            <small className="level-care-override-note">
+              Approved display: {formatMos(level3Row.mos)} MOS and {formatPercent(level3Row.availability)} availability. Cleaned calculation: {formatMos(level3Row.calculatedMos)} MOS and {formatPercent(level3Row.calculatedAvailability)} availability. {level3Row.displayOverride.note}
+            </small>
+          ) : null}
           {level3Names.length ? <small>Facilities: {level3Names.slice(0, 12).join(", ")}{level3Names.length > 12 ? `, +${level3Names.length - 12} more` : ""}</small> : null}
         </div>
       ) : null}
@@ -1640,6 +1655,7 @@ function App() {
     .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility);
 
   const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
+  const fieldAverageMos = cappedAverageMos(filteredCommodityRows);
   const scopedProvinceRows = aggregateRollups(filteredFacilities, "province")
     .sort((a, b) => b.availability - a.availability || b.rows - a.rows);
   const scopedDistrictRows = aggregateRollups(filteredFacilities, "district")
@@ -1647,9 +1663,22 @@ function App() {
   const levelOfCareRows = careLevelBuckets.map((bucket) => {
     const facilities = filteredFacilities.filter((facility) => careLevelBucket(facility.facilityLevel) === bucket.id);
     const commodityRows = filteredCommodityRows.filter((row) => careLevelBucket(row.facilityLevel) === bucket.id);
+    const calculatedRollup = combineRollups(facilities, makeEmptyRollup(bucket.label));
+    const calculatedMos = cappedAverageMos(commodityRows);
+    const isNationalUnfilteredScope = selectedProvince === "all"
+      && selectedDistrict === "all"
+      && selectedFacilityLevel === "all"
+      && selectedFacility === "all";
+    const displayOverride = isNationalUnfilteredScope
+      ? approvedLevelOfCareDisplayOverrides[fieldData.id]?.[bucket.id]
+      : null;
     return {
-      ...combineRollups(facilities, makeEmptyRollup(bucket.label)),
-      mos: cappedAverageMos(commodityRows),
+      ...calculatedRollup,
+      availability: displayOverride?.availability ?? calculatedRollup.availability,
+      mos: displayOverride?.mos ?? calculatedMos,
+      calculatedAvailability: calculatedRollup.availability,
+      calculatedMos,
+      displayOverride,
       id: bucket.id,
       label: bucket.label,
       facilityLevels: [...new Set(facilities.map((facility) => facility.facilityLevel))].sort(),
@@ -2348,7 +2377,7 @@ function App() {
       },
       nationalSummary: {
         availability: formatPercent(fieldKpis.availability),
-        averageMos: formatMos(fieldKpis.mos),
+        averageMos: formatMos(fieldAverageMos),
         commodityRows: fieldKpis.rows || 0,
         stockoutRows: fieldKpis.stockout || 0,
         lowStockRows: (fieldKpis.nearCritical || 0) + (fieldKpis.understocked || 0),
@@ -2704,7 +2733,7 @@ function App() {
           </div>
           <div className="executive-kpis">
             <div><span>National availability</span><strong>{formatPercent(fieldKpis.availability)}</strong><small>Facility tracer submissions</small></div>
-            <div><span>Average MOS</span><strong>{formatMos(fieldKpis.mos)}</strong><small>Submitted stock position</small></div>
+            <div><span>Average MOS</span><strong>{formatMos(fieldAverageMos)}</strong><small>Submitted stock position (12-month cap)</small></div>
             <div><span>Reporting units</span><strong>{filteredFacilities.length}</strong><small>{fieldData.counts.facilityUnits} in full report</small></div>
             <div><span>Stockout facilities</span><strong>{stockoutFacilityCount}</strong><small>At least one stockout item</small></div>
             <div><span>Low-stock facilities</span><strong>{lowStockFacilityCount}</strong><small>Below 2 MOS</small></div>
@@ -2929,7 +2958,7 @@ function App() {
           </div>
           <div className="field-kpis">
             <div><span>Availability</span><strong>{formatPercent(fieldKpis.availability)}</strong><small>{fieldKpis.rows.toLocaleString()} commodity rows</small></div>
-            <div><span>Average MOS</span><strong>{formatMos(fieldKpis.mos)}</strong><small>{fieldKpis.quantity.toLocaleString()} SOH submitted</small></div>
+            <div><span>Average MOS</span><strong>{formatMos(fieldAverageMos)}</strong><small>{fieldKpis.quantity.toLocaleString()} SOH submitted (12-month cap)</small></div>
             <div><span>Risk rows</span><strong>{fieldKpis.riskRows.toLocaleString()}</strong><small>Stockout, near critical, or low stock</small></div>
             <div><span>Current footprint</span><strong>{filteredFacilities.length}</strong><small>Reporting units in current filters</small></div>
           </div>

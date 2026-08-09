@@ -7,6 +7,9 @@ from pathlib import Path
 import openpyxl
 
 
+JULY_WEEK4_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\DASH BOARD IDEAS\hospital dash board\tracer\outputs\july-week-4-cleaned-intake\JULY-WEEK-4-2026-CLEANED-TRACER-INTAKE.xlsx")
+
+
 WORKBOOKS = [
     {
         "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\feb\TRACER SUMMARY REPORTS  JANUARY 2026 (3).xlsx"),
@@ -217,19 +220,9 @@ WORKBOOKS = [
         "week": "Week 3",
     },
     {
-        "rawSources": [
-            {"province": "COPPERBELT PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\24.7.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES (1).xlsx")},
-            {"province": "MUCHINGA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\25.7.26 MUCHINGA 2026 TRACER WEEKLY REPORT.xlsx")},
-            {"province": "EASTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\25th July EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (32).xlsx")},
-            {"province": "NORTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26.07.26 NORTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx")},
-            {"province": "CENTRAL PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26_7_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx")},
-            {"province": "NORTH-WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26-07-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx")},
-            {"province": "WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\26-07-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT.xlsx")},
-            {"province": "LUAPULA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT 25 7 26.xlsx")},
-            {"province": "LUSAKA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-24.07.2026.xlsx")},
-            {"province": "SOUTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\july\week 4\SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 24.07.26 (.xlsx")},
-        ],
-        "source": "July Week 4 provincial raw submissions",
+        "path": JULY_WEEK4_CLEAN_WORKBOOK,
+        "sheet": "SUMMARY SHEET",
+        "source": "Approved cleaned July Week 4 tracer intake",
         "reportDate": "2026-07-26",
         "label": "Week 4 - 26 July 2026",
         "month": "2026-07",
@@ -252,6 +245,17 @@ RAW_AVAILABILITY_SOURCES = [
 # altered or its saved formula result is not the approved reporting value.
 AUTHORITATIVE_AVAILABILITY_OVERRIDES = {
     ("2026-07-26", "CENTRAL PROVINCE", "KABWE", "LEVEL 3 HOSPITAL", "kabwe central hospital"): 0.70,
+}
+
+# Confirmed programme-team non-submissions. These level-of-care rows must not
+# be interpreted as zero stock because no tracer was submitted.
+CONFIRMED_NON_SUBMITTED_LEVELS = {
+    ("2026-07-26", "MUCHINGA PROVINCE", "LAVUSHIMANDA", "HEALTH CENTRE"),
+    ("2026-07-26", "MUCHINGA PROVINCE", "LAVUSHIMANDA", "HEALTH POST"),
+    ("2026-07-26", "MUCHINGA PROVINCE", "LAVUSHIMANDA", "PRIMARY CARE - NOT SPECIFIED"),
+    ("2026-07-26", "MUCHINGA PROVINCE", "NAKONDE", "HEALTH CENTRE"),
+    ("2026-07-26", "MUCHINGA PROVINCE", "NAKONDE", "HEALTH POST"),
+    ("2026-07-26", "MUCHINGA PROVINCE", "NAKONDE", "PRIMARY CARE - NOT SPECIFIED"),
 }
 
 # Provincial Week 4 submissions provide the verified facility-to-district
@@ -948,12 +952,12 @@ def clean_facility_level(level, corrected_level):
     return canonical_facility_level(corrected_value(corrected_level, level))
 
 
-def load_clean_workbook_configs():
-    wb = openpyxl.load_workbook(CLEAN_DATA_WORKBOOK, read_only=True, data_only=True)
-    ws = wb[CLEAN_DATA_SHEET]
+def load_clean_workbook_configs(workbook_path=CLEAN_DATA_WORKBOOK, sheet_name=CLEAN_DATA_SHEET, source_label=None):
+    wb = openpyxl.load_workbook(workbook_path, read_only=True, data_only=True)
+    ws = wb[sheet_name]
     rows_by_date = defaultdict(list)
     date_values = {}
-    source = CLEAN_DATA_WORKBOOK.name
+    source = source_label or workbook_path.name
 
     for values in ws.iter_rows(min_row=2, values_only=True):
         if not any(values):
@@ -1103,6 +1107,9 @@ def summarize(config):
         if identity is None:
             continue
         province, district, facility_level, facility = identity
+        row_report_date = config.get("reportDate") or date_id(row.get("DATE"))
+        if (row_report_date, province, district, facility_level) in CONFIRMED_NON_SUBMITTED_LEVELS:
+            continue
         if facility_level in {"NATIONAL HEART HOSPITAL", "WOMEN AND NEWBORN HOSPITAL"} and province != "LUSAKA PROVINCE":
             continue
         item = clean(row.get("DESCRIPTION OF ITEM")) or "Unknown commodity"
@@ -1473,12 +1480,19 @@ def main():
     for config in load_clean_workbook_configs():
         config["availabilityOverrides"] = availability_overrides
         configs.append(config)
+    for config in load_clean_workbook_configs(
+        JULY_WEEK4_CLEAN_WORKBOOK,
+        "SUMMARY SHEET",
+        "Approved cleaned July Week 4 tracer intake",
+    ):
+        config["availabilityOverrides"] = availability_overrides
+        configs.append(config)
     clean_period_ids = {config["reportDate"] for config in configs}
     # Retain the clean master as the source of record for its existing dates,
     # then add provincial submissions only for new reporting periods not yet
     # present in that master workbook.
     for config in WORKBOOKS:
-        if config.get("rawSources") and config["reportDate"] not in clean_period_ids:
+        if (config.get("rawSources") or config.get("reportDate") == "2026-07-26") and config["reportDate"] not in clean_period_ids:
             config = dict(config)
             config["availabilityOverrides"] = availability_overrides
             configs.append(config)
@@ -1494,6 +1508,10 @@ def main():
         for period in periods
         for facility in period["facilities"]
         if facility["district"] != "UNKNOWN"
+        and not (
+            period["id"] == "2026-07-26"
+            and facility["facilityLevel"] == "PRIMARY CARE - NOT SPECIFIED"
+        )
     }
     build_reporting_quality(periods, expected_districts, expected_facilities)
     # Keep each generated module below GitHub's 100 MB file limit while
