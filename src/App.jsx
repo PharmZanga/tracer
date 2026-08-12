@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
+import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName } from "./commodityNormalization.js";
 
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary" },
@@ -82,12 +83,12 @@ function commodityRowsFromPeriod(period) {
     district: districts[district],
     facilityLevel: levels[level],
     facility: facilities[facility],
-    item: items[item],
+    item: canonicalCommodityName(items[item]),
     programme: programmes[programme],
     quantity: Number(quantity || 0),
     amc: Number(amc || 0),
     mos: Number.isFinite(Number(mos)) ? Number(mos) : null,
-  }));
+  })).filter((row) => isCommodityName(row.item));
 }
 
 function commodityGroupRows(rows, key) {
@@ -109,6 +110,31 @@ function commodityGroupRows(rows, key) {
   })).sort((a, b) => a.availability - b.availability || a.name.localeCompare(b.name));
 }
 
+function collapseCommodityFacilityRows(rows, commodity) {
+  if (!commodity) return [];
+  const grouped = new Map();
+  rows.filter((row) => row.item === commodity).forEach((row) => {
+    const key = `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}`;
+    const current = grouped.get(key) || { ...row, quantity: 0, amc: 0, mosValues: [] };
+    current.quantity += row.quantity || 0;
+    current.amc += row.amc || 0;
+    if (row.mos !== null) current.mosValues.push(row.mos);
+    grouped.set(key, current);
+  });
+  return [...grouped.values()].map((row) => ({
+    ...row,
+    mos: row.amc > 0 ? row.quantity / row.amc : (row.mosValues.length ? row.mosValues.reduce((sum, value) => sum + value, 0) / row.mosValues.length : null),
+    reportingStatus: "Reported",
+  }));
+}
+
+function matchesCommodityStatus(row, filter) {
+  if (filter === "all") return true;
+  if (filter === "Available") return row.quantity > 0;
+  if (filter === "Overstocked / excess") return ["Overstocked", "Excess stock"].includes(commodityStockStatus(row.mos));
+  return commodityStockStatus(row.mos) === filter;
+}
+
 function compareText(a, b) {
   return String(a ?? "").localeCompare(String(b ?? ""));
 }
@@ -120,6 +146,22 @@ function formatPercent(value) {
 function formatMos(value) {
   if (value === null || value === undefined || Number.isNaN(value)) return "-";
   return Number(value).toFixed(1);
+}
+
+function MosSparkline({ values = [] }) {
+  const submitted = values.filter((row) => Number.isFinite(row.mos));
+  if (!submitted.length) return <span className="mos-sparkline-empty">No history</span>;
+  const scale = Math.max(4, Math.min(12, Math.ceil(Math.max(...submitted.map((row) => row.mos)))));
+  const points = values.map((row, index) => {
+    if (!Number.isFinite(row.mos)) return null;
+    const x = values.length > 1 ? (index / (values.length - 1)) * 76 + 2 : 40;
+    const y = 25 - (Math.min(row.mos, scale) / scale) * 21;
+    return { x, y, ...row };
+  }).filter(Boolean);
+  const latest = points.at(-1);
+  const tone = commodityStatusTone(commodityStockStatus(latest?.mos));
+  const label = values.map((row) => `${row.label}: ${Number.isFinite(row.mos) ? `${formatMos(row.mos)} MOS` : "not submitted"}`).join(", ");
+  return <svg className={`mos-sparkline tone-${tone}`} viewBox="0 0 80 28" role="img" aria-label={`Eight-week MOS trend. ${label}`}><line x1="2" y1="25" x2="78" y2="25" /><polyline points={points.map((point) => `${point.x},${point.y}`).join(" ")} />{points.map((point) => <circle cx={point.x} cy={point.y} r={point === latest ? 2.2 : 1.4} key={`${point.x}-${point.label}`} />)}</svg>;
 }
 
 function cappedAverageMos(rows) {
@@ -270,6 +312,9 @@ const careLevelBuckets = [
   { id: "level2", label: "Level 2 Hospital" },
   { id: "level3", label: "Level 3/Specialised Hospital" },
 ];
+
+const initialDashboardParams = new URLSearchParams(window.location.search);
+const initialDashboardParam = (name, fallback = "") => initialDashboardParams.get(name) || fallback;
 
 const approvedLevelOfCareDisplayOverrides = {
   "2026-07-26": {
@@ -651,6 +696,11 @@ function shortPeriodLabel(period) {
 function comparisonRangeLabel(periodType, year, start, end) {
   const lower = String(start) <= String(end) ? start : end;
   const upper = String(start) <= String(end) ? end : start;
+  if (periodType === "weekly") {
+    const lowerLabel = tracerReportingPeriods.find((period) => period.id === lower)?.label || lower;
+    const upperLabel = tracerReportingPeriods.find((period) => period.id === upper)?.label || upper;
+    return lower === upper ? lowerLabel : `${lowerLabel} to ${upperLabel}`;
+  }
   if (periodType === "yearly") return lower === upper ? String(lower) : `${lower} to ${upper}`;
   if (periodType === "quarterly") return lower === upper ? `${lower} ${year}` : `${lower} to ${upper} ${year}`;
   return lower === upper ? monthLabel(lower) : `${monthLabel(lower)} to ${monthLabel(upper)}`;
@@ -688,10 +738,55 @@ function comparisonPeriodInRange(period, periodType, year, start, end) {
   const periodYear = String(period.month || "").slice(0, 4);
   if (periodType === "yearly") return periodYear >= String(start) && periodYear <= String(end);
   if (periodYear !== String(year)) return false;
+  if (periodType === "weekly") {
+    const lower = String(start) <= String(end) ? String(start) : String(end);
+    const upper = String(start) <= String(end) ? String(end) : String(start);
+    return String(period.id) >= lower && String(period.id) <= upper;
+  }
   const value = periodType === "quarterly" ? quarterOfMonth(period.month) : String(period.month);
   const lower = String(start) <= String(end) ? String(start) : String(end);
   const upper = String(start) <= String(end) ? String(end) : String(start);
   return value >= lower && value <= upper;
+}
+
+function commodityComparisonRowsForPeriod(period, filters) {
+  const groups = new Map();
+  commodityRowsFromPeriod(period)
+    .filter((row) => row.item === filters.commodity)
+    .filter((row) => filters.province === "all" || row.province === filters.province)
+    .filter((row) => filters.district === "all" || row.district === filters.district)
+    .filter((row) => matchesFacilityCareLevel(row.facilityLevel, filters.facilityLevel))
+    .filter((row) => filters.program === "all" || row.programme === filters.program)
+    .forEach((row) => {
+      let name = row.item;
+      if (filters.compareBy === "province") name = row.province;
+      if (filters.compareBy === "district") name = row.district;
+      if (filters.compareBy === "program") name = row.programme;
+      if (filters.compareBy === "level") name = careLevelBuckets.find((bucket) => bucket.id === careLevelBucket(row.facilityLevel))?.label || row.facilityLevel;
+      const current = groups.get(name) || { ...makeEmptyRollup(name), name, group: name, available: 0, mosTotal: 0, mosRows: 0 };
+      const status = commodityStockStatus(row.mos);
+      current.rows += 1;
+      current.available += row.quantity > 0 ? 1 : 0;
+      current.stockout += status === "Stocked out" ? 1 : 0;
+      current.nearCritical += status === "Emergency stock" ? 1 : 0;
+      current.understocked += status === "Understocked" ? 1 : 0;
+      current.accordingToPlan += status === "According to plan" ? 1 : 0;
+      current.abovePlan += ["Overstocked", "Excess stock"].includes(status) ? 1 : 0;
+      current.riskRows += ["Stocked out", "Emergency stock", "Understocked"].includes(status) ? 1 : 0;
+      current.quantity += row.quantity || 0;
+      current.amc += row.amc || 0;
+      if (row.mos !== null) {
+        current.mosTotal += row.mos;
+        current.mosRows += 1;
+      }
+      groups.set(name, current);
+    });
+  return [...groups.values()].map((row) => ({
+    ...row,
+    availability: row.rows ? row.available / row.rows : 0,
+    mos: row.amc > 0 ? row.quantity / row.amc : (row.mosRows ? row.mosTotal / row.mosRows : null),
+    stockoutRate: row.rows ? row.stockout / row.rows : 0,
+  }));
 }
 
 function comparisonRowsForPeriod(period, filters) {
@@ -700,6 +795,8 @@ function comparisonRowsForPeriod(period, filters) {
   const facilityLevelFilter = (row) => matchesFacilityCareLevel(row.facilityLevel, filters.facilityLevel);
   const programFilter = (row) => filters.program === "all" || row.name === filters.program || row.programme === filters.program || row.program === filters.program;
   const commodityFilter = (row) => filters.commodity === "all" || row.name === filters.commodity;
+
+  if (filters.commodity !== "all" && period.commodityFacilityData) return commodityComparisonRowsForPeriod(period, filters);
 
   if (filters.compareBy === "province") {
     return (period.provinces || [])
@@ -1379,12 +1476,12 @@ function FacilityTracerModal({ facility, report, onClose }) {
 }
 
 function App() {
-  const [activePage, setActivePage] = useState("executive");
-  const [fieldPeriodId, setFieldPeriodId] = useState(tracerReportingPeriods.at(-1).id);
-  const [selectedProvince, setSelectedProvince] = useState("all");
-  const [selectedDistrict, setSelectedDistrict] = useState("all");
-  const [selectedFacilityLevel, setSelectedFacilityLevel] = useState("all");
-  const [selectedFacility, setSelectedFacility] = useState("all");
+  const [activePage, setActivePage] = useState(() => dashboardPages.some((page) => page.id === initialDashboardParam("page")) ? initialDashboardParam("page") : "executive");
+  const [fieldPeriodId, setFieldPeriodId] = useState(() => tracerReportingPeriods.some((period) => period.id === initialDashboardParam("period")) ? initialDashboardParam("period") : tracerReportingPeriods.at(-1).id);
+  const [selectedProvince, setSelectedProvince] = useState(() => initialDashboardParam("province", "all"));
+  const [selectedDistrict, setSelectedDistrict] = useState(() => initialDashboardParam("district", "all"));
+  const [selectedFacilityLevel, setSelectedFacilityLevel] = useState(() => initialDashboardParam("level", "all"));
+  const [selectedFacility, setSelectedFacility] = useState(() => initialDashboardParam("facility", "all"));
   const [openFacility, setOpenFacility] = useState(null);
   const [stockDate, setStockDate] = useState([...new Set(weeklyStockPeriods.map((period) => period.date))].sort().at(-1) || "");
   const [stockStream, setStockStream] = useState(weeklyStockPeriods.some((period) => period.stream === "EMMS") ? "EMMS" : weeklyStockPeriods.at(-1)?.stream || "LAB");
@@ -1410,19 +1507,26 @@ function App() {
   const [comparisonProgram, setComparisonProgram] = useState("all");
   const [comparisonCompareBy, setComparisonCompareBy] = useState("level");
   const [comparisonMetric, setComparisonMetric] = useState("availability");
-  const [query, setQuery] = useState("");
-  const [selectedCommodity, setSelectedCommodity] = useState("");
+  const [comparisonFocusA, setComparisonFocusA] = useState("");
+  const [comparisonFocusB, setComparisonFocusB] = useState("");
+  const [query, setQuery] = useState(() => canonicalCommodityName(initialDashboardParam("commodity")));
+  const [selectedCommodity, setSelectedCommodity] = useState(() => canonicalCommodityName(initialDashboardParam("commodity")));
   const [commodityOptionPage, setCommodityOptionPage] = useState(1);
-  const [commodityStatusFilter, setCommodityStatusFilter] = useState("all");
-  const [commodityTableProvince, setCommodityTableProvince] = useState("all");
-  const [commodityTableDistrict, setCommodityTableDistrict] = useState("all");
-  const [commodityTableLevel, setCommodityTableLevel] = useState("all");
+  const [commodityListSort, setCommodityListSort] = useState({ key: "stockouts", direction: "desc" });
+  const [commodityAvailabilityThreshold, setCommodityAvailabilityThreshold] = useState("all");
+  const [commodityStatusFilter, setCommodityStatusFilter] = useState(() => initialDashboardParam("stock", "all"));
+  const [commodityTableProvince, setCommodityTableProvince] = useState(() => initialDashboardParam("tableProvince", "all"));
+  const [commodityTableDistrict, setCommodityTableDistrict] = useState(() => initialDashboardParam("tableDistrict", "all"));
+  const [commodityTableLevel, setCommodityTableLevel] = useState(() => initialDashboardParam("tableLevel", "all"));
   const [commodityTableReportingStatus, setCommodityTableReportingStatus] = useState("all");
   const [commodityFacilityQuery, setCommodityFacilityQuery] = useState("");
   const [commoditySort, setCommoditySort] = useState("mos");
   const [commodityPage, setCommodityPage] = useState(1);
   const [commodityPageSize, setCommodityPageSize] = useState(25);
+  const [commodityTrendWindow, setCommodityTrendWindow] = useState(12);
   const [openCommodityFacility, setOpenCommodityFacility] = useState(null);
+  const [commodityMissingOpen, setCommodityMissingOpen] = useState(false);
+  const commodityTableRef = useRef(null);
   const [qualityRangeStart, setQualityRangeStart] = useState("2026-01");
   const [qualityRangeEnd, setQualityRangeEnd] = useState("2026-06");
   const [qualityGranularity, setQualityGranularity] = useState("month");
@@ -1465,6 +1569,23 @@ function App() {
   const [importResult, setImportResult] = useState(null);
   const [importBusy, setImportBusy] = useState("");
   const [importError, setImportError] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set("page", activePage);
+    params.set("period", fieldPeriodId);
+    if (selectedProvince !== "all") params.set("province", selectedProvince);
+    if (selectedDistrict !== "all") params.set("district", selectedDistrict);
+    if (selectedFacilityLevel !== "all") params.set("level", selectedFacilityLevel);
+    if (selectedFacility !== "all") params.set("facility", selectedFacility);
+    if (selectedCommodity) params.set("commodity", selectedCommodity);
+    if (commodityStatusFilter !== "all") params.set("stock", commodityStatusFilter);
+    if (commodityTableProvince !== "all") params.set("tableProvince", commodityTableProvince);
+    if (commodityTableDistrict !== "all") params.set("tableDistrict", commodityTableDistrict);
+    if (commodityTableLevel !== "all") params.set("tableLevel", commodityTableLevel);
+    const nextUrl = `${window.location.pathname}?${params.toString()}${window.location.hash}`;
+    window.history.replaceState(null, "", nextUrl);
+  }, [activePage, fieldPeriodId, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility, selectedCommodity, commodityStatusFilter, commodityTableProvince, commodityTableDistrict, commodityTableLevel]);
 
   useEffect(() => {
     let cancelled = false;
@@ -1798,40 +1919,107 @@ function App() {
     .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
     .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
     .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
-  const commodityOptions = useMemo(() => [...new Set(commodityScopeRows.map((row) => row.item))].filter(Boolean).sort(compareText), [commodityScopeRows]);
+  const commodityPreviousScopeRows = useMemo(() => {
+    const periodIndex = tracerReportingPeriods.findIndex((period) => period.id === fieldPeriodId);
+    const previousPeriod = periodIndex > 0 ? tracerReportingPeriods[periodIndex - 1] : null;
+    if (!previousPeriod) return [];
+    return commodityRowsFromPeriod(previousPeriod)
+      .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
+      .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
+      .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
+      .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility);
+  }, [fieldPeriodId, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const commodityTriageRows = useMemo(() => {
+    const summarise = (rows) => {
+      const groups = new Map();
+      rows.forEach((row) => {
+        if (!row.item) return;
+        const current = groups.get(row.item) || { name: row.item, rows: 0, available: 0, stockouts: 0 };
+        current.rows += 1;
+        current.available += row.quantity > 0 ? 1 : 0;
+        current.stockouts += commodityStockStatus(row.mos) === "Stocked out" ? 1 : 0;
+        groups.set(row.item, current);
+      });
+      return new Map([...groups.entries()].map(([name, row]) => [name, {
+        ...row,
+        availability: row.rows ? row.available / row.rows : 0,
+        stockoutRate: row.rows ? row.stockouts / row.rows : 0,
+      }]));
+    };
+    const current = summarise(commodityScopeRows);
+    const previous = summarise(commodityPreviousScopeRows);
+    return [...current.values()].map((row) => {
+      const previousRow = previous.get(row.name);
+      const trendDelta = previousRow ? row.availability - previousRow.availability : null;
+      return { ...row, previousAvailability: previousRow?.availability ?? null, trendDelta, trend: commodityTrendDirection(trendDelta), tone: commodityRiskTone(row.stockoutRate) };
+    });
+  }, [commodityScopeRows, commodityPreviousScopeRows]);
   const commodityMatches = useMemo(() => {
     const search = query.trim().toLowerCase();
-    return commodityOptions.filter((item) => !search || item.toLowerCase().includes(search));
-  }, [commodityOptions, query]);
+    const threshold = commodityAvailabilityThreshold === "all" ? null : Number(commodityAvailabilityThreshold) / 100;
+    return commodityTriageRows
+      .filter((row) => !search || row.name.toLowerCase().includes(search))
+      .filter((row) => threshold === null || row.availability < threshold)
+      .sort((a, b) => {
+        let result = 0;
+        if (commodityListSort.key === "name") result = compareText(a.name, b.name);
+        if (commodityListSort.key === "availability") result = a.availability - b.availability;
+        if (commodityListSort.key === "stockouts") result = a.stockouts - b.stockouts;
+        if (commodityListSort.key === "trend") result = (a.trendDelta ?? -Infinity) - (b.trendDelta ?? -Infinity);
+        return (commodityListSort.direction === "asc" ? result : -result) || compareText(a.name, b.name);
+      });
+  }, [commodityTriageRows, query, commodityAvailabilityThreshold, commodityListSort]);
   const commodityOptionPageCount = Math.max(1, Math.ceil(commodityMatches.length / 10));
   const visibleCommodityMatches = commodityMatches.slice((Math.min(commodityOptionPage, commodityOptionPageCount) - 1) * 10, Math.min(commodityOptionPage, commodityOptionPageCount) * 10);
-  const selectedCommodityRows = useMemo(() => {
-    if (!selectedCommodity) return [];
-    const grouped = new Map();
-    commodityScopeRows.filter((row) => row.item === selectedCommodity).forEach((row) => {
-      const key = `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}`;
-      const current = grouped.get(key) || { ...row, quantity: 0, amc: 0, mosValues: [] };
-      current.quantity += row.quantity || 0;
-      current.amc += row.amc || 0;
-      if (row.mos !== null) current.mosValues.push(row.mos);
-      grouped.set(key, current);
-    });
-    return [...grouped.values()].map((row) => ({
-      ...row,
-      mos: row.amc > 0 ? row.quantity / row.amc : (row.mosValues.length ? row.mosValues.reduce((sum, value) => sum + value, 0) / row.mosValues.length : null),
-      reportingStatus: "Reported",
-    }));
-  }, [commodityScopeRows, selectedCommodity]);
+  const selectedCommodityRows = useMemo(() => collapseCommodityFacilityRows(commodityScopeRows, selectedCommodity), [commodityScopeRows, selectedCommodity]);
+  const previousSelectedCommodityRows = useMemo(() => collapseCommodityFacilityRows(commodityPreviousScopeRows, selectedCommodity), [commodityPreviousScopeRows, selectedCommodity]);
+  const commodityPreviousPeriod = tracerReportingPeriods[Math.max(0, tracerReportingPeriods.findIndex((period) => period.id === fieldPeriodId) - 1)];
+  const commodityWeekChange = useMemo(() => {
+    if (!selectedCommodity || !previousSelectedCommodityRows.length) return null;
+    const keyFor = (row) => `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}`;
+    const currentByFacility = new Map(selectedCommodityRows.map((row) => [keyFor(row), row]));
+    const previousByFacility = new Map(previousSelectedCommodityRows.map((row) => [keyFor(row), row]));
+    const currentStockouts = new Set([...currentByFacility].filter(([, row]) => commodityStockStatus(row.mos) === "Stocked out").map(([key]) => key));
+    const previousStockouts = new Set([...previousByFacility].filter(([, row]) => commodityStockStatus(row.mos) === "Stocked out").map(([key]) => key));
+    const currentAvailability = selectedCommodityRows.length ? selectedCommodityRows.filter((row) => row.quantity > 0).length / selectedCommodityRows.length : 0;
+    const previousAvailability = previousSelectedCommodityRows.length ? previousSelectedCommodityRows.filter((row) => row.quantity > 0).length / previousSelectedCommodityRows.length : 0;
+    const averageMos = (rows) => rows.length ? rows.reduce((sum, row) => sum + (row.mos || 0), 0) / rows.length : 0;
+    return {
+      newStockouts: [...currentStockouts].filter((key) => !previousStockouts.has(key)).length,
+      resolvedStockouts: [...previousStockouts].filter((key) => !currentStockouts.has(key)).length,
+      netStockouts: currentStockouts.size - previousStockouts.size,
+      availabilityDelta: currentAvailability - previousAvailability,
+      facilityDelta: selectedCommodityRows.length - previousSelectedCommodityRows.length,
+      mosDelta: averageMos(selectedCommodityRows) - averageMos(previousSelectedCommodityRows),
+      previousLabel: commodityPreviousPeriod?.label || "previous week",
+    };
+  }, [selectedCommodityRows, previousSelectedCommodityRows, selectedCommodity, commodityPreviousPeriod]);
   const selectedCommodityProgramme = selectedCommodityRows[0]?.programme || "Not submitted";
-  const commodityStatusCounts = selectedCommodityRows.reduce((counts, row) => {
+  const commodityKpiScopeRows = useMemo(() => selectedCommodityRows
+    .filter((row) => commodityTableProvince === "all" || row.province === commodityTableProvince)
+    .filter((row) => commodityTableDistrict === "all" || row.district === commodityTableDistrict)
+    .filter((row) => commodityTableLevel === "all" || row.facilityLevel === commodityTableLevel)
+    .filter((row) => commodityTableReportingStatus === "all" || row.reportingStatus === commodityTableReportingStatus), [selectedCommodityRows, commodityTableProvince, commodityTableDistrict, commodityTableLevel, commodityTableReportingStatus]);
+  const commodityExpectedFacilities = useMemo(() => filteredFacilities
+    .filter((facility) => commodityTableProvince === "all" || facility.province === commodityTableProvince)
+    .filter((facility) => commodityTableDistrict === "all" || facility.district === commodityTableDistrict)
+    .filter((facility) => commodityTableLevel === "all" || facility.facilityLevel === commodityTableLevel), [filteredFacilities, commodityTableProvince, commodityTableDistrict, commodityTableLevel]);
+  const commodityReportedFacilityKeys = new Set(commodityKpiScopeRows.map((row) => `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}`));
+  const commodityMissingFacilities = commodityExpectedFacilities
+    .filter((facility) => !commodityReportedFacilityKeys.has(`${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}`))
+    .sort((a, b) => compareText(a.province, b.province) || compareText(a.district, b.district) || compareText(a.name, b.name));
+  const commodityReportingRate = commodityExpectedFacilities.length ? commodityKpiScopeRows.length / commodityExpectedFacilities.length : 0;
+  const commodityFilteredSummaryRows = useMemo(() => commodityKpiScopeRows
+    .filter((row) => matchesCommodityStatus(row, commodityStatusFilter)), [commodityKpiScopeRows, commodityStatusFilter]);
+  const commodityStatusCounts = commodityKpiScopeRows.reduce((counts, row) => {
     const status = commodityStockStatus(row.mos);
     counts[status] = (counts[status] || 0) + 1;
     return counts;
   }, {});
-  const commodityAvailableCount = selectedCommodityRows.filter((row) => row.quantity > 0).length;
-  const commodityAverageMos = selectedCommodityRows.length ? selectedCommodityRows.reduce((sum, row) => sum + (row.mos || 0), 0) / selectedCommodityRows.length : 0;
-  const commodityTotalSoh = selectedCommodityRows.reduce((sum, row) => sum + row.quantity, 0);
-  const commodityTotalAmc = selectedCommodityRows.reduce((sum, row) => sum + row.amc, 0);
+  const commodityAvailableCount = commodityFilteredSummaryRows.filter((row) => row.quantity > 0).length;
+  const commodityAverageMos = commodityFilteredSummaryRows.length ? commodityFilteredSummaryRows.reduce((sum, row) => sum + (row.mos || 0), 0) / commodityFilteredSummaryRows.length : 0;
+  const commodityTotalSoh = commodityFilteredSummaryRows.reduce((sum, row) => sum + row.quantity, 0);
+  const commodityTotalAmc = commodityFilteredSummaryRows.reduce((sum, row) => sum + row.amc, 0);
   const commodityTableProvinceOptions = [...new Set(selectedCommodityRows.map((row) => row.province).filter(Boolean))].sort(compareText);
   const commodityTableDistrictOptions = [...new Set(selectedCommodityRows
     .filter((row) => commodityTableProvince === "all" || row.province === commodityTableProvince)
@@ -1842,12 +2030,7 @@ function App() {
     .filter((row) => commodityTableDistrict === "all" || row.district === commodityTableDistrict)
     .map((row) => row.facilityLevel)
     .filter(Boolean))].sort(compareText);
-  const commodityFacilityRows = useMemo(() => selectedCommodityRows
-    .filter((row) => commodityTableProvince === "all" || row.province === commodityTableProvince)
-    .filter((row) => commodityTableDistrict === "all" || row.district === commodityTableDistrict)
-    .filter((row) => commodityTableLevel === "all" || row.facilityLevel === commodityTableLevel)
-    .filter((row) => commodityStatusFilter === "all" || commodityStockStatus(row.mos) === commodityStatusFilter)
-    .filter((row) => commodityTableReportingStatus === "all" || row.reportingStatus === commodityTableReportingStatus)
+  const commodityFacilityRows = useMemo(() => commodityFilteredSummaryRows
     .filter((row) => !commodityFacilityQuery.trim() || `${row.facility} ${row.district} ${row.province}`.toLowerCase().includes(commodityFacilityQuery.trim().toLowerCase()))
     .sort((a, b) => {
       if (commoditySort === "facility") return compareText(a.facility, b.facility);
@@ -1855,7 +2038,7 @@ function App() {
       if (commoditySort === "stock") return b.quantity - a.quantity;
       if (commoditySort === "status") return compareText(commodityStockStatus(a.mos), commodityStockStatus(b.mos));
       return (a.mos ?? -1) - (b.mos ?? -1);
-    }), [selectedCommodityRows, commodityTableProvince, commodityTableDistrict, commodityTableLevel, commodityStatusFilter, commodityTableReportingStatus, commodityFacilityQuery, commoditySort]);
+    }), [commodityFilteredSummaryRows, commodityFacilityQuery, commoditySort]);
   const commodityPageCount = Math.max(1, Math.ceil(commodityFacilityRows.length / commodityPageSize));
   const commodityVisibleRows = commodityFacilityRows.slice((Math.min(commodityPage, commodityPageCount) - 1) * commodityPageSize, Math.min(commodityPage, commodityPageCount) * commodityPageSize);
   const commodityTrendRows = useMemo(() => !selectedCommodity ? [] : tracerReportingPeriods.map((period) => {
@@ -1866,18 +2049,30 @@ function App() {
       .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel));
     const quantity = rows.reduce((sum, row) => sum + row.quantity, 0);
     const amc = rows.reduce((sum, row) => sum + row.amc, 0);
-    return { label: period.label, reportDate: period.reportDate, availability: rows.length ? rows.filter((row) => row.quantity > 0).length / rows.length : 0, mos: amc > 0 ? quantity / amc : 0, rows: rows.length };
-  }), [selectedCommodity, selectedProvince, selectedDistrict, selectedFacilityLevel]);
-  const commodityTrendVisibleRows = commodityTrendRows.slice(-12);
+    return { periodId: period.id, label: period.label, reportDate: period.reportDate, availability: rows.length ? rows.filter((row) => row.quantity > 0).length / rows.length : 0, nationalAvailability: normalizeRate(period.national?.availability), mos: amc > 0 ? quantity / amc : 0, rows: rows.length };
+  }).filter((row) => row.rows > 0), [selectedCommodity, selectedProvince, selectedDistrict, selectedFacilityLevel]);
+  const commodityTrendVisibleRows = commodityTrendRows.slice(-commodityTrendWindow);
   const commodityTrendMosScale = Math.max(4, Math.ceil(Math.max(0, ...commodityTrendVisibleRows.map((row) => row.mos || 0))));
   const commodityTrendMosPoints = commodityTrendVisibleRows.map((row, index) => {
     const x = ((index + 0.5) / Math.max(commodityTrendVisibleRows.length, 1)) * 100;
     const y = 100 - Math.min((row.mos || 0) / commodityTrendMosScale, 1) * 100;
     return `${x},${y}`;
   }).join(" ");
+  const commodityTrendNationalPoints = commodityTrendVisibleRows.map((row, index) => {
+    const x = ((index + 0.5) / Math.max(commodityTrendVisibleRows.length, 1)) * 100;
+    const y = 100 - Math.min(row.nationalAvailability || 0, 1) * 100;
+    return `${x},${y}`;
+  }).join(" ");
+  const commodityZeroAvailabilityRun = findLongestZeroAvailabilityRun(commodityTrendVisibleRows);
   const commodityProvinceRows = commodityGroupRows(selectedCommodityRows, "province");
   const commodityDistrictRows = commodityGroupRows(selectedCommodityRows, "district");
   const commodityLevelRows = commodityGroupRows(selectedCommodityRows, "facilityLevel");
+  const commodityActiveFilters = [
+    commodityTableProvince !== "all" ? { key: "province", label: commodityTableProvince } : null,
+    commodityTableDistrict !== "all" ? { key: "district", label: commodityTableDistrict } : null,
+    commodityTableLevel !== "all" ? { key: "level", label: commodityTableLevel } : null,
+    commodityStatusFilter !== "all" ? { key: "status", label: commodityStatusFilter } : null,
+  ].filter(Boolean);
   const commodityFacilityHistory = useMemo(() => !openCommodityFacility ? [] : tracerReportingPeriods
     .map((period) => {
       const row = commodityRowsFromPeriod(period).find((item) => item.item === selectedCommodity
@@ -1888,6 +2083,59 @@ function App() {
       return row ? { ...row, label: period.label, reportDate: period.reportDate } : null;
     })
     .filter(Boolean), [openCommodityFacility, selectedCommodity]);
+  const commodityFacilityTrendMap = useMemo(() => {
+    if (!selectedCommodity) return new Map();
+    const periodIndex = tracerReportingPeriods.findIndex((period) => period.id === fieldPeriodId);
+    const periods = tracerReportingPeriods.slice(Math.max(0, periodIndex - 7), periodIndex + 1);
+    const trendMap = new Map(selectedCommodityRows.map((row) => {
+      const key = `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}`;
+      return [key, periods.map((period) => ({ periodId: period.id, label: period.label, mos: null }))];
+    }));
+    periods.forEach((period, periodPosition) => {
+      const grouped = new Map();
+      commodityRowsFromPeriod(period).filter((row) => row.item === selectedCommodity).forEach((row) => {
+        const key = `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}`;
+        if (!trendMap.has(key)) return;
+        const current = grouped.get(key) || { quantity: 0, amc: 0, mosValues: [] };
+        current.quantity += row.quantity || 0;
+        current.amc += row.amc || 0;
+        if (row.mos !== null) current.mosValues.push(row.mos);
+        grouped.set(key, current);
+      });
+      grouped.forEach((row, key) => {
+        const mos = row.amc > 0 ? row.quantity / row.amc : (row.mosValues.length ? row.mosValues.reduce((sum, value) => sum + value, 0) / row.mosValues.length : null);
+        trendMap.get(key)[periodPosition] = { periodId: period.id, label: period.label, mos };
+      });
+    });
+    return trendMap;
+  }, [selectedCommodityRows, selectedCommodity, fieldPeriodId]);
+  const commodityFacilityBasket = useMemo(() => {
+    if (!openCommodityFacility) return [];
+    const grouped = new Map();
+    commodityRowsFromPeriod(fieldData).filter((row) => row.province === openCommodityFacility.province
+      && row.district === openCommodityFacility.district
+      && row.facilityLevel === openCommodityFacility.facilityLevel
+      && row.facility === openCommodityFacility.facility).forEach((row) => {
+      const current = grouped.get(row.item) || { ...row, quantity: 0, amc: 0, mosValues: [] };
+      current.quantity += row.quantity || 0;
+      current.amc += row.amc || 0;
+      if (row.mos !== null) current.mosValues.push(row.mos);
+      grouped.set(row.item, current);
+    });
+    return [...grouped.values()].map((row) => ({
+      ...row,
+      mos: row.amc > 0 ? row.quantity / row.amc : (row.mosValues.length ? row.mosValues.reduce((sum, value) => sum + value, 0) / row.mosValues.length : null),
+    })).sort((a, b) => {
+      const priority = { "Stocked out": 0, "Emergency stock": 1, Understocked: 2, "According to plan": 3, Overstocked: 4, "Excess stock": 5, "Incomplete report": 6 };
+      return (priority[commodityStockStatus(a.mos)] ?? 9) - (priority[commodityStockStatus(b.mos)] ?? 9) || compareText(a.item, b.item);
+    });
+  }, [openCommodityFacility, fieldData]);
+  const commodityFacilityBasketSummary = {
+    total: commodityFacilityBasket.length,
+    available: commodityFacilityBasket.filter((row) => row.quantity > 0).length,
+    stockouts: commodityFacilityBasket.filter((row) => commodityStockStatus(row.mos) === "Stocked out").length,
+    belowPlan: commodityFacilityBasket.filter((row) => ["Emergency stock", "Understocked"].includes(commodityStockStatus(row.mos))).length,
+  };
 
   const comments = fieldData.comments || [];
   const expectedProvinces = 10;
@@ -2084,11 +2332,13 @@ function App() {
   const comparisonMonths = [...new Set(tracerReportingPeriods
     .filter((period) => String(period.month).startsWith(comparisonYear))
     .map((period) => period.month))].sort();
-  const comparisonRangeOptions = comparisonPeriodType === "monthly"
-    ? comparisonMonths.map((month) => ({ value: month, label: monthLabel(month) }))
-    : comparisonPeriodType === "quarterly"
-      ? ["Q1", "Q2", "Q3", "Q4"].map((quarter) => ({ value: quarter, label: quarter }))
-      : comparisonYears.map((year) => ({ value: year, label: year }));
+  const comparisonRangeOptions = comparisonPeriodType === "weekly"
+    ? tracerReportingPeriods.filter((period) => String(period.month).startsWith(comparisonYear)).map((period) => ({ value: period.id, label: period.label }))
+    : comparisonPeriodType === "monthly"
+      ? comparisonMonths.map((month) => ({ value: month, label: monthLabel(month) }))
+      : comparisonPeriodType === "quarterly"
+        ? ["Q1", "Q2", "Q3", "Q4"].map((quarter) => ({ value: quarter, label: quarter }))
+        : comparisonYears.map((year) => ({ value: year, label: year }));
   const comparisonDistrictOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.districts || [])
     .filter((row) => comparisonProvince === "all" || row.province === comparisonProvince)
     .map((row) => row.name))].sort();
@@ -2098,8 +2348,9 @@ function App() {
   const comparisonOptionIsAvailable = (option) => comparisonFacilityLevelRows.some((facility) => matchesFacilityCareLevel(facility.facilityLevel, option.value));
   const comparisonFacilityLevelOptions = facilityCareLevelOptions.filter(comparisonOptionIsAvailable);
   const comparisonSpecialisedFacilityLevelOptions = specialisedCareLevelOptions.filter(comparisonOptionIsAvailable);
-  const comparisonCommodityOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.commodities || []).map((row) => row.name))]
+  const comparisonCommodityOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.commodityFacilityData?.dictionaries?.items || []).map(canonicalCommodityName))]
     .filter(Boolean)
+    .filter(isCommodityName)
     .sort(compareText)
     .slice(0, 600);
   const comparisonProgramOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.programmes || []).map((row) => row.name))]
@@ -2131,6 +2382,16 @@ function App() {
   const comparisonCurrentLabel = comparisonRangeLabel(comparisonPeriodType, comparisonYear, comparisonRangeStart, comparisonRangeEnd);
   const comparisonPreviousLabel = comparisonRangeLabel(comparisonPeriodType, comparisonYear, comparisonBaselineStart, comparisonBaselineEnd);
   const comparisonPreviousByName = new Map(previousComparisonRows.map((row) => [row.name, row]));
+  const comparisonFocusOptions = [...new Set([...comparisonRows, ...previousComparisonRows].map((row) => row.name))].sort(compareText);
+  const effectiveComparisonFocusA = comparisonFocusOptions.includes(comparisonFocusA) ? comparisonFocusA : comparisonFocusOptions[0] || "";
+  const effectiveComparisonFocusB = comparisonFocusOptions.includes(comparisonFocusB) && comparisonFocusB !== effectiveComparisonFocusA
+    ? comparisonFocusB
+    : comparisonFocusOptions.find((name) => name !== effectiveComparisonFocusA) || "";
+  const comparisonFocusCards = [effectiveComparisonFocusA, effectiveComparisonFocusB].filter(Boolean).map((name) => ({
+    name,
+    current: comparisonRows.find((row) => row.name === name) || makeEmptyRollup(name),
+    previous: comparisonPreviousByName.get(name) || makeEmptyRollup(name),
+  }));
   const comparisonCareOrder = new Map(careLevelBuckets.map((bucket, index) => [bucket.label, index]));
   const comparisonExecutiveRows = [...comparisonRows]
     .sort((a, b) => {
@@ -2220,6 +2481,80 @@ function App() {
     setSelectedDistrict(district);
     setSelectedFacilityLevel("all");
     setSelectedFacility("all");
+  }
+
+  function focusCommodityTable() {
+    setCommodityPage(1);
+    window.requestAnimationFrame(() => commodityTableRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+
+  function applyCommodityStatusFilter(status) {
+    setCommodityStatusFilter(status);
+    focusCommodityTable();
+  }
+
+  function applyCommodityProvinceFilter(province) {
+    setCommodityTableProvince(province);
+    setCommodityTableDistrict("all");
+    setCommodityTableLevel("all");
+    focusCommodityTable();
+  }
+
+  function applyCommodityLevelFilter(level) {
+    setCommodityTableLevel(level);
+    focusCommodityTable();
+  }
+
+  function clearCommodityCrossFilter(key) {
+    if (key === "province") {
+      setCommodityTableProvince("all");
+      setCommodityTableDistrict("all");
+      setCommodityTableLevel("all");
+    }
+    if (key === "district") {
+      setCommodityTableDistrict("all");
+      setCommodityTableLevel("all");
+    }
+    if (key === "level") setCommodityTableLevel("all");
+    if (key === "status") setCommodityStatusFilter("all");
+    setCommodityPage(1);
+  }
+
+  function selectCommodityTrendPeriod(periodId) {
+    setFieldPeriodId(periodId);
+    setCommodityPage(1);
+    setOpenCommodityFacility(null);
+  }
+
+  function changeCommodityListSort(key) {
+    setCommodityListSort((current) => ({
+      key,
+      direction: current.key === key && current.direction === "desc" ? "asc" : "desc",
+    }));
+    setCommodityOptionPage(1);
+  }
+
+  function openSelectedCommodityComparison() {
+    const currentIndex = tracerReportingPeriods.findIndex((period) => period.id === fieldPeriodId);
+    const previousPeriod = tracerReportingPeriods[Math.max(0, currentIndex - 1)];
+    const currentPeriod = tracerReportingPeriods[currentIndex] || fieldData;
+    setComparisonPeriodType("weekly");
+    setComparisonYear(String(currentPeriod.month || fieldData.month).slice(0, 4));
+    setComparisonBaselineStart(previousPeriod.id);
+    setComparisonBaselineEnd(previousPeriod.id);
+    setComparisonRangeStart(currentPeriod.id);
+    setComparisonRangeEnd(currentPeriod.id);
+    setComparisonCommodity(selectedCommodity);
+    setComparisonProgram("all");
+    setComparisonProvince("all");
+    setComparisonDistrict("all");
+    setComparisonFacilityLevel("all");
+    setComparisonCompareBy("province");
+    setComparisonMetric("availability");
+    setComparisonFocusA(commodityTableProvince !== "all" ? commodityTableProvince : selectedProvince !== "all" ? selectedProvince : "");
+    setComparisonFocusB("");
+    setActivePage("comparison");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function selectQualityProvince(province) {
@@ -3014,7 +3349,17 @@ function App() {
               <input id="commodity-search" value={query} onChange={(event) => { setQuery(event.target.value); setCommodityOptionPage(1); setCommodityPage(1); }} placeholder="Search for a commodity..." autoComplete="off" />
               {!selectedCommodity && <div className="commodity-match-list">
                 <div className="commodity-match-head"><span>{commodityMatches.length} commodities in current filters</span><span>Page {Math.min(commodityOptionPage, commodityOptionPageCount)} of {commodityOptionPageCount}</span></div>
-                {visibleCommodityMatches.length ? visibleCommodityMatches.map((item) => <button type="button" key={item} onClick={() => { setSelectedCommodity(item); setQuery(item); setCommodityPage(1); setCommodityStatusFilter("all"); setCommodityTableProvince("all"); setCommodityTableDistrict("all"); setCommodityTableLevel("all"); setCommodityTableReportingStatus("all"); }}>{item}</button>) : <p>No matching commodity was found in the selected reporting period and filters.</p>}
+                <div className="commodity-triage-tools">
+                  <span>Show availability</span>
+                  {["all", "95", "90", "80"].map((threshold) => <button type="button" className={commodityAvailabilityThreshold === threshold ? "active" : ""} aria-pressed={commodityAvailabilityThreshold === threshold} onClick={() => { setCommodityAvailabilityThreshold(threshold); setCommodityOptionPage(1); }} key={threshold}>{threshold === "all" ? "All" : `Below ${threshold}%`}</button>)}
+                </div>
+                <div className="commodity-triage-header">
+                  <button type="button" onClick={() => changeCommodityListSort("name")}>Commodity {commodityListSort.key === "name" ? (commodityListSort.direction === "asc" ? "↑" : "↓") : ""}</button>
+                  <button type="button" onClick={() => changeCommodityListSort("availability")}>Availability {commodityListSort.key === "availability" ? (commodityListSort.direction === "asc" ? "↑" : "↓") : ""}</button>
+                  <button type="button" onClick={() => changeCommodityListSort("stockouts")}>Stockouts {commodityListSort.key === "stockouts" ? (commodityListSort.direction === "asc" ? "↑" : "↓") : ""}</button>
+                  <button type="button" onClick={() => changeCommodityListSort("trend")}>Trend {commodityListSort.key === "trend" ? (commodityListSort.direction === "asc" ? "↑" : "↓") : ""}</button>
+                </div>
+                {visibleCommodityMatches.length ? <div className="commodity-triage-rows">{visibleCommodityMatches.map((item) => <button type="button" className={`commodity-triage-row tone-${item.tone}`} title={`${formatPercent(item.stockoutRate)} of submitted rows are stocked out`} key={item.name} onClick={() => { setSelectedCommodity(item.name); setQuery(item.name); setCommodityPage(1); setCommodityStatusFilter("all"); setCommodityTableProvince("all"); setCommodityTableDistrict("all"); setCommodityTableLevel("all"); setCommodityTableReportingStatus("all"); }}><span className="commodity-triage-name"><i className={`status-dot ${item.tone}`} aria-hidden="true" /><b>{item.name}</b></span><strong>{formatPercent(item.availability)}</strong><strong>{item.stockouts.toLocaleString()}</strong><span className={`commodity-trend trend-${item.trend}`}>{item.trend === "up" ? "↑" : item.trend === "down" ? "↓" : item.trend === "steady" ? "→" : "–"}<small>{item.trendDelta === null ? "New" : `${item.trendDelta >= 0 ? "+" : ""}${(item.trendDelta * 100).toFixed(1)}pp`}</small></span></button>)}</div> : <p>No matching commodity was found in the selected reporting period and filters.</p>}
                 {commodityMatches.length > 10 && <div className="commodity-match-pagination"><button type="button" disabled={commodityOptionPage <= 1} onClick={() => setCommodityOptionPage((page) => page - 1)}>Previous</button><button type="button" disabled={commodityOptionPage >= commodityOptionPageCount} onClick={() => setCommodityOptionPage((page) => page + 1)}>Next</button></div>}
               </div>}
             </div>
@@ -3034,38 +3379,76 @@ function App() {
                 <h3>{selectedCommodity}</h3>
                 <p>{selectedCommodityProgramme} | {fieldData.label}</p>
               </div>
-              <small>Current scope: {selectedProvince === "all" ? "All provinces" : selectedProvince} | {selectedDistrict === "all" ? "All districts" : selectedDistrict} | {facilityCareLevelLabel(selectedFacilityLevel)}</small>
+              <div className="commodity-summary-actions"><small>Current scope: {selectedProvince === "all" ? "All provinces" : selectedProvince} | {selectedDistrict === "all" ? "All districts" : selectedDistrict} | {facilityCareLevelLabel(selectedFacilityLevel)}</small><button type="button" onClick={openSelectedCommodityComparison}>Compare this commodity</button></div>
             </div>
+            {commodityActiveFilters.length > 0 && <div className="commodity-filter-chips" aria-label="Active commodity filters">
+              <span>Filtered by</span>
+              {commodityActiveFilters.map((filter) => <button type="button" key={filter.key} onClick={() => clearCommodityCrossFilter(filter.key)} aria-label={`Clear ${filter.label} filter`}>{filter.label}<b aria-hidden="true">×</b></button>)}
+              <button type="button" className="clear-all" onClick={() => { setCommodityTableProvince("all"); setCommodityTableDistrict("all"); setCommodityTableLevel("all"); setCommodityStatusFilter("all"); setCommodityPage(1); }}>Clear all</button>
+            </div>}
             <div className="commodity-kpis">
-              <div><span>Facilities reporting</span><strong>{selectedCommodityRows.length}</strong><small>Commodity rows submitted</small></div>
-              <div><span>Commodity availability</span><strong>{formatPercent(selectedCommodityRows.length ? commodityAvailableCount / selectedCommodityRows.length : 0)}</strong><small>{commodityAvailableCount} facilities available</small></div>
-              <div><span>Average MOS</span><strong>{formatMos(commodityAverageMos)}</strong><small>Reporting facilities only</small></div>
-              <div className="red"><span>Stocked out</span><strong>{commodityStatusCounts["Stocked out"] || 0}</strong><small>MOS = 0</small></div>
-              <div className="amber"><span>Emergency stock</span><strong>{commodityStatusCounts["Emergency stock"] || 0}</strong><small>Above 0 to 0.5 MOS</small></div>
-              <div className="amber"><span>Understocked</span><strong>{commodityStatusCounts.Understocked || 0}</strong><small>Above 0.5 to below 2 MOS</small></div>
-              <div className="green"><span>According to plan</span><strong>{commodityStatusCounts["According to plan"] || 0}</strong><small>2 to 4 MOS</small></div>
-              <div className="blue"><span>Overstocked / excess</span><strong>{(commodityStatusCounts.Overstocked || 0) + (commodityStatusCounts["Excess stock"] || 0)}</strong><small>Above 4 MOS</small></div>
+              <button type="button" title="Facilities reporting this commodity in the selected scope. Click to see expected facilities that did not submit it." className={commodityStatusFilter === "all" ? "active" : ""} aria-pressed={commodityStatusFilter === "all"} onClick={() => { setCommodityStatusFilter("all"); setCommodityMissingOpen(true); }}><span>Facilities reporting <i className="kpi-help" aria-hidden="true">?</i></span><strong>{commodityKpiScopeRows.length}</strong><small>{commodityMissingFacilities.length} of {commodityExpectedFacilities.length} facilities did not report · click to review</small></button>
+              <button type="button" title={`Availability is facilities with stock on hand above zero divided only by facilities that submitted this commodity. Reporting coverage is ${formatPercent(commodityReportingRate)}.`} className={commodityStatusFilter === "Available" ? "active" : ""} aria-pressed={commodityStatusFilter === "Available"} onClick={() => applyCommodityStatusFilter("Available")}><span>Commodity availability <i className="kpi-help" aria-hidden="true">?</i>{commodityReportingRate < 0.6 ? <i className="kpi-warning" title={`Caution: only ${formatPercent(commodityReportingRate)} of expected facilities submitted this commodity, so availability describes reporters rather than the full facility scope.`} aria-label="Low reporting coverage warning">!</i> : null}</span><strong>{formatPercent(commodityKpiScopeRows.length ? commodityKpiScopeRows.filter((row) => row.quantity > 0).length / commodityKpiScopeRows.length : 0)}</strong><small>{commodityKpiScopeRows.filter((row) => row.quantity > 0).length} available among {commodityKpiScopeRows.length} reporting facilities</small></button>
+              <button type="button" title="Average months of stock across reporting facilities. MOS is stock on hand divided by average monthly consumption." className={commoditySort === "mos" && commodityStatusFilter === "all" ? "active" : ""} onClick={() => { setCommoditySort("mos"); applyCommodityStatusFilter("all"); }}><span>Average MOS <i className="kpi-help" aria-hidden="true">?</i></span><strong>{formatMos(commodityAverageMos)}</strong><small>Click to sort facilities by MOS</small></button>
+              <button type="button" title="Stocked out: MOS is zero or below." className={`red ${commodityStatusFilter === "Stocked out" ? "active" : ""}`} aria-pressed={commodityStatusFilter === "Stocked out"} onClick={() => applyCommodityStatusFilter("Stocked out")}><span>Stocked out <i className="kpi-help" aria-hidden="true">?</i></span><strong>{commodityStatusCounts["Stocked out"] || 0}</strong><small>MOS = 0</small></button>
+              <button type="button" title="Emergency stock: MOS is above zero and no more than 0.5 months." className={`amber ${commodityStatusFilter === "Emergency stock" ? "active" : ""}`} aria-pressed={commodityStatusFilter === "Emergency stock"} onClick={() => applyCommodityStatusFilter("Emergency stock")}><span>Emergency stock <i className="kpi-help" aria-hidden="true">?</i></span><strong>{commodityStatusCounts["Emergency stock"] || 0}</strong><small>Above 0 to 0.5 MOS</small></button>
+              <button type="button" title="Understocked: MOS is above 0.5 and below 2 months." className={`amber ${commodityStatusFilter === "Understocked" ? "active" : ""}`} aria-pressed={commodityStatusFilter === "Understocked"} onClick={() => applyCommodityStatusFilter("Understocked")}><span>Understocked <i className="kpi-help" aria-hidden="true">?</i></span><strong>{commodityStatusCounts.Understocked || 0}</strong><small>Above 0.5 to below 2 MOS</small></button>
+              <button type="button" title="According to plan: MOS is from 2 through 4 months." className={`green ${commodityStatusFilter === "According to plan" ? "active" : ""}`} aria-pressed={commodityStatusFilter === "According to plan"} onClick={() => applyCommodityStatusFilter("According to plan")}><span>According to plan <i className="kpi-help" aria-hidden="true">?</i></span><strong>{commodityStatusCounts["According to plan"] || 0}</strong><small>2 to 4 MOS</small></button>
+              <button type="button" title="Overstocked: MOS is above 4 and below 12 months. Excess stock: MOS is 12 months or more." className={`blue ${commodityStatusFilter === "Overstocked / excess" ? "active" : ""}`} aria-pressed={commodityStatusFilter === "Overstocked / excess"} onClick={() => applyCommodityStatusFilter("Overstocked / excess")}><span>Overstocked / excess <i className="kpi-help" aria-hidden="true">?</i></span><strong>{(commodityStatusCounts.Overstocked || 0) + (commodityStatusCounts["Excess stock"] || 0)}</strong><small>Above 4 MOS</small></button>
             </div>
-            <div className="commodity-totals"><span>Total SOH: <b>{Math.round(commodityTotalSoh).toLocaleString()}</b></span><span>Total AMC: <b>{Math.round(commodityTotalAmc).toLocaleString()}</b></span><span>Reporting rate: <b>{formatPercent(selectedCommodityRows.length / Math.max(filteredFacilities.length, 1))}</b></span><span>Incomplete commodity records: <b>Not classified as stockout</b></span></div>
+            <div className="commodity-week-change" aria-label="What changed since last week">
+              <div><p className="eyebrow dark">What changed</p><strong>{commodityWeekChange ? `${commodityWeekChange.previousLabel} → ${fieldData.label}` : "No comparable prior-week submission"}</strong></div>
+              {commodityWeekChange ? <div className="commodity-change-badges">
+                <span className={commodityWeekChange.newStockouts > 0 ? "negative" : "neutral"}><b>{commodityWeekChange.newStockouts > 0 ? "▲" : "•"} {commodityWeekChange.newStockouts}</b> new stockouts</span>
+                <span className={commodityWeekChange.resolvedStockouts > 0 ? "positive" : "neutral"}><b>{commodityWeekChange.resolvedStockouts > 0 ? "▼" : "•"} {commodityWeekChange.resolvedStockouts}</b> resolved stockouts</span>
+                <span className={commodityWeekChange.availabilityDelta >= 0 ? "positive" : "negative"}><b>{commodityWeekChange.availabilityDelta >= 0 ? "▲" : "▼"} {Math.abs(commodityWeekChange.availabilityDelta * 100).toFixed(1)}pp</b> availability</span>
+                <span className={commodityWeekChange.mosDelta >= 0 ? "positive" : "negative"}><b>{commodityWeekChange.mosDelta >= 0 ? "▲" : "▼"} {Math.abs(commodityWeekChange.mosDelta).toFixed(1)}</b> average MOS</span>
+                <span className={commodityWeekChange.facilityDelta >= 0 ? "positive" : "negative"}><b>{commodityWeekChange.facilityDelta >= 0 ? "+" : ""}{commodityWeekChange.facilityDelta}</b> reporting facilities</span>
+              </div> : <p>Choose a commodity with observations in the preceding week to calculate facility-level changes.</p>}
+            </div>
+            <div className="commodity-totals"><span>Total SOH: <b>{Math.round(commodityTotalSoh).toLocaleString()}</b></span><span>Total AMC: <b>{Math.round(commodityTotalAmc).toLocaleString()}</b></span><span>Reporting rate: <b>{formatPercent(commodityReportingRate)}</b> ({commodityKpiScopeRows.length}/{commodityExpectedFacilities.length} facilities)</span><span>Incomplete commodity records: <b>Not classified as stockout</b></span></div>
             <div className="commodity-chart-grid">
-              <div className="commodity-chart-panel"><h3>Availability by province</h3>{commodityProvinceRows.map((row) => <button type="button" className="commodity-bar" key={row.name} onClick={() => changeProvinceFilter(row.name)}><span>{row.name}</span><i><b style={{ width: `${Math.round(row.availability * 100)}%` }} /></i><strong>{formatPercent(row.availability)}</strong></button>)}</div>
-              <div className="commodity-chart-panel"><h3>Average MOS by level of care</h3>{commodityLevelRows.map((row) => <button type="button" className="commodity-bar" key={row.name} onClick={() => { const option = [...facilityCareLevelOptions, ...specialisedCareLevelOptions].find((item) => item.label.toUpperCase() === row.name.toUpperCase()); if (option) setSelectedFacilityLevel(option.value); }}><span>{row.name}</span><i><b style={{ width: `${Math.min((row.mos / 12) * 100, 100)}%` }} /></i><strong>{formatMos(row.mos)}</strong></button>)}</div>
-              <div className="commodity-chart-panel commodity-week-chart-panel"><div className="commodity-week-chart-head"><h3>Weekly availability and MOS</h3><span><i /> Availability <b /> MOS</span></div><div className="commodity-week-chart"><div className="commodity-week-axis availability">Availability (%)</div><div className="commodity-week-axis mos">MOS</div><div className="commodity-week-grid" aria-hidden="true">{[0, 25, 50, 75, 100].map((value) => <i key={value} style={{ bottom: `${value}%` }}><small>{value}%</small></i>)}</div><div className="commodity-week-columns" style={{ "--commodity-columns": commodityTrendVisibleRows.length }}>{commodityTrendVisibleRows.map((row) => <button type="button" key={row.reportDate} onClick={() => { setFieldPeriodId(row.reportDate); resetFieldHierarchy(); }}><i style={{ height: `${Math.round(row.availability * 100)}%` }}><b>{formatPercent(row.availability)}</b></i><em style={{ bottom: `${Math.min((row.mos / commodityTrendMosScale) * 100, 100)}%` }}>{formatMos(row.mos)}</em><span>{row.label.replace("Week ", "W")}</span></button>)}</div><svg className="commodity-week-mos-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points={commodityTrendMosPoints} /></svg></div><small className="commodity-week-note">Click a week to update the reporting period.</small></div>
+              <div className="commodity-chart-panel"><h3>Availability by province</h3>{commodityProvinceRows.map((row) => <button type="button" aria-pressed={commodityTableProvince === row.name} className={`commodity-bar ${commodityTableProvince === row.name ? "active" : ""}`} key={row.name} onClick={() => applyCommodityProvinceFilter(row.name)}><span>{row.name}</span><i><b style={{ width: `${Math.round(row.availability * 100)}%` }} /></i><strong>{formatPercent(row.availability)}</strong></button>)}</div>
+              <div className="commodity-chart-panel"><h3>Average MOS by level of care</h3>{commodityLevelRows.map((row) => <button type="button" aria-pressed={commodityTableLevel === row.name} className={`commodity-bar ${commodityTableLevel === row.name ? "active" : ""}`} key={row.name} onClick={() => applyCommodityLevelFilter(row.name)}><span>{row.name}</span><i><b style={{ width: `${Math.min((row.mos / 12) * 100, 100)}%` }} /></i><strong>{formatMos(row.mos)}</strong></button>)}</div>
+              <div className="commodity-chart-panel commodity-week-chart-panel">
+                <div className="commodity-week-chart-head">
+                  <div><h3>Weekly availability and MOS</h3><span><i /> Commodity availability <b /> MOS <em /> National average</span></div>
+                  <div className="commodity-trend-window" role="group" aria-label="Trend period">
+                    {[4, 12, 52].map((weeks) => <button type="button" className={commodityTrendWindow === weeks ? "active" : ""} aria-pressed={commodityTrendWindow === weeks} onClick={() => setCommodityTrendWindow(weeks)} key={weeks}>{weeks}W</button>)}
+                  </div>
+                </div>
+                {commodityZeroAvailabilityRun?.weeks >= 4 && <div className="commodity-zero-alert" role="alert"><b>Prolonged 0% availability</b><span>{commodityZeroAvailabilityRun.weeks} consecutive submitted weeks, from {commodityZeroAvailabilityRun.startLabel} to {commodityZeroAvailabilityRun.endLabel}. Escalate for stock verification and replenishment.</span></div>}
+                <div className="commodity-week-chart-scroll">
+                  <div className="commodity-week-chart" style={{ minWidth: `${Math.max(520, commodityTrendVisibleRows.length * 48)}px` }}>
+                    <div className="commodity-week-axis availability">Availability (%)</div>
+                    <div className="commodity-week-axis mos">MOS</div>
+                    <div className="commodity-week-grid" aria-hidden="true">{[0, 25, 50, 75, 100].map((value) => <i key={value} style={{ bottom: `${value}%` }}><small>{value}%</small></i>)}</div>
+                    <div className="commodity-week-columns" style={{ "--commodity-columns": commodityTrendVisibleRows.length }}>{commodityTrendVisibleRows.map((row) => <button type="button" className={row.periodId === fieldPeriodId ? "active" : ""} aria-pressed={row.periodId === fieldPeriodId} key={row.periodId} title={`${row.label}: ${formatPercent(row.availability)} commodity availability, ${formatMos(row.mos)} MOS, ${formatPercent(row.nationalAvailability)} national average`} onClick={() => selectCommodityTrendPeriod(row.periodId)}><i style={{ height: `${Math.round(row.availability * 100)}%` }}><b>{formatPercent(row.availability)}</b></i><em style={{ bottom: `${Math.min((row.mos / commodityTrendMosScale) * 100, 100)}%` }}>{formatMos(row.mos)}</em><span>{row.label.replace("Week ", "W")}</span></button>)}</div>
+                    <svg className="commodity-week-mos-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Commodity MOS and national availability benchmark"><polyline className="mos" points={commodityTrendMosPoints} /><polyline className="national" points={commodityTrendNationalPoints} /></svg>
+                  </div>
+                </div>
+                <small className="commodity-week-note">Click a week to refresh the KPI cards and facility table while retaining the active geography and care-level filters. Periods without a submitted commodity observation are excluded rather than plotted as 0%.</small>
+              </div>
             </div>
-            <div className="table-tools commodity-table-tools">
+            <div className="table-tools commodity-table-tools" ref={commodityTableRef}>
               <input value={commodityFacilityQuery} onChange={(event) => { setCommodityFacilityQuery(event.target.value); setCommodityPage(1); }} placeholder="Search facility, district, or province" />
               <select aria-label="Filter commodity table by province" value={commodityTableProvince} onChange={(event) => { setCommodityTableProvince(event.target.value); setCommodityTableDistrict("all"); setCommodityTableLevel("all"); setCommodityPage(1); }}><option value="all">All provinces</option>{commodityTableProvinceOptions.map((province) => <option key={province} value={province}>{province}</option>)}</select>
               <select aria-label="Filter commodity table by district" value={commodityTableDistrict} onChange={(event) => { setCommodityTableDistrict(event.target.value); setCommodityTableLevel("all"); setCommodityPage(1); }}><option value="all">All districts</option>{commodityTableDistrictOptions.map((district) => <option key={district} value={district}>{district}</option>)}</select>
               <select aria-label="Filter commodity table by facility level" value={commodityTableLevel} onChange={(event) => { setCommodityTableLevel(event.target.value); setCommodityPage(1); }}><option value="all">All facility levels</option>{commodityTableLevelOptions.map((level) => <option key={level} value={level}>{level}</option>)}</select>
-              <select aria-label="Filter commodity table by stock status" value={commodityStatusFilter} onChange={(event) => { setCommodityStatusFilter(event.target.value); setCommodityPage(1); }}><option value="all">All stock statuses</option>{["Stocked out", "Emergency stock", "Understocked", "According to plan", "Overstocked", "Excess stock"].map((status) => <option key={status} value={status}>{status} ({commodityStatusCounts[status] || 0})</option>)}</select>
+              <select aria-label="Filter commodity table by stock status" value={commodityStatusFilter} onChange={(event) => { setCommodityStatusFilter(event.target.value); setCommodityPage(1); }}><option value="all">All stock statuses</option><option value="Available">Available ({commodityKpiScopeRows.filter((row) => row.quantity > 0).length})</option>{["Stocked out", "Emergency stock", "Understocked", "According to plan", "Overstocked", "Excess stock"].map((status) => <option key={status} value={status}>{status} ({commodityStatusCounts[status] || 0})</option>)}<option value="Overstocked / excess">Overstocked / excess ({(commodityStatusCounts.Overstocked || 0) + (commodityStatusCounts["Excess stock"] || 0)})</option></select>
               <select aria-label="Filter commodity table by reporting status" value={commodityTableReportingStatus} onChange={(event) => { setCommodityTableReportingStatus(event.target.value); setCommodityPage(1); }}><option value="all">All reporting statuses</option><option value="Reported">Reported</option></select>
               <select value={commoditySort} onChange={(event) => setCommoditySort(event.target.value)}><option value="mos">Sort by MOS</option><option value="stock">Sort by stock on hand</option><option value="province">Sort by geography</option><option value="facility">Sort by facility</option><option value="status">Sort by stock status</option></select>
               <select value={commodityPageSize} onChange={(event) => { setCommodityPageSize(Number(event.target.value)); setCommodityPage(1); }}><option value={25}>25 rows</option><option value={50}>50 rows</option><option value={100}>100 rows</option></select>
             </div>
             <div className="table-scroll">
               <table>
-                <thead><tr><th>Province</th><th>District</th><th>Facility</th><th>Facility level</th><th>SOH</th><th>AMC</th><th>MOS</th><th>Stock status</th><th>Reporting status</th><th /></tr></thead>
-                <tbody>{commodityVisibleRows.length ? commodityVisibleRows.map((row) => <tr key={`${row.province}-${row.district}-${row.facilityLevel}-${row.facility}`}><td>{row.province}</td><td>{row.district}</td><td>{row.facility}</td><td>{row.facilityLevel}</td><td>{Math.round(row.quantity).toLocaleString()}</td><td>{Math.round(row.amc).toLocaleString()}</td><td>{formatMos(row.mos)}</td><td><span className={`comparison-signal ${commodityStatusTone(commodityStockStatus(row.mos))}`}>{commodityStockStatus(row.mos)}</span></td><td><span className="comparison-signal green">Reported</span></td><td><button type="button" className="ghost-button" onClick={() => setOpenCommodityFacility(row)}>View details</button></td></tr>) : <tr><td colSpan="10">No reporting facilities match the selected commodity filters.</td></tr>}</tbody>
+                <thead><tr><th>Province</th><th>District</th><th>Facility</th><th>Facility level</th><th>8-week MOS</th><th>SOH</th><th>AMC</th><th>MOS</th><th>Stock status</th><th>Reporting status</th><th /></tr></thead>
+                <tbody>{commodityVisibleRows.length ? commodityVisibleRows.map((row) => {
+                  const facilityKey = `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}`;
+                  const status = commodityStockStatus(row.mos);
+                  const tone = commodityStatusTone(status);
+                  return <tr className="commodity-facility-row" tabIndex="0" aria-label={`Open ${row.facility} commodity basket`} onClick={() => setOpenCommodityFacility(row)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setOpenCommodityFacility(row); } }} key={facilityKey}><td>{row.province}</td><td>{row.district}</td><td><strong>{row.facility}</strong></td><td>{row.facilityLevel}</td><td className="commodity-sparkline-cell"><MosSparkline values={commodityFacilityTrendMap.get(facilityKey) || []} /></td><td>{Math.round(row.quantity).toLocaleString()}</td><td>{Math.round(row.amc).toLocaleString()}</td><td className={`commodity-mos-cell tone-${tone}`}><strong>{formatMos(row.mos)}</strong></td><td className={`commodity-status-cell tone-${tone}`}><span>{status}</span></td><td><span className="comparison-signal green">Reported</span></td><td><button type="button" className="ghost-button" onClick={(event) => { event.stopPropagation(); setOpenCommodityFacility(row); }}>View basket</button></td></tr>;
+                }) : <tr><td colSpan="11">No reporting facilities match the selected commodity filters.</td></tr>}</tbody>
               </table>
             </div>
             <div className="commodity-pagination"><button type="button" disabled={commodityPage <= 1} onClick={() => setCommodityPage((page) => page - 1)}>Previous</button><span>Page {Math.min(commodityPage, commodityPageCount)} of {commodityPageCount} | {commodityFacilityRows.length} reporting facilities</span><button type="button" disabled={commodityPage >= commodityPageCount} onClick={() => setCommodityPage((page) => page + 1)}>Next</button></div>
@@ -3091,7 +3474,15 @@ function App() {
               <select value={comparisonPeriodType} onChange={(event) => {
                 const periodType = event.target.value;
                 setComparisonPeriodType(periodType);
-                if (periodType === "monthly") {
+                if (periodType === "weekly") {
+                  const weeks = tracerReportingPeriods.filter((period) => String(period.month).startsWith(comparisonYear));
+                  const latest = weeks.at(-1)?.id || "";
+                  const baseline = weeks.at(-2)?.id || latest;
+                  setComparisonBaselineStart(baseline);
+                  setComparisonBaselineEnd(baseline);
+                  setComparisonRangeStart(latest);
+                  setComparisonRangeEnd(latest);
+                } else if (periodType === "monthly") {
                   const months = [...new Set(tracerReportingPeriods
                     .filter((period) => String(period.month).startsWith(comparisonYear))
                     .map((period) => period.month))].sort();
@@ -3115,6 +3506,7 @@ function App() {
                   setComparisonRangeEnd(latestYear);
                 }
               }}>
+                <option value="weekly">Weekly</option>
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
                 <option value="yearly">Yearly</option>
@@ -3130,7 +3522,15 @@ function App() {
                 const latest = months.at(-1) || "";
                 const baseline = months.at(-2) || latest;
                 setComparisonYear(year);
-                if (comparisonPeriodType === "monthly") {
+                if (comparisonPeriodType === "weekly") {
+                  const weeks = tracerReportingPeriods.filter((period) => String(period.month).startsWith(year));
+                  const latestWeek = weeks.at(-1)?.id || "";
+                  const baselineWeek = weeks.at(-2)?.id || latestWeek;
+                  setComparisonBaselineStart(baselineWeek);
+                  setComparisonBaselineEnd(baselineWeek);
+                  setComparisonRangeStart(latestWeek);
+                  setComparisonRangeEnd(latestWeek);
+                } else if (comparisonPeriodType === "monthly") {
                   setComparisonBaselineStart(baseline);
                   setComparisonBaselineEnd(baseline);
                   setComparisonRangeStart(latest);
@@ -3207,7 +3607,7 @@ function App() {
             </label>
             <label>
               <span>Compare by</span>
-              <select value={comparisonCompareBy} onChange={(event) => setComparisonCompareBy(event.target.value)}>
+              <select value={comparisonCompareBy} onChange={(event) => { setComparisonCompareBy(event.target.value); setComparisonFocusA(""); setComparisonFocusB(""); }}>
                 <option value="level">Level of care</option>
                 <option value="province">Province</option>
                 <option value="district">District</option>
@@ -3225,6 +3625,16 @@ function App() {
               </select>
             </label>
           </div>
+
+          {comparisonCommodity !== "all" && <div className="comparison-commodity-context"><span>Comparing commodity</span><strong>{comparisonCommodity}</strong><button type="button" onClick={() => { setSelectedCommodity(comparisonCommodity); setQuery(comparisonCommodity); setActivePage("commodities"); }}>Back to Commodity Intelligence</button></div>}
+
+          {["province", "district"].includes(comparisonCompareBy) && comparisonFocusOptions.length > 0 && <div className="comparison-focus-mode">
+            <div className="comparison-focus-head"><div><p className="eyebrow dark">Side-by-side compare</p><h3>Choose two {comparisonCompareBy === "province" ? "provinces" : "districts"}</h3></div><div><label>First<select value={effectiveComparisonFocusA} onChange={(event) => setComparisonFocusA(event.target.value)}>{comparisonFocusOptions.filter((name) => name !== effectiveComparisonFocusB).map((name) => <option value={name} key={name}>{name}</option>)}</select></label><span>versus</span><label>Second<select value={effectiveComparisonFocusB} onChange={(event) => setComparisonFocusB(event.target.value)}>{comparisonFocusOptions.filter((name) => name !== effectiveComparisonFocusA).map((name) => <option value={name} key={name}>{name}</option>)}</select></label></div></div>
+            <div className="comparison-focus-cards">{comparisonFocusCards.map((row) => {
+              const availabilityDelta = normalizeRate(row.current.availability) - normalizeRate(row.previous.availability);
+              return <article key={row.name}><h4>{row.name}</h4><div><span><small>{comparisonPreviousLabel}</small><b>{formatPercent(row.previous.availability)}</b></span><em>→</em><span><small>{comparisonCurrentLabel}</small><b>{formatPercent(row.current.availability)}</b></span></div><p className={availabilityDelta >= 0 ? "positive" : "negative"}>{availabilityDelta >= 0 ? "▲" : "▼"} {Math.abs(availabilityDelta * 100).toFixed(1)}pp availability</p><dl><div><dt>Current MOS</dt><dd>{formatMos(row.current.mos)}</dd></div><div><dt>Stockouts</dt><dd>{row.current.stockout.toLocaleString()}</dd></div><div><dt>Facilities/rows</dt><dd>{row.current.rows.toLocaleString()}</dd></div></dl></article>;
+            })}</div>
+          </div>}
 
           <div className="comparison-overview">
             <div className="comparison-story">
@@ -4108,8 +4518,15 @@ function App() {
           {selectedStockItems.length ? <div className="table-scroll compact-table weekly-stock-table"><table><thead><tr><th>Commodity</th><th>Availability</th><th>Status</th></tr></thead><tbody>{selectedStockItems.map((item) => <tr key={`${item.category}-${item.name}`}><td>{item.name}</td><td>{formatPercent(item.availability)}</td><td><span className={item.availability > 0 ? "status-pill reported" : "status-pill missing"}>{item.status}</span></td></tr>)}</tbody></table></div> : <div className="empty-state">No commodity rows are available for this category in the selected stock report.</div>}
         </section>
       </div>}
-      {openCommodityFacility && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setOpenCommodityFacility(null)}>
-        <section className="commodity-detail-panel" role="dialog" aria-modal="true" aria-label="Commodity facility details" onMouseDown={(event) => event.stopPropagation()}>
+      {commodityMissingOpen && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setCommodityMissingOpen(false)}>
+        <section className="commodity-detail-panel commodity-missing-dialog" role="dialog" aria-modal="true" aria-label="Facilities missing commodity reports" onMouseDown={(event) => event.stopPropagation()}>
+          <div className="commodity-detail-head"><div><p className="eyebrow dark">Data-quality context</p><h2>Facilities that did not report this commodity</h2><span>{selectedCommodity} · {fieldData.label}</span></div><button type="button" onClick={() => setCommodityMissingOpen(false)}>Close</button></div>
+          <div className={`commodity-reporting-callout ${commodityReportingRate < 0.6 ? "warning" : ""}`}><strong>{formatPercent(commodityReportingRate)} reporting coverage</strong><p>{commodityKpiScopeRows.length} of {commodityExpectedFacilities.length} expected facilities submitted this commodity. Availability is calculated only from those {commodityKpiScopeRows.length} reporting facilities; the {commodityMissingFacilities.length} facilities below are not counted as stockouts.</p></div>
+          {commodityMissingFacilities.length ? <div className="table-scroll commodity-missing-table"><table><thead><tr><th>Province</th><th>District</th><th>Facility</th><th>Facility level</th><th>Action</th></tr></thead><tbody>{commodityMissingFacilities.map((facility) => <tr key={`${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}`}><td>{facility.province}</td><td>{facility.district}</td><td><strong>{facility.name}</strong></td><td>{facility.facilityLevel}</td><td><span className="comparison-signal amber">Verify submission</span></td></tr>)}</tbody></table></div> : <div className="empty-state">Every expected facility in the selected scope submitted this commodity.</div>}
+        </section>
+      </div>}
+      {openCommodityFacility && <div className="commodity-detail-backdrop commodity-facility-drawer-backdrop" role="presentation" onMouseDown={() => setOpenCommodityFacility(null)}>
+        <section className="commodity-detail-panel commodity-facility-drawer" role="dialog" aria-modal="true" aria-label="Facility commodity basket" onMouseDown={(event) => event.stopPropagation()}>
           <div className="commodity-detail-head">
             <div><p className="eyebrow dark">Commodity Intelligence &gt; {selectedCommodity} &gt; {openCommodityFacility.facility}</p><h2>{openCommodityFacility.facility}</h2><span>{openCommodityFacility.district} | {openCommodityFacility.province} | {openCommodityFacility.facilityLevel}</span></div>
             <button type="button" onClick={() => setOpenCommodityFacility(null)}>Close</button>
@@ -4121,6 +4538,14 @@ function App() {
             <div className={commodityStatusTone(commodityStockStatus(openCommodityFacility.mos))}><span>Current classification</span><strong>{commodityStockStatus(openCommodityFacility.mos)}</strong></div>
           </div>
           <div className="commodity-history"><h3>Submitted commodity trend</h3><p>Only periods with a submitted record are plotted. Missing submissions are not interpreted as stockouts.</p>{commodityFacilityHistory.length ? <div className="commodity-history-list">{commodityFacilityHistory.map((row) => <div key={row.reportDate}><span>{row.label}</span><b>SOH {Math.round(row.quantity).toLocaleString()}</b><b>AMC {Math.round(row.amc).toLocaleString()}</b><b>{formatMos(row.mos)} MOS</b><em>{commodityStockStatus(row.mos)}</em></div>)}</div> : <div className="empty-state">No submitted historical record was found for this commodity and facility.</div>}</div>
+          <div className="facility-basket-section">
+            <div className="facility-basket-head"><div><p className="eyebrow dark">Full facility picture</p><h3>Complete commodity basket</h3><span>{fieldData.label} · risk items shown first</span></div><div><b>{commodityFacilityBasketSummary.total}</b><span>commodities</span><b className="red">{commodityFacilityBasketSummary.stockouts}</b><span>stockouts</span><b className="amber">{commodityFacilityBasketSummary.belowPlan}</b><span>below plan</span><b>{formatPercent(commodityFacilityBasketSummary.total ? commodityFacilityBasketSummary.available / commodityFacilityBasketSummary.total : 0)}</b><span>available</span></div></div>
+            {commodityFacilityBasket.length ? <div className="table-scroll facility-basket-table"><table><thead><tr><th>Commodity</th><th>Programme</th><th>SOH</th><th>AMC</th><th>MOS</th><th>Stock status</th></tr></thead><tbody>{commodityFacilityBasket.map((row) => {
+              const status = commodityStockStatus(row.mos);
+              const tone = commodityStatusTone(status);
+              return <tr className={row.item === selectedCommodity ? "selected" : ""} key={row.item}><td><strong>{row.item}</strong>{row.item === selectedCommodity ? <small>Selected commodity</small> : null}</td><td>{row.programme}</td><td>{Math.round(row.quantity).toLocaleString()}</td><td>{Math.round(row.amc).toLocaleString()}</td><td className={`commodity-mos-cell tone-${tone}`}><strong>{formatMos(row.mos)}</strong></td><td className={`commodity-status-cell tone-${tone}`}><span>{status}</span></td></tr>;
+            })}</tbody></table></div> : <div className="empty-state">No commodity basket rows were submitted for this facility in the selected week.</div>}
+          </div>
           <div className="commodity-detail-note"><b>Reporting status:</b> Reported for {fieldData.label}. Quantity received, dispensed/consumed, losses, adjustments, and days out of stock are not present in the submitted tracer source and are therefore not estimated.</div>
         </section>
       </div>}
