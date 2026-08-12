@@ -7,7 +7,7 @@ from pathlib import Path
 import openpyxl
 
 
-JULY_WEEK4_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\DASH BOARD IDEAS\hospital dash board\tracer\outputs\july-week-4-cleaned-intake\JULY-WEEK-4-2026-CLEANED-TRACER-INTAKE.xlsx")
+JULY_WEEK4_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\july\28.07.26 summary reports.xlsx")
 
 
 WORKBOOKS = [
@@ -221,8 +221,8 @@ WORKBOOKS = [
     },
     {
         "path": JULY_WEEK4_CLEAN_WORKBOOK,
-        "sheet": "SUMMARY SHEET",
-        "source": "Approved cleaned July Week 4 tracer intake",
+        "sheet": "Sheet1",
+        "source": "28.07.26 summary reports.xlsx",
         "reportDate": "2026-07-26",
         "label": "Week 4 - 26 July 2026",
         "month": "2026-07",
@@ -1313,6 +1313,8 @@ def reporting_rate(reported, expected):
 
 def reporting_facility_type(facility_level):
     text = str(facility_level or "").upper()
+    if "PRIMARY CARE" in text or "PRIMARY FACILITY" in text:
+        return "Health Centres and Posts (combined)"
     if "HEALTH POST" in text:
         return "Health Posts"
     if "HEALTH CENTRE" in text or "HEALTH CENTER" in text:
@@ -1339,12 +1341,12 @@ def reporting_facility_type(facility_level):
         return "Level 1 Hospitals"
     if "LEVEL 3" in text or "TERTIARY" in text or "SPECIAL" in text:
         return "Level 3/Specialised Hospitals"
-    if "PRIMARY FACILITY" in text:
-        return "Primary - level not specified"
     return "Other reporting units"
 
 
 def build_reporting_quality(periods, expected_districts, expected_facilities):
+    primary_care_types = {"Health Centres", "Health Posts"}
+    combined_primary_care_type = "Health Centres and Posts (combined)"
     province_names = sorted({province for province, _district in expected_districts})
     district_names = sorted(expected_districts)
     expected_level_reports = {
@@ -1371,7 +1373,24 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
             for province, district, facility_level, _facility in present_facilities
             if district != "UNKNOWN"
         }
-        missing_districts = sorted(expected_districts - present_districts)
+        submitted_dho_districts = set()
+        partial_dho_districts = set()
+        hospital_only_districts = set()
+        for province, district in expected_districts:
+            reported_types = {
+                facility_type
+                for report_province, report_district, facility_type in present_level_reports
+                if report_province == province and report_district == district
+            }
+            combined_reported = combined_primary_care_type in reported_types
+            split_primary_reports = primary_care_types & reported_types
+            if combined_reported or split_primary_reports == primary_care_types:
+                submitted_dho_districts.add((province, district))
+            elif split_primary_reports:
+                partial_dho_districts.add((province, district))
+            elif reported_types:
+                hospital_only_districts.add((province, district))
+        missing_districts = sorted(expected_districts - submitted_dho_districts)
         missing_level_reports = sorted(expected_level_reports - present_level_reports)
 
         province_rows = []
@@ -1379,7 +1398,7 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
             expected_province_reports = {item for item in expected_level_reports if item[0] == province}
             reported_province_reports = expected_province_reports & present_level_reports
             expected_province_districts = {item for item in expected_districts if item[0] == province}
-            reported_province_districts = expected_province_districts & present_districts
+            reported_province_districts = expected_province_districts & submitted_dho_districts
             expected = len(expected_province_reports)
             reported = len(reported_province_reports)
             province_rows.append({
@@ -1396,8 +1415,14 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
         for province, district in district_names:
             expected_district_reports = {item for item in expected_level_reports if item[0] == province and item[1] == district}
             reported_district_reports = expected_district_reports & present_level_reports
-            expected = len(expected_district_reports)
-            reported = len(reported_district_reports)
+            reported_types = {item[2] for item in reported_district_reports}
+            combined_reported = combined_primary_care_type in reported_types
+            health_centre_reported = "Health Centres" in reported_types
+            health_post_reported = "Health Posts" in reported_types
+            submitted = combined_reported or (health_centre_reported and health_post_reported)
+            partial = not combined_reported and health_centre_reported != health_post_reported
+            expected = 1
+            reported = 1 if submitted else 0
             district_rows.append({
                 "province": province,
                 "name": district,
@@ -1405,6 +1430,11 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
                 "reported": reported,
                 "missing": max(expected - reported, 0),
                 "rate": reporting_rate(reported, expected),
+                "submitted": submitted,
+                "partial": partial,
+                "hospitalOnly": not submitted and not partial and bool(reported_types),
+                "healthCentreReported": health_centre_reported or combined_reported,
+                "healthPostReported": health_post_reported or combined_reported,
             })
 
         type_rows = []
@@ -1440,7 +1470,11 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
         type_rows.sort(key=lambda item: (item["province"], item["district"], item["type"]))
         facility_rows.sort(key=lambda item: (item["province"], item["district"], item["facilityLevel"], item["name"]))
 
+        period["counts"]["districtSubmissionFootprint"] = period["counts"]["districts"]
+        period["counts"]["districts"] = len(submitted_dho_districts)
         period["counts"]["expectedDistricts"] = len(expected_districts)
+        period["counts"]["partialDistricts"] = len(partial_dho_districts)
+        period["counts"]["hospitalOnlyDistricts"] = len(hospital_only_districts)
         period["counts"]["expectedFacilityUnits"] = len(expected_level_reports)
         period["counts"]["expectedLevelReports"] = len(expected_level_reports)
         period["counts"]["expectedNamedFacilityReports"] = len(expected_named_reports)
@@ -1456,6 +1490,7 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
             for province, district, facility_type in missing_level_reports[:100]
         ]
         period["dataQuality"] = {
+            "districtSubmissionRule": "Both Health Centre and Health Post reporting are required; a combined primary-care source counts for both. Hospital submissions do not count.",
             "provinces": province_rows,
             "districts": district_rows,
             "facilityTypes": type_rows,
@@ -1482,8 +1517,8 @@ def main():
         configs.append(config)
     for config in load_clean_workbook_configs(
         JULY_WEEK4_CLEAN_WORKBOOK,
-        "SUMMARY SHEET",
-        "Approved cleaned July Week 4 tracer intake",
+        "Sheet1",
+        "28.07.26 summary reports.xlsx",
     ):
         config["availabilityOverrides"] = availability_overrides
         configs.append(config)

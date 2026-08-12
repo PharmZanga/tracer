@@ -5,10 +5,15 @@ import { tracerReportingPeriods } from "../src/tracerFacilityDataJul.js";
 
 const week4 = tracerReportingPeriods.find((period) => period.id === "2026-07-26");
 
-test("July Week 4 uses the approved cleaned tracer intake", () => {
+test("July Week 4 uses the 28 July summary report source", () => {
   assert.ok(week4);
-  assert.equal(week4.source, "Approved cleaned July Week 4 tracer intake");
-  assert.equal(week4.counts.rows, 16781);
+  assert.equal(week4.source, "28.07.26 summary reports.xlsx");
+  assert.equal(week4.counts.rows, 24481);
+  // Raw submission footprint remains 115 districts because Nakonde submitted
+  // hospital data. DHO compliance is tested separately using the primary-care
+  // rule and is 111/116 for this week.
+  assert.equal(week4.districts.length, 115);
+  assert.equal(week4.national.availability, 0.8767);
 });
 
 test("confirmed Muchinga primary-care non-submissions are not stock records", () => {

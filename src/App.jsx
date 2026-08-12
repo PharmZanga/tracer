@@ -3,6 +3,7 @@ import { tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
 import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName } from "./commodityNormalization.js";
+import { primaryCareDistrictRows, primaryCareDistrictSummary } from "./reportingQuality.js";
 
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary" },
@@ -321,7 +322,7 @@ const approvedLevelOfCareDisplayOverrides = {
     level3: {
       mos: 2.9,
       availability: 0.78,
-      note: "Programme-approved Week 4 presentation value; the cleaned calculated result remains available for audit.",
+      note: "Programme-approved Week 4 presentation value from the 28 July tracer summary; the unadjusted facility rollup remains visible for audit.",
     },
   },
 };
@@ -1682,10 +1683,9 @@ function App() {
       .sort((a, b) => a.availability - b.availability || a.name.localeCompare(b.name))
     : [];
   const reportData = tracerReportingPeriods.find((period) => period.id === reportPeriodId) || tracerReportingPeriods.at(-1);
-  const reportSubmittedDistrictKeys = new Set((reportData.districts || []).map((row) => `${row.province}|${row.name}`));
-  const reportBaseRows = (reportData.dataQuality?.districts || [])
+  const reportBaseRows = primaryCareDistrictRows(reportData)
     .map((row) => {
-      const reported = reportSubmittedDistrictKeys.has(`${row.province}|${row.name}`) ? 1 : 0;
+      const reported = row.submitted ? 1 : 0;
       return {
         province: row.province,
         district: row.name,
@@ -1693,7 +1693,13 @@ function App() {
         reported,
         notReported: 1 - reported,
         missing: 1 - reported,
-        status: reported ? "Reported" : "Not Reported",
+        status: row.status,
+        partial: row.partial,
+        hospitalOnly: row.hospitalOnly,
+        healthCentreReported: row.healthCentreReported,
+        healthPostReported: row.healthPostReported,
+        combinedPrimaryCareReported: row.combinedPrimaryCareReported,
+        detailStatus: row.detailStatus,
         rate: reported,
         lastReportingPeriod: reported ? reportData.label : "-",
       };
@@ -1721,8 +1727,10 @@ function App() {
     acc.expected += row.expected || 0;
     acc.reported += row.reported || 0;
     acc.notReported += row.notReported || 0;
+    acc.partial += row.partial ? 1 : 0;
+    acc.hospitalOnly += row.hospitalOnly ? 1 : 0;
     return acc;
-  }, { expected: 0, reported: 0, notReported: 0 });
+  }, { expected: 0, reported: 0, notReported: 0, partial: 0, hospitalOnly: 0 });
   reportingKpis.rate = reportingKpis.expected ? reportingKpis.reported / reportingKpis.expected : 0;
   const reportingProvinceRows = aggregateQualityRows(reportingRows, "province", "name")
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -2138,11 +2146,15 @@ function App() {
   };
 
   const comments = fieldData.comments || [];
+  const fieldDistrictReporting = primaryCareDistrictSummary(fieldData);
+  const fieldDistrictsReportedInScope = fieldDistrictReporting.rows
+    .filter((row) => row.submitted)
+    .filter((row) => selectedProvince === "all" || row.province === selectedProvince).length;
   const expectedProvinces = 10;
   const reportingRate = expectedProvinces ? fieldData.counts.provinces / expectedProvinces : 0;
-  const expectedDistricts = fieldData.counts.expectedDistricts || fieldData.counts.districts;
+  const expectedDistricts = fieldDistrictReporting.expected;
   const expectedFacilityUnits = fieldData.counts.expectedLevelReports || fieldData.counts.expectedFacilityUnits || fieldData.counts.facilityUnits;
-  const missingDistricts = fieldData.counts.missingDistricts || 0;
+  const missingDistricts = fieldDistrictReporting.missing;
   const missingFacilityUnits = fieldData.counts.missingFacilityUnits || 0;
   const facilityAvailabilityTargetCount = filteredFacilities.filter((facility) => facility.availability >= 0.8).length;
   const facilityAvailabilityTargetRate = filteredFacilities.length ? facilityAvailabilityTargetCount / filteredFacilities.length : 0;
@@ -2165,23 +2177,36 @@ function App() {
   const qualityRangeLower = qualityRangeStart <= qualityRangeEnd ? qualityRangeStart : qualityRangeEnd;
   const qualityRangeUpper = qualityRangeStart <= qualityRangeEnd ? qualityRangeEnd : qualityRangeStart;
   const qualityRangePeriods = tracerReportingPeriods.filter((period) => period.month >= qualityRangeLower && period.month <= qualityRangeUpper);
-  const qualityRoster = qualityRangePeriods[0]?.dataQuality?.facilities || [];
-  const qualityProvinceOptions = [...new Set(qualityRoster.map((row) => row.province))].sort();
-  const qualityDistrictOptions = [...new Set(qualityRoster
+  // Data Quality must use the complete expected reporting universe, not the
+  // named facilities that happened to appear in the first selected period.
+  // The facilityTypes roster retains districts and levels with no submission,
+  // including Level 2 and non-reporting Muchinga districts.
+  const qualityDirectoryPeriod = qualityRangePeriods[0] || tracerReportingPeriods[0];
+  const qualityDistrictDirectory = qualityDirectoryPeriod?.dataQuality?.districts || [];
+  const qualityRoster = (qualityDirectoryPeriod?.dataQuality?.facilityTypes || []).map((row) => ({
+    province: row.province,
+    district: row.district,
+    facilityLevel: row.type,
+    facilityType: row.type,
+    name: `${row.district} — ${reportingFacilityLabel(row.type)}`,
+    isAggregate: true,
+  }));
+  const qualityProvinceOptions = [...new Set(qualityDistrictDirectory.map((row) => row.province))].sort();
+  const qualityDistrictOptions = [...new Set(qualityDistrictDirectory
     .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
-    .map((row) => row.district))].sort();
+    .map((row) => row.name))].sort();
   const qualityFacilityLevelOptions = [...facilityCareLevelOptions, ...specialisedCareLevelOptions]
     .filter((option) => qualityRoster
       .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
       .filter((row) => qualityDistrictFilter === "all" || row.district === qualityDistrictFilter)
       .some((row) => matchesFacilityCareLevel(row.facilityLevel, option.value)));
-  const qualityPeriodFacilityMaps = useMemo(() => new Map(qualityRangePeriods.map((period) => [period.id, new Map((period.dataQuality?.facilities || []).map((row) => [`${row.province}|${row.district}|${row.facilityLevel}|${row.name}`, row]))])), [qualityRangePeriods]);
+  const qualityPeriodFacilityMaps = useMemo(() => new Map(qualityRangePeriods.map((period) => [period.id, new Map((period.dataQuality?.facilityTypes || []).map((row) => [`${row.province}|${row.district}|${row.type}`, row]))])), [qualityRangePeriods]);
   const qualityFacilityHistories = useMemo(() => qualityRoster
     .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
     .filter((row) => qualityDistrictFilter === "all" || row.district === qualityDistrictFilter)
     .filter((row) => matchesFacilityCareLevel(row.facilityLevel, qualityFacilityLevelFilter))
     .map((facility) => {
-      const key = `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}`;
+      const key = `${facility.province}|${facility.district}|${facility.facilityLevel}`;
       const history = qualityRangePeriods.map((period) => {
         const row = qualityPeriodFacilityMaps.get(period.id)?.get(key);
         return { id: period.id, month: period.month, label: period.label, expected: true, reported: Boolean(row?.reported) };
@@ -2222,19 +2247,44 @@ function App() {
     const y = 100 - normalizeRate(row.rate) * 100;
     return `${x},${y}`;
   }).join(" ");
-  // Match the Reporting Rate tab exactly: one expected district counts as
-  // submitted only when that district has a tracer submission in the week.
+  const qualityGapTimelineRows = useMemo(() => qualityRangePeriods.map((period) => {
+    let expected = 0;
+    let reported = 0;
+    qualityFacilityHistories.forEach((facility) => {
+      const history = facility.history.find((row) => row.id === period.id);
+      if (history?.expected) {
+        expected += 1;
+        reported += history.reported ? 1 : 0;
+      }
+    });
+    return {
+      id: period.id,
+      label: period.label,
+      date: period.reportDate,
+      expected,
+      reported,
+      missing: Math.max(expected - reported, 0),
+      rate: expected ? reported / expected : 0,
+    };
+  }), [qualityRangePeriods, qualityFacilityHistories]);
+  const qualityGapScopeLabel = [
+    qualityProvinceFilter === "all" ? "Zambia" : qualityProvinceFilter,
+    qualityDistrictFilter === "all" ? "All districts" : qualityDistrictFilter,
+    facilityCareLevelLabel(qualityFacilityLevelFilter),
+  ].join(" · ");
+  // Match the Reporting Rate tab exactly: a DHO district submission requires
+  // both Health Centre and Health Post reporting. Level 1/2/3 hospital rows do
+  // not satisfy this rule.
   const qualityDistrictReportingTrendRows = useMemo(() => {
     const groups = new Map();
     qualityRangePeriods.forEach((period) => {
       const key = qualityGranularity === "month" ? period.month : period.id;
       const current = groups.get(key) || { id: key, label: qualityGranularity === "month" ? monthLabel(period.month) : period.label, expected: 0, reported: 0 };
-      const expectedRows = (period.dataQuality?.districts || [])
+      const expectedRows = primaryCareDistrictRows(period)
         .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
         .filter((row) => qualityDistrictFilter === "all" || row.name === qualityDistrictFilter);
-      const submittedDistrictKeys = new Set((period.districts || []).map((row) => `${row.province}|${row.name}`));
       current.expected += expectedRows.length;
-      current.reported += expectedRows.filter((row) => submittedDistrictKeys.has(`${row.province}|${row.name}`)).length;
+      current.reported += expectedRows.filter((row) => row.submitted).length;
       groups.set(key, current);
     });
     return [...groups.values()].map((row) => ({ ...row, missing: row.expected - row.reported, rate: row.expected ? row.reported / row.expected : 0 }));
@@ -2282,8 +2332,9 @@ function App() {
   const weeklyReportLibraryRows = useMemo(() => tracerReportingPeriods.map((period) => {
     const facilities = period.dataQuality?.facilities || [];
     const reported = facilities.filter((row) => row.reported).length;
-    const districts = period.counts?.districts || 0;
-    const expectedDistrictsForPeriod = period.counts?.expectedDistricts || districts;
+    const districtSummary = primaryCareDistrictSummary(period);
+    const districts = districtSummary.reported;
+    const expectedDistrictsForPeriod = districtSummary.expected;
     return {
       id: period.id,
       label: period.label,
@@ -2292,6 +2343,8 @@ function App() {
       provinces: period.counts?.provinces || 0,
       districts,
       expectedDistricts: expectedDistrictsForPeriod,
+      partialDistricts: districtSummary.partial,
+      hospitalOnlyDistricts: districtSummary.hospitalOnly,
       expectedFacilities: facilities.length,
       reportedFacilities: reported,
       rate: facilities.length ? reported / facilities.length : 0,
@@ -3072,7 +3125,7 @@ function App() {
             <div><span>Reporting units</span><strong>{filteredFacilities.length}</strong><small>{fieldData.counts.facilityUnits} in full report</small></div>
             <div><span>Stockout facilities</span><strong>{stockoutFacilityCount}</strong><small>At least one stockout item</small></div>
             <div><span>Low-stock facilities</span><strong>{lowStockFacilityCount}</strong><small>Below 2 MOS</small></div>
-            <div><span>Districts reporting</span><strong>{selectedProvince === "all" ? fieldData.counts.districts : districtsInScope.length}</strong><small>Province/district footprint</small></div>
+            <div><span>DHO districts reporting</span><strong>{fieldDistrictsReportedInScope}</strong><small>Health Centre + Health Post required</small></div>
           </div>
         </section>
 
@@ -3906,7 +3959,7 @@ function App() {
             </div>
             <div className="quality-compact-grid">
               <div className="quality-panel">
-                <div className="quality-panel-head"><div><h3>District reporting rate trend</h3><p>{qualityTimelineNarrative}</p></div><span>{qualityDistrictReportingTrendRows.length} periods</span></div>
+                <div className="quality-panel-head"><div><h3>DHO district reporting trend</h3><p>{qualityTimelineNarrative} Both Health Centre and Health Post reports are required; hospital reports are excluded.</p></div><span>{qualityDistrictReportingTrendRows.length} periods</span></div>
                 <div className="reporting-trend-graph compact"><div className="reporting-trend-axis">District reporting rate (%)</div><div className="reporting-trend-grid" aria-hidden="true">{[0, 25, 50, 75, 100].map((value) => <i key={value} style={{ bottom: `${value}%` }}><small>{value}%</small></i>)}</div><div className="reporting-trend-points" style={{ "--trend-points": qualityDistrictReportingTrendRows.length }}>{qualityDistrictReportingTrendRows.map((row) => <button type="button" className={qualityPointFilter === row.id ? "active" : ""} key={row.id} style={{ "--trend-rate": `${100 - normalizeRate(row.rate) * 100}%` }} onClick={() => setQualityPointFilter((current) => current === row.id ? "all" : row.id)}><b>{formatPercent(row.rate)}</b><span>{qualityGranularity === "month" ? row.label.replace(" 2026", "") : row.label.replace("Week ", "W")}</span></button>)}</div><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points={qualityDistrictReportingTrendPoints} /></svg></div>
               </div>
               <div className="quality-panel quality-compact-summary">
@@ -3915,9 +3968,15 @@ function App() {
                 <div className="quality-detail-actions"><button type="button" onClick={() => setQualityDetailDialog("districts")}>Open timeline details</button><button type="button" onClick={() => setQualityDetailDialog("followup")}>Open follow-up register</button></div>
               </div>
             </div>
+            <div className="quality-gap-timeline-panel">
+              <div className="quality-panel-head"><div><h3>Exact submission-gap timeline</h3><p>{qualityGapScopeLabel}. Red periods contain one or more missing reporting units; click a period to filter the follow-up list.</p></div><span>{qualityGapTimelineRows.filter((row) => row.missing > 0).length} periods with gaps</span></div>
+              <div className="quality-gap-timeline" style={{ "--gap-periods": Math.min(qualityGapTimelineRows.length, 14) }}>
+                {qualityGapTimelineRows.map((row) => <button type="button" className={`${row.missing ? "missing" : "reported"} ${qualityPointFilter === row.id ? "active" : ""}`} key={row.id} onClick={() => { setQualityGranularity("week"); setQualityPointFilter((current) => current === row.id ? "all" : row.id); setQualityTablePage(1); }} title={`${row.label}: ${row.reported} of ${row.expected} reporting units submitted`}><span>{row.label.replace(/^Week\s+/i, "W")}</span><b>{row.missing ? `${row.missing} missed` : "Complete"}</b><small>{row.reported}/{row.expected} received</small></button>)}
+              </div>
+            </div>
             <div className="weekly-library-preview">
               <div className="quality-panel-head"><div><h3>Weekly report library</h3><p>Latest submitted tracer reporting periods. National report files will open here once they are loaded.</p></div><button type="button" onClick={() => setQualityDetailDialog("library")}>View all reports</button></div>
-              <div className="table-scroll"><table><thead><tr><th>Reporting period</th><th>Provinces</th><th>Districts</th><th>Facility reporting units</th><th>Rate</th><th /></tr></thead><tbody>{weeklyReportLibraryRows.slice(0, 6).map((row) => <tr key={row.id}><td>{row.label}</td><td>{row.provinces}</td><td>{row.districts}/{row.expectedDistricts}</td><td>{row.reportedFacilities}/{row.expectedFacilities}</td><td><span className={`comparison-signal ${reportingTone(row.rate)}`}>{formatPercent(row.rate)}</span></td><td><button type="button" className="ghost-button" onClick={() => { setSelectedLibraryPeriodId(row.id); setQualityDetailDialog("pending-report"); }}>Open</button></td></tr>)}</tbody></table></div>
+              <div className="table-scroll"><table><thead><tr><th>Reporting period</th><th>Provinces</th><th>DHO districts</th><th>Facility reporting units</th><th>Rate</th><th /></tr></thead><tbody>{weeklyReportLibraryRows.slice(0, 6).map((row) => <tr key={row.id}><td>{row.label}</td><td>{row.provinces}</td><td title={`${row.partialDistricts} partial primary-care; ${row.hospitalOnlyDistricts} hospital-only`}>{row.districts}/{row.expectedDistricts}</td><td>{row.reportedFacilities}/{row.expectedFacilities}</td><td><span className={`comparison-signal ${reportingTone(row.rate)}`}>{formatPercent(row.rate)}</span></td><td><button type="button" className="ghost-button" onClick={() => { setSelectedLibraryPeriodId(row.id); setQualityDetailDialog("pending-report"); }}>Open</button></td></tr>)}</tbody></table></div>
             </div>
           </div>
           <div className="dq-detail-source">
@@ -4017,7 +4076,7 @@ function App() {
             <div>
               <p className="eyebrow dark">Reporting Rate</p>
               <h2>District and facility reporting performance</h2>
-              <p>Reporting rate is calculated from districts that submitted in the selected week divided by districts expected to submit. The facility list shows the reporting units actually submitted, not drug rows.</p>
+              <p>A district counts as reported only when its DHO submission includes both Health Centre and Health Post reporting. Combined primary-care source sheets count for both; Level 1, 2, or 3 hospital submissions never make the district count as reported.</p>
             </div>
           </div>
           <div className="reporting-filter-bar">
@@ -4064,8 +4123,8 @@ function App() {
           </div>
           <div className="stats-grid">
             <KpiCard label="Expected districts" value={reportingKpis.expected.toLocaleString()} sub="Districts expected to submit" />
-            <KpiCard label="Districts submitted" value={reportingKpis.reported.toLocaleString()} sub="Districts with a tracer submission" />
-            <KpiCard label="Districts missing" value={reportingKpis.notReported.toLocaleString()} sub="Districts without a tracer submission" tone="red" />
+            <KpiCard label="DHO districts submitted" value={reportingKpis.reported.toLocaleString()} sub="Both Health Centre and Health Post received" />
+            <KpiCard label="Districts not complete" value={reportingKpis.notReported.toLocaleString()} sub={`${reportingKpis.partial} partial · ${reportingKpis.hospitalOnly} hospital-only`} tone="red" />
             <KpiCard label="District reporting rate" value={formatPercent(reportingKpis.rate)} sub="Districts submitted / expected" tone={reportingTone(reportingKpis.rate)} />
             <KpiCard label="Reporting facilities" value={reportingFacilityRows.length.toLocaleString()} sub="Unique submitted reporting units" />
           </div>
@@ -4167,6 +4226,9 @@ function App() {
                     <th>Expected</th>
                     <th>Reported</th>
                     <th>Not Reported</th>
+                    <th>Health Centre</th>
+                    <th>Health Post</th>
+                    <th>DHO assessment</th>
                     <th>Reporting Rate %</th>
                   </tr>
                 </thead>
@@ -4178,6 +4240,9 @@ function App() {
                       <td>{row.expected.toLocaleString()}</td>
                       <td>{row.reported.toLocaleString()}</td>
                       <td>{row.notReported.toLocaleString()}</td>
+                      <td>{row.combinedPrimaryCareReported ? "Combined" : row.healthCentreReported ? "Received" : "Missing"}</td>
+                      <td>{row.combinedPrimaryCareReported ? "Combined" : row.healthPostReported ? "Received" : "Missing"}</td>
+                      <td><span className={`comparison-signal ${row.reported ? "green" : "red"}`}>{row.detailStatus}</span></td>
                       <td><span className={`comparison-signal ${reportingTone(row.rate)}`}>{formatPercent(row.rate)}</span></td>
                     </tr>
                   ))}
@@ -4558,8 +4623,8 @@ function App() {
             {selectedProvinceQuality ? <div className="quality-note"><strong>{selectedProvinceQuality.name}</strong><span>{selectedProvinceQuality.reported.toLocaleString()} of {selectedProvinceQuality.expected.toLocaleString()} expected district-level reports submitted, with {selectedProvinceQuality.missing.toLocaleString()} missing.</span></div> : null}
             {selectedProvince === "all" ? <div className="empty-state">Select a province in the top dashboard filter to see its district-level reporting.</div> : <div className="quality-level-sections">{qualityLevelSections.map((section) => <QualityLevelSection section={section} key={section.level} />)}</div>}
           </> : qualityDetailDialog === "library" ? <>
-            {selectedLibraryPeriod ? <div className="library-report-summary"><div><span>Selected reporting period</span><strong>{selectedLibraryPeriod.label}</strong><small>{selectedLibraryPeriod.source}</small></div><div><span>Province footprint</span><strong>{selectedLibraryPeriod.provinces} provinces</strong><small>Submitted in this period</small></div><div><span>District footprint</span><strong>{selectedLibraryPeriod.districts}/{selectedLibraryPeriod.expectedDistricts}</strong><small>Districts submitted / expected</small></div><div><span>Facility reporting units</span><strong>{selectedLibraryPeriod.reportedFacilities}/{selectedLibraryPeriod.expectedFacilities}</strong><small>{formatPercent(selectedLibraryPeriod.rate)} reporting rate</small></div></div> : null}
-            <div className="table-panel weekly-library-table"><div className="table-scroll"><table><thead><tr><th>Reporting period</th><th>Provinces</th><th>Districts</th><th>Facility reporting units</th><th>Reporting rate</th><th /></tr></thead><tbody>{weeklyReportLibraryRows.map((row) => <tr className={row.id === selectedLibraryPeriod?.id ? "selected-library-row" : ""} key={row.id}><td>{row.label}</td><td>{row.provinces}</td><td>{row.districts}/{row.expectedDistricts}</td><td>{row.reportedFacilities}/{row.expectedFacilities}</td><td><span className={`comparison-signal ${reportingTone(row.rate)}`}>{formatPercent(row.rate)}</span></td><td><button type="button" className="ghost-button" onClick={() => setSelectedLibraryPeriodId(row.id)}>Inspect</button></td></tr>)}</tbody></table></div></div>
+            {selectedLibraryPeriod ? <div className="library-report-summary"><div><span>Selected reporting period</span><strong>{selectedLibraryPeriod.label}</strong><small>{selectedLibraryPeriod.source}</small></div><div><span>Province footprint</span><strong>{selectedLibraryPeriod.provinces} provinces</strong><small>Submitted in this period</small></div><div><span>DHO district compliance</span><strong>{selectedLibraryPeriod.districts}/{selectedLibraryPeriod.expectedDistricts}</strong><small>{selectedLibraryPeriod.partialDistricts} partial · {selectedLibraryPeriod.hospitalOnlyDistricts} hospital-only</small></div><div><span>Facility reporting units</span><strong>{selectedLibraryPeriod.reportedFacilities}/{selectedLibraryPeriod.expectedFacilities}</strong><small>{formatPercent(selectedLibraryPeriod.rate)} reporting rate</small></div></div> : null}
+            <div className="table-panel weekly-library-table"><div className="table-scroll"><table><thead><tr><th>Reporting period</th><th>Provinces</th><th>DHO districts</th><th>Facility reporting units</th><th>Reporting rate</th><th /></tr></thead><tbody>{weeklyReportLibraryRows.map((row) => <tr className={row.id === selectedLibraryPeriod?.id ? "selected-library-row" : ""} key={row.id}><td>{row.label}</td><td>{row.provinces}</td><td title={`${row.partialDistricts} partial primary-care; ${row.hospitalOnlyDistricts} hospital-only`}>{row.districts}/{row.expectedDistricts}</td><td>{row.reportedFacilities}/{row.expectedFacilities}</td><td><span className={`comparison-signal ${reportingTone(row.rate)}`}>{formatPercent(row.rate)}</span></td><td><button type="button" className="ghost-button" onClick={() => setSelectedLibraryPeriodId(row.id)}>Inspect</button></td></tr>)}</tbody></table></div></div>
           </> : qualityDetailDialog === "pending-report" ? <div className="national-report-pending"><p className="eyebrow dark">Weekly National Tracer Report</p><h3>{selectedLibraryPeriod?.label}</h3><p>The national report for this reporting week has not yet been loaded. Once available, this window will open the uploaded report directly.</p><button type="button" onClick={() => setQualityDetailDialog("library")}>Back to report library</button></div> : <>
             <div className="reporting-filter-bar"><label><span>Reporting status</span><select value={qualityStatusFilter} onChange={(event) => setQualityStatusFilter(event.target.value)}><option value="non-reporting">Any reporting gap</option><option value="all">All reporting units</option><option value="Fully reported">Fully reported</option><option value="Minor reporting gaps">Minor reporting gaps</option><option value="Irregular reporting">Irregular reporting</option><option value="Persistent non-reporting">Persistent non-reporting</option><option value="No reporting">No reporting</option></select></label><label><span>Search</span><input value={qualitySearch} onChange={(event) => { setQualitySearch(event.target.value); setQualityTablePage(1); }} placeholder="Facility, district, or province" /></label><div className="export-actions"><button type="button" onClick={exportNonReportingCsv}>Export CSV</button><button type="button" onClick={() => window.print()}>Export PDF</button></div></div>
             <div className="table-panel non-reporting-table"><div className="table-scroll"><table><thead><tr><th>Province</th><th>District</th><th>Facility / reporting unit</th><th>Facility level</th><th>Expected</th><th>Submitted</th><th>Missed</th><th>Rate</th><th>Latest report</th><th>Status</th><th /></tr></thead><tbody>{visibleNonReportingFacilityRows.length ? visibleNonReportingFacilityRows.map((row) => <tr key={`${row.province}-${row.district}-${row.facilityLevel}-${row.name}`}><td>{row.province}</td><td>{row.district}</td><td>{row.name}</td><td>{row.facilityLevel}</td><td>{row.expectedReports}</td><td>{row.reportsSubmitted}</td><td>{row.missedReports}</td><td>{formatPercent(row.rate)}</td><td>{row.latestReport}</td><td><span className={`comparison-signal ${row.missedReports ? "red" : "green"}`}>{row.consistency}</span></td><td><button type="button" className="ghost-button" onClick={() => setOpenReportingFacility(row)}>History</button></td></tr>) : <tr><td colSpan="11">No expected reporting units match the selected filters.</td></tr>}</tbody></table></div><div className="non-reporting-pagination"><button type="button" disabled={qualityTableCurrentPage <= 1} onClick={() => setQualityTablePage((page) => page - 1)}>Previous</button><span>Page {qualityTableCurrentPage} of {qualityTablePageCount}</span><button type="button" disabled={qualityTableCurrentPage >= qualityTablePageCount} onClick={() => setQualityTablePage((page) => page + 1)}>Next</button></div></div>
@@ -4570,7 +4635,7 @@ function App() {
         <section className="commodity-detail-panel" role="dialog" aria-modal="true" aria-label="Facility reporting history" onMouseDown={(event) => event.stopPropagation()}>
           <div className="commodity-detail-head"><div><p className="eyebrow dark">Data Quality &gt; Non-Reporting Facilities &gt; {openReportingFacility.name}</p><h2>{openReportingFacility.name}</h2><span>{openReportingFacility.district} | {openReportingFacility.province} | {openReportingFacility.facilityLevel}</span></div><button type="button" onClick={() => setOpenReportingFacility(null)}>Close</button></div>
           <div className="commodity-detail-kpis"><div><span>Expected reports</span><strong>{openReportingFacility.expectedReports}</strong></div><div><span>Reports received</span><strong>{openReportingFacility.reportsSubmitted}</strong></div><div><span>Reporting rate</span><strong>{formatPercent(openReportingFacility.rate)}</strong></div><div className={openReportingFacility.missedReports ? "red" : "green"}><span>Consistency</span><strong>{openReportingFacility.consistency}</strong></div></div>
-          <div className="commodity-history"><h3>Period-by-period reporting history</h3><p>{monthLabel(qualityRangeLower)} to {monthLabel(qualityRangeUpper)}. A missing period is only shown because this unit is expected in the reporting universe.</p><div className="commodity-history-list">{openReportingFacility.history.map((row) => <div key={row.id}><span>{row.label}</span><b>Expected: Yes</b><b>Reported: {row.reported ? "Yes" : "No"}</b><em>{row.reported ? "Reported" : "Not reported"}</em></div>)}</div></div>
+          <div className="commodity-history"><h3>Period-by-period reporting history</h3><p>{monthLabel(qualityRangeLower)} to {monthLabel(qualityRangeUpper)}. Red columns identify the exact dates this reporting unit did not submit.</p><div className="facility-gap-graph">{openReportingFacility.history.map((row) => <div className={row.reported ? "reported" : "missing"} key={row.id} title={`${row.label}: ${row.reported ? "Reported" : "Not reported"}`}><i style={{ height: row.reported ? "100%" : "18%" }} /><span>{row.label.replace(/^Week\s+/i, "W")}</span><b>{row.reported ? "Yes" : "No"}</b></div>)}</div><div className="commodity-history-list">{openReportingFacility.history.map((row) => <div key={row.id}><span>{row.label}</span><b>Expected: Yes</b><b>Reported: {row.reported ? "Yes" : "No"}</b><em>{row.reported ? "Reported" : "Not reported"}</em></div>)}</div></div>
           <div className="commodity-detail-note"><b>Latest successful report:</b> {openReportingFacility.latestReport}. <b>Consecutive periods missed:</b> {openReportingFacility.consecutiveMissed}. Aggregate health-post and health-centre reporting units are shown where named facility submissions are not present in the source.</div>
         </section>
       </div>}
