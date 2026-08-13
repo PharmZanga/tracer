@@ -2861,9 +2861,47 @@ h1 {
   text-align: left;
 }
 
+button.stat {
+  width: 100%;
+  font: inherit;
+}
+
+button.stat:hover {
+  border-color: currentColor;
+  transform: translateY(-2px);
+}
+
 .stat.active {
   border-color: #1f7a4d;
   box-shadow: 0 0 0 3px rgba(31, 122, 77, 0.14), 0 10px 30px rgba(18, 36, 25, 0.06);
+}
+
+.reporting-active-filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid #cfe0d5;
+  border-radius: 8px;
+  background: #f4f9f6;
+  color: #4f6559;
+  font-size: 13px;
+}
+
+.reporting-active-filter button {
+  border: 1px solid #a8ccb7;
+  border-radius: 6px;
+  background: #fff;
+  color: #076d43;
+  padding: 7px 10px;
+  font-weight: 700;
+}
+
+#reporting-facility-results,
+#reporting-district-results {
+  scroll-margin-top: 110px;
 }
 
 .stat span,

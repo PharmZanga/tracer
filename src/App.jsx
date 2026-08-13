@@ -556,13 +556,14 @@ function TopRowsTable({ title, rows, onSelect, detail = "riskRows" }) {
   );
 }
 
-function KpiCard({ label, value, sub, tone = "green" }) {
+function KpiCard({ label, value, sub, tone = "green", onClick, active = false, title }) {
+  const Tag = onClick ? "button" : "div";
   return (
-    <div className={`stat stat-${tone}`}>
+    <Tag className={`stat stat-${tone}${active ? " active" : ""}`} type={onClick ? "button" : undefined} onClick={onClick} aria-pressed={onClick ? active : undefined} title={title}>
       <span>{label}</span>
       <strong>{value}</strong>
       <small>{sub}</small>
-    </div>
+    </Tag>
   );
 }
 
@@ -1504,6 +1505,7 @@ function App() {
   const [reportFacilityType, setReportFacilityType] = useState("all");
   const [reportFacilityName, setReportFacilityName] = useState("all");
   const [reportStatus, setReportStatus] = useState("all");
+  const [reportKpiFilter, setReportKpiFilter] = useState("all");
   const [reportDrillProvince, setReportDrillProvince] = useState("");
   const [reportDrillDistrict, setReportDrillDistrict] = useState("");
   const [comparisonPeriodType, setComparisonPeriodType] = useState("monthly");
@@ -1755,8 +1757,14 @@ function App() {
   const reportingScopeRows = reportBaseRows
     .filter((row) => reportProvince === "all" || row.province === reportProvince)
     .filter((row) => reportDistrict === "all" || row.district === reportDistrict);
+  const effectiveDistrictReportStatus = reportKpiFilter === "district-reported" ? "Reported"
+    : reportKpiFilter === "district-missing" ? "Not Reported"
+      : reportKpiFilter.startsWith("facility-") ? "all" : reportStatus;
+  const effectiveFacilityReportStatus = reportKpiFilter === "facility-reported" ? "Reported"
+    : reportKpiFilter === "facility-missing" ? "Not Reported"
+      : reportKpiFilter.startsWith("district-") ? "all" : reportStatus;
   const reportingRows = reportingScopeRows
-    .filter((row) => reportStatus === "all" || row.status === reportStatus);
+    .filter((row) => effectiveDistrictReportStatus === "all" || row.status === effectiveDistrictReportStatus);
   const reportingKpis = reportingScopeRows.reduce((acc, row) => {
     acc.expected += row.expected || 0;
     acc.reported += row.reported || 0;
@@ -1782,7 +1790,7 @@ function App() {
     .filter((row) => reportFacilityType === "all" || row.facilityType === reportFacilityType)
     .filter((row) => reportFacilityName === "all" || row.facilityName === reportFacilityName)
     .sort((a, b) => a.province.localeCompare(b.province) || a.district.localeCompare(b.district) || a.facilityType.localeCompare(b.facilityType));
-  const reportingFacilityRows = reportingFacilityScopeRows.filter((row) => reportStatus === "all" || row.status === reportStatus);
+  const reportingFacilityRows = reportingFacilityScopeRows.filter((row) => effectiveFacilityReportStatus === "all" || row.status === effectiveFacilityReportStatus);
   const reportingFacilityKpis = reportingFacilityScopeRows.reduce((summary, row) => {
     summary.expected += 1;
     if (row.status === "Reported") summary.received += 1;
@@ -2756,6 +2764,7 @@ function App() {
     setReportFacilityType("all");
     setReportFacilityName("all");
     setReportStatus("all");
+    setReportKpiFilter("all");
     setReportDrillProvince("");
     setReportDrillDistrict("");
   }
@@ -2772,6 +2781,12 @@ function App() {
     setReportDistrict(district);
     setReportDrillDistrict(district === "all" ? "" : district);
     setReportFacilityName("all");
+  }
+
+  function applyReportingKpiFilter(filter, _status, targetId) {
+    setReportKpiFilter(filter);
+    setReportStatus("all");
+    window.requestAnimationFrame(() => document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
   function buildReportingFollowup(facility) {
@@ -2812,6 +2827,7 @@ function App() {
     setReportFacilityType(facilityType);
     setReportFacilityName(selectedFacilityName || "all");
     setReportStatus("Not Reported");
+    setReportKpiFilter("facility-missing");
     setReportDrillProvince((facility?.province || selectedProvince) === "all" ? "" : facility?.province || selectedProvince);
     setReportDrillDistrict((facility?.district || selectedDistrict) === "all" ? "" : facility?.district || selectedDistrict);
     setActivePage("reporting");
@@ -4277,7 +4293,7 @@ function App() {
           <div className="section-head">
             <div>
               <p className="eyebrow dark">Reporting Rate</p>
-              <h2>{reportStatus === "Not Reported" ? `Facilities that did not report — ${reportData.label}` : "District and facility reporting performance"}</h2>
+              <h2>{effectiveFacilityReportStatus === "Not Reported" ? `Facilities that did not report — ${reportData.label}` : "District and facility reporting performance"}</h2>
               <p>A district counts as reported only when its DHO submission includes both Health Centre and Health Post reporting. Combined primary-care source sheets count for both; Level 1, 2, or 3 hospital submissions never make the district count as reported.</p>
               {reportFacilityName !== "all" ? <p className="active-reporting-context">Reporting unit: <b>{reportFacilityName}</b> <button type="button" onClick={() => setReportFacilityName("all")}>Clear</button></p> : null}
             </div>
@@ -4317,22 +4333,23 @@ function App() {
             </label>
             <label>
               <span>Report status</span>
-              <select value={reportStatus} onChange={(event) => setReportStatus(event.target.value)}>
+              <select value={reportStatus} onChange={(event) => { setReportStatus(event.target.value); setReportKpiFilter("dropdown"); }}>
                 <option value="all">All</option>
                 <option value="Reported">Reported</option>
                 <option value="Not Reported">Not Reported</option>
               </select>
             </label>
           </div>
-          <div className="stats-grid">
-            <KpiCard label="Expected districts" value={reportingKpis.expected.toLocaleString()} sub="Districts expected to submit" />
-            <KpiCard label="DHO districts submitted" value={reportingKpis.reported.toLocaleString()} sub="Both Health Centre and Health Post received" />
-            <KpiCard label="Districts not complete" value={reportingKpis.notReported.toLocaleString()} sub={`${reportingKpis.partial} partial · ${reportingKpis.hospitalOnly} hospital-only`} tone="red" />
-            <KpiCard label="District reporting rate" value={formatPercent(reportingKpis.rate)} sub="Districts submitted / expected" tone={reportingTone(reportingKpis.rate)} />
-            <KpiCard label="Facilities expected" value={reportingFacilityKpis.expected.toLocaleString()} sub="Expected units in current facility filters" />
-            <KpiCard label="Reports received" value={reportingFacilityKpis.received.toLocaleString()} sub="Valid tracer submissions received" />
-            <KpiCard label="Reports missing" value={reportingFacilityKpis.missing.toLocaleString()} sub="Expected units without a valid submission" tone={reportingFacilityKpis.missing ? "red" : undefined} />
+          <div className="stats-grid reporting-kpi-grid">
+            <KpiCard label="Expected districts" value={reportingKpis.expected.toLocaleString()} sub="Click to show all expected districts" onClick={() => applyReportingKpiFilter("district-all", "all", "reporting-district-results")} active={reportKpiFilter === "district-all"} title="Show all expected districts" />
+            <KpiCard label="DHO districts submitted" value={reportingKpis.reported.toLocaleString()} sub="Click to show districts with both Health Centre and Health Post received" onClick={() => applyReportingKpiFilter("district-reported", "Reported", "reporting-district-results")} active={reportKpiFilter === "district-reported"} title="Filter to submitted DHO districts" />
+            <KpiCard label="Districts not complete" value={reportingKpis.notReported.toLocaleString()} sub={`${reportingKpis.partial} partial · ${reportingKpis.hospitalOnly} hospital-only · click to filter`} tone="red" onClick={() => applyReportingKpiFilter("district-missing", "Not Reported", "reporting-district-results")} active={reportKpiFilter === "district-missing"} title="Filter to incomplete or non-reporting districts" />
+            <KpiCard label="District reporting rate" value={formatPercent(reportingKpis.rate)} sub="Click to show all districts behind this rate" tone={reportingTone(reportingKpis.rate)} onClick={() => applyReportingKpiFilter("district-rate", "all", "reporting-district-results")} active={reportKpiFilter === "district-rate"} title="Show the districts behind the reporting rate" />
+            <KpiCard label="Facilities expected" value={reportingFacilityKpis.expected.toLocaleString()} sub="Click to show all expected reporting units" onClick={() => applyReportingKpiFilter("facility-all", "all", "reporting-facility-results")} active={reportKpiFilter === "facility-all"} title="Show all expected facilities" />
+            <KpiCard label="Reports received" value={reportingFacilityKpis.received.toLocaleString()} sub="Click to show valid tracer submissions received" onClick={() => applyReportingKpiFilter("facility-reported", "Reported", "reporting-facility-results")} active={reportKpiFilter === "facility-reported"} title="Filter to facilities that reported" />
+            <KpiCard label="Reports missing" value={reportingFacilityKpis.missing.toLocaleString()} sub="Click to show expected units without a valid submission" tone={reportingFacilityKpis.missing ? "red" : undefined} onClick={() => applyReportingKpiFilter("facility-missing", "Not Reported", "reporting-facility-results")} active={reportKpiFilter === "facility-missing"} title="Filter to facilities that did not report" />
           </div>
+          {reportKpiFilter !== "all" && reportKpiFilter !== "dropdown" ? <div className="reporting-active-filter"><span>Active KPI filter: <b>{reportKpiFilter === "district-reported" ? "DHO districts submitted" : reportKpiFilter === "district-missing" ? "Districts not complete" : reportKpiFilter === "district-rate" || reportKpiFilter === "district-all" ? "All expected districts" : reportKpiFilter === "facility-reported" ? "Reports received" : reportKpiFilter === "facility-missing" ? "Reports missing" : "All expected facilities"}</b></span><button type="button" onClick={() => { setReportKpiFilter("all"); setReportStatus("all"); }}>Clear KPI filter</button></div> : null}
           <div className="reporting-drill-path">
             <button type="button" onClick={() => {
               setReportDrillProvince("");
@@ -4383,11 +4400,11 @@ function App() {
                 })}
               </div>
             </div>
-            <div className="quality-panel reporting-facilities">
+            <div className="quality-panel reporting-facilities" id="reporting-facility-results">
               <div className="quality-panel-head">
                 <div>
-                  <h3>{reportStatus === "Not Reported" ? "Facilities requiring reporting follow-up" : reportDrillDistrict ? `${reportDrillDistrict} reporting facilities` : "Reporting facilities"}</h3>
-                  <p>{reportStatus === "Not Reported" ? "No tracer was submitted for the selected reporting period. Stock position remains unknown." : "Each row is one expected reporting facility or aggregate facility level for the selected week."}</p>
+                  <h3>{effectiveFacilityReportStatus === "Not Reported" ? "Facilities requiring reporting follow-up" : reportDrillDistrict ? `${reportDrillDistrict} reporting facilities` : "Reporting facilities"}</h3>
+                  <p>{effectiveFacilityReportStatus === "Not Reported" ? "No tracer was submitted for the selected reporting period. Stock position remains unknown." : "Each row is one expected reporting facility or aggregate facility level for the selected week."}</p>
                 </div>
                 <span>{reportingFacilityRows.length} rows</span>
               </div>
@@ -4417,7 +4434,7 @@ function App() {
               </div>
             </div>
           </div>
-          <div className="table-panel reporting-table">
+          <div className="table-panel reporting-table" id="reporting-district-results">
             <div className="table-headline">
               <div>
                 <h2>Reporting rate detail</h2>
