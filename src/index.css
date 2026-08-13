@@ -2051,7 +2051,7 @@ h1 {
 
 .facility-alert-kpis {
   display: grid;
-  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
   gap: 10px;
 }
 
@@ -2088,6 +2088,14 @@ h1 {
   background: #fbfdfb;
   padding: 14px;
 }
+
+.facility-alert-list article.facility-not-reported { border: 2px solid #d92d20; background: #fff8f6; }
+.reporting-status-badge { display: inline-flex; width: fit-content; margin-top: 7px; padding: 4px 8px; border-radius: 999px; background: #e8f5ec; color: #126238 !important; font-size: 10px !important; font-weight: 850; }
+.reporting-facility-did-not-report, .reporting-report-submitted-but-incomplete { background: #ffe9e5; color: #b42318 !important; }
+.reporting-reported-late { background: #fff3d6; color: #925200 !important; }
+.facility-no-report-message { display: grid; gap: 6px; color: #7a271a; font-size: 12px; }
+.facility-no-report-message span { color: #73534d; }
+.facility-no-report-message b { color: #b42318; }
 
 .facility-alert-head {
   display: grid;
@@ -2222,6 +2230,8 @@ h1 {
   background: #dff1e6;
 }
 
+.open-tracer-button:disabled, .facility-title-button:disabled { cursor: not-allowed; opacity: .68; text-decoration: none; }
+
 .tracer-modal {
   width: min(1180px, calc(100vw - 36px));
   max-height: calc(100vh - 24px);
@@ -2339,6 +2349,14 @@ h1 {
   margin-bottom: 16px;
 }
 
+.availability-status-note, .facility-week-comparison { margin-bottom: 12px; border: 1px solid #cfe3d6; border-radius: 8px; background: #f4faf6; color: #365344; font-size: 12px; line-height: 1.5; padding: 10px 12px; }
+.facility-week-comparison { border-color: #d9e0dc; background: #fbfcfb; }
+.facility-tracer-tools { position: sticky; top: 91px; z-index: 4; display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin: 0 0 14px; padding: 10px; border: 1px solid #dbe8df; border-radius: 8px; background: rgba(255, 255, 255, .97); }
+.facility-tracer-tools label { display: grid; flex: 1 1 190px; gap: 5px; }
+.facility-tracer-tools label span { color: #51665a; font-size: 11px; font-weight: 800; }
+.facility-tracer-tools input, .facility-tracer-tools select, .facility-tracer-tools button { min-height: 38px; border: 1px solid #bfd3c6; border-radius: 6px; background: #fff; color: #183d2a; font: inherit; font-size: 12px; padding: 7px 9px; }
+.facility-tracer-tools button { background: #eef8f1; cursor: pointer; font-weight: 850; }
+
 .stock-status-strip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -2424,35 +2442,21 @@ h1 {
   line-height: 1.35;
 }
 
-.tracer-detail-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.tracer-detail-grid h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-}
-
-.tracer-detail-grid h3 small {
-  color: #6a7a70;
-  font-size: 12px;
-  font-weight: 800;
-  margin-left: 6px;
-}
+.tracer-detail-sections { display: grid; gap: 10px; }
+.facility-tracer-section { border: 1px solid #dce8e0; border-radius: 8px; background: #fff; }
+.facility-tracer-section summary { display: flex; justify-content: space-between; gap: 12px; cursor: pointer; padding: 12px 14px; color: #173d29; }
+.facility-tracer-section summary span { color: #607269; font-size: 11px; font-weight: 800; }
 
 .tracer-detail-table {
-  max-height: 420px;
-  overflow: auto;
-  border: 1px solid #e1e9e4;
-  border-radius: 8px;
+  overflow-x: auto;
+  border-top: 1px solid #e1e9e4;
 }
 
 .tracer-detail-table table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 560px;
+  table-layout: fixed;
+  min-width: 1080px;
 }
 
 .tracer-detail-table th,
@@ -5091,6 +5095,15 @@ td.neutral {
   border-top: 3px solid #247e55;
   background: #fff;
 }
+
+.tracer-detail-table th:first-child, .tracer-detail-table td:first-child { width: 19%; }
+.tracer-detail-table th:nth-child(2), .tracer-detail-table td:nth-child(2) { width: 11%; }
+.tracer-detail-table th:nth-child(8), .tracer-detail-table td:nth-child(8) { width: 15%; }
+.tracer-detail-table th:last-child, .tracer-detail-table td:last-child { width: 22%; }
+.calculated-mos-note { display: block; margin-top: 3px; color: #7b5900; font-size: 9px; line-height: 1.25; }
+.data-quality-flag { display: inline-flex; margin: 0 3px 3px 0; padding: 3px 5px; border-radius: 999px; background: #fff1dd; color: #8a4f00; font-size: 9px; font-weight: 800; }
+.view-all-tracer { margin: 9px 12px 12px; border: 1px solid #a9cbb6; border-radius: 5px; background: #f5faf7; color: #126238; cursor: pointer; font-size: 11px; font-weight: 850; padding: 6px 9px; }
+.tracer-row-hidden { display: none; }
 .comparison-commodity-context { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; margin-top: 12px; padding: 10px 12px; border-left: 4px solid #08764b; background: #edf7f1; color: #51675b; font-size: 11px; }
 .comparison-commodity-context strong { flex: 1; min-width: 240px; color: #143c2a; }
 .comparison-commodity-context button { padding: 6px 9px; border: 1px solid #8dbca3; background: #fff; color: #086542; cursor: pointer; font: inherit; font-weight: 800; }
@@ -6327,6 +6340,16 @@ td.neutral {
     min-width: 0;
     font-size: 11px;
   }
+
+  .printing-tracer .control-tower-app > *:not(.modal-backdrop) { display: none !important; }
+  .printing-tracer .modal-backdrop { position: static; display: block; padding: 0; background: #fff; }
+  .printing-tracer .tracer-modal { width: 100%; max-height: none; overflow: visible; box-shadow: none; padding: 0; }
+  .printing-tracer .tracer-modal .modal-head { position: static; margin: 0 0 12px; padding: 0 0 12px; box-shadow: none; }
+  .printing-tracer .modal-actions, .printing-tracer .modal-switcher, .printing-tracer .facility-tracer-tools, .printing-tracer .view-all-tracer { display: none !important; }
+  .printing-tracer .facility-tracer-section { break-inside: avoid; }
+  .printing-tracer .tracer-row-hidden { display: table-row; }
+  .printing-tracer .tracer-detail-table { overflow: visible; }
+  .printing-tracer .tracer-detail-table table { min-width: 0; table-layout: auto; font-size: 8px; }
 }
 /* Startup fallback remains usable even if a data row prevents the dashboard from rendering. */
 .startup-error {

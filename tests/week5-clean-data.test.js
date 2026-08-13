@@ -5,6 +5,7 @@ import test from "node:test";
 import { tracerReportingPeriods } from "../src/tracerFacilityData.js";
 import { primaryCareDistrictRows, primaryCareDistrictSummary } from "../src/reportingQuality.js";
 import { buildRedistributionCandidates } from "../src/redistribution.js";
+import { analyseFacilityTracer } from "../src/facilityTracerAnalysis.js";
 
 const week5 = tracerReportingPeriods.find((period) => period.id === "2026-08-02");
 
@@ -77,4 +78,25 @@ test("Week 5 redistribution recommendations preserve the source safety reserve",
     assert.ok(item.sourceMosAfter >= 1);
     assert.ok(item.proposedTransferQty > 0);
   });
+});
+
+test("Matero Level 1 preserves submitted 80% availability while correcting stock status", () => {
+  const facility = week5.facilities.find((row) => row.name === "MATERO LEVEL 1");
+  assert.ok(facility);
+  assert.equal(facility.availability, 0.8);
+  const { dictionaries, rows } = week5.commodityFacilityData;
+  const materoRows = rows
+    .filter(([province, district, level, reportingUnit]) => dictionaries.provinces[province] === facility.province
+      && dictionaries.districts[district] === facility.district
+      && dictionaries.levels[level] === facility.facilityLevel
+      && dictionaries.facilities[reportingUnit] === facility.name)
+    .map(([, , , , item, programme, quantity, amc, mos]) => ({
+      item: dictionaries.items[item], programme: dictionaries.programmes[programme], program: dictionaries.programmes[programme], quantity, amc, mos,
+    }));
+  const analysis = analyseFacilityTracer(materoRows);
+  assert.equal(analysis.total, 50);
+  assert.equal(Math.round(facility.availability * analysis.total), 40);
+  assert.ok(analysis.byStatus["Confirmed stock-out"].every((item) => item.quantity === 0));
+  assert.ok(analysis.items.filter((item) => item.quantity > 0).every((item) => item.status !== "Confirmed stock-out"));
+  assert.equal(Object.values(analysis.byStatus).reduce((sum, items) => sum + items.length, 0), analysis.total);
 });
