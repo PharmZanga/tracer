@@ -4,6 +4,43 @@ export const DISTRICT_PRIMARY_CARE_LEVELS = Object.freeze({
   combined: "PRIMARY CARE - NOT SPECIFIED",
 });
 
+export function facilityReportingKey(facility) {
+  return [facility?.province, facility?.district, facility?.facilityLevel, facility?.name || facility?.facility]
+    .map((value) => String(value || "").trim().toUpperCase())
+    .join("|");
+}
+
+// Reconcile the expected-facility roster with actual submitted tracer rows.
+// The source roster occasionally contains duplicate units or leaves a unit
+// flagged as missing even though its tracer is present in period.facilities.
+// One unique reporting unit is returned for each identity, and an actual
+// tracer submission always takes precedence over a stale missing flag.
+export function reconciledExpectedFacilityRows(period) {
+  const submittedKeys = new Set((period?.facilities || []).map(facilityReportingKey));
+  const rowsByFacility = new Map();
+
+  (period?.dataQuality?.facilities || []).forEach((facility) => {
+    const key = facilityReportingKey(facility);
+    const previous = rowsByFacility.get(key);
+    const rosterReported = Boolean(facility.reported) || Boolean(previous?.rosterReported);
+    const hasTracerSubmission = submittedKeys.has(key);
+    rowsByFacility.set(key, {
+      ...(previous || facility),
+      ...facility,
+      rosterReported,
+      hasTracerSubmission,
+      reported: rosterReported || hasTracerSubmission,
+      reconciliationStatus: hasTracerSubmission && !rosterReported
+        ? "Roster marked missing — tracer received"
+        : previous
+          ? "Duplicate expected unit reconciled"
+          : "Roster and tracer reconciled",
+    });
+  });
+
+  return [...rowsByFacility.values()];
+}
+
 // District reporting is a DHO measure. Hospital reports are deliberately kept
 // outside this calculation, even when a Level 1/2/3 hospital is located in the
 // district. A combined primary-care row is accepted because several source

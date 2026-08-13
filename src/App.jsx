@@ -3,7 +3,7 @@ import { tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
 import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName } from "./commodityNormalization.js";
-import { primaryCareDistrictRows, primaryCareDistrictSummary } from "./reportingQuality.js";
+import { primaryCareDistrictRows, primaryCareDistrictSummary, reconciledExpectedFacilityRows } from "./reportingQuality.js";
 import { buildRedistributionCandidates } from "./redistribution.js";
 import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTracerAnalysis.js";
 
@@ -1719,12 +1719,13 @@ function App() {
         lastReportingPeriod: reported ? reportData.label : "-",
       };
     });
-  const reportExpectedFacilityRows = (reportData.dataQuality?.facilities || [])
+  const reportExpectedFacilityRows = reconciledExpectedFacilityRows(reportData)
     .map((facility) => {
       const previous = tracerReportingPeriods
         .filter((period) => period.reportDate < reportData.reportDate)
         .sort((a, b) => b.reportDate.localeCompare(a.reportDate))
-        .find((period) => (period.dataQuality?.facilities || []).some((candidate) => candidate.reported && facilityIdentityKey(candidate) === facilityIdentityKey(facility)));
+        .find((period) => (period.facilities || []).some((candidate) => facilityIdentityKey(candidate) === facilityIdentityKey(facility))
+          || (period.dataQuality?.facilities || []).some((candidate) => candidate.reported && facilityIdentityKey(candidate) === facilityIdentityKey(facility)));
       return {
         province: facility.province,
         district: facility.district,
@@ -1897,7 +1898,7 @@ function App() {
       overstockItemCount: analysis.byStatus.Overstocked.length,
     };
   }), [filteredFacilities, facilityCommodityRows]);
-  const missingExpectedFacilities = useMemo(() => (fieldData.dataQuality?.facilities || [])
+  const missingExpectedFacilities = useMemo(() => reconciledExpectedFacilityRows(fieldData)
     .filter((facility) => !facility.reported)
     .filter((facility) => !correctedReportingFacilities.some((submitted) => facilityIdentityKey(submitted) === facilityIdentityKey(facility)))
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
