@@ -41,6 +41,36 @@ export function reconciledExpectedFacilityRows(period) {
   return [...rowsByFacility.values()];
 }
 
+// Build the complete reporting universe used by both Facility Alerts and the
+// Reporting Rate tab. Expected roster rows are retained when no tracer was
+// submitted, while submitted tracer rows are added (or replace their matching
+// roster row). This also removes duplicate submissions by facility identity.
+export function facilityReportingRows(period) {
+  const rowsByFacility = new Map(
+    reconciledExpectedFacilityRows(period).map((facility) => [
+      facilityReportingKey(facility),
+      { ...facility, rosterExpected: true },
+    ]),
+  );
+
+  (period?.facilities || []).forEach((facility) => {
+    const key = facilityReportingKey(facility);
+    const expected = rowsByFacility.get(key);
+    rowsByFacility.set(key, {
+      ...(expected || {}),
+      ...facility,
+      reported: true,
+      rosterExpected: Boolean(expected),
+      hasTracerSubmission: true,
+      reconciliationStatus: expected
+        ? "Expected unit — tracer received"
+        : "Submitted tracer added to reporting universe",
+    });
+  });
+
+  return [...rowsByFacility.values()];
+}
+
 // District reporting is a DHO measure. Hospital reports are deliberately kept
 // outside this calculation, even when a Level 1/2/3 hospital is located in the
 // district. A combined primary-care row is accepted because several source
