@@ -325,6 +325,27 @@ const approvedLevelOfCareDisplayOverrides = {
       note: "Programme-approved Week 4 presentation value from the 28 July tracer summary; the unadjusted facility rollup remains visible for audit.",
     },
   },
+  "2026-08-02": {
+    primary: { mos: 3.5, availability: 0.93, note: "Programme-approved July Week 5 presentation value from the 2 August Power BI tracer summary; the cleaned rollup remains visible for audit." },
+    level1: { mos: 3.2, availability: 0.81, note: "Programme-approved July Week 5 presentation value from the 2 August Power BI tracer summary; the cleaned rollup remains visible for audit." },
+    level2: { mos: 2.8, availability: 0.78, note: "Programme-approved July Week 5 presentation value from the 2 August Power BI tracer summary; the cleaned rollup remains visible for audit." },
+    level3: { mos: 2.2, availability: 0.74, note: "Programme-approved July Week 5 presentation value from the 2 August Power BI tracer summary; the cleaned rollup remains visible for audit." },
+  },
+};
+
+const approvedProvincePerformanceOverrides = {
+  "2026-08-02": {
+    "NORTH-WESTERN PROVINCE": { mos: 4.3, availability: 0.88 },
+    "MUCHINGA PROVINCE": { mos: 3.8, availability: 0.86 },
+    "CENTRAL PROVINCE": { mos: 3.7, availability: 0.94 },
+    "SOUTHERN PROVINCE": { mos: 3.4, availability: 0.88 },
+    "LUAPULA PROVINCE": { mos: 3.4, availability: 0.86 },
+    "LUSAKA PROVINCE": { mos: 3.3, availability: 0.87 },
+    "NORTHERN PROVINCE": { mos: 3.3, availability: 0.88 },
+    "EASTERN PROVINCE": { mos: 3.0, availability: 0.88 },
+    "COPPERBELT PROVINCE": { mos: 2.8, availability: 0.88 },
+    "WESTERN PROVINCE": { mos: 2.7, availability: 0.85 },
+  },
 };
 
 const facilityCareLevelOptions = [
@@ -1529,7 +1550,7 @@ function App() {
   const [commodityMissingOpen, setCommodityMissingOpen] = useState(false);
   const commodityTableRef = useRef(null);
   const [qualityRangeStart, setQualityRangeStart] = useState("2026-01");
-  const [qualityRangeEnd, setQualityRangeEnd] = useState("2026-06");
+  const [qualityRangeEnd, setQualityRangeEnd] = useState(tracerReportingPeriods.at(-1)?.month || "2026-06");
   const [qualityGranularity, setQualityGranularity] = useState("month");
   const [qualityProvinceFilter, setQualityProvinceFilter] = useState("all");
   const [qualityDistrictFilter, setQualityDistrictFilter] = useState("all");
@@ -1785,7 +1806,22 @@ function App() {
 
   const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
   const fieldAverageMos = cappedAverageMos(filteredCommodityRows);
+  const isNationalUnfilteredScope = selectedProvince === "all"
+    && selectedDistrict === "all"
+    && selectedFacilityLevel === "all"
+    && selectedFacility === "all";
   const scopedProvinceRows = aggregateRollups(filteredFacilities, "province")
+    .map((row) => {
+      const displayOverride = isNationalUnfilteredScope ? approvedProvincePerformanceOverrides[fieldData.id]?.[row.name] : null;
+      return displayOverride ? {
+        ...row,
+        calculatedAvailability: row.availability,
+        calculatedMos: row.mos,
+        availability: displayOverride.availability,
+        mos: displayOverride.mos,
+        displayOverride,
+      } : row;
+    })
     .sort((a, b) => b.availability - a.availability || b.rows - a.rows);
   const scopedDistrictRows = aggregateRollups(filteredFacilities, "district")
     .sort((a, b) => b.riskRows - a.riskRows || a.availability - b.availability);
@@ -1794,10 +1830,6 @@ function App() {
     const commodityRows = filteredCommodityRows.filter((row) => careLevelBucket(row.facilityLevel) === bucket.id);
     const calculatedRollup = combineRollups(facilities, makeEmptyRollup(bucket.label));
     const calculatedMos = cappedAverageMos(commodityRows);
-    const isNationalUnfilteredScope = selectedProvince === "all"
-      && selectedDistrict === "all"
-      && selectedFacilityLevel === "all"
-      && selectedFacility === "all";
     const displayOverride = isNationalUnfilteredScope
       ? approvedLevelOfCareDisplayOverrides[fieldData.id]?.[bucket.id]
       : null;
@@ -3342,6 +3374,7 @@ function App() {
               <p className="eyebrow dark">Facility To National Drilldown</p>
               <h2>Province, district, facility, programme, and commodity visibility</h2>
               <p>Click a province or district to narrow the reporting units and commodity alerts.</p>
+              {isNationalUnfilteredScope && approvedProvincePerformanceOverrides[fieldData.id] ? <p className="data-warning-label">Province MOS and availability use the programme-approved Power BI presentation values for {fieldData.label}; cleaned calculations remain available in the underlying tracer data.</p> : null}
             </div>
           </div>
           <div className="field-kpis">
