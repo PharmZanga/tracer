@@ -45,6 +45,7 @@ test("existing facility workflow exposes reporting states, filters and complete 
   assert.match(appSource, /Clear status filters/);
   assert.match(appSource, /join\(" OR "\)/);
   assert.match(appSource, /Facilities that did not report/);
+  assert.match(appSource, /const reportingKpis = reportingScopeRows\.reduce/);
   assert.match(appSource, /Submitted tracer availability/);
   assert.match(appSource, /Search commodity/);
   assert.match(appSource, /All programmes/);
