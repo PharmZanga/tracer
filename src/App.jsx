@@ -1752,11 +1752,12 @@ function App() {
   const reportDistrictOptions = [...new Set(reportBaseRows
     .filter((row) => reportProvince === "all" || row.province === reportProvince)
     .map((row) => row.district))].sort();
-  const reportingRows = reportBaseRows
+  const reportingScopeRows = reportBaseRows
     .filter((row) => reportProvince === "all" || row.province === reportProvince)
-    .filter((row) => reportDistrict === "all" || row.district === reportDistrict)
+    .filter((row) => reportDistrict === "all" || row.district === reportDistrict);
+  const reportingRows = reportingScopeRows
     .filter((row) => reportStatus === "all" || row.status === reportStatus);
-  const reportingKpis = reportingRows.reduce((acc, row) => {
+  const reportingKpis = reportingScopeRows.reduce((acc, row) => {
     acc.expected += row.expected || 0;
     acc.reported += row.reported || 0;
     acc.notReported += row.notReported || 0;
