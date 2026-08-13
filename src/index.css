@@ -808,6 +808,28 @@ select:focus-visible {
   max-width: 440px;
 }
 
+.action-page-size {
+  display: grid;
+  gap: 5px;
+  min-width: 110px;
+}
+
+.action-page-size span {
+  color: #51665a;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.action-page-size select {
+  min-height: 40px;
+  padding: 8px 28px 8px 10px;
+  border: 1px solid #cad8ce;
+  border-radius: 6px;
+  background: #fff;
+  color: #17211a;
+  font: inherit;
+}
+
 .action-tracker-tools {
   display: flex;
   flex-wrap: wrap;
@@ -1042,6 +1064,38 @@ select:focus-visible {
   border-color: #e6c273;
   background: #fff8e8;
   color: #875300;
+}
+
+.action-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 4px;
+  color: #607267;
+  font-size: 11px;
+}
+
+.action-pagination button {
+  min-width: 82px;
+  min-height: 32px;
+  border: 1px solid #9dc6ab;
+  border-radius: 5px;
+  background: #fff;
+  color: #16693f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.action-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+@media (max-width: 720px) {
+  .action-pagination { align-items: stretch; flex-direction: column; text-align: center; }
 }
 
 .redistribution-table p {

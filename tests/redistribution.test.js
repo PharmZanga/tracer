@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import { buildRedistributionCandidates } from "../src/redistribution.js";
 
 const row = (overrides = {}) => ({
@@ -66,4 +67,14 @@ test("only matches urgent receivers with zero quantity and zero MOS", () => {
   ]);
 
   assert.equal(results.length, 0);
+});
+
+test("action tracker offers 10, 50 and 100 row pages", () => {
+  const appSource = fs.readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+  assert.match(appSource, /useState\(10\)/);
+  assert.match(appSource, /<option value="10">10<\/option>/);
+  assert.match(appSource, /<option value="50">50<\/option>/);
+  assert.match(appSource, /<option value="100">100<\/option>/);
+  assert.match(appSource, /visibleActionCommodityCandidates/);
+  assert.match(appSource, /Showing \{visibleActionCommodityCandidates\.length\} of \{actionCommodityCandidates\.length\} transfers/);
 });

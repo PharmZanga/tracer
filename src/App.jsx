@@ -1515,6 +1515,8 @@ function App() {
   const [predictiveCommodityStatus, setPredictiveCommodityStatus] = useState("at-risk");
   const [predictiveCommodityPage, setPredictiveCommodityPage] = useState(1);
   const [actionCommodityQuery, setActionCommodityQuery] = useState("");
+  const [actionPageSize, setActionPageSize] = useState(10);
+  const [actionPage, setActionPage] = useState(1);
   const [actionUpdates, setActionUpdates] = useState(() => {
     try {
       return JSON.parse(window.localStorage.getItem("tracer-action-updates") || "{}") || {};
@@ -1746,11 +1748,12 @@ function App() {
     .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict)
     .filter((facility) => matchesFacilityCareLevel(facility.facilityLevel, selectedFacilityLevel))
     .filter((facility) => selectedFacility === "all" || `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}` === selectedFacility);
-  const filteredCommodityRows = commodityRowsFromPeriod(fieldData)
+  const periodCommodityRows = useMemo(() => commodityRowsFromPeriod(fieldData), [fieldData]);
+  const filteredCommodityRows = useMemo(() => periodCommodityRows
     .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
     .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
     .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
-    .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility);
+    .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility), [periodCommodityRows, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
 
   const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
   const fieldAverageMos = cappedAverageMos(filteredCommodityRows);
@@ -1800,8 +1803,11 @@ function App() {
   const worstProvince = [...scopedProvinceRows].sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)[0];
   const stockoutFacilityCount = filteredFacilities.filter((facility) => facility.stockoutItemCount > 0).length;
   const lowStockFacilityCount = filteredFacilities.filter((facility) => facility.lowStockItemCount > 0).length;
-  const redistributionCandidates = buildRedistributionCandidates(filteredCommodityRows);
-  const actionCommodityCandidates = redistributionCandidates.filter((item) => !actionCommodityQuery.trim() || item.commodity.toLowerCase().includes(actionCommodityQuery.trim().toLowerCase()));
+  const redistributionCandidates = useMemo(() => buildRedistributionCandidates(filteredCommodityRows), [filteredCommodityRows]);
+  const actionCommodityCandidates = useMemo(() => redistributionCandidates.filter((item) => !actionCommodityQuery.trim() || item.commodity.toLowerCase().includes(actionCommodityQuery.trim().toLowerCase())), [redistributionCandidates, actionCommodityQuery]);
+  const actionPageCount = Math.max(1, Math.ceil(actionCommodityCandidates.length / actionPageSize));
+  const actionCurrentPage = Math.min(actionPage, actionPageCount);
+  const visibleActionCommodityCandidates = actionCommodityCandidates.slice((actionCurrentPage - 1) * actionPageSize, actionCurrentPage * actionPageSize);
   const actionSummary = actionCommodityCandidates.reduce((summary, item) => {
     const status = actionUpdates[redistributionActionKey(item)]?.status || "Open";
     summary[status] = (summary[status] || 0) + 1;
@@ -4415,7 +4421,15 @@ function App() {
             <div className="action-tracker-tools">
               <label className="action-commodity-search">
                 <span>Search medicine</span>
-                <input value={actionCommodityQuery} onChange={(event) => setActionCommodityQuery(event.target.value)} placeholder="Search by commodity name" />
+                <input value={actionCommodityQuery} onChange={(event) => { setActionCommodityQuery(event.target.value); setActionPage(1); }} placeholder="Search by commodity name" />
+              </label>
+              <label className="action-page-size">
+                <span>Rows to show</span>
+                <select value={actionPageSize} onChange={(event) => { setActionPageSize(Number(event.target.value)); setActionPage(1); }}>
+                  <option value="10">10</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
               </label>
               <div className="action-user-identity"><span>Commenting as</span><strong>{actionUserEmail || "Signed-in email loading..."}</strong></div>
               <span className={`action-sync ${actionSyncState}`}>{actionSyncState === "shared" ? "Shared comments connected" : actionSyncState === "loading" ? "Connecting comments" : "Comments unavailable"}</span>
@@ -4435,7 +4449,7 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  {actionCommodityCandidates.length ? actionCommodityCandidates.map((item, index) => {
+                  {visibleActionCommodityCandidates.length ? visibleActionCommodityCandidates.map((item, index) => {
                     const actionKey = redistributionActionKey(item);
                     const actionUpdate = actionUpdates[actionKey] || {};
                     const comments = Array.isArray(actionComments[actionKey]) ? actionComments[actionKey] : [];
@@ -4480,6 +4494,11 @@ function App() {
                   )}
                 </tbody>
               </table>
+            </div>
+            <div className="action-pagination">
+              <button type="button" disabled={actionCurrentPage <= 1} onClick={() => setActionPage((page) => Math.max(1, page - 1))}>Previous</button>
+              <span>Page {actionCurrentPage} of {actionPageCount} | Showing {visibleActionCommodityCandidates.length} of {actionCommodityCandidates.length} transfers</span>
+              <button type="button" disabled={actionCurrentPage >= actionPageCount} onClick={() => setActionPage((page) => Math.min(actionPageCount, page + 1))}>Next</button>
             </div>
           </div>
         </section>
