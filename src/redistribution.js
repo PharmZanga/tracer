@@ -72,11 +72,17 @@ export function buildRedistributionCandidates(rows) {
       originalQuantity: row.quantity,
       remainingQuantity: row.quantity,
     }));
+  const sourcesByCommodity = new Map();
+  sourcePools.forEach((source) => {
+    const key = normaliseCommodity(source.commodity);
+    const sources = sourcesByCommodity.get(key) || [];
+    sources.push(source);
+    sourcesByCommodity.set(key, sources);
+  });
   const candidates = [];
 
   destinations.forEach((destination) => {
-    const matchingSources = sourcePools
-      .filter((source) => normaliseCommodity(source.commodity) === normaliseCommodity(destination.commodity))
+    const matchingSources = [...(sourcesByCommodity.get(normaliseCommodity(destination.commodity)) || [])]
       .filter((source) => source.facility !== destination.facility || source.district !== destination.district || source.province !== destination.province)
       .filter((source) => source.remainingQuantity - source.amc > EPSILON)
       .sort((a, b) => a.sourcePriorityRank - b.sourcePriorityRank

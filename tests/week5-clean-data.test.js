@@ -64,9 +64,12 @@ test("Week 5 redistribution recommendations preserve the source safety reserve",
     amc,
     mos,
   }));
+  const startedAt = performance.now();
   const recommendations = buildRedistributionCandidates(commodityRows);
+  const elapsedMs = performance.now() - startedAt;
 
   assert.ok(recommendations.length > 0);
+  assert.ok(elapsedMs < 5000, `Week 5 redistribution matching took ${Math.round(elapsedMs)}ms`);
   recommendations.forEach((item) => {
     assert.equal(item.destinationQty, 0);
     assert.equal(item.destinationMos, 0);
