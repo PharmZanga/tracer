@@ -40,8 +40,11 @@ test("facility summary reconciles with commodity rows", () => {
 test("existing facility workflow exposes reporting states, filters and complete export fields", () => {
   const appSource = fs.readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
   assert.match(appSource, /Open submitted tracer/);
-  assert.match(appSource, /No tracer submitted/);
+  assert.match(appSource, /Open reporting follow-up/);
   assert.match(appSource, /Facility did not report for the selected week/);
+  assert.match(appSource, /Clear status filters/);
+  assert.match(appSource, /join\(" OR "\)/);
+  assert.match(appSource, /Facilities that did not report/);
   assert.match(appSource, /Submitted tracer availability/);
   assert.match(appSource, /Search commodity/);
   assert.match(appSource, /All programmes/);
