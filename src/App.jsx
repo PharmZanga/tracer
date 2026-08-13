@@ -5,6 +5,7 @@ import { fitForecast, reorderRecommendation } from "./forecasting.js";
 import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName } from "./commodityNormalization.js";
 import { primaryCareDistrictRows, primaryCareDistrictSummary } from "./reportingQuality.js";
 import { buildRedistributionCandidates } from "./redistribution.js";
+import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTracerAnalysis.js";
 
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary" },
@@ -87,10 +88,27 @@ function commodityRowsFromPeriod(period) {
     facility: facilities[facility],
     item: canonicalCommodityName(items[item]),
     programme: programmes[programme],
-    quantity: Number(quantity || 0),
-    amc: Number(amc || 0),
-    mos: Number.isFinite(Number(mos)) ? Number(mos) : null,
+    quantity: quantity === null || quantity === undefined || quantity === "" ? null : Number(quantity),
+    amc: amc === null || amc === undefined || amc === "" ? null : Number(amc),
+    mos: mos === null || mos === undefined || mos === "" || !Number.isFinite(Number(mos)) ? null : Number(mos),
   })).filter((row) => isCommodityName(row.item));
+}
+
+function facilityIdentityKey(facility) {
+  return [facility.province, facility.district, facility.facilityLevel, facility.name || facility.facility]
+    .map((value) => String(value || "").trim().toUpperCase())
+    .join("|");
+}
+
+function groupCommodityRowsByFacility(rows) {
+  const grouped = new Map();
+  rows.forEach((row) => {
+    const key = facilityIdentityKey({ ...row, name: row.facility });
+    const current = grouped.get(key) || [];
+    current.push(row);
+    grouped.set(key, current);
+  });
+  return grouped;
 }
 
 function commodityGroupRows(rows, key) {
@@ -147,6 +165,13 @@ function formatPercent(value) {
 
 function formatMos(value) {
   if (value === null || value === undefined || Number.isNaN(value)) return "-";
+  return Number(value).toFixed(1);
+}
+
+function formatCalculatedMos(value) {
+  if (value === null || value === undefined || Number.isNaN(value)) return "-";
+  if (value > 0 && value < 0.01) return Number(value).toFixed(3);
+  if (value >= 0.01 && value < 0.1) return Number(value).toFixed(2);
   return Number(value).toFixed(1);
 }
 
@@ -1204,23 +1229,25 @@ function QualityTable({ title, rows, firstColumn = "Name", onSelect }) {
 }
 
 function FacilityCard({ facility, onOpen }) {
+  const didReport = facility.reportingStatus !== "Facility did not report";
   const rows = facility.rows || 0;
   const availabilityPercent = formatPercent(facility.availability);
   const stockoutPercent = rows ? formatPercent((facility.stockoutItemCount || 0) / rows) : "0%";
   const lowStockPercent = rows ? formatPercent((facility.lowStockItemCount || 0) / rows) : "0%";
   return (
-    <article>
+    <article className={didReport ? "" : "facility-not-reported"}>
       <div className="facility-alert-head">
         <div>
           <h4>
-            <button className="facility-title-button" type="button" onClick={() => onOpen(facility)}>
+            <button className="facility-title-button" type="button" disabled={!didReport} onClick={() => onOpen(facility)}>
               {facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name}
             </button>
           </h4>
           <span>{facility.district} | {facility.province} | {facility.facilityLevel}</span>
+          <span className={`reporting-status-badge reporting-${String(facility.reportingStatus || "reported on time").toLowerCase().replaceAll(" ", "-")}`}>{facility.reportingStatus || "Reported on time"}</span>
           {facility.isAggregate ? <small className="aggregate-note">Aggregate summary row. Load actual provincial tracer files to show named facilities under this level.</small> : null}
         </div>
-        <div className="facility-alert-counts">
+        {didReport ? <div className="facility-alert-counts">
           <div className="availability-count">
             <b>{availabilityPercent}</b>
             <small>available</small>
@@ -1235,54 +1262,58 @@ function FacilityCard({ facility, onOpen }) {
             <small>low stock</small>
             <em>{lowStockPercent}</em>
           </div>
-        </div>
+        </div> : null}
       </div>
-      <div className="facility-alert-items">
+      {didReport ? <div className="facility-alert-items">
         <div>
-          <strong>Stockout commodities</strong>
+          <strong>Confirmed stock-outs</strong>
           {facility.stockoutItems?.length ? facility.stockoutItems.slice(0, 5).map((item, index) => (
             <span key={`stockout-${facility.name}-${item.item}-${index}`}>{item.item}<small>{item.program}</small></span>
-          )) : <span>No stockouts submitted</span>}
+          )) : <span>No confirmed stock-outs</span>}
         </div>
         <div>
-          <strong>Low-stock commodities</strong>
+          <strong>Critical and low-stock commodities</strong>
           {facility.lowStockItems?.length ? facility.lowStockItems.slice(0, 5).map((item, index) => (
-            <span key={`low-${facility.name}-${item.item}-${index}`}>{item.item}<small>{item.program} | MOS {formatMos(item.mos)}</small></span>
+            <span key={`low-${facility.name}-${item.item}-${index}`}>{item.item}<small>{item.program} | MOS {formatCalculatedMos(item.calculatedMos ?? item.mos)}</small></span>
           )) : <span>No low-stock items submitted</span>}
         </div>
-      </div>
-      <button className="open-tracer-button" type="button" onClick={() => onOpen(facility)}>Open submitted tracer</button>
+      </div> : <div className="facility-no-report-message"><strong>Facility did not report for the selected week.</strong><span>Last reporting date: {facility.lastReportingDate || "No previous report available"}</span><b>Current stock status unknown.</b></div>}
+      <button className="open-tracer-button" type="button" disabled={!didReport} onClick={() => onOpen(facility)}>{didReport ? "Open submitted tracer" : "No tracer submitted"}</button>
     </article>
   );
 }
 
-function TracerItemTable({ title, items, totalCount, emptyText }) {
-  const shownCount = items.length;
-  const countLabel = totalCount > shownCount ? `${shownCount} of ${totalCount}` : totalCount;
+function FacilityTracerTable({ title, items, emptyText, type = "stock", collapsed = false }) {
+  const [showAll, setShowAll] = useState(false);
   return (
-    <div>
-      <h3>{title} <small>{countLabel}</small></h3>
+    <details className="facility-tracer-section" open={!collapsed}>
+      <summary><strong>{title}</strong><span>{items.length} records</span></summary>
       <div className="tracer-detail-table">
         <table>
-          <thead><tr><th>Commodity</th><th>Programme</th><th>Qty</th><th>AMC</th><th>MOS</th></tr></thead>
+          <thead><tr><th>Commodity</th><th>Programme</th><th>Qty</th><th>AMC</th><th>Submitted MOS</th><th>Calculated MOS</th>{type === "low" ? <th>Estimated depletion</th> : <th>Previous status</th>}<th>Flags</th><th>Recommended action</th></tr></thead>
           <tbody>
             {items.length ? items.map((item, index) => (
-              <tr key={`${title}-${item.item}-${index}`}>
-                <td>{item.item}</td>
+              <tr className={!showAll && index >= 8 ? "tracer-row-hidden" : ""} key={`${title}-${item.item}-${index}`}>
+                <td title={item.item}>{item.item}</td>
                 <td>{item.program}</td>
-                <td>{item.quantity?.toLocaleString?.() ?? item.quantity}</td>
-                <td>{item.amc?.toLocaleString?.() ?? item.amc}</td>
-                <td>{formatMos(item.mos)}</td>
+                <td>{item.quantity === null ? "-" : item.quantity?.toLocaleString?.() ?? item.quantity}</td>
+                <td>{item.amc === null ? "-" : item.amc?.toLocaleString?.() ?? item.amc}</td>
+                <td>{formatMos(item.submittedMos)}</td>
+                <td>{formatCalculatedMos(item.calculatedMos)}{item.submittedMos === null && item.calculatedMos !== null ? <small className="calculated-mos-note">Calculated because submitted MOS was blank.</small> : null}</td>
+                <td>{type === "low" ? item.estimatedDepletion : item.previousStatus}</td>
+                <td>{item.flags.length ? item.flags.map((flag) => <span className="data-quality-flag" key={flag}>{flag}</span>) : "-"}</td>
+                <td>{item.recommendedAction}</td>
               </tr>
-            )) : <tr><td colSpan="5">{emptyText}</td></tr>}
+            )) : <tr><td colSpan="9">{emptyText}</td></tr>}
           </tbody>
         </table>
       </div>
-    </div>
+      {items.length > 8 ? <button className="view-all-tracer" type="button" onClick={(event) => { event.preventDefault(); setShowAll((value) => !value); }}>{showAll ? "Show first 8" : `View all ${items.length}`}</button> : null}
+    </details>
   );
 }
 
-function FacilityTracerModal({ facility, report, onClose }) {
+function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
   if (!facility) return null;
   const relatedFacilities = report.facilities
     .filter((item) => item.province === facility.province)
@@ -1292,24 +1323,43 @@ function FacilityTracerModal({ facility, report, onClose }) {
     .sort((a, b) => b.stockoutItemCount - a.stockoutItemCount || b.lowStockItemCount - a.lowStockItemCount || a.name.localeCompare(b.name));
   const [modalMode, setModalMode] = useState("aggregate");
   const [selectedTracer, setSelectedTracer] = useState(null);
+  const [commoditySearch, setCommoditySearch] = useState("");
+  const [programmeFilter, setProgrammeFilter] = useState("all");
+  const [tableSort, setTableSort] = useState("mos-asc");
   const activeFacility = modalMode === "facility" && selectedTracer ? selectedTracer : facility;
   const title = activeFacility.isAggregate ? `All ${activeFacility.facilityLevel.toLowerCase()} facilities` : activeFacility.name;
-  const stockoutItems = activeFacility.stockoutItems || [];
-  const lowStockItems = activeFacility.lowStockItems || [];
-  const accordingToPlanItems = activeFacility.accordingToPlanItems || [];
-  const overstockItems = activeFacility.overstockItems || [];
-  const accordingToPlanCount = activeFacility.accordingToPlanItemCount ?? accordingToPlanItems.length;
-  const overstockCount = activeFacility.overstockItemCount ?? overstockItems.length;
-  const lowStockCount = activeFacility.lowStockItemCount || 0;
-  const stockoutCount = activeFacility.stockoutItemCount || 0;
-  const statusTotal = activeFacility.rows || 0;
-  const lowStockRows = (activeFacility.nearCritical || 0) + (activeFacility.understocked || 0);
-  const overstockRows = (activeFacility.abovePlan || 0) + (activeFacility.overstock || 0);
+  const currentRows = useMemo(() => commodityRowsFromPeriod(report).filter((row) => facilityIdentityKey({ ...row, name: row.facility }) === facilityIdentityKey(activeFacility)), [report, activeFacility]);
+  const previousReport = useMemo(() => tracerReportingPeriods.filter((period) => period.reportDate < report.reportDate).sort((a, b) => a.reportDate.localeCompare(b.reportDate)).at(-1), [report.reportDate]);
+  const previousRows = useMemo(() => previousReport ? commodityRowsFromPeriod(previousReport).filter((row) => facilityIdentityKey({ ...row, name: row.facility }) === facilityIdentityKey(activeFacility)) : [], [previousReport, activeFacility]);
+  const analysis = useMemo(() => analyseFacilityTracer(currentRows, previousRows), [currentRows, previousRows]);
+  const statusTotal = analysis.total;
+  const submittedAvailability = activeFacility.availability;
+  const submittedAvailableCount = Math.round(submittedAvailability * statusTotal);
+  const programmes = [...new Set(analysis.items.map((item) => item.program).filter(Boolean))].sort();
+  const filterAndSortItems = (items) => {
+    const search = commoditySearch.trim().toLowerCase();
+    const filtered = items.filter((item) => (!search || item.item.toLowerCase().includes(search)) && (programmeFilter === "all" || item.program === programmeFilter));
+    return [...filtered].sort((a, b) => {
+      if (tableSort === "commodity-asc") return a.item.localeCompare(b.item);
+      if (tableSort === "quantity-desc") return (b.quantity ?? -Infinity) - (a.quantity ?? -Infinity);
+      if (tableSort === "amc-desc") return (b.amc ?? -Infinity) - (a.amc ?? -Infinity);
+      if (tableSort === "mos-desc") return (b.calculatedMos ?? -Infinity) - (a.calculatedMos ?? -Infinity);
+      return (a.calculatedMos ?? Infinity) - (b.calculatedMos ?? Infinity);
+    });
+  };
+  const stockoutItems = filterAndSortItems(analysis.byStatus["Confirmed stock-out"]);
+  const criticalItems = filterAndSortItems(analysis.byStatus["Critical low stock"]);
+  const lowStockItems = filterAndSortItems(analysis.byStatus["Low stock"]);
+  const accordingToPlanItems = filterAndSortItems(analysis.byStatus["Stocked according to plan"]);
+  const overstockItems = filterAndSortItems(analysis.byStatus.Overstocked);
+  const dataQualityItems = filterAndSortItems(analysis.dataQualityItems);
   const statusRows = [
-    { label: "Stockout", value: activeFacility.stockout || 0, tone: "red" },
-    { label: "Low stock", value: lowStockRows, tone: "amber" },
-    { label: "Stocked according to plan", value: activeFacility.accordingToPlan || 0, tone: "green" },
-    { label: "Overstocked", value: overstockRows, tone: "blue" },
+    { label: "Confirmed stock-outs", value: analysis.byStatus["Confirmed stock-out"].length, definition: "Reported quantity equals zero", tone: "red" },
+    { label: "Critical low stock", value: analysis.byStatus["Critical low stock"].length, definition: "Positive stock below 0.5 calculated MOS", tone: "amber" },
+    { label: "Low stock", value: analysis.byStatus["Low stock"].length, definition: "0.5 to below 2 calculated MOS", tone: "amber" },
+    { label: "Stocked according to plan", value: analysis.byStatus["Stocked according to plan"].length, definition: "2 to 4 calculated MOS", tone: "green" },
+    { label: "Overstocked", value: analysis.byStatus.Overstocked.length, definition: "Above 4 calculated MOS", tone: "blue" },
+    { label: "Data-quality exceptions", value: analysis.dataQualityItems.length, definition: "Submitted values requiring review", tone: "neutral" },
   ];
   const showBackButton = modalMode === "facility" || modalMode === "list";
 
@@ -1323,30 +1373,7 @@ function FacilityTracerModal({ facility, report, onClose }) {
   }
 
   function exportTracerExcel() {
-    const rows = [
-      ["Report", report.label],
-      ["Province", activeFacility.province],
-      ["District", activeFacility.district],
-      ["Facility level", activeFacility.facilityLevel],
-      ["Reporting unit", title],
-      ["Availability", formatPercent(activeFacility.availability)],
-      ["Average MOS", formatMos(activeFacility.mos)],
-      [],
-      ["Status", "Commodity", "Programme", "Quantity", "AMC", "MOS"],
-      ...[
-        ["Stockout", stockoutItems],
-        ["Low stock", lowStockItems],
-        ["Stocked according to plan", accordingToPlanItems],
-        ["Overstocked", overstockItems],
-      ].flatMap(([status, items]) => items.map((item) => [
-        status,
-        item.item,
-        item.program,
-        item.quantity,
-        item.amc,
-        formatMos(item.mos),
-      ])),
-    ];
+    const rows = facilityTracerExportRows({ reportLabel: report.label, province: activeFacility.province, district: activeFacility.district, facilityLevel: activeFacility.facilityLevel, facilityName: title, submittedAvailability: formatPercent(submittedAvailability), availabilityNumerator: submittedAvailableCount, availabilityDenominator: statusTotal, analysis, items: filterAndSortItems(analysis.items) });
     const blob = new Blob([rows.map((row) => row.map(csvCell).join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -1354,6 +1381,13 @@ function FacilityTracerModal({ facility, report, onClose }) {
     link.download = `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "submitted-tracer"}-${report.reportDate}.csv`;
     link.click();
     URL.revokeObjectURL(url);
+  }
+
+  function exportTracerPdf() {
+    document.querySelectorAll(".tracer-modal details").forEach((section) => { section.open = true; });
+    document.body.classList.add("printing-tracer");
+    window.addEventListener("afterprint", () => document.body.classList.remove("printing-tracer"), { once: true });
+    window.print();
   }
 
   return (
@@ -1367,7 +1401,7 @@ function FacilityTracerModal({ facility, report, onClose }) {
             <span>{activeFacility.district} | {activeFacility.province} | {activeFacility.facilityLevel} | {report.label}</span>
           </div>
           <div className="modal-actions">
-            <button type="button" onClick={() => window.print()}>Export PDF</button>
+            <button type="button" onClick={exportTracerPdf}>Export PDF</button>
             <button type="button" onClick={exportTracerExcel}>Export Excel</button>
             <button type="button" onClick={onClose}>Close</button>
           </div>
@@ -1416,27 +1450,25 @@ function FacilityTracerModal({ facility, report, onClose }) {
               </div>
             ) : null}
             <div className="modal-kpis">
-              <KpiCard label="Availability" value={formatPercent(activeFacility.availability)} sub={`${activeFacility.rows.toLocaleString()} submitted rows`} />
-              <KpiCard label="Average MOS" value={formatMos(activeFacility.mos)} sub="Submitted stock position" />
-              <KpiCard label="Stockout items" value={stockoutCount} sub="MOS at or near zero" tone="red" />
-              <KpiCard label="Low-stock items" value={lowStockCount} sub="Below 2 MOS" tone="amber" />
-              <KpiCard label="Stocked to plan" value={accordingToPlanCount} sub="2 to 4 MOS" />
-              <KpiCard label="Overstocked items" value={overstockCount} sub="Above 4 MOS" tone="blue" />
+              <KpiCard label="Submitted tracer availability ⓘ" value={formatPercent(submittedAvailability)} sub={`${submittedAvailableCount} of ${statusTotal} tracer commodities had positive stock. Availability measures the proportion reported with quantity greater than zero.`} />
+              <KpiCard label="Average / median MOS" value={`${formatMos(analysis.averageMos)} / ${formatMos(analysis.medianMos)}`} sub={`${analysis.items.filter((item) => Number.isFinite(item.calculatedMos)).length} of ${statusTotal} commodities with calculable MOS`} />
+              {statusRows.map((row) => <KpiCard key={row.label} label={row.label} value={row.value} sub={`${row.value} of ${statusTotal} commodities (${statusTotal ? formatPercent(row.value / statusTotal) : "-"}). ${row.definition}`} tone={row.tone === "neutral" ? undefined : row.tone} />)}
             </div>
-            <div className="stock-status-strip">
-              {statusRows.map((row) => (
-                <div className={`stock-status stock-status-${row.tone}`} key={row.label}>
-                  <span>{row.label}</span>
-                  <strong>{statusTotal ? formatPercent(row.value / statusTotal) : "0%"}</strong>
-                  <small>{row.value.toLocaleString()} of {statusTotal.toLocaleString()} rows</small>
-                </div>
-              ))}
+            <div className="availability-status-note">A commodity with positive stock is counted as available even when its months of stock are below the recommended level.</div>
+            <div className="facility-week-comparison">Compared with the previous week: <b>{analysis.comparison.newStockouts} new stock-outs</b>, <b>{analysis.comparison.continuingStockouts} continuing stock-outs</b> and <b>{analysis.comparison.resolvedStockouts} resolved stock-outs</b>.{previousReport ? ` Previous period: ${previousReport.label}.` : " No previous facility report was available."}</div>
+            <div className="facility-tracer-tools">
+              <label><span>Search commodity</span><input value={commoditySearch} onChange={(event) => setCommoditySearch(event.target.value)} placeholder="Search commodity name" /></label>
+              <label><span>Programme</span><select value={programmeFilter} onChange={(event) => setProgrammeFilter(event.target.value)}><option value="all">All programmes</option>{programmes.map((programme) => <option value={programme} key={programme}>{programme}</option>)}</select></label>
+              <label><span>Sort tables</span><select value={tableSort} onChange={(event) => setTableSort(event.target.value)}><option value="mos-asc">MOS: lowest first</option><option value="mos-desc">MOS: highest first</option><option value="quantity-desc">Quantity: highest first</option><option value="amc-desc">AMC: highest first</option><option value="commodity-asc">Commodity: A–Z</option></select></label>
+              <button type="button" onClick={onOpenActions}>Open redistribution tracker</button>
             </div>
-            <div className="tracer-detail-grid">
-              <TracerItemTable title="Stockout commodities" items={stockoutItems} totalCount={stockoutCount} emptyText="No stockout commodities submitted." />
-              <TracerItemTable title="Low-stock commodities" items={lowStockItems} totalCount={lowStockCount} emptyText="No low-stock commodities submitted." />
-              <TracerItemTable title="Stocked according to plan" items={accordingToPlanItems} totalCount={accordingToPlanCount} emptyText="No commodities submitted between 2 and 4 MOS." />
-              <TracerItemTable title="Overstocked commodities" items={overstockItems} totalCount={overstockCount} emptyText="No commodities submitted above 4 MOS." />
+            <div className="tracer-detail-sections">
+              <FacilityTracerTable title="Confirmed stock-outs — reported quantity equals zero" items={stockoutItems} emptyText="No confirmed stock-outs match the current filters." />
+              <FacilityTracerTable title="Critical low stock — positive quantity and below 0.5 MOS" items={criticalItems} type="low" emptyText="No critical low-stock commodities match the current filters." />
+              <FacilityTracerTable title="Low-stock commodities" items={lowStockItems} type="low" emptyText="No low-stock commodities match the current filters." />
+              <FacilityTracerTable title="Stocked according to plan" items={accordingToPlanItems} collapsed emptyText="No commodities between 2 and 4 calculated MOS match the current filters." />
+              <FacilityTracerTable title="Overstocked commodities" items={overstockItems} collapsed emptyText="No commodities above 4 calculated MOS match the current filters." />
+              <FacilityTracerTable title="Data-quality exceptions" items={dataQualityItems} collapsed emptyText="No data-quality exceptions match the current filters." />
             </div>
           </>
         )}
@@ -1801,8 +1833,46 @@ function App() {
   }).filter((row) => selectedProvince === "all" || row.rows > 0);
   const bestProvince = scopedProvinceRows[0];
   const worstProvince = [...scopedProvinceRows].sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)[0];
-  const stockoutFacilityCount = filteredFacilities.filter((facility) => facility.stockoutItemCount > 0).length;
-  const lowStockFacilityCount = filteredFacilities.filter((facility) => facility.lowStockItemCount > 0).length;
+  const facilityCommodityRows = useMemo(() => groupCommodityRowsByFacility(filteredCommodityRows), [filteredCommodityRows]);
+  const correctedReportingFacilities = useMemo(() => filteredFacilities.map((facility) => {
+    const analysis = analyseFacilityTracer(facilityCommodityRows.get(facilityIdentityKey(facility)) || []);
+    const incomplete = analysis.items.some((item) => item.quantity === null || (item.quantity > 0 && (item.amc === null || item.amc <= 0)));
+    const stockoutItems = analysis.byStatus["Confirmed stock-out"];
+    const lowStockItems = [...analysis.byStatus["Critical low stock"], ...analysis.byStatus["Low stock"]];
+    return {
+      ...facility,
+      reportingStatus: facility.reportedLate ? "Reported late" : incomplete ? "Report submitted but incomplete" : "Reported on time",
+      stockoutItems,
+      lowStockItems,
+      stockoutItemCount: stockoutItems.length,
+      lowStockItemCount: lowStockItems.length,
+    };
+  }), [filteredFacilities, facilityCommodityRows]);
+  const missingExpectedFacilities = useMemo(() => (fieldData.dataQuality?.facilities || [])
+    .filter((facility) => !facility.reported)
+    .filter((facility) => !correctedReportingFacilities.some((submitted) => facilityIdentityKey(submitted) === facilityIdentityKey(facility)))
+    .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
+    .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict)
+    .filter((facility) => matchesFacilityCareLevel(facility.facilityLevel, selectedFacilityLevel))
+    .map((facility) => {
+      const previous = tracerReportingPeriods
+        .filter((period) => period.reportDate < fieldData.reportDate)
+        .sort((a, b) => b.reportDate.localeCompare(a.reportDate))
+        .find((period) => (period.dataQuality?.facilities || []).some((candidate) => candidate.reported && facilityIdentityKey(candidate) === facilityIdentityKey(facility)));
+      return {
+        ...facility,
+        rows: 0,
+        availability: null,
+        reportingStatus: "Facility did not report",
+        lastReportingDate: previous?.label || null,
+        stockoutItems: [],
+        lowStockItems: [],
+        stockoutItemCount: 0,
+        lowStockItemCount: 0,
+      };
+    }), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, correctedReportingFacilities]);
+  const stockoutFacilityCount = correctedReportingFacilities.filter((facility) => facility.stockoutItemCount > 0).length;
+  const lowStockFacilityCount = correctedReportingFacilities.filter((facility) => facility.lowStockItemCount > 0).length;
   const redistributionCandidates = useMemo(() => buildRedistributionCandidates(filteredCommodityRows), [filteredCommodityRows]);
   const actionCommodityCandidates = useMemo(() => redistributionCandidates.filter((item) => !actionCommodityQuery.trim() || item.commodity.toLowerCase().includes(actionCommodityQuery.trim().toLowerCase())), [redistributionCandidates, actionCommodityQuery]);
   const actionPageCount = Math.max(1, Math.ceil(actionCommodityCandidates.length / actionPageSize));
@@ -1813,9 +1883,10 @@ function App() {
     summary[status] = (summary[status] || 0) + 1;
     return summary;
   }, { Open: 0, "In progress": 0, Completed: 0 });
-  const facilityAlerts = filteredFacilities
+  const facilityAlerts = [...missingExpectedFacilities, ...correctedReportingFacilities
     .filter((facility) => facility.stockoutItemCount > 0 || facility.lowStockItemCount > 0)
-    .sort((a, b) => Number(a.isAggregate) - Number(b.isAggregate) || b.stockoutItemCount - a.stockoutItemCount || b.lowStockItemCount - a.lowStockItemCount)
+  ]
+    .sort((a, b) => Number(b.reportingStatus === "Facility did not report") - Number(a.reportingStatus === "Facility did not report") || Number(a.isAggregate) - Number(b.isAggregate) || b.stockoutItemCount - a.stockoutItemCount || b.lowStockItemCount - a.lowStockItemCount)
     .slice(0, 48);
   const districtsInScope = scopedDistrictRows;
   const predictiveHistoryPeriods = useMemo(() => tracerReportingPeriods
@@ -3362,6 +3433,7 @@ function App() {
             <div className="facility-alert-kpis">
               <span><b>{stockoutFacilityCount}</b> facilities with stockouts</span>
               <span><b>{lowStockFacilityCount}</b> facilities with low stock</span>
+              <span><b>{missingExpectedFacilities.length}</b> facilities did not report</span>
             </div>
           </div>
           <div className="facility-alert-list">
@@ -4556,6 +4628,7 @@ function App() {
         facility={openFacility}
         report={fieldData}
         onClose={() => setOpenFacility(null)}
+        onOpenActions={() => { setOpenFacility(null); setActivePage("actions"); }}
       />
       {openActionComments && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setOpenActionComments(null)}>
         <section className="commodity-detail-panel action-comments-dialog" role="dialog" aria-modal="true" aria-label="Action comments" onMouseDown={(event) => event.stopPropagation()}>
