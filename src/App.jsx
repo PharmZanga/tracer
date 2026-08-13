@@ -1228,7 +1228,7 @@ function QualityTable({ title, rows, firstColumn = "Name", onSelect }) {
   );
 }
 
-function FacilityCard({ facility, onOpen }) {
+function FacilityCard({ facility, onOpen, onOpenReporting }) {
   const didReport = facility.reportingStatus !== "Facility did not report";
   const rows = facility.rows || 0;
   const availabilityPercent = formatPercent(facility.availability);
@@ -1239,13 +1239,19 @@ function FacilityCard({ facility, onOpen }) {
       <div className="facility-alert-head">
         <div>
           <h4>
-            <button className="facility-title-button" type="button" disabled={!didReport} onClick={() => onOpen(facility)}>
+            <button className="facility-title-button" type="button" onClick={() => didReport ? onOpen(facility) : onOpenReporting(facility)}>
               {facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name}
             </button>
           </h4>
           <span>{facility.district} | {facility.province} | {facility.facilityLevel}</span>
           <span className={`reporting-status-badge reporting-${String(facility.reportingStatus || "reported on time").toLowerCase().replaceAll(" ", "-")}`}>{facility.reportingStatus || "Reported on time"}</span>
           {facility.isAggregate ? <small className="aggregate-note">Aggregate summary row. Load actual provincial tracer files to show named facilities under this level.</small> : null}
+          {didReport ? <div className="facility-condition-badges">
+            {facility.stockoutItemCount > 0 && <span className="condition-stockout">Confirmed stock-out</span>}
+            {facility.lowStockItemCount > 0 && <span className="condition-low">Low stock</span>}
+            {facility.accordingToPlanItemCount > 0 && <span className="condition-plan">Has stock to plan</span>}
+            {facility.overstockItemCount > 0 && <span className="condition-overstock">Overstocked</span>}
+          </div> : null}
         </div>
         {didReport ? <div className="facility-alert-counts">
           <div className="availability-count">
@@ -1278,7 +1284,7 @@ function FacilityCard({ facility, onOpen }) {
           )) : <span>No low-stock items submitted</span>}
         </div>
       </div> : <div className="facility-no-report-message"><strong>Facility did not report for the selected week.</strong><span>Last reporting date: {facility.lastReportingDate || "No previous report available"}</span><b>Current stock status unknown.</b></div>}
-      <button className="open-tracer-button" type="button" disabled={!didReport} onClick={() => onOpen(facility)}>{didReport ? "Open submitted tracer" : "No tracer submitted"}</button>
+      <button className="open-tracer-button" type="button" onClick={() => didReport ? onOpen(facility) : onOpenReporting(facility)}>{didReport ? "Open submitted tracer" : "Open reporting follow-up"}</button>
     </article>
   );
 }
@@ -1485,6 +1491,9 @@ function App() {
   const [selectedFacilityLevel, setSelectedFacilityLevel] = useState(() => initialDashboardParam("level", "all"));
   const [selectedFacility, setSelectedFacility] = useState(() => initialDashboardParam("facility", "all"));
   const [openFacility, setOpenFacility] = useState(null);
+  const [facilityStatusFilters, setFacilityStatusFilters] = useState([]);
+  const [facilityAlertPage, setFacilityAlertPage] = useState(1);
+  const [facilityAlertView, setFacilityAlertView] = useState("list");
   const [stockDate, setStockDate] = useState([...new Set(weeklyStockPeriods.map((period) => period.date))].sort().at(-1) || "");
   const [stockStream, setStockStream] = useState(weeklyStockPeriods.some((period) => period.stream === "EMMS") ? "EMMS" : weeklyStockPeriods.at(-1)?.stream || "LAB");
   const [stockCategory, setStockCategory] = useState("");
@@ -1493,6 +1502,7 @@ function App() {
   const [reportProvince, setReportProvince] = useState("all");
   const [reportDistrict, setReportDistrict] = useState("all");
   const [reportFacilityType, setReportFacilityType] = useState("all");
+  const [reportFacilityName, setReportFacilityName] = useState("all");
   const [reportStatus, setReportStatus] = useState("all");
   const [reportDrillProvince, setReportDrillProvince] = useState("");
   const [reportDrillDistrict, setReportDrillDistrict] = useState("");
@@ -1707,7 +1717,26 @@ function App() {
         lastReportingPeriod: reported ? reportData.label : "-",
       };
     });
-  const reportSubmittedFacilityRows = (reportData.facilities || [])
+  const reportExpectedFacilityRows = (reportData.dataQuality?.facilities || [])
+    .map((facility) => {
+      const previous = tracerReportingPeriods
+        .filter((period) => period.reportDate < reportData.reportDate)
+        .sort((a, b) => b.reportDate.localeCompare(a.reportDate))
+        .find((period) => (period.dataQuality?.facilities || []).some((candidate) => candidate.reported && facilityIdentityKey(candidate) === facilityIdentityKey(facility)));
+      return {
+        province: facility.province,
+        district: facility.district,
+        facilityName: facility.name,
+        facilityType: facility.facilityLevel,
+        status: facility.reported ? "Reported" : "Not Reported",
+        rate: facility.reported ? 1 : 0,
+        lastReportingPeriod: facility.reported ? reportData.label : previous?.label || "No previous report available",
+        sourceFacility: facility,
+      };
+    });
+  const reportExpectedKeys = new Set(reportExpectedFacilityRows.map((row) => `${row.province}|${row.district}|${row.facilityType}|${row.facilityName}`));
+  const reportSubmittedFacilityRows = [...reportExpectedFacilityRows, ...(reportData.facilities || [])
+    .filter((facility) => !reportExpectedKeys.has(`${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}`))
     .map((facility) => ({
       province: facility.province,
       district: facility.district,
@@ -1716,7 +1745,8 @@ function App() {
       status: "Reported",
       rate: 1,
       lastReportingPeriod: reportData.label,
-    }));
+      sourceFacility: facility,
+    }))];
   const reportFacilityTypeOptions = [...new Set(reportSubmittedFacilityRows.map((row) => row.facilityType))].sort();
   const reportProvinceOptions = [...new Set(reportBaseRows.map((row) => row.province))].sort();
   const reportDistrictOptions = [...new Set(reportBaseRows
@@ -1743,14 +1773,21 @@ function App() {
     "name",
   ).sort((a, b) => a.name.localeCompare(b.name));
   const reportingChartRows = reportDrillProvince ? reportingDistrictRows : reportingProvinceRows;
-  const reportingFacilityRows = reportSubmittedFacilityRows
+  const reportingFacilityScopeRows = reportSubmittedFacilityRows
     .filter((row) => reportProvince === "all" || row.province === reportProvince)
     .filter((row) => reportDistrict === "all" || row.district === reportDistrict)
     .filter((row) => !reportDrillProvince || row.province === reportDrillProvince)
     .filter((row) => !reportDrillDistrict || row.district === reportDrillDistrict)
     .filter((row) => reportFacilityType === "all" || row.facilityType === reportFacilityType)
-    .filter((row) => reportStatus === "all" || row.status === reportStatus)
+    .filter((row) => reportFacilityName === "all" || row.facilityName === reportFacilityName)
     .sort((a, b) => a.province.localeCompare(b.province) || a.district.localeCompare(b.district) || a.facilityType.localeCompare(b.facilityType));
+  const reportingFacilityRows = reportingFacilityScopeRows.filter((row) => reportStatus === "all" || row.status === reportStatus);
+  const reportingFacilityKpis = reportingFacilityScopeRows.reduce((summary, row) => {
+    summary.expected += 1;
+    if (row.status === "Reported") summary.received += 1;
+    else summary.missing += 1;
+    return summary;
+  }, { expected: 0, received: 0, missing: 0 });
 
   const provinceOptions = fieldData.provinces.map((province) => province.name).sort();
   // Retain every expected district in the filter even when it did not submit
@@ -1846,6 +1883,9 @@ function App() {
       lowStockItems,
       stockoutItemCount: stockoutItems.length,
       lowStockItemCount: lowStockItems.length,
+      criticalLowStockItemCount: analysis.byStatus["Critical low stock"].length,
+      accordingToPlanItemCount: analysis.byStatus["Stocked according to plan"].length,
+      overstockItemCount: analysis.byStatus.Overstocked.length,
     };
   }), [filteredFacilities, facilityCommodityRows]);
   const missingExpectedFacilities = useMemo(() => (fieldData.dataQuality?.facilities || [])
@@ -1869,10 +1909,40 @@ function App() {
         lowStockItems: [],
         stockoutItemCount: 0,
         lowStockItemCount: 0,
+        criticalLowStockItemCount: 0,
+        accordingToPlanItemCount: 0,
+        overstockItemCount: 0,
       };
-    }), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, correctedReportingFacilities]);
+    })
+    .filter((facility) => selectedFacility === "all" || `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}` === selectedFacility), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility, correctedReportingFacilities]);
+  const assessedFacilities = useMemo(() => {
+    const unique = new Map();
+    [...missingExpectedFacilities, ...correctedReportingFacilities].forEach((facility) => unique.set(facilityIdentityKey(facility), facility));
+    return [...unique.values()];
+  }, [missingExpectedFacilities, correctedReportingFacilities]);
   const stockoutFacilityCount = correctedReportingFacilities.filter((facility) => facility.stockoutItemCount > 0).length;
   const lowStockFacilityCount = correctedReportingFacilities.filter((facility) => facility.lowStockItemCount > 0).length;
+  const facilityStatusOptions = [
+    { id: "stockout", label: "Confirmed stock-outs", shortLabel: "Stock-out", icon: "!", tone: "red", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.stockoutItemCount > 0 },
+    { id: "low", label: "Low-stock commodities", shortLabel: "Low stock", icon: "↓", tone: "orange", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.lowStockItemCount > 0 },
+    { id: "missing", label: "Did not report", shortLabel: "Did not report", icon: "×", tone: "dark-red", matches: (facility) => facility.reportingStatus === "Facility did not report" },
+    { id: "plan", label: "Has commodities stocked to plan", shortLabel: "Has stock to plan", icon: "✓", tone: "green", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.accordingToPlanItemCount > 0 },
+    { id: "overstock", label: "Has overstocked commodities", shortLabel: "Overstocked", icon: "↑", tone: "blue", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.overstockItemCount > 0 },
+  ];
+  const facilityStatusCounts = Object.fromEntries(facilityStatusOptions.map((option) => [option.id, assessedFacilities.filter(option.matches).length]));
+  const filteredFacilityAlerts = assessedFacilities
+    .filter((facility) => !facilityStatusFilters.length || facilityStatusOptions.some((option) => facilityStatusFilters.includes(option.id) && option.matches(facility)))
+    .sort((a, b) => Number(b.reportingStatus === "Facility did not report") - Number(a.reportingStatus === "Facility did not report") || Number(a.isAggregate) - Number(b.isAggregate) || b.stockoutItemCount - a.stockoutItemCount || b.lowStockItemCount - a.lowStockItemCount);
+  const facilityAlertPageSize = 24;
+  const facilityAlertPageCount = Math.max(1, Math.ceil(filteredFacilityAlerts.length / facilityAlertPageSize));
+  const facilityAlertCurrentPage = Math.min(facilityAlertPage, facilityAlertPageCount);
+  const visibleFacilityAlerts = filteredFacilityAlerts.slice((facilityAlertCurrentPage - 1) * facilityAlertPageSize, facilityAlertCurrentPage * facilityAlertPageSize);
+  const activeFacilityStatusOptions = facilityStatusOptions.filter((option) => facilityStatusFilters.includes(option.id));
+  const facilityAlertsHeading = activeFacilityStatusOptions.length === 1
+    ? `Facilities with ${activeFacilityStatusOptions[0].label.toLowerCase()}`
+    : activeFacilityStatusOptions.length > 1
+      ? "Facilities matching selected stock and reporting conditions"
+      : "All assessed facilities";
   const redistributionCandidates = useMemo(() => buildRedistributionCandidates(filteredCommodityRows), [filteredCommodityRows]);
   const actionCommodityCandidates = useMemo(() => redistributionCandidates.filter((item) => !actionCommodityQuery.trim() || item.commodity.toLowerCase().includes(actionCommodityQuery.trim().toLowerCase())), [redistributionCandidates, actionCommodityQuery]);
   const actionPageCount = Math.max(1, Math.ceil(actionCommodityCandidates.length / actionPageSize));
@@ -1883,11 +1953,7 @@ function App() {
     summary[status] = (summary[status] || 0) + 1;
     return summary;
   }, { Open: 0, "In progress": 0, Completed: 0 });
-  const facilityAlerts = [...missingExpectedFacilities, ...correctedReportingFacilities
-    .filter((facility) => facility.stockoutItemCount > 0 || facility.lowStockItemCount > 0)
-  ]
-    .sort((a, b) => Number(b.reportingStatus === "Facility did not report") - Number(a.reportingStatus === "Facility did not report") || Number(a.isAggregate) - Number(b.isAggregate) || b.stockoutItemCount - a.stockoutItemCount || b.lowStockItemCount - a.lowStockItemCount)
-    .slice(0, 48);
+  const facilityAlerts = filteredFacilityAlerts;
   const districtsInScope = scopedDistrictRows;
   const predictiveHistoryPeriods = useMemo(() => tracerReportingPeriods
     .filter((period) => period.reportDate <= fieldData.reportDate)
@@ -2687,6 +2753,7 @@ function App() {
     setReportProvince("all");
     setReportDistrict("all");
     setReportFacilityType("all");
+    setReportFacilityName("all");
     setReportStatus("all");
     setReportDrillProvince("");
     setReportDrillDistrict("");
@@ -2697,11 +2764,68 @@ function App() {
     setReportDistrict("all");
     setReportDrillProvince(province === "all" ? "" : province);
     setReportDrillDistrict("");
+    setReportFacilityName("all");
   }
 
   function changeReportDistrict(district) {
     setReportDistrict(district);
     setReportDrillDistrict(district === "all" ? "" : district);
+    setReportFacilityName("all");
+  }
+
+  function buildReportingFollowup(facility) {
+    const history = tracerReportingPeriods
+      .filter((period) => period.reportDate <= fieldData.reportDate)
+      .sort((a, b) => a.reportDate.localeCompare(b.reportDate))
+      .map((period) => {
+        const expected = (period.dataQuality?.facilities || []).find((candidate) => facilityIdentityKey(candidate) === facilityIdentityKey(facility));
+        return expected ? { id: period.id, label: period.label, reported: Boolean(expected.reported) } : null;
+      })
+      .filter(Boolean);
+    const reportsSubmitted = history.filter((row) => row.reported).length;
+    let consecutiveMissed = 0;
+    for (const row of [...history].reverse()) {
+      if (row.reported) break;
+      consecutiveMissed += 1;
+    }
+    const latestReport = [...history].reverse().find((row) => row.reported)?.label || "No previous report available";
+    return {
+      ...facility,
+      expectedReports: history.length,
+      reportsSubmitted,
+      missedReports: history.length - reportsSubmitted,
+      rate: history.length ? reportsSubmitted / history.length : 0,
+      consecutiveMissed,
+      latestReport,
+      consistency: reportsSubmitted === history.length ? "Fully reported" : reportsSubmitted ? "Reporting gap" : "No reporting",
+      history,
+    };
+  }
+
+  function syncNonReportingToReportingPage(facility = null) {
+    const selectedFacilityName = facility?.name || (selectedFacility === "all" ? "all" : selectedFacility.split("|").at(-1));
+    const facilityType = facility?.facilityLevel || (selectedFacilityLevel !== "all" && reportFacilityTypeOptions.includes(selectedFacilityLevel) ? selectedFacilityLevel : "all");
+    setReportPeriodId(fieldData.id);
+    setReportProvince(facility?.province || selectedProvince);
+    setReportDistrict(facility?.district || selectedDistrict);
+    setReportFacilityType(facilityType);
+    setReportFacilityName(selectedFacilityName || "all");
+    setReportStatus("Not Reported");
+    setReportDrillProvince((facility?.province || selectedProvince) === "all" ? "" : facility?.province || selectedProvince);
+    setReportDrillDistrict((facility?.district || selectedDistrict) === "all" ? "" : facility?.district || selectedDistrict);
+    setActivePage("reporting");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function toggleFacilityStatusFilter(statusId) {
+    setFacilityAlertPage(1);
+    setFacilityStatusFilters((current) => current.includes(statusId) ? current.filter((id) => id !== statusId) : [...current, statusId]);
+    if (statusId === "missing") syncNonReportingToReportingPage();
+  }
+
+  function openFacilityReportingFollowup(facility) {
+    syncNonReportingToReportingPage(facility);
+    setOpenReportingFacility(buildReportingFollowup(facility));
   }
 
   async function updateRedistributionAction(item, status) {
@@ -2967,19 +3091,24 @@ function App() {
   }
 
   function exportCsv() {
-    const headers = ["Province", "District", "Facility level", "Reporting unit", "Availability", "MOS", "Stockout items", "Low stock items", "Rows"];
+    const headers = ["Province", "District", "Facility level", "Reporting unit", "Reporting status", "Submission date", "Availability", "Confirmed stock-outs", "Low-stock commodities", "Stocked to plan", "Overstocked", "Last reporting date", "Active alert", "Follow-up status"];
     const lines = [
       headers.map(csvCell).join(","),
-      ...filteredFacilities.map((facility) => [
+      ...filteredFacilityAlerts.map((facility) => [
         facility.province,
         facility.district,
         facility.facilityLevel,
         facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name,
-        formatPercent(facility.availability),
-        formatMos(facility.mos),
-        facility.stockoutItemCount,
-        facility.lowStockItemCount,
-        facility.rows,
+        facility.reportingStatus,
+        facility.reportingStatus === "Facility did not report" ? "" : fieldData.reportDate,
+        facility.reportingStatus === "Facility did not report" ? "" : formatPercent(facility.availability),
+        facility.reportingStatus === "Facility did not report" ? "" : facility.stockoutItemCount,
+        facility.reportingStatus === "Facility did not report" ? "" : facility.lowStockItemCount,
+        facility.reportingStatus === "Facility did not report" ? "" : facility.accordingToPlanItemCount,
+        facility.reportingStatus === "Facility did not report" ? "" : facility.overstockItemCount,
+        facility.lastReportingDate || fieldData.label,
+        facilityStatusOptions.filter((option) => option.matches(facility)).map((option) => option.shortLabel).join("; "),
+        facility.reportingStatus === "Facility did not report" ? "Reporting follow-up required" : "Review submitted tracer",
       ].map(csvCell).join(",")),
     ];
     const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
@@ -3427,20 +3556,33 @@ function App() {
           <div className="facility-alert-summary">
             <div>
               <p className="eyebrow dark">Facility Alerts</p>
-              <h3>{selectedDistrict !== "all" ? `${selectedDistrict} reporting units` : selectedProvince !== "all" ? `${selectedProvince} facilities and districts` : "Facilities with stockouts and low stock"}</h3>
-              <p>Named health posts and health centres are shown when the actual facility tracer is loaded. “All health post/centre facilities” means the current source only contains an aggregate summary row.</p>
+              <h3>{facilityAlertsHeading}</h3>
+              <p>{filteredFacilityAlerts.length.toLocaleString()} of {assessedFacilities.length.toLocaleString()} expected or reporting facilities match — {fieldData.label}{selectedProvince !== "all" ? ` · ${selectedProvince}` : " · Zambia"}{selectedDistrict !== "all" ? ` · ${selectedDistrict}` : ""}.</p>
             </div>
             <div className="facility-alert-kpis">
-              <span><b>{stockoutFacilityCount}</b> facilities with stockouts</span>
-              <span><b>{lowStockFacilityCount}</b> facilities with low stock</span>
-              <span><b>{missingExpectedFacilities.length}</b> facilities did not report</span>
+              <button type="button" className={!facilityStatusFilters.length ? "active tone-all" : "tone-all"} aria-pressed={!facilityStatusFilters.length} onClick={() => { setFacilityStatusFilters([]); setFacilityAlertPage(1); }}><i aria-hidden="true">●</i><b>{assessedFacilities.length.toLocaleString()}</b><span>All facilities</span><small>100% of assessed</small></button>
+              {facilityStatusOptions.map((option) => <button type="button" className={`${facilityStatusFilters.includes(option.id) ? "active " : ""}tone-${option.tone}`} aria-pressed={facilityStatusFilters.includes(option.id)} onClick={() => toggleFacilityStatusFilter(option.id)} key={option.id}><i aria-hidden="true">{option.icon}</i><b>{facilityStatusCounts[option.id].toLocaleString()}</b><span>{option.label}</span><small>{assessedFacilities.length ? formatPercent(facilityStatusCounts[option.id] / assessedFacilities.length) : "0%"} of assessed</small></button>)}
             </div>
           </div>
-          <div className="facility-alert-list">
-            {facilityAlerts.length ? facilityAlerts.map((facility) => (
-              <FacilityCard facility={facility} onOpen={setOpenFacility} key={`${facility.province}-${facility.district}-${facility.facilityLevel}-${facility.name}`} />
-            )) : <div className="empty-state">No stockout or low-stock facilities match the current filters.</div>}
+          <div className="facility-alert-filter-summary">
+            <span>{activeFacilityStatusOptions.length ? <>Showing facilities with: <b>{activeFacilityStatusOptions.map((option) => option.shortLabel).join(" OR ")}</b></> : <b>Showing all assessed facilities</b>}</span>
+            <div><button type="button" className={facilityAlertView === "list" ? "active" : ""} onClick={() => setFacilityAlertView("list")}>List</button><button type="button" className={facilityAlertView === "map" ? "active" : ""} onClick={() => setFacilityAlertView("map")}>Map</button>{facilityStatusFilters.length ? <button type="button" onClick={() => { setFacilityStatusFilters([]); setFacilityAlertPage(1); }}>Clear status filters</button> : null}<button type="button" onClick={exportCsv}>Export filtered CSV</button></div>
           </div>
+          {facilityAlertView === "list" ? <>
+            <div className="facility-alert-list">
+              {visibleFacilityAlerts.length ? visibleFacilityAlerts.map((facility) => (
+                <FacilityCard facility={facility} onOpen={setOpenFacility} onOpenReporting={openFacilityReportingFollowup} key={`${facility.province}-${facility.district}-${facility.facilityLevel}-${facility.name}`} />
+              )) : <div className="empty-state">No facilities match the selected status and geography filters.</div>}
+            </div>
+            {filteredFacilityAlerts.length > facilityAlertPageSize ? <div className="non-reporting-pagination"><button type="button" disabled={facilityAlertCurrentPage <= 1} onClick={() => setFacilityAlertPage((page) => page - 1)}>Previous</button><span>Page {facilityAlertCurrentPage} of {facilityAlertPageCount} · {filteredFacilityAlerts.length.toLocaleString()} facilities</span><button type="button" disabled={facilityAlertCurrentPage >= facilityAlertPageCount} onClick={() => setFacilityAlertPage((page) => page + 1)}>Next</button></div> : null}
+          </> : <div className="facility-status-map" aria-label="Filtered facility status map">
+            <div className="facility-map-legend">{facilityStatusOptions.map((option) => <span className={`tone-${option.tone}`} key={option.id}><i />{option.shortLabel}</span>)}</div>
+            <div className="facility-map-canvas">{filteredFacilityAlerts.map((facility) => {
+              const primary = facility.reportingStatus === "Facility did not report" ? facilityStatusOptions[2] : facility.stockoutItemCount > 0 ? facilityStatusOptions[0] : facility.criticalLowStockItemCount > 0 || facility.lowStockItemCount > 0 ? facilityStatusOptions[1] : facility.overstockItemCount > 0 ? facilityStatusOptions[4] : facilityStatusOptions[3];
+              return <button type="button" className={`facility-map-marker tone-${primary.tone}`} key={`map-${facilityIdentityKey(facility)}`} title={`${facility.name} · ${facility.district} · ${primary.shortLabel}`} onClick={() => facility.reportingStatus === "Facility did not report" ? openFacilityReportingFollowup(facility) : setOpenFacility(facility)}><i>{primary.icon}</i><span><b>{facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name}</b><small>{facility.district} · {facility.province}</small><small>{facility.reportingStatus === "Facility did not report" ? "Current stock status unknown" : `${facility.stockoutItemCount} stock-outs · ${facility.lowStockItemCount} low · ${facility.overstockItemCount} overstocked`}</small></span></button>;
+            })}</div>
+            {!filteredFacilityAlerts.length ? <div className="empty-state">No map markers match the selected filters.</div> : null}
+          </div>}
         </section>
 
         <section className="table-panel">
@@ -4134,8 +4276,9 @@ function App() {
           <div className="section-head">
             <div>
               <p className="eyebrow dark">Reporting Rate</p>
-              <h2>District and facility reporting performance</h2>
+              <h2>{reportStatus === "Not Reported" ? `Facilities that did not report — ${reportData.label}` : "District and facility reporting performance"}</h2>
               <p>A district counts as reported only when its DHO submission includes both Health Centre and Health Post reporting. Combined primary-care source sheets count for both; Level 1, 2, or 3 hospital submissions never make the district count as reported.</p>
+              {reportFacilityName !== "all" ? <p className="active-reporting-context">Reporting unit: <b>{reportFacilityName}</b> <button type="button" onClick={() => setReportFacilityName("all")}>Clear</button></p> : null}
             </div>
           </div>
           <div className="reporting-filter-bar">
@@ -4185,7 +4328,9 @@ function App() {
             <KpiCard label="DHO districts submitted" value={reportingKpis.reported.toLocaleString()} sub="Both Health Centre and Health Post received" />
             <KpiCard label="Districts not complete" value={reportingKpis.notReported.toLocaleString()} sub={`${reportingKpis.partial} partial · ${reportingKpis.hospitalOnly} hospital-only`} tone="red" />
             <KpiCard label="District reporting rate" value={formatPercent(reportingKpis.rate)} sub="Districts submitted / expected" tone={reportingTone(reportingKpis.rate)} />
-            <KpiCard label="Reporting facilities" value={reportingFacilityRows.length.toLocaleString()} sub="Unique submitted reporting units" />
+            <KpiCard label="Facilities expected" value={reportingFacilityKpis.expected.toLocaleString()} sub="Expected units in current facility filters" />
+            <KpiCard label="Reports received" value={reportingFacilityKpis.received.toLocaleString()} sub="Valid tracer submissions received" />
+            <KpiCard label="Reports missing" value={reportingFacilityKpis.missing.toLocaleString()} sub="Expected units without a valid submission" tone={reportingFacilityKpis.missing ? "red" : undefined} />
           </div>
           <div className="reporting-drill-path">
             <button type="button" onClick={() => {
@@ -4240,8 +4385,8 @@ function App() {
             <div className="quality-panel reporting-facilities">
               <div className="quality-panel-head">
                 <div>
-                  <h3>{reportDrillDistrict ? `${reportDrillDistrict} submitted facilities` : "Submitted facilities"}</h3>
-                  <p>Each row is one submitted reporting facility or aggregate facility level for the selected week.</p>
+                  <h3>{reportStatus === "Not Reported" ? "Facilities requiring reporting follow-up" : reportDrillDistrict ? `${reportDrillDistrict} reporting facilities` : "Reporting facilities"}</h3>
+                  <p>{reportStatus === "Not Reported" ? "No tracer was submitted for the selected reporting period. Stock position remains unknown." : "Each row is one expected reporting facility or aggregate facility level for the selected week."}</p>
                 </div>
                 <span>{reportingFacilityRows.length} rows</span>
               </div>
@@ -4253,6 +4398,7 @@ function App() {
                       <th>Facility type</th>
                       <th>Reported status</th>
                       <th>Last reporting period</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -4262,8 +4408,9 @@ function App() {
                         <td>{row.facilityType}</td>
                         <td><span className={`status-pill ${row.status === "Reported" ? "reported" : "missing"}`}>{row.status}</span></td>
                         <td>{row.lastReportingPeriod}</td>
+                        <td>{row.status === "Not Reported" ? <button type="button" className="ghost-button" onClick={() => openFacilityReportingFollowup(row.sourceFacility)}>Open follow-up</button> : <span>Submitted</span>}</td>
                       </tr>
-                    )) : <tr><td colSpan="4">No submitted facilities match the selected filters.</td></tr>}
+                    )) : <tr><td colSpan="5">No facilities match the selected reporting filters.</td></tr>}
                   </tbody>
                 </table>
               </div>
