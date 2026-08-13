@@ -3,7 +3,7 @@ import { tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
 import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName } from "./commodityNormalization.js";
-import { primaryCareDistrictRows, primaryCareDistrictSummary, reconciledExpectedFacilityRows } from "./reportingQuality.js";
+import { facilityReportingRows, primaryCareDistrictRows, primaryCareDistrictSummary } from "./reportingQuality.js";
 import { buildRedistributionCandidates } from "./redistribution.js";
 import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTracerAnalysis.js";
 
@@ -1719,7 +1719,7 @@ function App() {
         lastReportingPeriod: reported ? reportData.label : "-",
       };
     });
-  const reportExpectedFacilityRows = reconciledExpectedFacilityRows(reportData)
+  const reportSubmittedFacilityRows = facilityReportingRows(reportData)
     .map((facility) => {
       const previous = tracerReportingPeriods
         .filter((period) => period.reportDate < reportData.reportDate)
@@ -1737,19 +1737,6 @@ function App() {
         sourceFacility: facility,
       };
     });
-  const reportExpectedKeys = new Set(reportExpectedFacilityRows.map((row) => `${row.province}|${row.district}|${row.facilityType}|${row.facilityName}`));
-  const reportSubmittedFacilityRows = [...reportExpectedFacilityRows, ...(reportData.facilities || [])
-    .filter((facility) => !reportExpectedKeys.has(`${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}`))
-    .map((facility) => ({
-      province: facility.province,
-      district: facility.district,
-      facilityName: facility.name,
-      facilityType: facility.facilityLevel,
-      status: "Reported",
-      rate: 1,
-      lastReportingPeriod: reportData.label,
-      sourceFacility: facility,
-    }))];
   const reportFacilityTypeOptions = [...new Set(reportSubmittedFacilityRows.map((row) => row.facilityType))].sort();
   const reportProvinceOptions = [...new Set(reportBaseRows.map((row) => row.province))].sort();
   const reportDistrictOptions = [...new Set(reportBaseRows
@@ -1881,7 +1868,12 @@ function App() {
   const bestProvince = scopedProvinceRows[0];
   const worstProvince = [...scopedProvinceRows].sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)[0];
   const facilityCommodityRows = useMemo(() => groupCommodityRowsByFacility(filteredCommodityRows), [filteredCommodityRows]);
-  const correctedReportingFacilities = useMemo(() => filteredFacilities.map((facility) => {
+  const uniqueFilteredFacilities = useMemo(() => {
+    const facilitiesByIdentity = new Map();
+    filteredFacilities.forEach((facility) => facilitiesByIdentity.set(facilityIdentityKey(facility), facility));
+    return [...facilitiesByIdentity.values()];
+  }, [filteredFacilities]);
+  const correctedReportingFacilities = useMemo(() => uniqueFilteredFacilities.map((facility) => {
     const analysis = analyseFacilityTracer(facilityCommodityRows.get(facilityIdentityKey(facility)) || []);
     const incomplete = analysis.items.some((item) => item.quantity === null || (item.quantity > 0 && (item.amc === null || item.amc <= 0)));
     const stockoutItems = analysis.byStatus["Confirmed stock-out"];
@@ -1897,8 +1889,8 @@ function App() {
       accordingToPlanItemCount: analysis.byStatus["Stocked according to plan"].length,
       overstockItemCount: analysis.byStatus.Overstocked.length,
     };
-  }), [filteredFacilities, facilityCommodityRows]);
-  const missingExpectedFacilities = useMemo(() => reconciledExpectedFacilityRows(fieldData)
+  }), [uniqueFilteredFacilities, facilityCommodityRows]);
+  const missingExpectedFacilities = useMemo(() => facilityReportingRows(fieldData)
     .filter((facility) => !facility.reported)
     .filter((facility) => !correctedReportingFacilities.some((submitted) => facilityIdentityKey(submitted) === facilityIdentityKey(facility)))
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
@@ -2463,7 +2455,7 @@ function App() {
   const qualityFollowupRows = nonReportingFacilityRows.slice(0, 6);
   const persistentQualityRows = qualityFacilityHistories.filter((row) => ["Persistent non-reporting", "No reporting"].includes(row.consistency));
   const weeklyReportLibraryRows = useMemo(() => tracerReportingPeriods.map((period) => {
-    const facilities = period.dataQuality?.facilities || [];
+    const facilities = facilityReportingRows(period);
     const reported = facilities.filter((row) => row.reported).length;
     const districtSummary = primaryCareDistrictSummary(period);
     const districts = districtSummary.reported;
