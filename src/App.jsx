@@ -4,6 +4,7 @@ import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
 import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName } from "./commodityNormalization.js";
 import { primaryCareDistrictRows, primaryCareDistrictSummary } from "./reportingQuality.js";
+import { buildRedistributionCandidates } from "./redistribution.js";
 
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary" },
@@ -483,61 +484,8 @@ function LevelOfCarePerformance({ rows }) {
   );
 }
 
-function buildRedistributionCandidates(facilities) {
-  const demandByProvinceItem = new Map();
-  const supplyRows = [];
-
-  facilities.forEach((facility) => {
-    (facility.stockoutItems || []).forEach((item) => {
-      const key = `${facility.province}|${normalizeCommodity(item.item)}`;
-      const demand = demandByProvinceItem.get(key) || [];
-      demand.push({ facility, item, priority: "Stockout" });
-      demandByProvinceItem.set(key, demand);
-    });
-    (facility.lowStockItems || []).forEach((item) => {
-      const key = `${facility.province}|${normalizeCommodity(item.item)}`;
-      const demand = demandByProvinceItem.get(key) || [];
-      demand.push({ facility, item, priority: "Low stock" });
-      demandByProvinceItem.set(key, demand);
-    });
-    (facility.overstockItems || []).forEach((item) => {
-      supplyRows.push({ facility, item });
-    });
-  });
-
-  const candidates = [];
-  supplyRows.forEach((source) => {
-    const key = `${source.facility.province}|${normalizeCommodity(source.item.item)}`;
-    const demandRows = demandByProvinceItem.get(key) || [];
-    demandRows
-      .filter((destination) => destination.facility.name !== source.facility.name || destination.facility.district !== source.facility.district)
-      .slice(0, 3)
-      .forEach((destination) => {
-        candidates.push({
-          province: source.facility.province,
-          commodity: source.item.item,
-          sourceFacility: source.facility.isAggregate ? `All ${source.facility.facilityLevel.toLowerCase()} facilities` : source.facility.name,
-          sourceDistrict: source.facility.district,
-          sourceLevel: source.facility.facilityLevel,
-          sourceMos: source.item.mos,
-          sourceQty: source.item.quantity,
-          destinationFacility: destination.facility.isAggregate ? `All ${destination.facility.facilityLevel.toLowerCase()} facilities` : destination.facility.name,
-          destinationDistrict: destination.facility.district,
-          destinationLevel: destination.facility.facilityLevel,
-          destinationMos: destination.item.mos,
-          destinationQty: destination.item.quantity,
-          priority: destination.priority,
-        });
-      });
-  });
-
-  return candidates
-    .sort((a, b) => a.province.localeCompare(b.province) || (a.destinationMos || 0) - (b.destinationMos || 0) || (b.sourceMos || 0) - (a.sourceMos || 0))
-    .slice(0, 80);
-}
-
 function redistributionActionKey(item) {
-  return [item.province, item.commodity, item.sourceDistrict, item.sourceFacility, item.destinationDistrict, item.destinationFacility]
+  return [item.sourceProvince, item.destinationProvince || item.province, item.commodity, item.sourceDistrict, item.sourceFacility, item.destinationDistrict, item.destinationFacility]
     .map((value) => normalizeCommodity(String(value || "")))
     .join("|");
 }
@@ -1852,7 +1800,7 @@ function App() {
   const worstProvince = [...scopedProvinceRows].sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)[0];
   const stockoutFacilityCount = filteredFacilities.filter((facility) => facility.stockoutItemCount > 0).length;
   const lowStockFacilityCount = filteredFacilities.filter((facility) => facility.lowStockItemCount > 0).length;
-  const redistributionCandidates = buildRedistributionCandidates(filteredFacilities);
+  const redistributionCandidates = buildRedistributionCandidates(filteredCommodityRows);
   const actionCommodityCandidates = redistributionCandidates.filter((item) => !actionCommodityQuery.trim() || item.commodity.toLowerCase().includes(actionCommodityQuery.trim().toLowerCase()));
   const actionSummary = actionCommodityCandidates.reduce((summary, item) => {
     const status = actionUpdates[redistributionActionKey(item)]?.status || "Open";
@@ -4444,7 +4392,7 @@ function App() {
             <div>
               <p className="eyebrow dark">Control Tower Action Tracker</p>
               <h2>Commodity action tracker</h2>
-              <p>Search a medicine to see same-province redistribution recommendations from overstocked facilities to stockout or low-stock facilities.</p>
+              <p>Search a medicine to match urgent zero-stock facilities with safe overstocked or well-stocked sources.</p>
             </div>
             <div className="action-summary">
               <span><b>{actionSummary.Open}</b> open</span>
@@ -4456,8 +4404,8 @@ function App() {
             <div className="redistribution-head">
               <div>
                 <p className="eyebrow dark">Redistribution Recommendations</p>
-                <h3>Searchable same-province commodity actions</h3>
-                <p>Follow same-province redistribution recommendations and record action updates for the provincial team.</p>
+                <h3>Searchable priority redistribution actions</h3>
+                <p>Overstocked sources are considered first, then facilities above two MOS. Sources retain at least one MOS, with same-district and same-province matches prioritised.</p>
               </div>
               <div className="redistribution-summary">
                 <span><b>{actionCommodityCandidates.length}</b> suggested transfers</span>
@@ -4479,8 +4427,8 @@ function App() {
                   <tr>
                     <th>Province</th>
                     <th>Commodity</th>
-                    <th>Source overstock</th>
-                    <th>Destination need</th>
+                    <th>Source facility</th>
+                    <th>Urgent receiving facility</th>
                     <th>Suggested action</th>
                     <th>Action status</th>
                     <th>Comment status</th>
@@ -4492,21 +4440,26 @@ function App() {
                     const actionUpdate = actionUpdates[actionKey] || {};
                     const comments = Array.isArray(actionComments[actionKey]) ? actionComments[actionKey] : [];
                     return <tr key={`${actionKey}-${index}`}>
-                      <td>{item.province}</td>
+                      <td>{item.sourceProvince === item.destinationProvince ? item.destinationProvince : <><strong>{item.sourceProvince}</strong><small>to {item.destinationProvince}</small></>}</td>
                       <td>{item.commodity}</td>
-                      <td>
+                      <td className={item.sourceStatus === "Overstocked" ? "redistribution-source-high" : "redistribution-source-secondary"}>
+                        <span className={`source-status-pill ${item.sourceStatus === "Overstocked" ? "overstocked" : "well-stocked"}`}>{item.sourceStatus}</span>
                         <strong>{item.sourceFacility}</strong>
                         <small>{item.sourceDistrict} | {item.sourceLevel}</small>
-                        <small>MOS {formatMos(item.sourceMos)} | Qty {item.sourceQty?.toLocaleString?.() ?? item.sourceQty}</small>
+                        <small>Current: Qty {item.sourceQty?.toLocaleString?.() ?? item.sourceQty} | MOS {formatMos(item.sourceMos)}</small>
+                        <small>Transfer: {item.proposedTransferQty?.toLocaleString?.() ?? item.proposedTransferQty} | After: Qty {item.sourceQtyAfter?.toLocaleString?.() ?? item.sourceQtyAfter}, MOS {formatMos(item.sourceMosAfter)}</small>
                       </td>
-                      <td>
+                      <td className="redistribution-destination-urgent">
+                        <span className="source-status-pill urgent">Zero quantity + zero MOS</span>
                         <strong>{item.destinationFacility}</strong>
                         <small>{item.destinationDistrict} | {item.destinationLevel}</small>
-                        <small>{item.priority} | MOS {formatMos(item.destinationMos)} | Qty {item.destinationQty?.toLocaleString?.() ?? item.destinationQty}</small>
+                        <small>Current: Qty {item.destinationQty?.toLocaleString?.() ?? item.destinationQty} | MOS {formatMos(item.destinationMos)}</small>
+                        <small>Receive: {item.proposedTransferQty?.toLocaleString?.() ?? item.proposedTransferQty} | After: Qty {item.destinationQtyAfter?.toLocaleString?.() ?? item.destinationQtyAfter}, MOS {formatMos(item.destinationMosAfter)}</small>
                       </td>
                       <td>
-                        <span className={item.priority === "Stockout" ? "priority-pill critical" : "priority-pill monitor"}>{item.priority}</span>
-                        <p>Province to validate physical stock and redistribute from source to destination.</p>
+                        <span className="priority-pill critical">Urgent receiver</span>
+                        <span className={`geography-pill geography-${item.geographyPriority.toLowerCase().replaceAll(" ", "-")}`}>{item.geographyPriority}</span>
+                        <p>Validate physical stock, then transfer <b>{item.proposedTransferQty?.toLocaleString?.() ?? item.proposedTransferQty}</b>. The source retains {formatMos(item.sourceMosAfter)} MOS.</p>
                       </td>
                       <td>
                         <select value={actionUpdate.status || "Open"} onChange={(event) => updateRedistributionAction(item, event.target.value)}>
@@ -4522,7 +4475,7 @@ function App() {
                     </tr>;
                   }) : (
                     <tr>
-                      <td colSpan="7">No same-province overstock to stockout/low-stock commodity matches match this medicine search.</td>
+                      <td colSpan="7">No safe source above two MOS was found for a facility reporting both zero quantity and zero MOS for this medicine search.</td>
                     </tr>
                   )}
                 </tbody>

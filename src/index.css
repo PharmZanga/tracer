@@ -990,6 +990,60 @@ select:focus-visible {
   color: #9a5a00;
 }
 
+.source-status-pill,
+.geography-pill {
+  display: inline-flex;
+  width: fit-content;
+  margin: 0 5px 6px 0;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.source-status-pill.overstocked {
+  background: #e8efff;
+  color: #214fa3;
+}
+
+.source-status-pill.well-stocked {
+  background: #e7f6ec;
+  color: #087443;
+}
+
+.source-status-pill.urgent {
+  background: #ffe9e5;
+  color: #b42318;
+}
+
+.redistribution-source-high {
+  box-shadow: inset 4px 0 #3b6dcc;
+  background: #f7f9ff;
+}
+
+.redistribution-source-secondary {
+  box-shadow: inset 4px 0 #26965c;
+  background: #f7fcf8;
+}
+
+.redistribution-destination-urgent {
+  box-shadow: inset 4px 0 #d92d20;
+  background: #fff8f6;
+}
+
+.geography-pill {
+  border: 1px solid #c9d8ce;
+  background: #f4f8f5;
+  color: #365344;
+}
+
+.geography-cross-province {
+  border-color: #e6c273;
+  background: #fff8e8;
+  color: #875300;
+}
+
 .redistribution-table p {
   margin: 0;
   color: #44564b;

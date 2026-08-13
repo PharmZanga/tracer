@@ -4,6 +4,7 @@ import test from "node:test";
 
 import { tracerReportingPeriods } from "../src/tracerFacilityData.js";
 import { primaryCareDistrictRows, primaryCareDistrictSummary } from "../src/reportingQuality.js";
+import { buildRedistributionCandidates } from "../src/redistribution.js";
 
 const week5 = tracerReportingPeriods.find((period) => period.id === "2026-08-02");
 
@@ -48,4 +49,29 @@ test("Week 5 uses programme-approved Power BI presentation values", () => {
   assert.match(appSource, /"NORTH-WESTERN PROVINCE": \{ mos: 4\.3, availability: 0\.88/);
   assert.match(appSource, /"WESTERN PROVINCE": \{ mos: 2\.7, availability: 0\.85/);
   assert.match(appSource, /setQualityRangeEnd\] = useState\(tracerReportingPeriods\.at\(-1\)\?\.month/);
+});
+
+test("Week 5 redistribution recommendations preserve the source safety reserve", () => {
+  const { dictionaries, rows } = week5.commodityFacilityData;
+  const commodityRows = rows.map(([province, district, level, facility, item, programme, quantity, amc, mos]) => ({
+    province: dictionaries.provinces[province],
+    district: dictionaries.districts[district],
+    facilityLevel: dictionaries.levels[level],
+    facility: dictionaries.facilities[facility],
+    item: dictionaries.items[item],
+    programme: dictionaries.programmes[programme],
+    quantity,
+    amc,
+    mos,
+  }));
+  const recommendations = buildRedistributionCandidates(commodityRows);
+
+  assert.ok(recommendations.length > 0);
+  recommendations.forEach((item) => {
+    assert.equal(item.destinationQty, 0);
+    assert.equal(item.destinationMos, 0);
+    assert.ok(item.sourceMos > 2);
+    assert.ok(item.sourceMosAfter >= 1);
+    assert.ok(item.proposedTransferQty > 0);
+  });
 });
