@@ -82,6 +82,15 @@ SOURCES = [
             {"sheet": "LAB July31", "date": "2026-07-31", "label": "31 July 2026", "stream": "LAB"},
         ],
     },
+    {
+        "file": ROOT / "august" / "Stock position 07-14 August.xlsx",
+        "periods": [
+            {"sheet": "EMMS 07 JULY", "date": "2026-08-07", "label": "7 August 2026", "stream": "EMMS"},
+            {"sheet": "LAB 7 JULY", "date": "2026-08-07", "label": "7 August 2026", "stream": "LAB"},
+            {"sheet": "EMMS 14JULY", "date": "2026-08-14", "label": "14 August 2026", "stream": "EMMS"},
+            {"sheet": "LAB14 JULY", "date": "2026-08-14", "label": "14 August 2026", "stream": "LAB"},
+        ],
+    },
 ]
 
 

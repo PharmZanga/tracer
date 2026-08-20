@@ -15,6 +15,15 @@ const weightedAvailability = (rows) => {
 const check = (condition, message) => {
   if (!condition) errors.push(message);
 };
+const belongsToReportingMonth = (period) => {
+  if (period.reportDate.startsWith(period.month)) return true;
+  if (period.week !== "Week 5") return false;
+  const [year, month] = period.month.split("-").map(Number);
+  const monthEnd = new Date(Date.UTC(year, month, 0));
+  const reportDate = new Date(`${period.reportDate}T00:00:00Z`);
+  const daysAfterMonthEnd = Math.round((reportDate - monthEnd) / 86400000);
+  return daysAfterMonthEnd >= 1 && daysAfterMonthEnd <= 7;
+};
 
 const expectedMonths = ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06"];
 const sourceScopes = ["provinces", "districts", "facilities", "programmes", "commodities"];
@@ -23,7 +32,7 @@ const seenTracerDates = new Set();
 for (const period of tracerReportingPeriods) {
   check(!seenTracerDates.has(period.reportDate), `Duplicate tracer date: ${period.reportDate}`);
   seenTracerDates.add(period.reportDate);
-  check(period.reportDate.startsWith(period.month), `Month mismatch: ${period.reportDate} is not in ${period.month}`);
+  check(belongsToReportingMonth(period), `Month mismatch: ${period.reportDate} is not a valid reporting date for ${period.month}`);
   check(period.counts.rows === period.national.rows, `${period.reportDate}: national row count mismatch`);
 
   for (const scope of sourceScopes) {

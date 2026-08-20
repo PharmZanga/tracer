@@ -1523,6 +1523,131 @@ h1 {
   font-weight: 700;
 }
 
+.central-stock-snapshot {
+  display: grid;
+  gap: 12px;
+  margin: 12px;
+}
+
+.central-stock-snapshot-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid #cfe0d5;
+  border-left: 4px solid #147749;
+  border-radius: 8px;
+  background: #f7fbf8;
+}
+
+.central-stock-snapshot-head h2,
+.central-stock-snapshot-head p {
+  margin: 0 0 5px;
+}
+
+.central-stock-snapshot-head span,
+.central-stock-snapshot-head > b {
+  color: #52665a;
+  font-size: 12px;
+}
+
+.central-stock-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.central-stock-kpis > div {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid #dce7df;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.central-stock-kpis span,
+.central-stock-kpis small {
+  color: #607168;
+  font-size: 11px;
+}
+
+.central-stock-kpis strong {
+  color: #173d2a;
+  font-size: 25px;
+}
+
+.central-stock-priority {
+  border: 1px solid #dce7df;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.central-stock-table-wrap {
+  max-height: 340px;
+  overflow: auto;
+}
+
+.central-stock-table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.central-stock-table-wrap th,
+.central-stock-table-wrap td {
+  padding: 9px 10px;
+  border-top: 1px solid #e4ece7;
+  text-align: left;
+  vertical-align: top;
+}
+
+.central-stock-table-wrap th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #edf4ef;
+  color: #274534;
+}
+
+.central-stock-status {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 7px;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.central-stock-status.stockout {
+  background: #fde4e2;
+  color: #a92720;
+}
+
+.central-stock-status.low {
+  background: #fff0cc;
+  color: #8a5900;
+}
+
+@media (max-width: 820px) {
+  .central-stock-snapshot-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .central-stock-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .central-stock-kpis {
+    grid-template-columns: 1fr;
+  }
+}
+
 .weekly-stock-head {
   display: flex;
   justify-content: space-between;

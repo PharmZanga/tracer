@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
+import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
 import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName } from "./commodityNormalization.js";
 import { facilityReportingRows, primaryCareDistrictRows, primaryCareDistrictSummary } from "./reportingQuality.js";
@@ -1677,6 +1678,11 @@ function App() {
   const selectedMonth = fieldData.month;
   const weeksInMonth = tracerReportingPeriods.filter((period) => period.month === selectedMonth);
   const stockStreams = [...new Set(weeklyStockPeriods.map((period) => period.stream))].sort();
+  const centralStock = latestZammsaCentralReport;
+  const centralPriorityRows = (centralStock?.rows || [])
+    .filter((row) => row.mos !== null && row.mos < 2)
+    .sort((a, b) => a.mos - b.mos || a.category.localeCompare(b.category) || a.item.localeCompare(b.item))
+    .slice(0, 20);
   const stockTrendRows = weeklyStockPeriods
     .filter((period) => period.stream === stockStream)
     .sort((a, b) => a.date.localeCompare(b.date));
@@ -3423,11 +3429,31 @@ function App() {
           </div>
           <div className="weekly-live-strip">
             <span>Live indicators</span>
+            <b>{centralStock?.label || "-"}</b><small>latest central stock report</small>
             <b>{stockData?.counts?.items?.toLocaleString() || "0"}</b><small>unique ordering codes across stock reports</small>
             <b>{stockData?.counts?.availableItems?.toLocaleString() || "0"}</b><small>commodities available in selected week</small>
             <b>{stockData?.counts?.stockoutItems?.toLocaleString() || "0"}</b><small>commodities displayed at 0.0 availability</small>
             <b>{formatPercent(stockData?.overallAvailability)}</b><small>weekly availability</small>
           </div>
+          {centralStock ? <div className="central-stock-snapshot">
+            <div className="central-stock-snapshot-head">
+              <div><p className="eyebrow dark">Central Stock Snapshot</p><h2>Status as of {centralStock.label}</h2><span>Confirmed stock-outs require both reported SOH = 0 and MOS = 0. A missing MOS remains a data gap.</span></div>
+              <b>{centralStock.summary.listed.toLocaleString()} ordering codes</b>
+            </div>
+            <div className="central-stock-kpis">
+              <div><span>Below 2 MOS</span><strong>{centralStock.summary.belowTwoMos.toLocaleString()}</strong><small>Reported MOS below minimum</small></div>
+              <div><span>Confirmed stock-outs</span><strong>{centralStock.summary.confirmedStockouts.toLocaleString()}</strong><small>SOH 0 and MOS 0</small></div>
+              <div><span>2–4 MOS</span><strong>{centralStock.summary.twoToFourMos.toLocaleString()}</strong><small>Within planning range</small></div>
+              <div><span>MOS data gaps</span><strong>{centralStock.summary.mosDataGaps.toLocaleString()}</strong><small>TBD or missing, not zero</small></div>
+            </div>
+            <div className="central-stock-priority">
+              <div className="quality-panel-head"><div><h3>Lowest reported months of stock</h3><p>Priority lines from the 15 August central report; scroll to review.</p></div></div>
+              <div className="central-stock-table-wrap"><table><thead><tr><th>Code</th><th>Commodity</th><th>Category</th><th>SOH</th><th>AMI</th><th>MOS</th><th>Status</th></tr></thead><tbody>{centralPriorityRows.map((row) => {
+                const confirmedStockout = row.stockOnHand === 0 && row.mos === 0;
+                return <tr key={row.code}><td><b>{row.code}</b></td><td>{row.item}</td><td>{row.category}</td><td>{row.stockOnHand?.toLocaleString() ?? "TBD"}</td><td>{row.ami?.toLocaleString() ?? "TBD"}</td><td>{formatMos(row.mos)}</td><td><span className={`central-stock-status ${confirmedStockout ? "stockout" : "low"}`}>{confirmedStockout ? "Confirmed stock-out" : "Below 2 MOS"}</span></td></tr>;
+              })}</tbody></table></div>
+            </div>
+          </div> : null}
           <div className="weekly-stock-head">
             <div>
               <p className="eyebrow dark">Weekly Inventory Availability</p>
