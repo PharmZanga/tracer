@@ -1674,9 +1674,13 @@ function App() {
 
   const fieldData = tracerReportingPeriods.find((period) => period.id === fieldPeriodId) || tracerReportingPeriods.at(-1);
   const activePageLabel = dashboardPages.find((page) => page.id === activePage)?.label || "Tracer Dashboard";
-  const fieldMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))];
+  const fieldYears = [...new Set(tracerReportingPeriods.map((period) => period.month.slice(0, 4)))].sort((a, b) => b.localeCompare(a));
   const selectedMonth = fieldData.month;
-  const weeksInMonth = tracerReportingPeriods.filter((period) => period.month === selectedMonth);
+  const selectedYear = selectedMonth.slice(0, 4);
+  const fieldMonths = [...new Set(tracerReportingPeriods
+    .filter((period) => period.month.startsWith(`${selectedYear}-`))
+    .map((period) => period.month))];
+  const weeksInMonth = tracerReportingPeriods.filter((period) => period.month === selectedMonth && period.month.startsWith(`${selectedYear}-`));
   const stockStreams = [...new Set(weeklyStockPeriods.map((period) => period.stream))].sort();
   const centralStock = latestZammsaCentralReport;
   const centralPriorityRows = (centralStock?.rows || [])
@@ -2635,7 +2639,17 @@ function App() {
 
   function changeMonth(month) {
     const latestInMonth = tracerReportingPeriods.filter((period) => period.month === month).at(-1);
+    if (!latestInMonth) return;
     setFieldPeriodId(latestInMonth.id);
+    resetFieldHierarchy();
+  }
+
+  function changeYear(year) {
+    const latestInYear = tracerReportingPeriods
+      .filter((period) => period.month.startsWith(`${year}-`))
+      .at(-1);
+    if (!latestInYear) return;
+    setFieldPeriodId(latestInYear.id);
     resetFieldHierarchy();
   }
 
@@ -3245,6 +3259,12 @@ function App() {
             <strong>{activePageLabel}</strong>
           </div>
           {!['stock', 'comparison', 'reporting'].includes(activePage) && <div className="global-filter-bar">
+            <label>
+              <span>Year</span>
+              <select value={selectedYear} onChange={(event) => changeYear(event.target.value)}>
+                {fieldYears.map((year) => <option value={year} key={year}>{year}</option>)}
+              </select>
+            </label>
             <label>
               <span>Month</span>
               <select value={selectedMonth} onChange={(event) => changeMonth(event.target.value)}>
