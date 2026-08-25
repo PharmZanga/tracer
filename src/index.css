@@ -272,9 +272,14 @@ select:focus-visible {
   align-items: baseline;
 }
 
+.dashboard-topbar > div:first-child {
+  flex: 0 0 auto;
+}
+
 .global-filter-bar {
   flex: 1;
-  justify-content: flex-end;
+  min-width: 0;
+  justify-content: flex-start;
   align-items: end !important;
   flex-wrap: wrap;
 }
