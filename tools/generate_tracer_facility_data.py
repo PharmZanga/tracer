@@ -9,6 +9,7 @@ import openpyxl
 
 JULY_WEEK4_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\july\28.07.26 summary reports.xlsx")
 JULY_WEEK5_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\july\TRACER SUMMARY 02 AUAGUST 2026.xlsx")
+AUGUST_WEEK1_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 1\9.8.2026 tracer summary.xlsx")
 
 
 WORKBOOKS = [
@@ -1534,6 +1535,18 @@ def main():
         config["label"] = "Week 5 - 2 August 2026"
         config["month"] = "2026-07"
         config["week"] = "Week 5"
+        config["availabilityOverrides"] = availability_overrides
+        configs.append(config)
+    for config in load_clean_workbook_configs(
+        AUGUST_WEEK1_CLEAN_WORKBOOK,
+        "Sheet1",
+        "9.8.2026 tracer summary.xlsx",
+    ):
+        # The reporting calendar restarts in August after the 2 August
+        # July close-out report, so this is August Week 1.
+        config["label"] = "Week 1 - 9 August 2026"
+        config["month"] = "2026-08"
+        config["week"] = "Week 1"
         config["availabilityOverrides"] = availability_overrides
         configs.append(config)
     clean_period_ids = {config["reportDate"] for config in configs}
