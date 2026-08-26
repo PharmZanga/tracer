@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { tracerReportingPeriods } from "./tracerFacilityData.js";
+import { availableTracerYears, loadHistoricalTracerYear, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
@@ -1486,6 +1486,8 @@ function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
 }
 
 function App() {
+  const [, setHistoricalDataVersion] = useState(0);
+  const [historicalYearLoading, setHistoricalYearLoading] = useState("");
   const [activePage, setActivePage] = useState(() => dashboardPages.some((page) => page.id === initialDashboardParam("page")) ? initialDashboardParam("page") : "executive");
   const [fieldPeriodId, setFieldPeriodId] = useState(() => tracerReportingPeriods.some((period) => period.id === initialDashboardParam("period")) ? initialDashboardParam("period") : tracerReportingPeriods.at(-1).id);
   const [selectedProvince, setSelectedProvince] = useState(() => initialDashboardParam("province", "all"));
@@ -1674,7 +1676,7 @@ function App() {
 
   const fieldData = tracerReportingPeriods.find((period) => period.id === fieldPeriodId) || tracerReportingPeriods.at(-1);
   const activePageLabel = dashboardPages.find((page) => page.id === activePage)?.label || "Tracer Dashboard";
-  const fieldYears = [...new Set(tracerReportingPeriods.map((period) => period.month.slice(0, 4)))].sort((a, b) => b.localeCompare(a));
+  const fieldYears = [...availableTracerYears].sort((a, b) => b.localeCompare(a));
   const selectedMonth = fieldData.month;
   const selectedYear = selectedMonth.slice(0, 4);
   const fieldMonths = [...new Set(tracerReportingPeriods
@@ -2516,7 +2518,7 @@ function App() {
   const programmePressureRows = aggregateRollups(scopedProgrammeRows, "name")
     .sort((a, b) => b.riskRows - a.riskRows || a.availability - b.availability)
     .slice(0, 12);
-  const comparisonYears = [...new Set(tracerReportingPeriods.map((period) => String(period.month).slice(0, 4)))].sort();
+  const comparisonYears = [...availableTracerYears].sort();
   const comparisonMonths = [...new Set(tracerReportingPeriods
     .filter((period) => String(period.month).startsWith(comparisonYear))
     .map((period) => period.month))].sort();
@@ -2644,7 +2646,19 @@ function App() {
     resetFieldHierarchy();
   }
 
-  function changeYear(year) {
+  async function changeYear(year) {
+    if (!tracerReportingPeriods.some((period) => period.month.startsWith(`${year}-`))) {
+      setHistoricalYearLoading(year);
+      try {
+        await loadHistoricalTracerYear(year);
+        setHistoricalDataVersion((version) => version + 1);
+      } catch (error) {
+        window.alert(`Could not load ${year} historical data. Please try again.`);
+        return;
+      } finally {
+        setHistoricalYearLoading("");
+      }
+    }
     const latestInYear = tracerReportingPeriods
       .filter((period) => period.month.startsWith(`${year}-`))
       .at(-1);
@@ -3261,8 +3275,8 @@ function App() {
           {!['stock', 'comparison', 'reporting'].includes(activePage) && <div className="global-filter-bar">
             <label>
               <span>Year</span>
-              <select value={selectedYear} onChange={(event) => changeYear(event.target.value)}>
-                {fieldYears.map((year) => <option value={year} key={year}>{year}</option>)}
+              <select value={selectedYear} onChange={(event) => changeYear(event.target.value)} disabled={Boolean(historicalYearLoading)}>
+                {fieldYears.map((year) => <option value={year} key={year}>{historicalYearLoading === year ? `Loading ${year}...` : year}</option>)}
               </select>
             </label>
             <label>
