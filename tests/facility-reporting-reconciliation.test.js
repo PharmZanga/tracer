@@ -37,7 +37,7 @@ test("Week 5 reconciles facility reporting across the same shared rule", () => {
 });
 
 test("the complete facility mapping reconciles every loaded reporting week", () => {
-  assert.equal(tracerReportingPeriods.length, 31);
+  assert.equal(tracerReportingPeriods.length, 34);
 
   tracerReportingPeriods.forEach((period) => {
     const rows = facilityReportingRows(period);
@@ -72,7 +72,8 @@ test("all-week facility totals use the same reconciled mapping", () => {
     "2026-05-31": [283, 267, 16], "2026-06-07": [283, 267, 16], "2026-06-14": [257, 237, 20],
     "2026-06-21": [281, 265, 16], "2026-06-28": [280, 263, 17], "2026-07-06": [289, 273, 16],
     "2026-07-12": [282, 266, 16], "2026-07-19": [289, 272, 17], "2026-07-26": [425, 408, 17],
-    "2026-08-02": [429, 410, 19],
+    "2026-08-02": [429, 410, 19], "2026-08-09": [425, 408, 17],
+    "2026-08-16": [428, 412, 16], "2026-08-23": [434, 418, 16],
   };
 
   tracerReportingPeriods.forEach((period) => {

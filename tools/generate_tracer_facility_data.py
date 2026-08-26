@@ -11,6 +11,7 @@ JULY_WEEK4_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA AN
 JULY_WEEK5_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\july\TRACER SUMMARY 02 AUAGUST 2026.xlsx")
 AUGUST_WEEK1_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 1\9.8.2026 tracer summary.xlsx")
 AUGUST_WEEK2_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 2\tracer summary 16-08-2026.xlsx")
+AUGUST_WEEK3_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 3\23.08.2026.xlsx")
 
 
 WORKBOOKS = [
@@ -1560,6 +1561,16 @@ def main():
         config["week"] = "Week 2"
         config["availabilityOverrides"] = availability_overrides
         configs.append(config)
+    for config in load_clean_workbook_configs(
+        AUGUST_WEEK3_CLEAN_WORKBOOK,
+        "Sheet1",
+        "23.08.2026.xlsx",
+    ):
+        config["label"] = "Week 3 - 23 August 2026"
+        config["month"] = "2026-08"
+        config["week"] = "Week 3"
+        config["availabilityOverrides"] = availability_overrides
+        configs.append(config)
     clean_period_ids = {config["reportDate"] for config in configs}
     # Retain the clean master as the source of record for its existing dates,
     # then add provincial submissions only for new reporting periods not yet
@@ -1600,7 +1611,7 @@ def main():
         module_name = f"tracerFacilityData{suffix}"
         module_names.append(module_name)
         (OUT_DIR / f"{module_name}.js").write_text(
-            "export const tracerReportingPeriods = " + json.dumps(group, indent=2) + ";\n",
+            "export const tracerReportingPeriods = " + json.dumps(group, separators=(",", ":")) + ";\n",
             encoding="utf-8",
         )
 
@@ -1610,9 +1621,20 @@ def main():
     )
     output = (
         f"{imports}\n\n"
-        + "export const tracerReportingPeriods = ["
+        + "export const availableTracerYears = [\"2024\", \"2025\", \"2026\"];\n\n"
+        + "export let tracerReportingPeriods = ["
         + ", ".join(f"...{name}" for name in module_names)
-        + "];\n\nexport const tracerFacilityData = tracerReportingPeriods.at(-1);\n"
+        + "].sort((left, right) => left.reportDate.localeCompare(right.reportDate));\n\n"
+        + "const loadedHistoricalYears = new Set();\n\n"
+        + "export async function loadHistoricalTracerYear(year) {\n"
+        + "  if (year === \"2026\" || loadedHistoricalYears.has(year)) return tracerReportingPeriods;\n"
+        + "  if (!availableTracerYears.includes(year)) throw new Error(`No tracer data is available for ${year}.`);\n\n"
+        + "  const module = await import(/* @vite-ignore */ `/historical/tracerFacilityData${year}.js`);\n"
+        + "  tracerReportingPeriods = [...tracerReportingPeriods, ...module.tracerReportingPeriods]\n"
+        + "    .sort((left, right) => left.reportDate.localeCompare(right.reportDate));\n"
+        + "  loadedHistoricalYears.add(year);\n"
+        + "  return tracerReportingPeriods;\n"
+        + "}\n\nexport const tracerFacilityData = tracerReportingPeriods.at(-1);\n"
     )
     OUT.write_text(output, encoding="utf-8")
     print([(item["label"], item["counts"]) for item in periods])
