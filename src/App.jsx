@@ -15,6 +15,7 @@ const dashboardPages = [
   { id: "provincial", short: "PP", label: "Provincial Performance" },
   { id: "facilities", short: "FA", label: "Facility Alerts" },
   { id: "commodities", short: "CI", label: "Commodity Intelligence" },
+  { id: "alerts", short: "CA", label: "Commodity Alerts" },
   { id: "comparison", short: "CP", label: "Comparison" },
   { id: "programmes", short: "PR", label: "Programme Performance" },
   { id: "reporting", short: "RR", label: "Reporting Rate" },
@@ -1008,6 +1009,7 @@ function buildCommodityForecast(periods, filters) {
       name: current.name,
       programme: current.programme || "Tracer commodity",
       likelihood,
+      label: forecastRiskLabel(likelihood),
       tone: forecastRiskTone(likelihood),
       stockoutRate,
       riskRate,
@@ -1017,6 +1019,7 @@ function buildCommodityForecast(periods, filters) {
       observations: history.length,
       affectedFacilities: impact?.facilities.size || 0,
       affectedProvinces: impact?.provinces.size || 0,
+      provinces: [...(impact?.provinces || [])],
       horizon: forecastHorizon(likelihood),
       projectedMos,
       forecastMethod: demandForecast.method,
@@ -1031,6 +1034,27 @@ function buildCommodityForecast(periods, filters) {
       recommendedOrderQty: reorder.recommendedOrderQty,
     };
   }).filter(Boolean).sort((a, b) => b.likelihood - a.likelihood || b.stockoutRate - a.stockoutRate || a.name.localeCompare(b.name));
+}
+
+function buildCommodityAlerts(rows) {
+  return rows.map((row) => {
+    const severity = row.stockoutRate > 0 || row.projectedMos <= 0 || row.likelihood >= 0.6
+      ? "critical"
+      : row.projectedMos < 1 || row.likelihood >= 0.35 || row.emergencyRate > 0
+        ? "warning"
+        : "watch";
+    const triggers = [];
+    if (row.stockoutRate > 0) triggers.push("Current stockout reported");
+    else if (row.emergencyRate > 0) triggers.push("Emergency stock reported");
+    else if (row.lowStockRate > 0) triggers.push("Low stock reported");
+    if (row.projectedMos < 2 || row.likelihood >= 0.35) triggers.push("Forecast stockout risk");
+    const confidence = !Number.isFinite(row.forecastMape) ? "Limited history" : row.forecastMape <= 30 ? "Higher confidence" : row.forecastMape <= 50 ? "Use with caution" : "Validate forecast";
+    return { ...row, severity, triggers, confidence };
+  }).filter((row) => row.riskRate > 0 || row.likelihood >= 0.35)
+    .sort((a, b) => {
+      const ranks = { critical: 3, warning: 2, watch: 1 };
+      return ranks[b.severity] - ranks[a.severity] || b.likelihood - a.likelihood;
+    });
 }
 
 function buildForecastImpact(periods, filters) {
@@ -1561,6 +1585,12 @@ function App() {
   const [predictiveCommodityQuery, setPredictiveCommodityQuery] = useState("");
   const [predictiveCommodityStatus, setPredictiveCommodityStatus] = useState("at-risk");
   const [predictiveCommodityPage, setPredictiveCommodityPage] = useState(1);
+  const [alertSeverityFilter, setAlertSeverityFilter] = useState("all");
+  const [alertQuery, setAlertQuery] = useState("");
+  const [alertRecipients, setAlertRecipients] = useState([]);
+  const [alertRecipientDraft, setAlertRecipientDraft] = useState({ email: "", name: "", province: "ALL", minimumSeverity: "warning" });
+  const [alertDispatchMessage, setAlertDispatchMessage] = useState("");
+  const [alertBusy, setAlertBusy] = useState(false);
   const [actionCommodityQuery, setActionCommodityQuery] = useState("");
   const [actionPageSize, setActionPageSize] = useState(10);
   const [actionPage, setActionPage] = useState(1);
@@ -1637,6 +1667,16 @@ function App() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (activePage !== "alerts" || !["admin", "super_admin"].includes(dashboardUser?.role)) return undefined;
+    let cancelled = false;
+    fetch(`${actionApiUrl}/api/commodity-alerts/recipients`)
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error("Unable to load alert recipients")))
+      .then((data) => { if (!cancelled) setAlertRecipients(Array.isArray(data?.recipients) ? data.recipients : []); })
+      .catch(() => { if (!cancelled) setAlertDispatchMessage("Recipient settings could not be loaded."); });
+    return () => { cancelled = true; };
+  }, [activePage, dashboardUser?.role]);
 
   const isDashboardAdmin = ["admin", "super_admin"].includes(dashboardUser?.role);
   const visibleDashboardPages = dashboardPages.filter((page) => !page.adminOnly || isDashboardAdmin);
@@ -2015,6 +2055,13 @@ function App() {
   const predictiveThreatPageSize = 20;
   const predictiveThreatPages = Math.max(1, Math.ceil(predictiveThreatRows.length / predictiveThreatPageSize));
   const predictiveThreatPageRows = predictiveThreatRows.slice((Math.min(predictiveCommodityPage, predictiveThreatPages) - 1) * predictiveThreatPageSize, Math.min(predictiveCommodityPage, predictiveThreatPages) * predictiveThreatPageSize);
+  const commodityAlertRows = useMemo(() => buildCommodityAlerts(predictiveCommodityRows), [predictiveCommodityRows]);
+  const filteredCommodityAlertRows = useMemo(() => {
+    const search = alertQuery.trim().toLowerCase();
+    return commodityAlertRows.filter((row) => (alertSeverityFilter === "all" || row.severity === alertSeverityFilter)
+      && (!search || `${row.name} ${row.programme}`.toLowerCase().includes(search)));
+  }, [commodityAlertRows, alertSeverityFilter, alertQuery]);
+  const commodityAlertCounts = commodityAlertRows.reduce((counts, row) => ({ ...counts, [row.severity]: counts[row.severity] + 1 }), { critical: 0, warning: 0, watch: 0 });
   const predictiveImpact = useMemo(() => buildForecastImpact(predictiveHistoryPeriods, predictiveFilters), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const predictiveTimeline = useMemo(() => predictiveHistoryPeriods.map((period) => {
     const rollup = combineRollups(forecastRollupsForPeriod(period, predictiveFilters), makeEmptyRollup());
@@ -4681,6 +4728,27 @@ function App() {
             <div className="predictive-action-card expanded"><p className="eyebrow dark">Immediate redistribution opportunity</p>{predictiveTopTransfer ? <><h3>{predictiveTopTransfer.commodity}</h3><p>Validate movement from <b>{predictiveTopTransfer.sourceFacility}</b> in {predictiveTopTransfer.sourceDistrict} to <b>{predictiveTopTransfer.destinationFacility}</b> in {predictiveTopTransfer.destinationDistrict}.</p><dl><div><dt>Source SOH</dt><dd>{Math.round(predictiveTopTransfer.sourceQty || 0).toLocaleString()}</dd></div><div><dt>Destination MOS</dt><dd>{formatMos(predictiveTopTransfer.destinationMos)}</dd></div><div><dt>Responsible</dt><dd>Provincial pharmacist</dd></div><div><dt>Status</dt><dd>{predictiveTopTransferStatus}</dd></div></dl></> : <div className="empty-state">No same-province redistribution opportunity is available.</div>}<button type="button" onClick={() => setActivePage("actions")}>Open action tracker</button></div>
             <div className="quality-panel predictive-recommendation-panel"><div className="quality-panel-head"><div><h3>Province recommendations</h3><p>Next actions based on current priority score and available redistribution options.</p></div></div><div className="predictive-recommendation-list">{predictiveRecommendations.map((row, index) => <div key={row.province} className={`risk-${row.tone}`}><b>{index + 1}</b><span><strong>{shortProvinceName(row.province)}</strong><small>{formatPercent(row.likelihood)} priority score · {row.label}</small>{row.transfer ? <em>Validate {row.transfer.commodity} from {row.transfer.sourceFacility} to {row.transfer.destinationFacility}. Status: {row.actionStatus}.</em> : <em>Validate physical counts and prepare replenishment; no same-province transfer is identified.</em>}</span></div>)}{!predictiveRecommendations.length && <div className="empty-state">No recommendation is available for the selected scope.</div>}</div></div>
           </div>}
+        </section>
+
+        <section className="commodity-alert-centre">
+          <div className="section-head">
+            <div><p className="eyebrow dark">Commodity alert centre</p><h2>Warnings from current facility reports and forecast risk</h2><p>Critical alerts are current stockouts or a projected zero MOS. Warning and watch alerts identify commodities to validate before a stockout occurs.</p></div>
+            <button type="button" className="table-link" onClick={() => { setPredictiveTab("commodities"); setActivePage("predictive"); }}>Open forecast evidence</button>
+          </div>
+          <div className="stats-grid alert-kpis">
+            <KpiCard label="Critical" value={commodityAlertCounts.critical.toLocaleString()} sub="Immediate action: current stockout or projected zero MOS" tone={commodityAlertCounts.critical ? "red" : "green"} />
+            <KpiCard label="Warning" value={commodityAlertCounts.warning.toLocaleString()} sub="Below 1 projected MOS or high forecast risk" tone={commodityAlertCounts.warning ? "amber" : "green"} />
+            <KpiCard label="Watch" value={commodityAlertCounts.watch.toLocaleString()} sub="Early pressure needing monitoring" tone="blue" />
+            <KpiCard label="Facilities affected" value={commodityAlertRows.reduce((total, row) => total + row.affectedFacilities, 0).toLocaleString()} sub="Risk rows connected to Facility Alerts" tone="neutral" />
+          </div>
+          <div className="alert-toolbar quality-panel">
+            <label>Severity<select value={alertSeverityFilter} onChange={(event) => setAlertSeverityFilter(event.target.value)}><option value="all">All alerts</option><option value="critical">Critical</option><option value="warning">Warning</option><option value="watch">Watch</option></select></label>
+            <label>Search commodity<input value={alertQuery} onChange={(event) => setAlertQuery(event.target.value)} placeholder="Commodity or programme" /></label>
+            {["admin", "super_admin"].includes(dashboardUser?.role) && <button type="button" disabled={alertBusy || !commodityAlertRows.length} onClick={async () => { setAlertBusy(true); setAlertDispatchMessage(""); try { const response = await fetch(`${actionApiUrl}/api/commodity-alerts/dispatch`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ reportingPeriod: fieldData.label, alerts: commodityAlertRows }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "Alert dispatch failed"); setAlertDispatchMessage(data.message); } catch (error) { setAlertDispatchMessage(error.message || "Alert dispatch failed."); } finally { setAlertBusy(false); } }}>{alertBusy ? "Sending alerts..." : "Send current alert digest"}</button>}
+          </div>
+          {alertDispatchMessage && <p className="submission-import-message">{alertDispatchMessage}</p>}
+          <div className="table-panel alert-register"><div className="table-headline"><div><h2>Current commodity alert register</h2><p>Every alert shows its current evidence and the forecast signal behind it.</p></div><span>{filteredCommodityAlertRows.length} alerts</span></div><div className="table-scroll"><table><thead><tr><th>Severity</th><th>Commodity</th><th>Programme</th><th>Current MOS</th><th>Projected MOS</th><th>Risk likelihood</th><th>Evidence</th><th>Forecast confidence</th><th>Suggested action</th><th></th></tr></thead><tbody>{filteredCommodityAlertRows.map((row) => <tr key={row.name}><td><span className={`priority-pill ${row.severity}`}>{row.severity}</span></td><td><strong>{row.name}</strong><small>{row.affectedFacilities} facilities · {row.affectedProvinces} provinces</small></td><td>{row.programme}</td><td>{formatMos(row.mos)}</td><td>{formatMos(row.projectedMos)}</td><td><span className={`comparison-signal ${row.tone}`}>{formatPercent(row.likelihood)}<small>{row.label}</small></span></td><td>{row.triggers.join("; ")}</td><td>{row.confidence}</td><td>{row.severity === "critical" ? "Validate stock and initiate emergency redistribution or replenishment." : "Validate stock, AMC and supply action before the risk worsens."}</td><td><button type="button" className="table-link" onClick={() => { setSelectedCommodity(row.name); setQuery(row.name); setActivePage("commodities"); }}>Facility evidence</button></td></tr>)}{!filteredCommodityAlertRows.length && <tr><td colSpan="10">No commodity alerts match the current filters.</td></tr>}</tbody></table></div></div>
+          {["admin", "super_admin"].includes(dashboardUser?.role) && <div className="quality-panel alert-recipients"><div className="quality-panel-head"><div><h3>Email recipients</h3><p>Recipients can be limited to a province and the minimum severity they should receive.</p></div></div><div className="alert-recipient-form"><input value={alertRecipientDraft.name} onChange={(event) => setAlertRecipientDraft((draft) => ({ ...draft, name: event.target.value }))} placeholder="Name (optional)" /><input value={alertRecipientDraft.email} onChange={(event) => setAlertRecipientDraft((draft) => ({ ...draft, email: event.target.value }))} placeholder="Email address" /><select value={alertRecipientDraft.province} onChange={(event) => setAlertRecipientDraft((draft) => ({ ...draft, province: event.target.value }))}><option value="ALL">All provinces</option>{provinceOptions.filter((province) => province !== "all").map((province) => <option key={province} value={province}>{province}</option>)}</select><select value={alertRecipientDraft.minimumSeverity} onChange={(event) => setAlertRecipientDraft((draft) => ({ ...draft, minimumSeverity: event.target.value }))}><option value="watch">Watch and above</option><option value="warning">Warning and critical</option><option value="critical">Critical only</option></select><button type="button" onClick={async () => { try { const response = await fetch(`${actionApiUrl}/api/commodity-alerts/recipients`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(alertRecipientDraft) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "Could not add recipient"); setAlertRecipients(data.recipients); setAlertRecipientDraft({ email: "", name: "", province: "ALL", minimumSeverity: "warning" }); } catch (error) { setAlertDispatchMessage(error.message); } }}>Add recipient</button></div><div className="alert-recipient-list">{alertRecipients.map((recipient) => <div key={recipient.email}><span><strong>{recipient.name || recipient.email}</strong><small>{recipient.email} · {recipient.province === "ALL" ? "All provinces" : recipient.province} · {recipient.minimum_severity} and above</small></span><button type="button" onClick={async () => { const response = await fetch(`${actionApiUrl}/api/commodity-alerts/recipients/${encodeURIComponent(recipient.email)}`, { method: "DELETE" }); const data = await response.json(); if (response.ok) setAlertRecipients(data.recipients); else setAlertDispatchMessage(data.error || "Could not remove recipient"); }}>Remove</button></div>)}{!alertRecipients.length && <p>No recipients configured. Add the supervisor and selected provincial pharmacists.</p>}</div></div>}
         </section>
 
         <section className="action-tracker">

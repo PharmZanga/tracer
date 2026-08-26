@@ -1122,6 +1122,7 @@ select:focus-visible {
 .page-provincial > .field-visibility,
 .page-facilities > .facility-alerts,
 .page-commodities > .table-panel,
+.page-alerts > .commodity-alert-centre,
 .page-comparison > .comparison-section,
 .page-programmes > .weekly-section,
 .page-quality > .concerns-section,
@@ -5657,6 +5658,27 @@ td.neutral {
 .predictive-analysis {
   gap: 16px;
 }
+
+.commodity-alert-centre { display: grid; gap: 16px; }
+.alert-kpis { margin: 0; }
+.alert-toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; padding: 14px; }
+.alert-toolbar label { display: grid; gap: 5px; min-width: 200px; color: #496057; font-size: 12px; font-weight: 800; }
+.alert-toolbar input, .alert-toolbar select, .alert-recipient-form input, .alert-recipient-form select { min-height: 38px; padding: 8px 10px; border: 1px solid #bcd1c3; border-radius: 4px; font: inherit; color: #15281d; background: #fff; }
+.alert-toolbar button, .alert-recipient-form button, .alert-recipient-list button { min-height: 38px; padding: 8px 12px; border: 1px solid #087e45; border-radius: 4px; background: #087e45; color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+.alert-toolbar button:disabled { opacity: .55; cursor: not-allowed; }
+.alert-register td small { display: block; margin-top: 3px; color: #63766a; font-size: 11px; }
+.priority-pill.watch { background: #e8f1ff; color: #1f63a8; }
+.priority-pill.warning { background: #fff2dc; color: #a35e00; }
+.priority-pill.critical { background: #fee9e7; color: #b42318; }
+.alert-recipients { padding: 0; overflow: hidden; }
+.alert-recipient-form { display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr auto; gap: 8px; padding: 14px; border-bottom: 1px solid #dce8e0; }
+.alert-recipient-list { display: grid; }
+.alert-recipient-list > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid #eef3ef; }
+.alert-recipient-list strong, .alert-recipient-list small { display: block; }
+.alert-recipient-list small { margin-top: 3px; color: #62756a; font-size: 12px; }
+.alert-recipient-list button { min-height: 32px; border-color: #c4493e; background: #fff; color: #b42318; }
+.alert-recipient-list p { padding: 0 14px 14px; color: #63766a; }
+@media (max-width: 900px) { .alert-recipient-form { grid-template-columns: 1fr 1fr; } .alert-recipient-form button { grid-column: 1 / -1; } }
 
 .predictive-head {
   align-items: start;

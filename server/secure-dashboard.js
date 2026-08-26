@@ -173,6 +173,24 @@ async function initializeDatabase() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       UNIQUE (conversation_id, email)
     );
+    CREATE TABLE IF NOT EXISTS commodity_alert_recipients (
+      email TEXT PRIMARY KEY,
+      name TEXT NOT NULL DEFAULT '',
+      province TEXT NOT NULL DEFAULT 'ALL',
+      minimum_severity TEXT NOT NULL DEFAULT 'warning',
+      active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      created_by TEXT
+    );
+    CREATE TABLE IF NOT EXISTS commodity_alert_deliveries (
+      id BIGSERIAL PRIMARY KEY,
+      reporting_period TEXT NOT NULL,
+      fingerprint TEXT NOT NULL,
+      recipient_email TEXT NOT NULL,
+      severity TEXT NOT NULL,
+      sent_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE (reporting_period, fingerprint, recipient_email)
+    );
   `);
 }
 
@@ -673,6 +691,86 @@ app.post("/admin/users/:email/resend", requireSession, requireAdmin, async (requ
     if (emailResult.delivered) await audit(email, "access_link_resent", request.session.user.email);
     else await audit(email, "access_link_delivery_failed", request.session.user.email);
     response.redirect(`/admin?message=${encodeURIComponent(emailResult.delivered ? "Secure access link resent." : `The access link could not be sent: ${emailResult.reason}`)}`);
+  } catch (error) { next(error); }
+});
+
+const alertSeverityRank = { watch: 1, warning: 2, critical: 3 };
+
+function validAlertRecipient(value = {}) {
+  const email = String(value.email || "").trim().toLowerCase();
+  const minimumSeverity = String(value.minimumSeverity || "warning").toLowerCase();
+  if (!/^\S+@\S+\.\S+$/.test(email)) return { error: "Enter a valid recipient email." };
+  if (!Object.hasOwn(alertSeverityRank, minimumSeverity)) return { error: "Choose Watch, Warning, or Critical as the minimum alert severity." };
+  return { email, name: String(value.name || "").trim().slice(0, 120), province: String(value.province || "ALL").trim().toUpperCase().slice(0, 120) || "ALL", minimumSeverity };
+}
+
+app.get("/api/commodity-alerts/recipients", requireSession, requireAdmin, async (_request, response, next) => {
+  try {
+    const recipients = (await pool.query("SELECT email, name, province, minimum_severity, active FROM commodity_alert_recipients WHERE active = TRUE ORDER BY province, email")).rows;
+    response.json({ recipients });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/commodity-alerts/recipients", requireSession, requireAdmin, async (request, response, next) => {
+  try {
+    const recipient = validAlertRecipient(request.body);
+    if (recipient.error) return response.status(400).json({ error: recipient.error });
+    await pool.query(
+      `INSERT INTO commodity_alert_recipients (email, name, province, minimum_severity, active, created_by)
+       VALUES ($1, $2, $3, $4, TRUE, $5)
+       ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name, province = EXCLUDED.province, minimum_severity = EXCLUDED.minimum_severity, active = TRUE, created_by = EXCLUDED.created_by`,
+      [recipient.email, recipient.name, recipient.province, recipient.minimumSeverity, request.session.user.email],
+    );
+    await audit(recipient.email, "commodity_alert_recipient_added", request.session.user.email);
+    const recipients = (await pool.query("SELECT email, name, province, minimum_severity, active FROM commodity_alert_recipients WHERE active = TRUE ORDER BY province, email")).rows;
+    return response.json({ recipients });
+  } catch (error) { return next(error); }
+});
+
+app.delete("/api/commodity-alerts/recipients/:email", requireSession, requireAdmin, async (request, response, next) => {
+  try {
+    const email = normalizeRouteEmail(request.params.email);
+    await pool.query("DELETE FROM commodity_alert_recipients WHERE email = $1", [email]);
+    await audit(email, "commodity_alert_recipient_removed", request.session.user.email);
+    const recipients = (await pool.query("SELECT email, name, province, minimum_severity, active FROM commodity_alert_recipients WHERE active = TRUE ORDER BY province, email")).rows;
+    response.json({ recipients });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/commodity-alerts/dispatch", requireSession, requireAdmin, async (request, response, next) => {
+  try {
+    const reportingPeriod = String(request.body?.reportingPeriod || "Current reporting period").slice(0, 120);
+    const incoming = Array.isArray(request.body?.alerts) ? request.body.alerts.slice(0, 100) : [];
+    const alerts = incoming.filter((alert) => Object.hasOwn(alertSeverityRank, String(alert?.severity || "").toLowerCase()) && alert?.name);
+    if (!alerts.length) return response.status(400).json({ error: "There are no valid commodity alerts to send." });
+    let recipients = (await pool.query("SELECT email, name, province, minimum_severity FROM commodity_alert_recipients WHERE active = TRUE")).rows;
+    if (!recipients.length) recipients = [...notificationEmails].map((email) => ({ email, name: "Administrator", province: "ALL", minimum_severity: "critical" }));
+    if (!recipients.length) return response.status(400).json({ error: "Add at least one alert recipient before sending." });
+    let delivered = 0;
+    let alreadySent = 0;
+    const failed = [];
+    for (const recipient of recipients) {
+      const relevant = alerts.filter((alert) => alertSeverityRank[String(alert.severity).toLowerCase()] >= alertSeverityRank[recipient.minimum_severity]
+        && (recipient.province === "ALL" || (Array.isArray(alert.provinces) && alert.provinces.includes(recipient.province))));
+      if (!relevant.length) continue;
+      const critical = relevant.filter((alert) => String(alert.severity).toLowerCase() === "critical").length;
+      const fingerprint = createHash("sha256").update(relevant.map((alert) => `${alert.severity}|${alert.name}|${alert.mos}|${alert.projectedMos}`).sort().join("\n")).digest("hex");
+      const priorDelivery = await pool.query("SELECT id FROM commodity_alert_deliveries WHERE reporting_period = $1 AND fingerprint = $2 AND recipient_email = $3", [reportingPeriod, fingerprint, recipient.email]);
+      if (priorDelivery.rowCount) { alreadySent += 1; continue; }
+      const subject = `${critical ? "[CRITICAL] " : ""}Tracer commodity alert - ${reportingPeriod}`;
+      const rows = relevant.slice(0, 25).map((alert) => `<tr><td>${escapeHtml(String(alert.severity).toUpperCase())}</td><td>${escapeHtml(alert.name)}</td><td>${escapeHtml(alert.programme || "-")}</td><td>${escapeHtml(String(alert.mos ?? "-"))}</td><td>${escapeHtml(String(alert.projectedMos ?? "-"))}</td><td>${escapeHtml((alert.triggers || []).join("; "))}</td></tr>`).join("");
+      const emailResult = await sendEmail({
+        to: [recipient.email], subject,
+        text: `${reportingPeriod}: ${relevant.length} commodity alert(s), including ${critical} critical. Open the National Tracer Dashboard to validate current stock and coordinate action.`,
+        html: `<p><strong>${escapeHtml(reportingPeriod)}</strong></p><p>${relevant.length} commodity alerts require review, including <strong>${critical} critical</strong>.</p><table border="1" cellpadding="6" cellspacing="0"><thead><tr><th>Severity</th><th>Commodity</th><th>Programme</th><th>Current MOS</th><th>Projected MOS</th><th>Evidence</th></tr></thead><tbody>${rows}</tbody></table><p>Validate physical stock, AMC, and redistribution or replenishment action in the National Tracer Dashboard.</p>`,
+      });
+      if (emailResult.delivered) {
+        delivered += 1;
+        await pool.query("INSERT INTO commodity_alert_deliveries (reporting_period, fingerprint, recipient_email, severity) VALUES ($1, $2, $3, $4)", [reportingPeriod, fingerprint, recipient.email, critical ? "critical" : relevant[0].severity]);
+        await audit(recipient.email, `commodity_alert_digest_sent:${reportingPeriod}:${relevant.length}`, request.session.user.email);
+      } else failed.push(`${recipient.email}: ${emailResult.reason}`);
+    }
+    response.json({ message: `Alert digest sent to ${delivered} recipient${delivered === 1 ? "" : "s"}.${alreadySent ? ` ${alreadySent} matching digest${alreadySent === 1 ? " was" : "s were"} already sent for this reporting period.` : ""}${failed.length ? ` ${failed.length} delivery failure(s): ${failed.join(" | ")}` : ""}` });
   } catch (error) { next(error); }
 });
 
