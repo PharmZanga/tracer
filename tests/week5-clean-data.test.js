@@ -11,7 +11,7 @@ const week5 = tracerReportingPeriods.find((period) => period.id === "2026-08-02"
 
 test("2 August remains classified as July Week 5 after later August reporting periods", () => {
   assert.ok(week5);
-  assert.equal(tracerReportingPeriods.at(-1).id, "2026-08-23");
+  assert.equal(tracerReportingPeriods.at(-1).id, "2026-08-30");
   assert.equal(week5.label, "Week 5 - 2 August 2026");
   assert.equal(week5.month, "2026-07");
   assert.equal(week5.week, "Week 5");

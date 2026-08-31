@@ -12,6 +12,7 @@ JULY_WEEK5_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA AN
 AUGUST_WEEK1_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 1\9.8.2026 tracer summary.xlsx")
 AUGUST_WEEK2_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 2\tracer summary 16-08-2026.xlsx")
 AUGUST_WEEK3_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 3\23.08.2026.xlsx")
+AUGUST_WEEK4_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 4\30.08.2026Tracer summary report.xlsx")
 
 
 WORKBOOKS = [
@@ -260,6 +261,16 @@ CONFIRMED_NON_SUBMITTED_LEVELS = {
     ("2026-07-26", "MUCHINGA PROVINCE", "NAKONDE", "HEALTH CENTRE"),
     ("2026-07-26", "MUCHINGA PROVINCE", "NAKONDE", "HEALTH POST"),
     ("2026-07-26", "MUCHINGA PROVINCE", "NAKONDE", "PRIMARY CARE - NOT SPECIFIED"),
+    ("2026-08-30", "LUSAKA PROVINCE", "RUFUNSA", "HEALTH CENTRE"),
+    ("2026-08-30", "LUSAKA PROVINCE", "RUFUNSA", "HEALTH POST"),
+}
+
+# Confirmed Week 4 non-submissions that affect one named facility or clinical
+# section only. The source rows are excluded so they cannot appear as stockouts.
+CONFIRMED_NON_SUBMITTED_FACILITIES = {
+    ("2026-08-30", "LUAPULA PROVINCE", "MANSA", "LEVEL 2/GENERAL HOSPITAL", "mansa general hospital"),
+    ("2026-08-30", "LUAPULA PROVINCE", "NCHELENGE", "LEVEL 2/GENERAL HOSPITAL", "st pauls mission hospital"),
+    ("2026-08-30", "MUCHINGA PROVINCE", "CHINSALI", "TB-DS/TB-MDR UNITS", "chinsali district hospital"),
 }
 
 # Provincial Week 4 submissions provide the verified facility-to-district
@@ -1114,6 +1125,8 @@ def summarize(config):
         row_report_date = config.get("reportDate") or date_id(row.get("DATE"))
         if (row_report_date, province, district, facility_level) in CONFIRMED_NON_SUBMITTED_LEVELS:
             continue
+        if (row_report_date, province, district, facility_level, facility.casefold()) in CONFIRMED_NON_SUBMITTED_FACILITIES:
+            continue
         if facility_level in {"NATIONAL HEART HOSPITAL", "WOMEN AND NEWBORN HOSPITAL"} and province != "LUSAKA PROVINCE":
             continue
         item = clean(row.get("DESCRIPTION OF ITEM")) or "Unknown commodity"
@@ -1569,6 +1582,16 @@ def main():
         config["label"] = "Week 3 - 23 August 2026"
         config["month"] = "2026-08"
         config["week"] = "Week 3"
+        config["availabilityOverrides"] = availability_overrides
+        configs.append(config)
+    for config in load_clean_workbook_configs(
+        AUGUST_WEEK4_CLEAN_WORKBOOK,
+        "Sheet1",
+        "30.08.2026Tracer summary report.xlsx",
+    ):
+        config["label"] = "Week 4 - 30 August 2026"
+        config["month"] = "2026-08"
+        config["week"] = "Week 4"
         config["availabilityOverrides"] = availability_overrides
         configs.append(config)
     clean_period_ids = {config["reportDate"] for config in configs}

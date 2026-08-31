@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { tracerReportingPeriods } from "../src/tracerFacilityData.js";
-import { facilityReportingKey, facilityReportingRows, primaryCareDistrictSummary, reconciledExpectedFacilityRows } from "../src/reportingQuality.js";
+import { facilityReportingKey, facilityReportingRows, primaryCareDistrictRows, primaryCareDistrictSummary, reconciledExpectedFacilityRows } from "../src/reportingQuality.js";
 
 test("every reporting week deduplicates expected facilities and honours actual tracer submissions", () => {
   tracerReportingPeriods.forEach((period) => {
@@ -36,8 +36,32 @@ test("Week 5 reconciles facility reporting across the same shared rule", () => {
   assert.equal(new Set(reconciled.map(facilityReportingKey)).size, reconciled.length);
 });
 
+test("August Week 4 records confirmed facility non-submissions without treating them as stock data", () => {
+  const week4 = tracerReportingPeriods.find((period) => period.id === "2026-08-30");
+  const districtSummary = primaryCareDistrictSummary(week4);
+
+  assert.ok(week4);
+  assert.equal(week4.label, "Week 4 - 30 August 2026");
+  assert.equal(week4.source, "30.08.2026Tracer summary report.xlsx");
+  assert.equal(districtSummary.expected, 116);
+  assert.equal(districtSummary.reported, 114);
+  assert.equal(districtSummary.missing, 2);
+
+  const rufunsa = primaryCareDistrictRows(week4).find((row) => row.province === "LUSAKA PROVINCE" && row.name === "RUFUNSA");
+  assert.ok(rufunsa);
+  assert.equal(rufunsa.healthCentreReported, false);
+  assert.equal(rufunsa.healthPostReported, false);
+  assert.equal(rufunsa.partial, false);
+
+  const nalolo = primaryCareDistrictRows(week4).find((row) => row.province === "WESTERN PROVINCE" && row.name === "NALOLO");
+  assert.ok(nalolo);
+  assert.equal(nalolo.healthCentreReported, false);
+  assert.equal(nalolo.healthPostReported, true);
+  assert.equal(nalolo.partial, true);
+});
+
 test("the complete facility mapping reconciles every loaded reporting week", () => {
-  assert.equal(tracerReportingPeriods.length, 34);
+  assert.equal(tracerReportingPeriods.length, 35);
 
   tracerReportingPeriods.forEach((period) => {
     const rows = facilityReportingRows(period);
@@ -74,6 +98,7 @@ test("all-week facility totals use the same reconciled mapping", () => {
     "2026-07-12": [282, 266, 16], "2026-07-19": [289, 272, 17], "2026-07-26": [425, 408, 17],
     "2026-08-02": [429, 410, 19], "2026-08-09": [425, 408, 17],
     "2026-08-16": [428, 412, 16], "2026-08-23": [434, 418, 16],
+    "2026-08-30": [423, 406, 17],
   };
 
   tracerReportingPeriods.forEach((period) => {
