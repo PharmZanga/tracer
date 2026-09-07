@@ -14,6 +14,19 @@ AUGUST_WEEK2_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA 
 AUGUST_WEEK3_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 3\23.08.2026.xlsx")
 AUGUST_WEEK4_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 4\30.08.2026Tracer summary report.xlsx")
 
+# The consolidated Week 4 workbook changed this verified Lusaka provincial
+# submission. Preserve the values from the original provincial report so a
+# transcription error cannot create a false overstock recommendation.
+AUTHORITATIVE_COMMODITY_OVERRIDES = {
+    (
+        "2026-08-30",
+        "LUSAKA PROVINCE",
+        "LUSAKA",
+        "chilenje hospital",
+        "sodium chloride (normal saline) 500ml 0.09% (1)",
+    ): {"QUANTITY": 1122, "AMC": 1500, "MOS": 1},
+}
+
 
 WORKBOOKS = [
     {
@@ -1153,6 +1166,16 @@ def summarize(config):
             program = "CANCER"
         if report_date is None:
             report_date = row.get("DATE")
+
+        override_key = (
+            row_report_date,
+            province,
+            district,
+            facility_match_key(facility),
+            item.casefold(),
+        )
+        if override_key in AUTHORITATIVE_COMMODITY_OVERRIDES:
+            row = {**row, **AUTHORITATIVE_COMMODITY_OVERRIDES[override_key]}
 
         province_names.add(province)
         if district != "UNKNOWN":
