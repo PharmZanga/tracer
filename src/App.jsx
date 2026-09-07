@@ -1776,6 +1776,14 @@ function App() {
   const activeDashboardPage = dashboardPages.find((page) => page.id === activePage);
   const activePageLabel = activeDashboardPage?.label || "Tracer Dashboard";
   const ActivePageIcon = activeDashboardPage?.icon || Database;
+  const executiveIndicatorCards = [
+    { label: "National availability", value: formatPercent(fieldKpis.availability), sub: "Facility tracer submissions", icon: PackageSearch, tone: "green" },
+    { label: "Average MOS", value: formatMos(fieldAverageMos), sub: "Submitted stock position (12-month cap)", icon: ChartNoAxesCombined, tone: "blue" },
+    { label: "Reporting units", value: filteredFacilities.length, sub: `${fieldData.counts.facilityUnits} in full report`, icon: ClipboardCheck, tone: "teal" },
+    { label: "Stockout facilities", value: stockoutFacilityCount, sub: "At least one stockout item", icon: Siren, tone: "red" },
+    { label: "Low-stock facilities", value: lowStockFacilityCount, sub: "Below 2 MOS", icon: BellRing, tone: "amber" },
+    { label: "DHO districts reporting", value: fieldDistrictsReportedInScope, sub: "Health Centre + Health Post required", icon: MapPinned, tone: "violet" },
+  ];
   const fieldYears = [...availableTracerYears].sort((a, b) => b.localeCompare(a));
   const selectedMonth = fieldData.month;
   const selectedYear = selectedMonth.slice(0, 4);
@@ -3466,12 +3474,10 @@ function App() {
             <p>{bestProvince?.name} has the strongest reported availability at {formatPercent(bestProvince?.availability)}, while {worstProvince?.name} is lowest at {formatPercent(worstProvince?.availability)}. In the current filter, {stockoutFacilityCount} reporting units have stockouts and {lowStockFacilityCount} have low-stock commodities.</p>
           </div>
           <div className="executive-kpis">
-            <div><span>National availability</span><strong>{formatPercent(fieldKpis.availability)}</strong><small>Facility tracer submissions</small></div>
-            <div><span>Average MOS</span><strong>{formatMos(fieldAverageMos)}</strong><small>Submitted stock position (12-month cap)</small></div>
-            <div><span>Reporting units</span><strong>{filteredFacilities.length}</strong><small>{fieldData.counts.facilityUnits} in full report</small></div>
-            <div><span>Stockout facilities</span><strong>{stockoutFacilityCount}</strong><small>At least one stockout item</small></div>
-            <div><span>Low-stock facilities</span><strong>{lowStockFacilityCount}</strong><small>Below 2 MOS</small></div>
-            <div><span>DHO districts reporting</span><strong>{fieldDistrictsReportedInScope}</strong><small>Health Centre + Health Post required</small></div>
+            {executiveIndicatorCards.map((card) => {
+              const IndicatorIcon = card.icon;
+              return <div className={`tone-${card.tone}`} key={card.label}><span className="executive-kpi-icon"><IndicatorIcon size={22} strokeWidth={2.2} aria-hidden="true" /></span><div><span>{card.label}</span><strong>{card.value}</strong><small>{card.sub}</small></div></div>;
+            })}
           </div>
         </section>
 
