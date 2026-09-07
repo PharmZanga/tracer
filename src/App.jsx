@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Activity, BellRing, Boxes, ChartNoAxesCombined, ClipboardCheck, Database, FileUp, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Warehouse } from "lucide-react";
 import { availableTracerYears, loadHistoricalTracerYear, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
@@ -9,21 +10,21 @@ import { buildRedistributionCandidates } from "./redistribution.js";
 import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTracerAnalysis.js";
 
 const dashboardPages = [
-  { id: "executive", short: "EX", label: "Executive Summary" },
-  { id: "national", short: "NS", label: "National Stock Status" },
-  { id: "stock", short: "ZS", label: "ZAMMSA Weekly Stock Status" },
-  { id: "provincial", short: "PP", label: "Provincial Performance" },
-  { id: "facilities", short: "FA", label: "Facility Alerts" },
-  { id: "commodities", short: "CI", label: "Commodity Intelligence" },
-  { id: "alerts", short: "CA", label: "Commodity Alerts" },
-  { id: "comparison", short: "CP", label: "Comparison" },
-  { id: "programmes", short: "PR", label: "Programme Performance" },
-  { id: "reporting", short: "RR", label: "Reporting Rate" },
-  { id: "quality", short: "DQ", label: "Data Quality" },
-  { id: "gate", short: "QG", label: "Data Quality Gate" },
-  { id: "predictive", short: "PA", label: "Predictive Analysis" },
-  { id: "actions", short: "AT", label: "Action Tracker" },
-  { id: "imports", short: "IM", label: "Submission Import", adminOnly: true },
+  { id: "executive", short: "EX", label: "Executive Summary", icon: LayoutDashboard },
+  { id: "national", short: "NS", label: "National Stock Status", icon: Activity },
+  { id: "stock", short: "ZS", label: "ZAMMSA Weekly Stock Status", icon: Warehouse },
+  { id: "provincial", short: "PP", label: "Provincial Performance", icon: MapPinned },
+  { id: "facilities", short: "FA", label: "Facility Alerts", icon: Stethoscope },
+  { id: "commodities", short: "CI", label: "Commodity Intelligence", icon: PackageSearch },
+  { id: "alerts", short: "CA", label: "Commodity Alerts", icon: BellRing },
+  { id: "comparison", short: "CP", label: "Comparison", icon: GitCompareArrows },
+  { id: "programmes", short: "PR", label: "Programme Performance", icon: Gauge },
+  { id: "reporting", short: "RR", label: "Reporting Rate", icon: ClipboardCheck },
+  { id: "quality", short: "DQ", label: "Data Quality", icon: ScanSearch },
+  { id: "gate", short: "QG", label: "Data Quality Gate", icon: ShieldCheck },
+  { id: "predictive", short: "PA", label: "Predictive Analysis", icon: ChartNoAxesCombined },
+  { id: "actions", short: "AT", label: "Action Tracker", icon: Siren },
+  { id: "imports", short: "IM", label: "Submission Import", icon: FileUp, adminOnly: true },
 ];
 
 const statusLabels = {
@@ -1772,7 +1773,9 @@ function App() {
   }
 
   const fieldData = tracerReportingPeriods.find((period) => period.id === fieldPeriodId) || tracerReportingPeriods.at(-1);
-  const activePageLabel = dashboardPages.find((page) => page.id === activePage)?.label || "Tracer Dashboard";
+  const activeDashboardPage = dashboardPages.find((page) => page.id === activePage);
+  const activePageLabel = activeDashboardPage?.label || "Tracer Dashboard";
+  const ActivePageIcon = activeDashboardPage?.icon || Database;
   const fieldYears = [...availableTracerYears].sort((a, b) => b.localeCompare(a));
   const selectedMonth = fieldData.month;
   const selectedYear = selectedMonth.slice(0, 4);
@@ -3346,19 +3349,20 @@ function App() {
 
       <aside className="dashboard-sidebar">
         <div className="sidebar-brand">
-          <span>TR</span>
+          <span className="sidebar-brand-mark"><Boxes size={20} strokeWidth={2.2} aria-hidden="true" /></span>
           <div>
             <strong>Tracer Dashboard</strong>
             <small>Facility to national visibility</small>
           </div>
         </div>
         <nav aria-label="Dashboard pages">
-          {visibleDashboardPages.map((page) => (
-            <button className={activePage === page.id ? "active" : ""} type="button" key={page.id} onClick={() => setActivePage(page.id)}>
-              <span>{page.short}</span>
-              {page.label}
-            </button>
-          ))}
+          {visibleDashboardPages.map((page) => {
+            const PageIcon = page.icon;
+            return <button className={activePage === page.id ? "active" : ""} type="button" key={page.id} onClick={() => setActivePage(page.id)} title={page.label}>
+              <span className="sidebar-nav-icon"><PageIcon size={17} strokeWidth={2.1} aria-hidden="true" /></span>
+              <span className="sidebar-nav-label">{page.label}</span>
+            </button>;
+          })}
         </nav>
         <div className="sidebar-data">
           <span>Weekly submission</span>
@@ -3375,7 +3379,7 @@ function App() {
       <main className={`app-shell dashboard-page page-${activePage}`}>
         <header className="dashboard-topbar">
           <div>
-            <span>National Tracer Drug Availability</span>
+            <span><ActivePageIcon size={14} strokeWidth={2.2} aria-hidden="true" /> National Tracer Drug Availability</span>
             <strong>{activePageLabel}</strong>
           </div>
           {!['stock', 'comparison', 'reporting'].includes(activePage) && <div className="global-filter-bar">

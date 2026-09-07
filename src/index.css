@@ -136,8 +136,8 @@ select:focus-visible {
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.sidebar-brand > span,
-.dashboard-sidebar nav button > span {
+.sidebar-brand-mark,
+.sidebar-nav-icon {
   display: grid;
   place-items: center;
   flex: 0 0 34px;
@@ -196,7 +196,7 @@ select:focus-visible {
   color: #fff;
 }
 
-.dashboard-sidebar nav button > span {
+.sidebar-nav-icon {
   flex-basis: 30px;
   width: 30px;
   height: 30px;
@@ -204,9 +204,20 @@ select:focus-visible {
   color: rgba(255, 255, 255, 0.72);
 }
 
-.dashboard-sidebar nav button.active > span {
+.dashboard-sidebar nav button.active > .sidebar-nav-icon {
   background: #2aba68;
   color: #082014;
+}
+
+.sidebar-nav-label {
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.dashboard-topbar > div > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .sidebar-data {
@@ -6520,12 +6531,14 @@ td.neutral {
     font-size: 0;
   }
 
-  .dashboard-sidebar nav button > span {
+  .sidebar-nav-icon {
     flex-basis: 30px;
     width: 30px;
     height: 30px;
     font-size: 10px;
   }
+
+  .sidebar-nav-label { display: none; }
 
   .app-shell { padding: 10px; }
 
