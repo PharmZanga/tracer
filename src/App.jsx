@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Activity, BellRing, Boxes, ChartNoAxesCombined, ClipboardCheck, Database, FileUp, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Warehouse } from "lucide-react";
+import { Activity, BellRing, Boxes, ChartNoAxesCombined, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileQuestion, FileUp, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Warehouse } from "lucide-react";
 import { availableTracerYears, loadHistoricalTracerYear, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
@@ -26,6 +26,24 @@ const dashboardPages = [
   { id: "actions", short: "AT", label: "Action Tracker", icon: Siren },
   { id: "imports", short: "IM", label: "Submission Import", icon: FileUp, adminOnly: true },
 ];
+
+const moduleDescriptions = {
+  executive: "National decision summary for the selected reporting period.",
+  national: "National availability, stock status, and tracer commodity pressure.",
+  stock: "Central warehouse stock position, pipeline signals, and priority commodities.",
+  provincial: "Province-level availability, risk, and reporting performance.",
+  facilities: "Facilities requiring immediate stock, reporting, or follow-up action.",
+  commodities: "Commodity availability, months of stock, and programme pressure.",
+  alerts: "Prioritised supply risks requiring monitoring, redistribution, or replenishment.",
+  comparison: "Period-on-period comparison of national tracer performance.",
+  programmes: "Programme-specific commodity availability and stock risks.",
+  reporting: "District and facility reporting completeness for tracer submissions.",
+  quality: "Data completeness, consistency, and reporting quality checks.",
+  gate: "Records held from operational analysis until source-data issues are corrected.",
+  predictive: "Forecasted stockout risk and recommended action by province and commodity.",
+  actions: "Redistribution actions, ownership, progress, and collaboration.",
+  imports: "Validate and publish approved provincial tracer submissions.",
+};
 
 const statusLabels = {
   stockout: "Stockout",
@@ -3452,6 +3470,11 @@ function App() {
           </div>}
         </header>
 
+        <section className="module-context" aria-label={`${activePageLabel} module`}>
+          <span className="module-context-icon"><ActivePageIcon size={21} strokeWidth={2.15} aria-hidden="true" /></span>
+          <div><span>Control Tower module</span><strong>{activePageLabel}</strong><small>{moduleDescriptions[activePage] || "National tracer supply-chain intelligence."}</small></div>
+        </section>
+
         <section className="hero">
           <div>
             <p className="eyebrow">Weekly Tracer Submission</p>
@@ -3591,10 +3614,10 @@ function App() {
               <b>{centralStock.summary.listed.toLocaleString()} ordering codes</b>
             </div>
             <div className="central-stock-kpis">
-              <div><span>Below 2 MOS</span><strong>{centralStock.summary.belowTwoMos.toLocaleString()}</strong><small>Reported MOS below minimum</small></div>
-              <div><span>Confirmed stock-outs</span><strong>{centralStock.summary.confirmedStockouts.toLocaleString()}</strong><small>SOH 0 and MOS 0</small></div>
-              <div><span>2–4 MOS</span><strong>{centralStock.summary.twoToFourMos.toLocaleString()}</strong><small>Within planning range</small></div>
-              <div><span>MOS data gaps</span><strong>{centralStock.summary.mosDataGaps.toLocaleString()}</strong><small>TBD or missing, not zero</small></div>
+              <div className="stock-kpi-amber"><span className="stock-kpi-icon"><CircleAlert size={19} aria-hidden="true" /></span><div><span>Below 2 MOS</span><strong>{centralStock.summary.belowTwoMos.toLocaleString()}</strong><small>Reported MOS below minimum</small></div></div>
+              <div className="stock-kpi-red"><span className="stock-kpi-icon"><CircleX size={19} aria-hidden="true" /></span><div><span>Confirmed stock-outs</span><strong>{centralStock.summary.confirmedStockouts.toLocaleString()}</strong><small>SOH 0 and MOS 0</small></div></div>
+              <div className="stock-kpi-green"><span className="stock-kpi-icon"><CircleCheck size={19} aria-hidden="true" /></span><div><span>2-4 MOS</span><strong>{centralStock.summary.twoToFourMos.toLocaleString()}</strong><small>Within planning range</small></div></div>
+              <div className="stock-kpi-blue"><span className="stock-kpi-icon"><FileQuestion size={19} aria-hidden="true" /></span><div><span>MOS data gaps</span><strong>{centralStock.summary.mosDataGaps.toLocaleString()}</strong><small>TBD or missing, not zero</small></div></div>
             </div>
             <div className="central-stock-priority">
               <div className="quality-panel-head"><div><h3>Lowest reported months of stock</h3><p>Priority lines from the 15 August central report; scroll to review.</p></div></div>
