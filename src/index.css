@@ -932,6 +932,9 @@ select:focus-visible {
 .action-comment-dialog-form textarea { width: 100%; min-height: 104px; padding: 9px; border: 1px solid #cad8ce; border-radius: 6px; font: inherit; resize: vertical; }
 .action-comment-dialog-list { margin: 0; }
 .action-comment-dialog-list .action-comment { padding: 12px; border: 1px solid #dbe9df; border-left: 3px solid #62ab7d; border-radius: 6px; background: #fbfdfb; }
+.comment-reply-target { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px; border: 1px solid #cde0d3; background: #f1f8f3; color: #24503a; font-size: 12px; }
+.comment-reply-target button, .comment-reply { border: 1px solid #89bda0; border-radius: 5px; background: #fff; color: #087e45; cursor: pointer; font: inherit; font-size: 11px; font-weight: 800; padding: 4px 7px; }
+.comment-reply-to { color: #087e45; font-weight: 750; }
 
 .comment-add-button {
   justify-self: start;
@@ -1126,12 +1129,16 @@ select:focus-visible {
 .page-comparison > .comparison-section,
 .page-programmes > .weekly-section,
 .page-quality > .concerns-section,
+.page-gate > .data-quality-gate,
 .page-reporting > .reporting-rate-section,
 .page-predictive > .predictive-analysis,
 .page-actions > .action-tracker,
 .page-imports > .submission-import-section {
   display: grid;
 }
+
+.data-quality-gate { gap: 16px; }
+.plain-list { margin: 0; padding-left: 20px; color: #44564b; font-size: 13px; line-height: 1.7; }
 
 .submission-import-section { gap: 16px; }
 .submission-import-form, .submission-import-result { display: grid; gap: 14px; padding: 18px; border: 1px solid #d7e5dc; background: #fff; }

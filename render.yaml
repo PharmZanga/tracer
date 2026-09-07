@@ -21,6 +21,10 @@ services:
         fromDatabase:
           name: tracer-comments-db
           property: connectionString
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
   - type: web
     name: tracer-secure-dashboard
     runtime: node

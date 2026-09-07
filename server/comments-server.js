@@ -5,6 +5,8 @@ const { Pool } = pg;
 const app = express();
 const port = Number(process.env.PORT || 10000);
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const resendApiKey = process.env.RESEND_API_KEY || "";
+const emailFrom = process.env.EMAIL_FROM || "";
 const validStatuses = new Set(["Open", "In progress", "Completed"]);
 
 function isAllowedOrigin(origin) {
@@ -30,6 +32,33 @@ function cleanText(value, maxLength) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
 }
 
+async function sendReplyNotification({ to, replyAuthor, replyBody, actionKey }) {
+  if (!resendApiKey || !emailFrom || !to) return { delivered: false };
+  const subject = "A reply was added to your tracer dashboard comment";
+  const text = `${replyAuthor} replied to your comment in the National Tracer Dashboard:\n\n${replyBody}\n\nOpen the Action Tracker to view and respond.`;
+  try {
+    const result = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: emailFrom,
+        to: [to],
+        subject,
+        text,
+        html: `<p><strong>${escapeHtml(replyAuthor)}</strong> replied to your comment in the National Tracer Dashboard.</p><blockquote>${escapeHtml(replyBody).replace(/\n/g, "<br>")}</blockquote><p>Open the Action Tracker to view and respond.</p>`,
+      }),
+    });
+    return { delivered: result.ok };
+  } catch (error) {
+    console.error("Reply notification failed:", error);
+    return { delivered: false };
+  }
+}
+
+function escapeHtml(value = "") {
+  return String(value).replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
+}
+
 async function initializeDatabase() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS action_states (
@@ -44,9 +73,11 @@ async function initializeDatabase() {
       author TEXT NOT NULL,
       author_email TEXT,
       body TEXT NOT NULL,
+      parent_comment_id BIGINT REFERENCES action_comments(id) ON DELETE SET NULL,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
     ALTER TABLE action_comments ADD COLUMN IF NOT EXISTS author_email TEXT;
+    ALTER TABLE action_comments ADD COLUMN IF NOT EXISTS parent_comment_id BIGINT REFERENCES action_comments(id) ON DELETE SET NULL;
     UPDATE action_comments SET author_email = author WHERE author_email IS NULL;
     CREATE TABLE IF NOT EXISTS action_comment_votes (
       comment_id BIGINT NOT NULL REFERENCES action_comments(id) ON DELETE CASCADE,
@@ -61,16 +92,18 @@ async function initializeDatabase() {
 
 async function commentWithVotes(commentId) {
   const result = await pool.query(`
-    SELECT c.id, c.action_key, COALESCE(c.author_email, c.author) AS author, c.body, c.created_at,
+    SELECT c.id, c.action_key, COALESCE(c.author_email, c.author) AS author, c.body, c.parent_comment_id, c.created_at,
+      COALESCE(parent.author_email, parent.author) AS parent_author,
       COALESCE(SUM(CASE WHEN v.vote = 1 THEN 1 ELSE 0 END), 0)::int AS upvotes,
       COALESCE(SUM(CASE WHEN v.vote = -1 THEN 1 ELSE 0 END), 0)::int AS downvotes
     FROM action_comments c
+    LEFT JOIN action_comments parent ON parent.id = c.parent_comment_id
     LEFT JOIN action_comment_votes v ON v.comment_id = c.id
     WHERE c.id = $1
-    GROUP BY c.id
+    GROUP BY c.id, parent.author_email, parent.author
   `, [commentId]);
   const row = result.rows[0];
-  return row ? { id: row.id, actionKey: row.action_key, author: row.author, body: row.body, createdAt: row.created_at, upvotes: row.upvotes, downvotes: row.downvotes } : null;
+  return row ? { id: row.id, actionKey: row.action_key, author: row.author, body: row.body, parentCommentId: row.parent_comment_id, parentAuthor: row.parent_author, createdAt: row.created_at, upvotes: row.upvotes, downvotes: row.downvotes } : null;
 }
 
 app.get("/healthz", (_request, response) => response.json({ ok: true }));
@@ -80,12 +113,14 @@ app.get("/api/action-updates", async (_request, response, next) => {
     const [stateResult, commentResult] = await Promise.all([
       pool.query("SELECT action_key, status, updated_by, updated_at FROM action_states"),
       pool.query(`
-        SELECT c.id, c.action_key, COALESCE(c.author_email, c.author) AS author, c.body, c.created_at,
+        SELECT c.id, c.action_key, COALESCE(c.author_email, c.author) AS author, c.body, c.parent_comment_id, c.created_at,
+          COALESCE(parent.author_email, parent.author) AS parent_author,
           COALESCE(SUM(CASE WHEN v.vote = 1 THEN 1 ELSE 0 END), 0)::int AS upvotes,
           COALESCE(SUM(CASE WHEN v.vote = -1 THEN 1 ELSE 0 END), 0)::int AS downvotes
         FROM action_comments c
+        LEFT JOIN action_comments parent ON parent.id = c.parent_comment_id
         LEFT JOIN action_comment_votes v ON v.comment_id = c.id
-        GROUP BY c.id
+        GROUP BY c.id, parent.author_email, parent.author
         ORDER BY c.created_at ASC
       `),
     ]);
@@ -95,7 +130,7 @@ app.get("/api/action-updates", async (_request, response, next) => {
       updatedAt: row.updated_at,
     }]));
     const comments = commentResult.rows.reduce((all, row) => {
-      const entry = { id: row.id, author: row.author, body: row.body, createdAt: row.created_at, upvotes: row.upvotes, downvotes: row.downvotes };
+      const entry = { id: row.id, author: row.author, body: row.body, parentCommentId: row.parent_comment_id, parentAuthor: row.parent_author, createdAt: row.created_at, upvotes: row.upvotes, downvotes: row.downvotes };
       all[row.action_key] = [...(all[row.action_key] || []), entry];
       return all;
     }, {});
@@ -128,14 +163,25 @@ app.post("/api/action-comments/:actionKey", async (request, response, next) => {
   const actionKey = cleanText(request.params.actionKey, 800);
   const author = cleanText(request.body?.actorEmail, 254) || cleanText(request.body?.author, 254) || "Dashboard user";
   const body = cleanText(request.body?.body, 1600);
+  const parentCommentId = Number(request.body?.parentCommentId);
   if (!actionKey || !body) return response.status(400).json({ error: "Action and comment are required." });
   try {
+    let parent = null;
+    if (Number.isInteger(parentCommentId) && parentCommentId > 0) {
+      const parentResult = await pool.query("SELECT id, action_key, COALESCE(author_email, author) AS author FROM action_comments WHERE id = $1", [parentCommentId]);
+      parent = parentResult.rows[0] || null;
+      if (!parent || parent.action_key !== actionKey) return response.status(400).json({ error: "The reply target is not available for this action." });
+    }
     const result = await pool.query(`
-      INSERT INTO action_comments (action_key, author, author_email, body)
-      VALUES ($1, $2, $2, $3)
+      INSERT INTO action_comments (action_key, author, author_email, body, parent_comment_id)
+      VALUES ($1, $2, $2, $3, $4)
       RETURNING id
-    `, [actionKey, author, body]);
-    response.status(201).json(await commentWithVotes(result.rows[0].id));
+    `, [actionKey, author, body, parent?.id || null]);
+    const comment = await commentWithVotes(result.rows[0].id);
+    if (parent && parent.author && parent.author.toLowerCase() !== author.toLowerCase()) {
+      await sendReplyNotification({ to: parent.author, replyAuthor: author, replyBody: body, actionKey });
+    }
+    response.status(201).json(comment);
   } catch (error) {
     next(error);
   }

@@ -20,6 +20,7 @@ const dashboardPages = [
   { id: "programmes", short: "PR", label: "Programme Performance" },
   { id: "reporting", short: "RR", label: "Reporting Rate" },
   { id: "quality", short: "DQ", label: "Data Quality" },
+  { id: "gate", short: "QG", label: "Data Quality Gate" },
   { id: "predictive", short: "PA", label: "Predictive Analysis" },
   { id: "actions", short: "AT", label: "Action Tracker" },
   { id: "imports", short: "IM", label: "Submission Import", adminOnly: true },
@@ -94,6 +95,71 @@ function commodityRowsFromPeriod(period) {
     amc: amc === null || amc === undefined || amc === "" ? null : Number(amc),
     mos: mos === null || mos === undefined || mos === "" || !Number.isFinite(Number(mos)) ? null : Number(mos),
   })).filter((row) => isCommodityName(row.item));
+}
+
+function qualityGateKey(row) {
+  return [row.province, row.district, row.facilityLevel, row.facility, row.item, row.programme]
+    .map((value) => String(value || "").trim().toUpperCase().replace(/\s+/g, " "))
+    .join("|");
+}
+
+function qualityGateReasons(row) {
+  const reasons = [];
+  const quantity = Number(row.quantity);
+  const amc = Number(row.amc);
+  const submittedMos = row.mos === null ? null : Number(row.mos);
+  if (!Number.isFinite(quantity) || quantity < 0) reasons.push("Invalid SOH");
+  if (!Number.isFinite(submittedMos) || submittedMos < 0) reasons.push("Invalid submitted MOS");
+  if (Number.isFinite(quantity) && quantity > 0 && (!Number.isFinite(amc) || amc <= 0)) reasons.push("SOH without usable AMC");
+  if (Number.isFinite(quantity) && quantity >= 0 && Number.isFinite(amc) && amc > 0 && Number.isFinite(submittedMos)) {
+    const calculatedMos = quantity / amc;
+    if (!(submittedMos >= 12 && calculatedMos > 12) && Math.abs(calculatedMos - submittedMos) > 0.51) reasons.push("Submitted MOS differs from SOH/AMC");
+  }
+  return reasons;
+}
+
+function buildDataQualityGate(rows) {
+  const occurrences = new Map();
+  rows.forEach((row) => occurrences.set(qualityGateKey(row), (occurrences.get(qualityGateKey(row)) || 0) + 1));
+  const assessedRows = rows.map((row) => {
+    const reasons = qualityGateReasons(row);
+    if ((occurrences.get(qualityGateKey(row)) || 0) > 1) reasons.push("Duplicate facility-item record");
+    return { ...row, qualityGateReasons: reasons, calculatedMos: row.amc > 0 ? row.quantity / row.amc : null };
+  });
+  const blockedRows = assessedRows.filter((row) => row.qualityGateReasons.length);
+  return {
+    assessedRows,
+    blockedRows,
+    passedRows: assessedRows.filter((row) => !row.qualityGateReasons.length),
+    reasonCounts: blockedRows.reduce((counts, row) => {
+      row.qualityGateReasons.forEach((reason) => { counts[reason] = (counts[reason] || 0) + 1; });
+      return counts;
+    }, {}),
+  };
+}
+
+function safeCommodityRowsFromPeriod(period) {
+  return buildDataQualityGate(commodityRowsFromPeriod(period)).passedRows;
+}
+
+function rollupCommodityRows(rows, groupKey) {
+  const groups = new Map();
+  rows.forEach((row) => {
+    const name = row[groupKey];
+    if (!name) return;
+    const current = groups.get(name) || { name, province: row.province, programme: row.programme, normalized: normalizeCommodity(row.item), rows: 0, quantity: 0, amc: 0, stockout: 0, nearCritical: 0, understocked: 0, riskRows: 0, available: 0 };
+    const status = commodityStockStatus(row.mos);
+    current.rows += 1;
+    current.quantity += row.quantity || 0;
+    current.amc += row.amc || 0;
+    current.available += row.quantity > 0 ? 1 : 0;
+    if (status === "Stocked out") current.stockout += 1;
+    if (status === "Emergency stock") current.nearCritical += 1;
+    if (status === "Understocked") current.understocked += 1;
+    if (["Stocked out", "Emergency stock", "Understocked"].includes(status)) current.riskRows += 1;
+    groups.set(name, current);
+  });
+  return [...groups.values()].map((row) => ({ ...row, availability: row.rows ? row.available / row.rows : 0, stockoutRate: row.rows ? row.stockout / row.rows : 0, mos: row.amc > 0 ? row.quantity / row.amc : null }));
 }
 
 function facilityIdentityKey(facility) {
@@ -875,23 +941,12 @@ function shortProvinceName(value = "") {
 }
 
 function forecastRollupsForPeriod(period, filters) {
-  const provinceMatches = (row) => filters.province === "all" || row.province === filters.province || row.name === filters.province;
-  const hasDetailedScope = filters.district !== "all" || filters.facilityLevel !== "all" || filters.facility !== "all";
-
-  if (!hasDetailedScope) {
-    return (period.provinces || [])
-      .filter(provinceMatches)
-      .map((row) => ({ ...row, name: row.name, province: row.name }));
-  }
-
-  return aggregateRollups(
-    (period.facilities || [])
-      .filter(provinceMatches)
-      .filter((row) => filters.district === "all" || row.district === filters.district)
-      .filter((row) => matchesFacilityCareLevel(row.facilityLevel, filters.facilityLevel))
-      .filter((row) => filters.facility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.name}` === filters.facility),
-    "province",
-  );
+  const rows = safeCommodityRowsFromPeriod(period)
+    .filter((row) => filters.province === "all" || row.province === filters.province)
+    .filter((row) => filters.district === "all" || row.district === filters.district)
+    .filter((row) => matchesFacilityCareLevel(row.facilityLevel, filters.facilityLevel))
+    .filter((row) => filters.facility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === filters.facility);
+  return rollupCommodityRows(rows, "province");
 }
 
 function buildProvinceForecast(periods, filters) {
@@ -953,7 +1008,7 @@ function buildCommodityForecast(periods, filters) {
   const historyByCommodity = new Map();
   const currentImpact = new Map();
   periods.forEach((period) => {
-    (period.commodities || []).forEach((row) => {
+    rollupCommodityRows(safeCommodityRowsFromPeriod(period), "item").forEach((row) => {
       if (!row.rows) return;
       const key = row.normalized || normalizeCommodity(row.name);
       if (!historyByCommodity.has(key)) historyByCommodity.set(key, []);
@@ -961,7 +1016,7 @@ function buildCommodityForecast(periods, filters) {
     });
   });
 
-  const currentRows = commodityRowsFromPeriod(periods.at(-1) || {})
+  const currentRows = safeCommodityRowsFromPeriod(periods.at(-1) || {})
     .filter((row) => filters.province === "all" || row.province === filters.province)
     .filter((row) => filters.district === "all" || row.district === filters.district)
     .filter((row) => matchesFacilityCareLevel(row.facilityLevel, filters.facilityLevel))
@@ -1604,6 +1659,7 @@ function App() {
   const [actionComments, setActionComments] = useState({});
   const [actionCommentDrafts, setActionCommentDrafts] = useState({});
   const [openActionComments, setOpenActionComments] = useState(null);
+  const [replyToComment, setReplyToComment] = useState(null);
   const [actionUserEmail, setActionUserEmail] = useState("");
   const [actionSyncState, setActionSyncState] = useState("loading");
   const [actionCommentError, setActionCommentError] = useState("");
@@ -1638,17 +1694,18 @@ function App() {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([
-      fetch(`${actionApiUrl}/api/action-updates`).then((response) => {
+    const commentsRequest = fetch(`${actionApiUrl}/api/action-updates`).then((response) => {
         if (!response.ok) throw new Error("Unable to load shared action updates");
         return response.json();
-      }),
-      window.__TRACER_SECURE_DASHBOARD__
+      });
+    const userRequest = window.__TRACER_SECURE_DASHBOARD__
         ? fetch(`${actionApiUrl}/api/current-user`).then((response) => response.ok ? response.json() : null)
-        : Promise.resolve(null),
-    ])
-      .then(([data, user]) => {
+        : Promise.resolve(null);
+    Promise.allSettled([commentsRequest, userRequest])
+      .then(([commentsResult, userResult]) => {
         if (cancelled) return;
+        const data = commentsResult.status === "fulfilled" ? commentsResult.value : null;
+        const user = userResult.status === "fulfilled" ? userResult.value : null;
         setActionUpdates(data?.updates && typeof data.updates === "object" ? data.updates : {});
         // Older shared-action records may not contain an array for every key.
         // Keep a malformed response from preventing the dashboard from rendering.
@@ -1658,7 +1715,7 @@ function App() {
         ));
         setActionUserEmail(user?.email || "");
         setDashboardUser(user || null);
-        setActionSyncState("shared");
+        setActionSyncState(commentsResult.status === "fulfilled" ? "shared" : "offline");
       })
       .catch(() => {
         if (!cancelled) setActionSyncState("offline");
@@ -1872,6 +1929,7 @@ function App() {
     .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
     .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
     .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility), [periodCommodityRows, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const dataQualityGate = useMemo(() => buildDataQualityGate(filteredCommodityRows), [filteredCommodityRows]);
 
   const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
   const fieldAverageMos = cappedAverageMos(filteredCommodityRows);
@@ -1997,7 +2055,7 @@ function App() {
     : activeFacilityStatusOptions.length > 1
       ? "Facilities matching selected stock and reporting conditions"
       : "All assessed facilities";
-  const redistributionCandidates = useMemo(() => buildRedistributionCandidates(filteredCommodityRows), [filteredCommodityRows]);
+  const redistributionCandidates = useMemo(() => buildRedistributionCandidates(dataQualityGate.passedRows), [dataQualityGate]);
   const actionCommodityCandidates = useMemo(() => redistributionCandidates.filter((item) => !actionCommodityQuery.trim() || item.commodity.toLowerCase().includes(actionCommodityQuery.trim().toLowerCase())), [redistributionCandidates, actionCommodityQuery]);
   const actionPageCount = Math.max(1, Math.ceil(actionCommodityCandidates.length / actionPageSize));
   const actionCurrentPage = Math.min(actionPage, actionPageCount);
@@ -2947,14 +3005,14 @@ function App() {
       return;
     }
     setActionCommentError("");
-    const pendingComment = { id: `pending-${Date.now()}`, author, body, createdAt: new Date().toISOString(), pending: true };
+    const pendingComment = { id: `pending-${Date.now()}`, author, body, parentCommentId: replyToComment?.id || null, parentAuthor: replyToComment?.author || null, createdAt: new Date().toISOString(), pending: true };
     setActionComments((current) => ({ ...current, [key]: [...(current[key] || []), pendingComment] }));
     setActionCommentDrafts((current) => ({ ...current, [key]: "" }));
     try {
       const response = await fetch(`${actionApiUrl}/api/action-comments/${encodeURIComponent(key)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ author, body }),
+        body: JSON.stringify({ author, body, parentCommentId: replyToComment?.id || null }),
       });
       if (!response.ok) throw new Error("Unable to save comment");
       const comment = await response.json();
@@ -2963,6 +3021,7 @@ function App() {
         [key]: (current[key] || []).map((entry) => entry.id === pendingComment.id ? comment : entry),
       }));
       setActionSyncState("shared");
+      setReplyToComment(null);
     } catch {
       setActionCommentError("Shared comments are temporarily unavailable. Please try again.");
       setActionComments((current) => ({ ...current, [key]: (current[key] || []).filter((entry) => entry.id !== pendingComment.id) }));
@@ -4576,6 +4635,40 @@ function App() {
           </div>
         </section>
 
+        <section className="data-quality-gate">
+          <div className="section-head">
+            <div>
+              <p className="eyebrow dark">Quality Control</p>
+              <h2>Data Quality Gate</h2>
+              <p>Blocked records are excluded from redistribution recommendations and predictive calculations until the provincial source data is corrected.</p>
+            </div>
+            <span className={`comparison-signal ${dataQualityGate.blockedRows.length ? "red" : "green"}`}>{dataQualityGate.blockedRows.length ? "Gate holding records" : "Gate clear"}</span>
+          </div>
+          <div className="stats-grid">
+            <KpiCard label="Records assessed" value={dataQualityGate.assessedRows.length.toLocaleString()} sub="Current reporting period and filters" />
+            <KpiCard label="Passed to analysis" value={dataQualityGate.passedRows.length.toLocaleString()} sub="Eligible for forecasts and redistribution" tone="green" />
+            <KpiCard label="Blocked records" value={dataQualityGate.blockedRows.length.toLocaleString()} sub="Require source-data validation" tone={dataQualityGate.blockedRows.length ? "red" : "green"} />
+            <KpiCard label="Blocking reasons" value={Object.keys(dataQualityGate.reasonCounts).length.toLocaleString()} sub="Distinct validation rules triggered" tone={Object.keys(dataQualityGate.reasonCounts).length ? "amber" : "green"} />
+          </div>
+          <div className="quality-compact-grid">
+            <div className="quality-panel">
+              <div className="quality-panel-head"><div><h3>Reasons for blocking</h3><p>Each condition must be resolved in the provincial source workbook before the record can inform an operational recommendation.</p></div></div>
+              <div className="quality-bars">
+                {Object.entries(dataQualityGate.reasonCounts).sort((a, b) => b[1] - a[1]).map(([reason, count]) => <div className="quality-bar-row" key={reason}><span>{reason}</span><div className="quality-bar-track"><i style={{ width: `${dataQualityGate.blockedRows.length ? (count / dataQualityGate.blockedRows.length) * 100 : 0}%` }} /></div><b>{count.toLocaleString()}</b></div>)}
+                {!Object.keys(dataQualityGate.reasonCounts).length && <div className="empty-state">No unsafe records match the current filters.</div>}
+              </div>
+            </div>
+            <div className="quality-panel">
+              <div className="quality-panel-head"><div><h3>Gate policy</h3><p>Operational safeguards applied automatically.</p></div></div>
+              <ul className="plain-list"><li>Negative or invalid SOH and MOS values are blocked.</li><li>Positive stock without a usable AMC is blocked.</li><li>Submitted MOS that materially differs from SOH divided by AMC is blocked, except legitimate 12-month caps.</li><li>Duplicate facility-item-programme records are blocked until consolidated.</li></ul>
+            </div>
+          </div>
+          <div className="table-panel">
+            <div className="table-headline"><div><h2>Correction register</h2><p>Review these records against the submitted workbook; correcting the source and reloading the period will release valid records.</p></div><span>{dataQualityGate.blockedRows.length} records</span></div>
+            <div className="table-scroll"><table><thead><tr><th>Province</th><th>District / reporting unit</th><th>Commodity</th><th>SOH</th><th>AMC</th><th>Submitted MOS</th><th>Calculated MOS</th><th>Blocking reason</th></tr></thead><tbody>{dataQualityGate.blockedRows.slice(0, 250).map((row, index) => <tr key={`${qualityGateKey(row)}-${index}`}><td>{row.province}</td><td><strong>{row.district}</strong><small>{row.facility}</small></td><td>{row.item}<small>{row.programme}</small></td><td>{row.quantity?.toLocaleString?.() ?? "-"}</td><td>{row.amc?.toLocaleString?.() ?? "-"}</td><td>{formatMos(row.mos)}</td><td>{formatCalculatedMos(row.calculatedMos)}</td><td>{row.qualityGateReasons.map((reason) => <span className="data-quality-flag" key={reason}>{reason}</span>)}</td></tr>)}{!dataQualityGate.blockedRows.length && <tr><td colSpan="8">No records are blocked in the current reporting period and filters.</td></tr>}</tbody></table></div>
+          </div>
+        </section>
+
         <section className="predictive-analysis">
           <div className="section-head predictive-head">
             <div>
@@ -4916,22 +5009,25 @@ function App() {
         onClose={() => setOpenFacility(null)}
         onOpenActions={() => { setOpenFacility(null); setActivePage("actions"); }}
       />
-      {openActionComments && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setOpenActionComments(null)}>
+      {openActionComments && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => { setOpenActionComments(null); setReplyToComment(null); }}>
         <section className="commodity-detail-panel action-comments-dialog" role="dialog" aria-modal="true" aria-label="Action comments" onMouseDown={(event) => event.stopPropagation()}>
           <div className="commodity-detail-head">
             <div><p className="eyebrow dark">Control Tower Action Tracker</p><h2>Comments</h2><span>{openActionComments.item.commodity} | {openActionComments.item.province}</span></div>
-            <button type="button" onClick={() => setOpenActionComments(null)}>Close</button>
+            <button type="button" onClick={() => { setOpenActionComments(null); setReplyToComment(null); }}>Close</button>
           </div>
           <div className="action-comment-form action-comment-dialog-form">
-            <label htmlFor="action-comment-dialog"><span>Add a comment</span><textarea id="action-comment-dialog" value={actionCommentDrafts[openActionComments.actionKey] || ""} onChange={(event) => setActionCommentDrafts((current) => ({ ...current, [openActionComments.actionKey]: event.target.value }))} placeholder="Write a comment" maxLength="1600" /></label>
-            <button type="button" className="comment-add-button" onClick={() => addActionComment(openActionComments.item)}>Add comment</button>
+            {replyToComment && <div className="comment-reply-target"><span>Replying to <strong>{replyToComment.author}</strong></span><button type="button" onClick={() => setReplyToComment(null)}>Cancel reply</button></div>}
+            <label htmlFor="action-comment-dialog"><span>{replyToComment ? "Write a reply" : "Add a comment"}</span><textarea id="action-comment-dialog" value={actionCommentDrafts[openActionComments.actionKey] || ""} onChange={(event) => setActionCommentDrafts((current) => ({ ...current, [openActionComments.actionKey]: event.target.value }))} placeholder={replyToComment ? `Reply to ${replyToComment.author}` : "Write a comment"} maxLength="1600" /></label>
+            <button type="button" className="comment-add-button" onClick={() => addActionComment(openActionComments.item)}>{replyToComment ? "Post reply" : "Add comment"}</button>
           </div>
           <div className="action-comment-list action-comment-dialog-list">
             {(actionComments[openActionComments.actionKey] || []).length ? (actionComments[openActionComments.actionKey] || []).map((comment) => <div className="action-comment" key={comment.id}>
               <strong>{comment.author}</strong>
+              {comment.parentAuthor && <small className="comment-reply-to">Reply to: {comment.parentAuthor}</small>}
               <small>{new Date(comment.createdAt).toLocaleString()}</small>
               <p>{comment.body}</p>
               <div className="action-comment-actions">
+                <button type="button" className="comment-reply" onClick={() => { setReplyToComment(comment); document.getElementById("action-comment-dialog")?.focus(); }}>Reply</button>
                 <button type="button" className="comment-vote" title="Agree" onClick={() => voteOnActionComment(openActionComments.actionKey, comment.id, 1)}>👍 {comment.upvotes || 0}</button>
                 <button type="button" className="comment-vote" title="Disagree" onClick={() => voteOnActionComment(openActionComments.actionKey, comment.id, -1)}>👎 {comment.downvotes || 0}</button>
                 {actionUserEmail && comment.author?.toLowerCase() === actionUserEmail.toLowerCase() ? <button type="button" className="comment-delete" onClick={() => deleteActionComment(openActionComments.actionKey, comment.id)}>Delete</button> : null}
