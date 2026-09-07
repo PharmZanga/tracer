@@ -28,10 +28,23 @@ test("prioritises overstocked sources and calculates both facilities after trans
   assert.equal(results[0].geographyPriority, "Cross-province");
   assert.equal(results[0].proposedTransferQty, 2);
   assert.equal(results[0].sourceQty, 10);
+  assert.equal(results[0].sourceSubmittedMos, 5);
   assert.equal(results[0].sourceQtyAfter, 8);
   assert.equal(results[0].sourceMosAfter, 4);
   assert.equal(results[0].destinationQtyAfter, 2);
   assert.equal(results[0].destinationMosAfter, 1);
+});
+
+test("keeps the submitted MOS visible while using SOH divided by AMC for safety decisions", () => {
+  const results = buildRedistributionCandidates([
+    row({ facility: "Urgent HC", quantity: 0, amc: 2, mos: 0 }),
+    row({ facility: "Reported source", quantity: 1122, amc: 1500, mos: 1 }),
+    row({ facility: "Safe source", quantity: 15, amc: 2, mos: 8 }),
+  ]);
+
+  assert.equal(results.length, 1);
+  assert.equal(results[0].sourceFacility, "Safe source");
+  assert.equal(results[0].sourceSubmittedMos, 8);
 });
 
 test("uses a well-stocked source above two MOS when no overstock is available", () => {

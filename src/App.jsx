@@ -4818,7 +4818,7 @@ function App() {
                         <span className={`source-status-pill ${item.sourceStatus === "Overstocked" ? "overstocked" : "well-stocked"}`}>{item.sourceStatus}</span>
                         <strong>{item.sourceFacility}</strong>
                         <small>{item.sourceDistrict} | {item.sourceLevel}</small>
-                        <small>Current: Qty {item.sourceQty?.toLocaleString?.() ?? item.sourceQty} | MOS {formatMos(item.sourceMos)}</small>
+                        <small>Current: Qty {item.sourceQty?.toLocaleString?.() ?? item.sourceQty} | Calculated MOS {formatMos(item.sourceMos)}{item.sourceSubmittedMos !== null && item.sourceSubmittedMos !== undefined ? ` | Submitted MOS ${formatMos(item.sourceSubmittedMos)}` : ""}</small>
                         <small>Transfer: {item.proposedTransferQty?.toLocaleString?.() ?? item.proposedTransferQty} | After: Qty {item.sourceQtyAfter?.toLocaleString?.() ?? item.sourceQtyAfter}, MOS {formatMos(item.sourceMosAfter)}</small>
                       </td>
                       <td className="redistribution-destination-urgent">

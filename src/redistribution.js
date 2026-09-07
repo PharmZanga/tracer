@@ -35,6 +35,9 @@ function collapseFacilityCommodityRows(rows) {
     ...row,
     quantity: roundQuantity(row.quantity),
     amc: roundQuantity(row.amc),
+    submittedMos: row.submittedMos.length
+      ? row.submittedMos.reduce((sum, value) => sum + value, 0) / row.submittedMos.length
+      : null,
     mos: row.amc > EPSILON
       ? row.quantity / row.amc
       : (row.submittedMos.length ? row.submittedMos.reduce((sum, value) => sum + value, 0) / row.submittedMos.length : null),
@@ -110,6 +113,7 @@ export function buildRedistributionCandidates(rows) {
       sourceStatus: liveSource.sourceType,
       sourcePriority: liveSource.sourcePriorityRank === 0 ? "Highest priority source" : "Secondary priority source",
       sourceMos: liveSource.mos,
+      sourceSubmittedMos: liveSource.submittedMos,
       sourceQty: liveSource.originalQuantity,
       proposedTransferQty,
       sourceQtyAfter: liveSource.remainingQuantity,
