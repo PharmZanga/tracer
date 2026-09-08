@@ -712,6 +712,28 @@ def canonical_facility_level_for_facility(level, facility_name):
     return canonical_facility_level(level)
 
 
+SPECIALTY_UNIT_SUFFIXES = {
+    "EYE/OPHTHALMOLOGY HOSPITAL": "Eye Unit",
+    "RENAL UNITS": "Renal Unit",
+    "TB-DS/TB-MDR UNITS": "TB Unit",
+    "MENTAL HEALTH UNITS": "Mental Health Unit",
+}
+
+
+def preserve_specialty_reporting_unit(verified_identity, source_level):
+    """Keep a specialty worksheet distinct from its verified parent hospital.
+
+    Provincial workbooks frequently report adult, eye, renal, TB and mental
+    health services in separate worksheets. They can share the same hospital
+    header, but are separate reporting units and must never be silently summed.
+    """
+    province, district, verified_level, verified_name = verified_identity
+    suffix = SPECIALTY_UNIT_SUFFIXES.get(source_level)
+    if suffix and source_level != verified_level:
+        return province, district, source_level, f"{verified_name} - {suffix}"
+    return verified_identity
+
+
 def canonical_facility_identity(province, district, facility_level, facility_name):
     """Apply verified facility identities and reject spreadsheet formula artefacts.
 
@@ -726,7 +748,7 @@ def canonical_facility_identity(province, district, facility_level, facility_nam
 
     verified_identity = VERIFIED_FACILITY_IDENTITIES.get(facility_key)
     if verified_identity:
-        return verified_identity
+        return preserve_specialty_reporting_unit(verified_identity, facility_level)
 
     if "arthur" in facility_key and ("davison" in facility_key or "davidson" in facility_key):
         return (
@@ -738,8 +760,7 @@ def canonical_facility_identity(province, district, facility_level, facility_nam
 
     verified_identity = RAW_FACILITY_IDENTITIES.get(facility_key)
     if verified_identity:
-        verified_province, verified_district, verified_level = verified_identity
-        return verified_province, verified_district, verified_level, facility_text
+        return preserve_specialty_reporting_unit(verified_identity, facility_level)
 
     province = normalize_province(province)
     district = canonical_district(province, district)
