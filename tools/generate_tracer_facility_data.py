@@ -348,7 +348,7 @@ VERIFIED_FACILITY_IDENTITIES = {
         "Chainama Hills Hospital",
     ),
     "chama district hospital": (
-        "MUCHINGA PROVINCE",
+        "EASTERN PROVINCE",
         "CHAMA",
         "LEVEL 1 HOSPITAL",
         "Chama District Hospital",
@@ -532,7 +532,7 @@ VALID_DISTRICTS_BY_PROVINCE = {
     "EASTERN PROVINCE": {
         "CHADIZA", "CHASEFU", "CHIPANGALI", "CHIPATA", "KASENENGWA",
         "KATETE", "LUMEZI", "LUNDAZI", "LUSANGAZI", "MAMBWE", "NYIMBA",
-        "PETAUKE", "SINDA", "VUBWI", "LUNDAZI",
+        "PETAUKE", "SINDA", "VUBWI", "LUNDAZI", "CHAMA",
     },
     "LUAPULA PROVINCE": {
         "CHEMBE", "CHIENGE", "CHIFUNABULI", "CHIPILI", "KAWAMBWA", "LUNGA",
@@ -540,7 +540,7 @@ VALID_DISTRICTS_BY_PROVINCE = {
     },
     "LUSAKA PROVINCE": {"CHILANGA", "CHONGWE", "KAFUE", "LUANGWA", "LUSAKA", "RUFUNSA"},
     "MUCHINGA PROVINCE": {
-        "CHAMA", "CHINSALI", "ISOKA", "KANCHIBIYA", "LAVUSHIMANDA", "MAFINGA",
+        "CHINSALI", "ISOKA", "KANCHIBIYA", "LAVUSHIMANDA", "MAFINGA",
         "MPIKA", "NAKONDE", "SHIWANG'ANDU",
     },
     "NORTH-WESTERN PROVINCE": {
@@ -723,11 +723,6 @@ def canonical_facility_identity(province, district, facility_level, facility_nam
     facility_key = facility_match_key(facility_text)
     if not facility_text or facility_text.startswith("=") or facility_key in {"program a3", "ref"}:
         return None
-
-    # Chama is a Muchinga district. Older copied source rows still label it as
-    # Eastern Province, which would incorrectly create a 117th district.
-    if district == "CHAMA":
-        province = "MUCHINGA PROVINCE"
 
     verified_identity = VERIFIED_FACILITY_IDENTITIES.get(facility_key)
     if verified_identity:
