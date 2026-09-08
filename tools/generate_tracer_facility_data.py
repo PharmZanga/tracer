@@ -964,6 +964,29 @@ def iter_raw_matrix_rows(source, report_date):
                 and "AMC" in str(ws.cell(header_row, column + 1).value or "").upper()
                 and "MOS" in str(ws.cell(header_row, column + 2).value or "").upper()
             ]
+            recognized_districts = {
+                canonical_district(province, district)
+                for _column, district, _facility in blocks
+                if district
+            }
+            for column in range(4, (ws.max_column or 0) - 1):
+                district = next(
+                    (
+                        clean(ws.cell(row_index, column).value)
+                        for row_index in range(header_row - 1, 0, -1)
+                        if canonical_district(province, clean(ws.cell(row_index, column).value))
+                    ),
+                    None,
+                )
+                canonical = canonical_district(province, district)
+                has_values = any(
+                    num(ws.cell(row_index, value_column).value) is not None
+                    for row_index in range(header_row + 1, min(header_row + 6, (ws.max_row or 0) + 1))
+                    for value_column in range(column, column + 3)
+                )
+                if canonical and canonical not in recognized_districts and has_values:
+                    blocks.append((column, district, None))
+                    recognized_districts.add(canonical)
         else:
             blocks = raw_sheet_facility_blocks(ws)
         for start_col, district_col, facility_col in blocks:
