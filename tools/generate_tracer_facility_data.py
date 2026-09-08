@@ -1,3 +1,4 @@
+import gc
 import json
 import math
 import re
@@ -13,6 +14,29 @@ AUGUST_WEEK1_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA 
 AUGUST_WEEK2_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 2\tracer summary 16-08-2026.xlsx")
 AUGUST_WEEK3_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 3\23.08.2026.xlsx")
 AUGUST_WEEK4_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\august\week 4\30.08.2026Tracer summary report.xlsx")
+
+SEPTEMBER_WEEK1_CONFIG = {
+    "rawSources": [
+        {"province": "MUCHINGA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 1\4.9.26 MUCHINGA 2026 TRACER WEEKLY REPORT.xlsx")},
+        {"province": "EASTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 1\5th Sep EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (37).xlsx")},
+        {"province": "COPPERBELT PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 1\06.09.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx")},
+        {"province": "NORTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 1\06.09.26 NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx")},
+        {"province": "NORTH-WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 1\06-09-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx")},
+        {"province": "WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 1\06-09-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx")},
+        {"province": "CENTRAL PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 1\6_9_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx")},
+        {"province": "LUAPULA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 1\LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT 5 9 23.xlsx")},
+        {"province": "LUSAKA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 1\LUSAKA PROVINCE 2026 TRACER WEEKLY 04092026.xlsx")},
+        {"province": "SOUTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 1\SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 04.09.26 (1).xlsx")},
+    ],
+    "source": "September Week 1 provincial raw submissions",
+    "reportDate": "2026-09-06",
+    "label": "Week 1 - 6 September 2026",
+    "month": "2026-09",
+    "week": "Week 1",
+}
+
+for _september_source in SEPTEMBER_WEEK1_CONFIG["rawSources"]:
+    _september_source["primaryCareSummaryLayout"] = True
 
 # The consolidated Week 4 workbook changed this verified Lusaka provincial
 # submission. Preserve the values from the original provincial report so a
@@ -468,7 +492,7 @@ def normalize_province(value):
 
 
 def normalize_district(value):
-    text = (clean(value) or "Unknown district").upper()
+    text = str(clean(value) or "Unknown district").upper()
     text = text.replace("`", "'")
     text = re.sub(r"\s+DISTRICT$", "", text).strip()
     if text in {
@@ -625,6 +649,10 @@ def make_bucket():
 
 def add(bucket, row):
     mos = num(row.get("MOS"))
+    # Match the dashboard display rule: very large submitted MOS values should
+    # not distort an aggregate national or provincial average.
+    if mos is not None:
+        mos = min(12, max(0, mos))
     availability = availability_value(row.get("AVAILABILITY"))
     bucket["rows"] += 1
     bucket["quantity"] += num(row.get("QUANTITY")) or 0
@@ -874,17 +902,50 @@ def iter_raw_matrix_rows(source, report_date):
             continue
         if ws.max_row < 4 or ws.max_column < 7:
             continue
-        item_header = str(ws.cell(3, 2).value or "").upper()
+        # September's HC and HP tabs are district-summary matrices: the usual
+        # facility-name position contains a numeric facility total instead.
+        is_primary_care_summary = (
+            source.get("primaryCareSummaryLayout", False)
+            and sheet_name.upper() in {"HC", "HP"}
+        )
+        is_health_post_sheet = is_primary_care_summary and sheet_name.upper() == "HP"
+        header_row = next(
+            (
+                row_index
+                for row_index in range(1, 7)
+                if "DESCRIPTION" in str(ws.cell(row_index, 2).value or "").upper()
+                or "PRODUCT" in str(ws.cell(row_index, 2).value or "").upper()
+            ),
+            None,
+        )
+        if header_row is None:
+            continue
+        item_header = str(ws.cell(header_row, 2).value or "").upper()
         if "DESCRIPTION" not in item_header and "PRODUCT" not in item_header:
             continue
         source_facility_level = raw_facility_level(sheet_name, ws.cell(1, 1).value)
-        for start_col, district_col, facility_col in raw_sheet_facility_blocks(ws):
-            district = clean(ws.cell(2, district_col).value)
-            facility = clean(ws.cell(2, facility_col).value)
+        if is_primary_care_summary:
+            blocks = [
+                (column, next(
+                    (
+                        clean(ws.cell(row_index, column).value)
+                        for row_index in range(header_row - 1, 0, -1)
+                        if canonical_district(province, clean(ws.cell(row_index, column).value))
+                    ),
+                    None,
+                ), None)
+                for column in range(4, (ws.max_column or 0) + 1)
+                if "QUANTITY" in str(ws.cell(header_row, column).value or "").upper()
+            ]
+        else:
+            blocks = raw_sheet_facility_blocks(ws)
+        for start_col, district_col, facility_col in blocks:
+            district = district_col if is_primary_care_summary else clean(ws.cell(2, district_col).value)
+            facility = "ALL" if is_primary_care_summary else clean(ws.cell(2, facility_col).value)
             verified = VERIFIED_FACILITY_IDENTITIES.get(facility_match_key(facility))
             if not district and verified:
                 district = verified[1]
-            if not district or not facility:
+            if not isinstance(district, str) or not isinstance(facility, str) or not district or not facility:
                 continue
             district = canonical_district(province, district)
             if district is None:
@@ -900,10 +961,14 @@ def iter_raw_matrix_rows(source, report_date):
             if identity is None:
                 continue
             province, district, facility_level, facility_name = identity
-            for row_index in range(4, ws.max_row + 1):
+            for row_index in range((header_row + 1) if is_primary_care_summary else 4, ws.max_row + 1):
                 item = clean(ws.cell(row_index, 2).value)
                 if not item:
                     continue
+                # Provincial workbooks occasionally contain numeric placeholder
+                # values in the description column. Preserve a readable value
+                # instead of allowing a non-string cell to break normalisation.
+                item = str(item)
                 if "PERCENTAGE AVAILABILITY" in str(item).upper():
                     continue
                 quantity = num(ws.cell(row_index, start_col).value)
@@ -928,6 +993,8 @@ def iter_raw_matrix_rows(source, report_date):
                     "_RAW_AGGREGATE": is_aggregate,
                 }
     wb.close()
+    del wb
+    gc.collect()
 
 
 def date_id(value):
@@ -1142,7 +1209,7 @@ def summarize(config):
             continue
         if facility_level in {"NATIONAL HEART HOSPITAL", "WOMEN AND NEWBORN HOSPITAL"} and province != "LUSAKA PROVINCE":
             continue
-        item = clean(row.get("DESCRIPTION OF ITEM")) or "Unknown commodity"
+        item = str(clean(row.get("DESCRIPTION OF ITEM")) or "Unknown commodity")
         program = normalize_program(row.get("PROGRAM"), item)
         cancer_scope = (
             program == "CANCER"
@@ -1617,6 +1684,9 @@ def main():
         config["week"] = "Week 4"
         config["availabilityOverrides"] = availability_overrides
         configs.append(config)
+    september_week1 = dict(SEPTEMBER_WEEK1_CONFIG)
+    september_week1["availabilityOverrides"] = availability_overrides
+    configs.append(september_week1)
     clean_period_ids = {config["reportDate"] for config in configs}
     # Retain the clean master as the source of record for its existing dates,
     # then add provincial submissions only for new reporting periods not yet
@@ -1650,7 +1720,8 @@ def main():
         "JanFeb": [period for period in periods if period["month"] in {"2026-01", "2026-02"}],
         "MarApr": [period for period in periods if period["month"] in {"2026-03", "2026-04"}],
         "MayJun": [period for period in periods if period["month"] in {"2026-05", "2026-06"}],
-        "Jul": [period for period in periods if period["month"] >= "2026-07"],
+        "Jul": [period for period in periods if "2026-07" <= period["month"] <= "2026-08"],
+        "Sep": [period for period in periods if period["month"] >= "2026-09"],
     }
     module_names = []
     for suffix, group in period_groups.items():

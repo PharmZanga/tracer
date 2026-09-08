@@ -2,6 +2,7 @@ import { tracerReportingPeriods as tracerFacilityDataJanFeb } from "./tracerFaci
 import { tracerReportingPeriods as tracerFacilityDataMarApr } from "./tracerFacilityDataMarApr.js";
 import { tracerReportingPeriods as tracerFacilityDataMayJun } from "./tracerFacilityDataMayJun.js";
 import { tracerReportingPeriods as tracerFacilityDataJul } from "./tracerFacilityDataJul.js";
+import { tracerReportingPeriods as tracerFacilityDataSep } from "./tracerFacilityDataSep.js";
 
 export const availableTracerYears = ["2024", "2025", "2026"];
 
@@ -10,6 +11,7 @@ export let tracerReportingPeriods = [
   ...tracerFacilityDataMarApr,
   ...tracerFacilityDataMayJun,
   ...tracerFacilityDataJul,
+  ...tracerFacilityDataSep,
 ].sort((left, right) => left.reportDate.localeCompare(right.reportDate));
 
 const loadedHistoricalYears = new Set();
