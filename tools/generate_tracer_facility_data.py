@@ -950,6 +950,19 @@ def iter_raw_matrix_rows(source, report_date):
                 for column in range(4, (ws.max_column or 0) + 1)
                 if "QUANTITY" in str(ws.cell(header_row, column).value or "").upper()
                 and "TOTAL QUANTITY" not in str(ws.cell(header_row, column).value or "").upper()
+            ] + [
+                (column, next(
+                    (
+                        clean(ws.cell(row_index, column).value)
+                        for row_index in range(header_row - 1, 0, -1)
+                        if canonical_district(province, clean(ws.cell(row_index, column).value))
+                    ),
+                    None,
+                ), None)
+                for column in range(4, (ws.max_column or 0) - 1)
+                if not str(ws.cell(header_row, column).value or "").strip()
+                and "AMC" in str(ws.cell(header_row, column + 1).value or "").upper()
+                and "MOS" in str(ws.cell(header_row, column + 2).value or "").upper()
             ]
         else:
             blocks = raw_sheet_facility_blocks(ws)
