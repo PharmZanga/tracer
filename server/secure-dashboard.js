@@ -791,6 +791,7 @@ app.use("/api", requireSession, async (request, response, next) => {
   } catch (error) { next(error); }
 });
 
+app.use("/tracer-data", requireSession, express.static(path.join(rootDir, "src"), { index: false, fallthrough: false }));
 app.use(requireSession, express.static(distDir, { index: false, fallthrough: true }));
 app.get("/", requireSession, async (_request, response, next) => {
   try {

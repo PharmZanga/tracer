@@ -1600,6 +1600,16 @@ function App() {
   const [stockStream, setStockStream] = useState(weeklyStockPeriods.some((period) => period.stream === "EMMS") ? "EMMS" : weeklyStockPeriods.at(-1)?.stream || "LAB");
   const [stockCategory, setStockCategory] = useState("");
   const [stockCategoryDialog, setStockCategoryDialog] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    setHistoricalYearLoading("2026");
+    loadHistoricalTracerYear("2026")
+      .then(() => { if (mounted) setHistoricalDataVersion((version) => version + 1); })
+      .catch(() => { if (mounted) setHistoricalYearLoading(""); })
+      .finally(() => { if (mounted) setHistoricalYearLoading(""); });
+    return () => { mounted = false; };
+  }, []);
   const [reportPeriodId, setReportPeriodId] = useState(tracerReportingPeriods.at(-1).id);
   const [reportProvince, setReportProvince] = useState("all");
   const [reportDistrict, setReportDistrict] = useState("all");
