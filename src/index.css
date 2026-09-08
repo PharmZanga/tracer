@@ -3141,6 +3141,34 @@ button.stat:hover {
   color: #5d6d64;
 }
 
+.stat > span,
+.title-with-icon,
+.commodity-kpis > button > span,
+.commodity-detail-kpis > div > span,
+.commodity-history-list > div > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.stat-icon,
+.metric-icon,
+.history-icon,
+.title-with-icon > svg {
+  flex: 0 0 auto;
+}
+
+.stat-icon {
+  width: 18px;
+  height: 18px;
+  color: #08764b;
+}
+
+.metric-icon { width: 15px; height: 15px; color: #08764b; }
+.history-icon { width: 14px; height: 14px; color: #4d7762; }
+.title-with-icon { gap: 9px; }
+.title-with-icon > svg { width: 22px; height: 22px; color: #08764b; }
+
 .stat strong {
   font-size: 40px;
   line-height: 1;
@@ -5590,7 +5618,7 @@ td.neutral {
 .commodity-kpis > button.blue,
 .commodity-detail-kpis > div.blue { border-top-color: #2c65b0; }
 .commodity-kpis span,
-.commodity-detail-kpis span { display: block; color: #596c61; font-size: 12px; }
+.commodity-detail-kpis span { color: #596c61; font-size: 12px; }
 .commodity-kpis strong,
 .commodity-detail-kpis strong { display: block; margin: 5px 0; color: #123b2a; font-size: 25px; }
 .commodity-kpis small { color: #63756a; font-size: 11px; }
