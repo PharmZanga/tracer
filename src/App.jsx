@@ -116,10 +116,14 @@ function commodityRowsFromPeriod(period) {
   })).filter((row) => isCommodityName(row.item));
 }
 
-function qualityGateKey(row) {
-  return [row.province, row.district, row.facilityLevel, row.facility, row.item, row.programme]
+function facilityCommodityKey(row) {
+  return [row.province, row.district, row.facilityLevel, row.facility, row.item]
     .map((value) => String(value || "").trim().toUpperCase().replace(/\s+/g, " "))
     .join("|");
+}
+
+function qualityGateKey(row) {
+  return facilityCommodityKey(row);
 }
 
 function qualityGateReasons(row) {
@@ -221,7 +225,7 @@ function collapseCommodityFacilityRows(rows, commodity) {
   if (!commodity) return [];
   const grouped = new Map();
   rows.filter((row) => row.item === commodity).forEach((row) => {
-    const key = `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}`;
+    const key = facilityCommodityKey(row);
     const current = grouped.get(key) || { ...row, quantity: 0, amc: 0, mosValues: [] };
     current.quantity += row.quantity || 0;
     current.amc += row.amc || 0;
@@ -2195,20 +2199,24 @@ function App() {
     };
   });
 
-  const commodityScopeRows = useMemo(() => commodityRowsFromPeriod(fieldData)
-    .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
-    .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
-    .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
-    .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
-  const commodityPreviousScopeRows = useMemo(() => {
-    const periodIndex = tracerReportingPeriods.findIndex((period) => period.id === fieldPeriodId);
-    const previousPeriod = periodIndex > 0 ? tracerReportingPeriods[periodIndex - 1] : null;
-    if (!previousPeriod) return [];
-    return commodityRowsFromPeriod(previousPeriod)
+  const commodityScopeRows = useMemo(() => {
+    const scoped = commodityRowsFromPeriod(fieldData)
       .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
       .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
       .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
       .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility);
+    return buildDataQualityGate(scoped).passedRows;
+  }, [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const commodityPreviousScopeRows = useMemo(() => {
+    const periodIndex = tracerReportingPeriods.findIndex((period) => period.id === fieldPeriodId);
+    const previousPeriod = periodIndex > 0 ? tracerReportingPeriods[periodIndex - 1] : null;
+    if (!previousPeriod) return [];
+    const scoped = commodityRowsFromPeriod(previousPeriod)
+      .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
+      .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
+      .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
+      .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility);
+    return buildDataQualityGate(scoped).passedRows;
   }, [fieldPeriodId, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const commodityTriageRows = useMemo(() => {
     const summarise = (rows) => {
@@ -4703,7 +4711,7 @@ function App() {
             </div>
             <div className="quality-panel">
               <div className="quality-panel-head"><div><h3>Gate policy</h3><p>Operational safeguards applied automatically.</p></div></div>
-              <ul className="plain-list"><li>Negative or invalid SOH and MOS values are blocked.</li><li>Positive stock without a usable AMC is blocked.</li><li>Submitted MOS that materially differs from SOH divided by AMC is blocked, except legitimate 12-month caps.</li><li>Duplicate facility-item-programme records are blocked until consolidated.</li></ul>
+              <ul className="plain-list"><li>Negative or invalid SOH and MOS values are blocked.</li><li>Positive stock without a usable AMC is blocked.</li><li>Submitted MOS that materially differs from SOH divided by AMC is blocked, except legitimate 12-month caps.</li><li>Ambiguous duplicate facility-item records are blocked until their reporting units are identified.</li></ul>
             </div>
           </div>
           <div className="table-panel">
