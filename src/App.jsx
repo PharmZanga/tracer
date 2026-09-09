@@ -3422,12 +3422,8 @@ function App() {
       </aside>
 
       <main className={`app-shell dashboard-page page-${activePage}`}>
-        <header className="dashboard-topbar">
-          <div>
-            <span><ActivePageIcon size={14} strokeWidth={2.2} aria-hidden="true" /> National Tracer Drug Availability</span>
-            <strong>{activePageLabel}</strong>
-          </div>
-          {!['stock', 'comparison', 'reporting'].includes(activePage) && <div className="global-filter-bar">
+        {!['stock', 'comparison', 'reporting'].includes(activePage) && <header className="dashboard-topbar">
+          <div className="global-filter-bar">
             <label>
               <span>Year</span>
               <select value={selectedYear} onChange={(event) => changeYear(event.target.value)} disabled={Boolean(historicalYearLoading)}>
@@ -3486,8 +3482,8 @@ function App() {
                 })}
               </select>
             </label><button type="button" onClick={resetFieldHierarchy}>Clear</button></>}
-          </div>}
-        </header>
+          </div>
+        </header>}
 
         <section className="module-context" aria-label={`${activePageLabel} module`}>
           <span className="module-context-icon"><ActivePageIcon size={21} strokeWidth={2.15} aria-hidden="true" /></span>
