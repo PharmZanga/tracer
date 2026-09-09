@@ -2365,12 +2365,25 @@ function App() {
   ].filter(Boolean);
   const commodityFacilityHistory = useMemo(() => !openCommodityFacility ? [] : tracerReportingPeriods
     .map((period) => {
-      const row = commodityRowsFromPeriod(period).find((item) => item.item === selectedCommodity
+      const rows = commodityRowsFromPeriod(period);
+      const exactRow = rows.find((item) => item.item === selectedCommodity
         && item.province === openCommodityFacility.province
         && item.district === openCommodityFacility.district
         && item.facilityLevel === openCommodityFacility.facilityLevel
         && item.facility === openCommodityFacility.facility);
-      return row ? { ...row, label: period.label, reportDate: period.reportDate } : null;
+      if (exactRow) return { ...exactRow, label: period.label, reportDate: period.reportDate };
+      const isPrimaryCare = ["HEALTH CENTRE", "HEALTH POST"].includes(openCommodityFacility.facilityLevel);
+      const aggregateRow = isPrimaryCare ? rows.find((item) => item.item === selectedCommodity
+        && item.province === openCommodityFacility.province
+        && item.district === openCommodityFacility.district
+        && ["PRIMARY CARE - NOT SPECIFIED", openCommodityFacility.facilityLevel].includes(item.facilityLevel)
+        && ["ALL", "HC/HP"].includes(item.facility)) : null;
+      return aggregateRow ? {
+        ...aggregateRow,
+        label: `${period.label} (district primary-care aggregate)`,
+        reportDate: period.reportDate,
+        isAggregateHistory: true,
+      } : null;
     })
     .filter(Boolean), [openCommodityFacility, selectedCommodity]);
   const commodityFacilityTrendMap = useMemo(() => {
