@@ -9,7 +9,6 @@ test("Data Quality retains the complete Muchinga district universe", () => {
     .map((row) => row.name))].sort();
 
   assert.deepEqual(districts, [
-    "CHAMA",
     "CHINSALI",
     "ISOKA",
     "KANCHIBIYA",

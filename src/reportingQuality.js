@@ -105,6 +105,10 @@ export function primaryCareDistrictRows(period) {
     const primaryCareReports = row.combinedPrimaryCareReported ? 2 : splitReports;
     return {
       ...row,
+      // These are the reporting decisions used by the Data Quality screen.
+      // A combined primary-care workbook is valid evidence for both levels.
+      healthCentreSubmissionReceived: row.healthCentreReported || row.combinedPrimaryCareReported,
+      healthPostSubmissionReceived: row.healthPostReported || row.combinedPrimaryCareReported,
       expected: 1,
       reported: submitted ? 1 : 0,
       missing: submitted ? 0 : 1,
@@ -122,10 +126,10 @@ export function primaryCareDistrictRows(period) {
 
 export function primaryCareLevelReported(districtRow, facilityLevel) {
   if (facilityLevel === DISTRICT_PRIMARY_CARE_LEVELS.healthCentre) {
-    return Boolean(districtRow?.healthCentreReported || districtRow?.combinedPrimaryCareReported);
+    return Boolean(districtRow?.healthCentreSubmissionReceived ?? (districtRow?.healthCentreReported || districtRow?.combinedPrimaryCareReported));
   }
   if (facilityLevel === DISTRICT_PRIMARY_CARE_LEVELS.healthPost) {
-    return Boolean(districtRow?.healthPostReported || districtRow?.combinedPrimaryCareReported);
+    return Boolean(districtRow?.healthPostSubmissionReceived ?? (districtRow?.healthPostReported || districtRow?.combinedPrimaryCareReported));
   }
   return false;
 }

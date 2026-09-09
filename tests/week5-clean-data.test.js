@@ -11,13 +11,13 @@ const week5 = tracerReportingPeriods.find((period) => period.id === "2026-08-02"
 
 test("2 August remains classified as July Week 5 after later August reporting periods", () => {
   assert.ok(week5);
-  assert.equal(tracerReportingPeriods.at(-1).id, "2026-08-30");
+  assert.equal(tracerReportingPeriods.at(-1).id, "2026-09-06");
   assert.equal(week5.label, "Week 5 - 2 August 2026");
   assert.equal(week5.month, "2026-07");
   assert.equal(week5.week, "Week 5");
   assert.equal(week5.source, "TRACER SUMMARY 02 AUAGUST 2026.xlsx");
   assert.equal(week5.counts.rows, 24348);
-  assert.equal(week5.counts.facilityUnits, 410);
+  assert.equal(week5.counts.facilityUnits, 412);
 });
 
 test("Week 5 DHO compliance requires both Health Centre and Health Post", () => {

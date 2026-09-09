@@ -31,5 +31,6 @@ test("combined primary-care sheets qualify when the source does not split levels
   const marchWeek2 = tracerReportingPeriods.find((period) => period.id === "2026-03-08");
   const summary = primaryCareDistrictSummary(marchWeek2);
   assert.equal(summary.reported, 116);
-  assert.ok(summary.rows.every((row) => row.combinedPrimaryCareReported));
+  assert.ok(summary.rows.every((row) => row.healthCentreSubmissionReceived));
+  assert.ok(summary.rows.every((row) => row.healthPostSubmissionReceived));
 });

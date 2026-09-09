@@ -16,8 +16,8 @@ test("only source-supported hospitals establish Data Quality reporting obligatio
   };
 
   assert.equal(reportingFacilityType(kafueGeneral.facilityLevel), "Level 2 Hospitals");
-  assert.equal(sourceSupportedHospitalFacility(kafueGeneral), true);
-  assert.equal(sourceSupportedHospitalFacility(misplacedLuampaHospital), false);
+  assert.equal(sourceSupportedHospitalFacility(kafueGeneral, ["KAFUE", "LUAMPA"]), true);
+  assert.equal(sourceSupportedHospitalFacility(misplacedLuampaHospital, ["KAFUE", "LUAMPA"]), false);
 });
 
 test("primary-care sheets do not become extra hospital reporting obligations", () => {

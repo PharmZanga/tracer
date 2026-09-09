@@ -26,8 +26,22 @@ export function namedFacilityMatchesDistrict(facility) {
   return Boolean(district && name && name.includes(district));
 }
 
-export function sourceSupportedHospitalFacility(facility) {
+export function facilityNameMatchesDifferentDistrict(facility, districtNames = []) {
+  const ownDistrict = normalisedReportingText(facility?.district);
+  const name = normalisedReportingText(facility?.name || facility?.facility);
+  if (!ownDistrict || !name) return false;
+
+  return districtNames.some((districtName) => {
+    const candidate = normalisedReportingText(districtName);
+    return candidate && candidate !== ownDistrict && name.includes(candidate);
+  });
+}
+
+// A named hospital may legitimately not include its district in the facility
+// name (for example, mission and specialist hospitals). It is excluded only
+// when the submitted name explicitly identifies a different known district.
+export function sourceSupportedHospitalFacility(facility, districtNames = []) {
   const type = reportingFacilityType(facility?.facilityLevel);
   return !["Health Centres", "Health Posts", "Health Centres and Posts (combined)"].includes(type)
-    && namedFacilityMatchesDistrict(facility);
+    && !facilityNameMatchesDifferentDistrict(facility, districtNames);
 }

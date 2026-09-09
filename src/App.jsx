@@ -2473,12 +2473,13 @@ function App() {
   // including Level 2 and non-reporting Muchinga districts.
   const qualityDirectoryPeriod = qualityRangePeriods[0] || tracerReportingPeriods[0];
   const qualityDistrictDirectory = qualityDirectoryPeriod?.dataQuality?.districts || [];
+  const qualityDistrictNames = useMemo(() => [...new Set(qualityDistrictDirectory.map((row) => row.name))], [qualityDistrictDirectory]);
   const qualityHospitalRoster = useMemo(() => {
     const rows = new Map();
     tracerReportingPeriods.forEach((period) => {
       (period.facilities || []).forEach((facility) => {
         const type = reportingFacilityType(facility.facilityLevel);
-        if (!sourceSupportedHospitalFacility(facility)) return;
+        if (!sourceSupportedHospitalFacility(facility, qualityDistrictNames)) return;
         const key = `${facility.province}|${facility.district}|${type}`;
         rows.set(key, {
           province: facility.province,
@@ -2491,7 +2492,7 @@ function App() {
       });
     });
     return [...rows.values()];
-  }, []);
+  }, [qualityDistrictNames]);
   const qualityRoster = [
     ...qualityDistrictDirectory.flatMap((row) => ["Health Centres", "Health Posts"].map((type) => ({
       province: row.province,
@@ -2512,7 +2513,15 @@ function App() {
       .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
       .filter((row) => qualityDistrictFilter === "all" || row.district === qualityDistrictFilter)
       .some((row) => matchesFacilityCareLevel(row.facilityLevel, option.value)));
-  const qualityPeriodFacilityMaps = useMemo(() => new Map(qualityRangePeriods.map((period) => [period.id, new Map((period.dataQuality?.facilityTypes || []).map((row) => [`${row.province}|${row.district}|${row.type}`, row]))])), [qualityRangePeriods]);
+  // Hospital reporting must come from a submitted hospital row. The generated
+  // facility-type roster is retained as an expectation list, but cannot turn
+  // a submitted record into a false non-report because it is stale or broad.
+  const qualityPeriodHospitalKeys = useMemo(() => new Map(qualityRangePeriods.map((period) => [
+    period.id,
+    new Set((period.facilities || [])
+      .filter((facility) => sourceSupportedHospitalFacility(facility, qualityDistrictNames))
+      .map((facility) => `${facility.province}|${facility.district}|${reportingFacilityType(facility.facilityLevel)}`)),
+  ])), [qualityRangePeriods, qualityDistrictNames]);
   const qualityFacilityHistories = useMemo(() => qualityRoster
     .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
     .filter((row) => qualityDistrictFilter === "all" || row.district === qualityDistrictFilter)
@@ -2520,11 +2529,10 @@ function App() {
     .map((facility) => {
       const key = `${facility.province}|${facility.district}|${facility.facilityLevel}`;
       const history = qualityRangePeriods.map((period) => {
-        const row = qualityPeriodFacilityMaps.get(period.id)?.get(key);
         const primaryCare = primaryCareDistrictRows(period).find((district) => district.province === facility.province && district.name === facility.district);
         const reported = facility.facilityLevel === "Health Centres" || facility.facilityLevel === "Health Posts"
           ? primaryCareLevelReported(primaryCare, facility.facilityLevel === "Health Centres" ? "HEALTH CENTRE" : "HEALTH POST")
-            : Boolean(row?.reported);
+            : qualityPeriodHospitalKeys.get(period.id)?.has(key) || false;
         return { id: period.id, month: period.month, label: period.label, expected: true, reported };
       });
       const reports = history.filter((row) => row.reported).length;
@@ -2541,7 +2549,7 @@ function App() {
         consecutiveMissed: longestMissedRun(history),
         latestReport: [...history].reverse().find((row) => row.reported)?.label || "No successful report",
       };
-    }), [qualityRoster, qualityRangePeriods, qualityPeriodFacilityMaps, qualityProvinceFilter, qualityDistrictFilter, qualityFacilityLevelFilter]);
+    }), [qualityRoster, qualityRangePeriods, qualityPeriodHospitalKeys, qualityProvinceFilter, qualityDistrictFilter, qualityFacilityLevelFilter]);
   const qualityTrendRows = useMemo(() => {
     const groups = new Map();
     qualityRangePeriods.forEach((period) => {
