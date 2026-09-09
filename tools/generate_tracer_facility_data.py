@@ -38,6 +38,35 @@ SEPTEMBER_WEEK1_CONFIG = {
 for _september_source in SEPTEMBER_WEEK1_CONFIG["rawSources"]:
     _september_source["primaryCareSummaryLayout"] = True
 
+
+HISTORICAL_RAW_WEEK_CONFIGS = [
+    {"directory": "march province submission\\week 1", "reportDate": "2026-03-08", "label": "Week 1 - 8 March 2026", "month": "2026-03", "week": "Week 1"},
+    {"directory": "march province submission\\week 2", "reportDate": "2026-03-15", "label": "Week 2 - 15 March 2026", "month": "2026-03", "week": "Week 2"},
+    {"directory": "march province submission\\week 3", "reportDate": "2026-03-22", "label": "Week 3 - 22 March 2026", "month": "2026-03", "week": "Week 3"},
+    {"directory": "march province submission\\week 4", "reportDate": "2026-03-29", "label": "Week 4 - 29 March 2026", "month": "2026-03", "week": "Week 4"},
+    {"directory": "april provincial submission\\week 1", "reportDate": "2026-04-05", "label": "Week 1 - 5 April 2026", "month": "2026-04", "week": "Week 1"},
+    {"directory": "april provincial submission\\week 3", "reportDate": "2026-04-19", "label": "Week 3 - 19 April 2026", "month": "2026-04", "week": "Week 3"},
+    {"directory": "april provincial submission\\week 4", "reportDate": "2026-04-26", "label": "Week 4 - 26 April 2026", "month": "2026-04", "week": "Week 4"},
+    {"directory": "may provinsion submission\\week 3", "reportDate": "2026-05-24", "label": "Week 3 - 24 May 2026", "month": "2026-05", "week": "Week 3"},
+    {"directory": "june province submission\\week 2", "reportDate": "2026-06-14", "label": "Week 2 - 14 June 2026", "month": "2026-06", "week": "Week 2"},
+    {"directory": "june province submission\\week 3", "reportDate": "2026-06-21", "label": "Week 3 - 21 June 2026", "month": "2026-06", "week": "Week 3"},
+    {"directory": "june province submission\\week 4", "reportDate": "2026-06-28", "label": "Week 4 - 28 June 2026", "month": "2026-06", "week": "Week 4"},
+]
+
+RAW_SUBMISSION_ROOT = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions")
+RAW_SUBMISSION_PROVINCES = [
+    "MUCHINGA PROVINCE",
+    "EASTERN PROVINCE",
+    "COPPERBELT PROVINCE",
+    "NORTHERN PROVINCE",
+    "NORTH-WESTERN PROVINCE",
+    "WESTERN PROVINCE",
+    "CENTRAL PROVINCE",
+    "LUAPULA PROVINCE",
+    "LUSAKA PROVINCE",
+    "SOUTHERN PROVINCE",
+]
+
 # The consolidated Week 4 workbook changed this verified Lusaka provincial
 # submission. Preserve the values from the original provincial report so a
 # transcription error cannot create a false overstock recommendation.
@@ -612,6 +641,69 @@ def num(value):
     return None if math.isnan(value) else value
 
 
+def raw_submission_province(filename):
+    """Identify the province from the standard provincial-submission filename."""
+    name = filename.upper().replace("_", " ")
+    if "MUCHINGA" in name:
+        return "MUCHINGA PROVINCE"
+    if "NORTHWESTERN" in name or "NORTH-WESTERN" in name or "NORTHESTERN" in name:
+        return "NORTH-WESTERN PROVINCE"
+    if "EASTERN" in name:
+        return "EASTERN PROVINCE"
+    if "COPPERBELT" in name:
+        return "COPPERBELT PROVINCE"
+    if "NORTHERN" in name:
+        return "NORTHERN PROVINCE"
+    if "WESTERN" in name:
+        return "WESTERN PROVINCE"
+    if "CENTRAL" in name:
+        return "CENTRAL PROVINCE"
+    if "LUAPULA" in name:
+        return "LUAPULA PROVINCE"
+    if "LUSAKA" in name:
+        return "LUSAKA PROVINCE"
+    if "SOUTHERN" in name:
+        return "SOUTHERN PROVINCE"
+    return None
+
+
+def load_historical_raw_week_configs():
+    """Use complete provincial submissions in preference to a collapsed summary.
+
+    The national summary workbooks do not retain the reporting worksheet that
+    produced a hospital entry. Rebuilding only complete ten-province weeks from
+    their submitted workbooks preserves adult and specialised-unit identities.
+    """
+    configs = []
+    for template in HISTORICAL_RAW_WEEK_CONFIGS:
+        directory = RAW_SUBMISSION_ROOT / template["directory"]
+        matched = {}
+        if directory.exists():
+            for path in directory.glob("*.xlsx"):
+                if path.name.startswith("~$"):
+                    continue
+                province = raw_submission_province(path.name)
+                if province and province not in matched:
+                    matched[province] = path
+        if set(matched) != set(RAW_SUBMISSION_PROVINCES):
+            missing = sorted(set(RAW_SUBMISSION_PROVINCES) - set(matched))
+            print(f"Skipping {template['reportDate']} raw rebuild; incomplete sources: {', '.join(missing)}")
+            continue
+        configs.append({
+            **template,
+            "rawSources": [
+                {
+                    "province": province,
+                    "path": matched[province],
+                    "primaryCareSummaryLayout": True,
+                }
+                for province in RAW_SUBMISSION_PROVINCES
+            ],
+            "source": f"{template['label']} provincial raw submissions",
+        })
+    return configs
+
+
 def availability_value(value):
     value = num(value)
     if value is None:
@@ -720,18 +812,22 @@ SPECIALTY_UNIT_SUFFIXES = {
 }
 
 
-def preserve_specialty_reporting_unit(verified_identity, source_level):
+def preserve_specialty_reporting_unit(verified_identity, source_level, source_name):
     """Keep a specialty worksheet distinct from its verified parent hospital.
 
     Provincial workbooks frequently report adult, eye, renal, TB and mental
     health services in separate worksheets. They can share the same hospital
     header, but are separate reporting units and must never be silently summed.
     """
-    province, district, verified_level, verified_name = verified_identity
+    if len(verified_identity) == 4:
+        province, district, verified_level, verified_name = verified_identity
+    else:
+        province, district, verified_level = verified_identity
+        verified_name = source_name
     suffix = SPECIALTY_UNIT_SUFFIXES.get(source_level)
     if suffix and source_level != verified_level:
         return province, district, source_level, f"{verified_name} - {suffix}"
-    return verified_identity
+    return province, district, verified_level, verified_name
 
 
 def canonical_facility_identity(province, district, facility_level, facility_name):
@@ -748,7 +844,7 @@ def canonical_facility_identity(province, district, facility_level, facility_nam
 
     verified_identity = VERIFIED_FACILITY_IDENTITIES.get(facility_key)
     if verified_identity:
-        return preserve_specialty_reporting_unit(verified_identity, facility_level)
+        return preserve_specialty_reporting_unit(verified_identity, facility_level, facility_text)
 
     if "arthur" in facility_key and ("davison" in facility_key or "davidson" in facility_key):
         return (
@@ -760,7 +856,7 @@ def canonical_facility_identity(province, district, facility_level, facility_nam
 
     verified_identity = RAW_FACILITY_IDENTITIES.get(facility_key)
     if verified_identity:
-        return preserve_specialty_reporting_unit(verified_identity, facility_level)
+        return preserve_specialty_reporting_unit(verified_identity, facility_level, facility_text)
 
     province = normalize_province(province)
     district = canonical_district(province, district)
@@ -1677,6 +1773,8 @@ def main():
     print(f"Loaded {len(RAW_FACILITY_IDENTITIES)} verified named-facility identities from provincial submissions.")
     availability_overrides = load_raw_availability_overrides()
     availability_overrides.update(AUTHORITATIVE_AVAILABILITY_OVERRIDES)
+    historical_raw_configs = load_historical_raw_week_configs()
+    historical_raw_dates = {config["reportDate"] for config in historical_raw_configs}
     configs = []
     # The approved clean workbook begins on 22 February. January is retained
     # from its validated weekly summary workbook so the dashboard covers Jan-Jun.
@@ -1686,6 +1784,8 @@ def main():
             config["availabilityOverrides"] = availability_overrides
             configs.append(config)
     for config in load_clean_workbook_configs():
+        if config["reportDate"] in historical_raw_dates:
+            continue
         config["availabilityOverrides"] = availability_overrides
         configs.append(config)
     for config in load_clean_workbook_configs(
@@ -1753,6 +1853,9 @@ def main():
     september_week1 = dict(SEPTEMBER_WEEK1_CONFIG)
     september_week1["availabilityOverrides"] = availability_overrides
     configs.append(september_week1)
+    for config in historical_raw_configs:
+        config["availabilityOverrides"] = availability_overrides
+        configs.append(config)
     clean_period_ids = {config["reportDate"] for config in configs}
     # Retain the clean master as the source of record for its existing dates,
     # then add provincial submissions only for new reporting periods not yet
