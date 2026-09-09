@@ -25,6 +25,7 @@ const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const commentsApiUrl = process.env.COMMENTS_API_URL || "";
 const resendApiKey = process.env.RESEND_API_KEY || "";
 const emailFrom = process.env.EMAIL_FROM || "";
+const validActionStatuses = new Set(["Open", "In progress", "Completed"]);
 const openaiApiKey = process.env.OPENAI_API_KEY || "";
 const openaiModel = process.env.OPENAI_MODEL || "gpt-4.1-mini";
 const githubToken = process.env.GITHUB_TOKEN || "";
@@ -48,6 +49,10 @@ app.use(session({
 
 function escapeHtml(value = "") {
   return String(value).replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]);
+}
+
+function cleanText(value, maxLength) {
+  return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
 }
 
 function normalizeRouteEmail(value = "") {
@@ -191,6 +196,32 @@ async function initializeDatabase() {
       sent_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       UNIQUE (reporting_period, fingerprint, recipient_email)
     );
+    CREATE TABLE IF NOT EXISTS action_states (
+      action_key TEXT PRIMARY KEY,
+      status TEXT NOT NULL DEFAULT 'Open',
+      updated_by TEXT,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE TABLE IF NOT EXISTS action_comments (
+      id BIGSERIAL PRIMARY KEY,
+      action_key TEXT NOT NULL,
+      author TEXT NOT NULL,
+      author_email TEXT,
+      body TEXT NOT NULL,
+      parent_comment_id BIGINT REFERENCES action_comments(id) ON DELETE SET NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    ALTER TABLE action_comments ADD COLUMN IF NOT EXISTS author_email TEXT;
+    ALTER TABLE action_comments ADD COLUMN IF NOT EXISTS parent_comment_id BIGINT REFERENCES action_comments(id) ON DELETE SET NULL;
+    UPDATE action_comments SET author_email = author WHERE author_email IS NULL;
+    CREATE TABLE IF NOT EXISTS action_comment_votes (
+      comment_id BIGINT NOT NULL REFERENCES action_comments(id) ON DELETE CASCADE,
+      voter_email TEXT NOT NULL,
+      vote SMALLINT NOT NULL CHECK (vote IN (-1, 1)),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      PRIMARY KEY (comment_id, voter_email)
+    );
+    CREATE INDEX IF NOT EXISTS action_comments_action_key_idx ON action_comments (action_key, created_at);
   `);
 }
 
@@ -228,6 +259,32 @@ async function sendEmail({ to, subject, text, html }) {
     console.error("Resend notification failed:", error);
     return { delivered: false, reason: "Network error while contacting Resend." };
   }
+}
+
+async function actionCommentWithVotes(commentId) {
+  const result = await pool.query(`
+    SELECT c.id, c.action_key, COALESCE(c.author_email, c.author) AS author, c.body, c.parent_comment_id, c.created_at,
+      COALESCE(parent.author_email, parent.author) AS parent_author,
+      COALESCE(SUM(CASE WHEN v.vote = 1 THEN 1 ELSE 0 END), 0)::int AS upvotes,
+      COALESCE(SUM(CASE WHEN v.vote = -1 THEN 1 ELSE 0 END), 0)::int AS downvotes
+    FROM action_comments c
+    LEFT JOIN action_comments parent ON parent.id = c.parent_comment_id
+    LEFT JOIN action_comment_votes v ON v.comment_id = c.id
+    WHERE c.id = $1
+    GROUP BY c.id, parent.author_email, parent.author
+  `, [commentId]);
+  const row = result.rows[0];
+  return row ? {
+    id: row.id,
+    actionKey: row.action_key,
+    author: row.author,
+    body: row.body,
+    parentCommentId: row.parent_comment_id,
+    parentAuthor: row.parent_author,
+    createdAt: row.created_at,
+    upvotes: row.upvotes,
+    downvotes: row.downvotes,
+  } : null;
 }
 
 function safeUploadName(value = "") {
@@ -771,6 +828,121 @@ app.post("/api/commodity-alerts/dispatch", requireSession, requireAdmin, async (
       } else failed.push(`${recipient.email}: ${emailResult.reason}`);
     }
     response.json({ message: `Alert digest sent to ${delivered} recipient${delivered === 1 ? "" : "s"}.${alreadySent ? ` ${alreadySent} matching digest${alreadySent === 1 ? " was" : "s were"} already sent for this reporting period.` : ""}${failed.length ? ` ${failed.length} delivery failure(s): ${failed.join(" | ")}` : ""}` });
+  } catch (error) { next(error); }
+});
+
+// Keep Action Tracker collaboration in the authenticated dashboard. The public
+// comments service remains available for legacy clients, but a healthy sign-in
+// session must not depend on that separate service being awake.
+app.get("/api/action-updates", requireSession, async (_request, response, next) => {
+  try {
+    const [stateResult, commentResult] = await Promise.all([
+      pool.query("SELECT action_key, status, updated_by, updated_at FROM action_states"),
+      pool.query(`
+        SELECT c.id, c.action_key, COALESCE(c.author_email, c.author) AS author, c.body, c.parent_comment_id, c.created_at,
+          COALESCE(parent.author_email, parent.author) AS parent_author,
+          COALESCE(SUM(CASE WHEN v.vote = 1 THEN 1 ELSE 0 END), 0)::int AS upvotes,
+          COALESCE(SUM(CASE WHEN v.vote = -1 THEN 1 ELSE 0 END), 0)::int AS downvotes
+        FROM action_comments c
+        LEFT JOIN action_comments parent ON parent.id = c.parent_comment_id
+        LEFT JOIN action_comment_votes v ON v.comment_id = c.id
+        GROUP BY c.id, parent.author_email, parent.author
+        ORDER BY c.created_at ASC
+      `),
+    ]);
+    const updates = Object.fromEntries(stateResult.rows.map((row) => [row.action_key, {
+      status: row.status,
+      updatedBy: row.updated_by,
+      updatedAt: row.updated_at,
+    }]));
+    const comments = commentResult.rows.reduce((all, row) => {
+      const comment = {
+        id: row.id,
+        author: row.author,
+        body: row.body,
+        parentCommentId: row.parent_comment_id,
+        parentAuthor: row.parent_author,
+        createdAt: row.created_at,
+        upvotes: row.upvotes,
+        downvotes: row.downvotes,
+      };
+      all[row.action_key] = [...(all[row.action_key] || []), comment];
+      return all;
+    }, {});
+    response.json({ updates, comments });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/action-updates/:actionKey", requireSession, async (request, response, next) => {
+  const actionKey = cleanText(request.params.actionKey, 800);
+  const status = cleanText(request.body?.status, 32);
+  if (!actionKey || !validActionStatuses.has(status)) return response.status(400).json({ error: "A valid action and status are required." });
+  try {
+    const result = await pool.query(`
+      INSERT INTO action_states (action_key, status, updated_by, updated_at)
+      VALUES ($1, $2, $3, NOW())
+      ON CONFLICT (action_key) DO UPDATE SET status = EXCLUDED.status, updated_by = EXCLUDED.updated_by, updated_at = NOW()
+      RETURNING status, updated_by, updated_at
+    `, [actionKey, status, request.session.user.email]);
+    const row = result.rows[0];
+    response.json({ status: row.status, updatedBy: row.updated_by, updatedAt: row.updated_at });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/action-comments/:actionKey", requireSession, async (request, response, next) => {
+  const actionKey = cleanText(request.params.actionKey, 800);
+  const body = cleanText(request.body?.body, 1600);
+  const parentCommentId = Number(request.body?.parentCommentId);
+  const author = request.session.user.email;
+  if (!actionKey || !body) return response.status(400).json({ error: "Action and comment are required." });
+  try {
+    let parent = null;
+    if (Number.isInteger(parentCommentId) && parentCommentId > 0) {
+      const parentResult = await pool.query("SELECT id, action_key, COALESCE(author_email, author) AS author FROM action_comments WHERE id = $1", [parentCommentId]);
+      parent = parentResult.rows[0] || null;
+      if (!parent || parent.action_key !== actionKey) return response.status(400).json({ error: "The reply target is not available for this action." });
+    }
+    const result = await pool.query(`
+      INSERT INTO action_comments (action_key, author, author_email, body, parent_comment_id)
+      VALUES ($1, $2, $2, $3, $4)
+      RETURNING id
+    `, [actionKey, author, body, parent?.id || null]);
+    const comment = await actionCommentWithVotes(result.rows[0].id);
+    if (parent?.author && parent.author.toLowerCase() !== author.toLowerCase()) {
+      void sendEmail({
+        to: [parent.author],
+        subject: "A reply was added to your tracer dashboard comment",
+        text: `${author} replied to your comment in the National Tracer Dashboard:\n\n${body}\n\nOpen the Action Tracker to view and respond.`,
+        html: `<p><strong>${escapeHtml(author)}</strong> replied to your comment in the National Tracer Dashboard.</p><blockquote>${escapeHtml(body).replace(/\n/g, "<br>")}</blockquote><p>Open the Action Tracker to view and respond.</p>`,
+      });
+    }
+    response.status(201).json(comment);
+  } catch (error) { next(error); }
+});
+
+app.delete("/api/action-comments/:commentId", requireSession, async (request, response, next) => {
+  const commentId = Number(request.params.commentId);
+  if (!Number.isInteger(commentId)) return response.status(400).json({ error: "A valid comment is required." });
+  try {
+    const result = await pool.query("DELETE FROM action_comments WHERE id = $1 AND COALESCE(author_email, author) = $2 RETURNING id", [commentId, request.session.user.email]);
+    if (!result.rowCount) return response.status(403).json({ error: "Only the person who wrote this comment can delete it." });
+    response.json({ ok: true, id: commentId });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/action-comments/:commentId/vote", requireSession, async (request, response, next) => {
+  const commentId = Number(request.params.commentId);
+  const vote = Number(request.body?.vote);
+  if (!Number.isInteger(commentId) || ![-1, 1].includes(vote)) return response.status(400).json({ error: "A valid comment and vote are required." });
+  try {
+    const exists = await pool.query("SELECT id FROM action_comments WHERE id = $1", [commentId]);
+    if (!exists.rowCount) return response.status(404).json({ error: "Comment not found." });
+    await pool.query(`
+      INSERT INTO action_comment_votes (comment_id, voter_email, vote, updated_at)
+      VALUES ($1, $2, $3, NOW())
+      ON CONFLICT (comment_id, voter_email) DO UPDATE SET vote = EXCLUDED.vote, updated_at = NOW()
+    `, [commentId, request.session.user.email, vote]);
+    response.json(await actionCommentWithVotes(commentId));
   } catch (error) { next(error); }
 });
 

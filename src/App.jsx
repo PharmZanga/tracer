@@ -3061,16 +3061,17 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ author, body, parentCommentId: replyToComment?.id || null }),
       });
-      if (!response.ok) throw new Error("Unable to save comment");
-      const comment = await response.json();
+      const responseBody = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(responseBody.error || "Unable to save comment");
+      const comment = responseBody;
       setActionComments((current) => ({
         ...current,
         [key]: (current[key] || []).map((entry) => entry.id === pendingComment.id ? comment : entry),
       }));
       setActionSyncState("shared");
       setReplyToComment(null);
-    } catch {
-      setActionCommentError("Shared comments are temporarily unavailable. Please try again.");
+    } catch (error) {
+      setActionCommentError(error.message || "Shared comments are temporarily unavailable. Please try again.");
       setActionComments((current) => ({ ...current, [key]: (current[key] || []).filter((entry) => entry.id !== pendingComment.id) }));
       setActionCommentDrafts((current) => ({ ...current, [key]: body }));
       setActionSyncState("offline");
