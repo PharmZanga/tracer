@@ -2071,11 +2071,11 @@ function App() {
   const stockoutFacilityCount = correctedReportingFacilities.filter((facility) => facility.stockoutItemCount > 0).length;
   const lowStockFacilityCount = correctedReportingFacilities.filter((facility) => facility.lowStockItemCount > 0).length;
   const facilityStatusOptions = [
-    { id: "stockout", label: "Confirmed stock-outs", shortLabel: "Stock-out", icon: "!", tone: "red", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.stockoutItemCount > 0 },
-    { id: "low", label: "Low-stock commodities", shortLabel: "Low stock", icon: "↓", tone: "orange", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.lowStockItemCount > 0 },
-    { id: "missing", label: "Did not report", shortLabel: "Did not report", icon: "×", tone: "dark-red", matches: (facility) => facility.reportingStatus === "Facility did not report" },
-    { id: "plan", label: "Has commodities stocked to plan", shortLabel: "Has stock to plan", icon: "✓", tone: "green", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.accordingToPlanItemCount > 0 },
-    { id: "overstock", label: "Has overstocked commodities", shortLabel: "Overstocked", icon: "↑", tone: "blue", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.overstockItemCount > 0 },
+    { id: "stockout", label: "Confirmed stock-outs", shortLabel: "Stock-out", icon: CircleX, tone: "red", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.stockoutItemCount > 0 },
+    { id: "low", label: "Low-stock commodities", shortLabel: "Low stock", icon: CircleAlert, tone: "orange", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.lowStockItemCount > 0 },
+    { id: "missing", label: "Did not report", shortLabel: "Did not report", icon: FileX, tone: "dark-red", matches: (facility) => facility.reportingStatus === "Facility did not report" },
+    { id: "plan", label: "Has commodities stocked to plan", shortLabel: "Has stock to plan", icon: CircleCheck, tone: "green", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.accordingToPlanItemCount > 0 },
+    { id: "overstock", label: "Has overstocked commodities", shortLabel: "Overstocked", icon: Boxes, tone: "blue", matches: (facility) => facility.reportingStatus !== "Facility did not report" && facility.overstockItemCount > 0 },
   ];
   const facilityStatusCounts = Object.fromEntries(facilityStatusOptions.map((option) => [option.id, assessedFacilities.filter(option.matches).length]));
   const filteredFacilityAlerts = assessedFacilities
@@ -2683,11 +2683,11 @@ function App() {
   const topDistrictRows = [...districtQualityRows].sort((a, b) => (b.rate || qualityRate(b)) - (a.rate || qualityRate(a)) || a.missing - b.missing).slice(0, 10);
   const stockStatusTotal = fieldKpis.rows || 1;
   const stockStatusRows = [
-    { label: "Stocked out", count: fieldKpis.stockout, rate: fieldKpis.stockout / stockStatusTotal, sub: "MOS at or near zero", tone: "red" },
-    { label: "Emergency", count: fieldKpis.nearCritical, rate: fieldKpis.nearCritical / stockStatusTotal, sub: "Below 1 MOS", tone: "amber" },
-    { label: "Understocked", count: fieldKpis.understocked, rate: fieldKpis.understocked / stockStatusTotal, sub: "1 to below 2 MOS", tone: "amber" },
-    { label: "According to plan", count: fieldKpis.accordingToPlan, rate: fieldKpis.accordingToPlan / stockStatusTotal, sub: "2 to 4 MOS", tone: "green" },
-    { label: "Overstocked", count: fieldKpis.abovePlan + fieldKpis.overstock, rate: (fieldKpis.abovePlan + fieldKpis.overstock) / stockStatusTotal, sub: "Above 4 MOS", tone: "blue" },
+    { label: "Stocked out", count: fieldKpis.stockout, rate: fieldKpis.stockout / stockStatusTotal, sub: "MOS at or near zero", tone: "red", icon: CircleX },
+    { label: "Emergency", count: fieldKpis.nearCritical, rate: fieldKpis.nearCritical / stockStatusTotal, sub: "Below 1 MOS", tone: "amber", icon: CircleAlert },
+    { label: "Understocked", count: fieldKpis.understocked, rate: fieldKpis.understocked / stockStatusTotal, sub: "1 to below 2 MOS", tone: "amber", icon: Gauge },
+    { label: "According to plan", count: fieldKpis.accordingToPlan, rate: fieldKpis.accordingToPlan / stockStatusTotal, sub: "2 to 4 MOS", tone: "green", icon: CircleCheck },
+    { label: "Overstocked", count: fieldKpis.abovePlan + fieldKpis.overstock, rate: (fieldKpis.abovePlan + fieldKpis.overstock) / stockStatusTotal, sub: "Above 4 MOS", tone: "blue", icon: Boxes },
   ];
   const scopedProgrammeRows = (fieldData.programmeScopes || fieldData.programmes || [])
     .filter((row) => !row.province || selectedProvince === "all" || row.province === selectedProvince)
@@ -3579,7 +3579,7 @@ function App() {
           <div className="tracer-metrics">
             {stockStatusRows.map((row) => (
               <div className={`stock-percent-card stat-${row.tone}`} key={row.label}>
-                <span>{row.label}</span>
+                <span><row.icon className="metric-icon" aria-hidden="true" />{row.label}</span>
                 <strong>{formatPercent(row.rate)}</strong>
                 <small>{row.count.toLocaleString()} of {fieldKpis.rows.toLocaleString()} rows</small>
                 <em>{row.sub}</em>
@@ -3785,10 +3785,10 @@ function App() {
             </div>
           </div>
           <div className="field-kpis">
-            <div><span>Availability</span><strong>{formatPercent(fieldKpis.availability)}</strong><small>{fieldKpis.rows.toLocaleString()} commodity rows</small></div>
-            <div><span>Average MOS</span><strong>{formatMos(fieldAverageMos)}</strong><small>{fieldKpis.quantity.toLocaleString()} SOH submitted (12-month cap)</small></div>
-            <div><span>Risk rows</span><strong>{fieldKpis.riskRows.toLocaleString()}</strong><small>Stockout, near critical, or low stock</small></div>
-            <div><span>Current footprint</span><strong>{filteredFacilities.length}</strong><small>Reporting units in current filters</small></div>
+            <div><span><PackageSearch className="metric-icon" aria-hidden="true" />Availability</span><strong>{formatPercent(fieldKpis.availability)}</strong><small>{fieldKpis.rows.toLocaleString()} commodity rows</small></div>
+            <div><span><Gauge className="metric-icon" aria-hidden="true" />Average MOS</span><strong>{formatMos(fieldAverageMos)}</strong><small>{fieldKpis.quantity.toLocaleString()} SOH submitted (12-month cap)</small></div>
+            <div><span><Siren className="metric-icon" aria-hidden="true" />Risk rows</span><strong>{fieldKpis.riskRows.toLocaleString()}</strong><small>Stockout, near critical, or low stock</small></div>
+            <div><span><Users className="metric-icon" aria-hidden="true" />Current footprint</span><strong>{filteredFacilities.length}</strong><small>Reporting units in current filters</small></div>
           </div>
           <div className="field-grid">
             <TopRowsTable title="Province availability" rows={scopedProvinceRows.slice(0, 10)} onSelect={(row) => selectProvince(row.name)} />
@@ -3813,8 +3813,8 @@ function App() {
               <p>{filteredFacilityAlerts.length.toLocaleString()} of {assessedFacilities.length.toLocaleString()} expected or reporting facilities match — {fieldData.label}{selectedProvince !== "all" ? ` · ${selectedProvince}` : " · Zambia"}{selectedDistrict !== "all" ? ` · ${selectedDistrict}` : ""}.</p>
             </div>
             <div className="facility-alert-kpis">
-              <button type="button" className={!facilityStatusFilters.length ? "active tone-all" : "tone-all"} aria-pressed={!facilityStatusFilters.length} onClick={() => { setFacilityStatusFilters([]); setFacilityAlertPage(1); }}><i aria-hidden="true">●</i><b>{assessedFacilities.length.toLocaleString()}</b><span>All facilities</span><small>100% of assessed</small></button>
-              {facilityStatusOptions.map((option) => <button type="button" className={`${facilityStatusFilters.includes(option.id) ? "active " : ""}tone-${option.tone}`} aria-pressed={facilityStatusFilters.includes(option.id)} onClick={() => toggleFacilityStatusFilter(option.id)} key={option.id}><i aria-hidden="true">{option.icon}</i><b>{facilityStatusCounts[option.id].toLocaleString()}</b><span>{option.label}</span><small>{assessedFacilities.length ? formatPercent(facilityStatusCounts[option.id] / assessedFacilities.length) : "0%"} of assessed</small></button>)}
+              <button type="button" className={!facilityStatusFilters.length ? "active tone-all" : "tone-all"} aria-pressed={!facilityStatusFilters.length} onClick={() => { setFacilityStatusFilters([]); setFacilityAlertPage(1); }}><i aria-hidden="true"><Users size={19} /></i><b>{assessedFacilities.length.toLocaleString()}</b><span>All facilities</span><small>100% of assessed</small></button>
+              {facilityStatusOptions.map((option) => <button type="button" className={`${facilityStatusFilters.includes(option.id) ? "active " : ""}tone-${option.tone}`} aria-pressed={facilityStatusFilters.includes(option.id)} onClick={() => toggleFacilityStatusFilter(option.id)} key={option.id}><i aria-hidden="true"><option.icon size={19} /></i><b>{facilityStatusCounts[option.id].toLocaleString()}</b><span>{option.label}</span><small>{assessedFacilities.length ? formatPercent(facilityStatusCounts[option.id] / assessedFacilities.length) : "0%"} of assessed</small></button>)}
             </div>
           </div>
           <div className="facility-alert-filter-summary">
@@ -3832,7 +3832,7 @@ function App() {
             <div className="facility-map-legend">{facilityStatusOptions.map((option) => <span className={`tone-${option.tone}`} key={option.id}><i />{option.shortLabel}</span>)}</div>
             <div className="facility-map-canvas">{filteredFacilityAlerts.map((facility) => {
               const primary = facility.reportingStatus === "Facility did not report" ? facilityStatusOptions[2] : facility.stockoutItemCount > 0 ? facilityStatusOptions[0] : facility.criticalLowStockItemCount > 0 || facility.lowStockItemCount > 0 ? facilityStatusOptions[1] : facility.overstockItemCount > 0 ? facilityStatusOptions[4] : facilityStatusOptions[3];
-              return <button type="button" className={`facility-map-marker tone-${primary.tone}`} key={`map-${facilityIdentityKey(facility)}`} title={`${facility.name} · ${facility.district} · ${primary.shortLabel}`} onClick={() => facility.reportingStatus === "Facility did not report" ? openFacilityReportingFollowup(facility) : setOpenFacility(facility)}><i>{primary.icon}</i><span><b>{facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name}</b><small>{facility.district} · {facility.province}</small><small>{facility.reportingStatus === "Facility did not report" ? "Current stock status unknown" : `${facility.stockoutItemCount} stock-outs · ${facility.lowStockItemCount} low · ${facility.overstockItemCount} overstocked`}</small></span></button>;
+              return <button type="button" className={`facility-map-marker tone-${primary.tone}`} key={`map-${facilityIdentityKey(facility)}`} title={`${facility.name} · ${facility.district} · ${primary.shortLabel}`} onClick={() => facility.reportingStatus === "Facility did not report" ? openFacilityReportingFollowup(facility) : setOpenFacility(facility)}><i><primary.icon size={18} aria-hidden="true" /></i><span><b>{facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name}</b><small>{facility.district} · {facility.province}</small><small>{facility.reportingStatus === "Facility did not report" ? "Current stock status unknown" : `${facility.stockoutItemCount} stock-outs · ${facility.lowStockItemCount} low · ${facility.overstockItemCount} overstocked`}</small></span></button>;
             })}</div>
             {!filteredFacilityAlerts.length ? <div className="empty-state">No map markers match the selected filters.</div> : null}
           </div>}
@@ -4722,10 +4722,10 @@ function App() {
             <span className={`comparison-signal ${dataQualityGate.blockedRows.length ? "red" : "green"}`}>{dataQualityGate.blockedRows.length ? "Gate holding records" : "Gate clear"}</span>
           </div>
           <div className="stats-grid">
-            <KpiCard label="Records assessed" value={dataQualityGate.assessedRows.length.toLocaleString()} sub="Current reporting period and filters" />
-            <KpiCard label="Passed to analysis" value={dataQualityGate.passedRows.length.toLocaleString()} sub="Eligible for forecasts and redistribution" tone="green" />
-            <KpiCard label="Blocked records" value={dataQualityGate.blockedRows.length.toLocaleString()} sub="Require source-data validation" tone={dataQualityGate.blockedRows.length ? "red" : "green"} />
-            <KpiCard label="Blocking reasons" value={Object.keys(dataQualityGate.reasonCounts).length.toLocaleString()} sub="Distinct validation rules triggered" tone={Object.keys(dataQualityGate.reasonCounts).length ? "amber" : "green"} />
+            <KpiCard icon={ScanSearch} label="Records assessed" value={dataQualityGate.assessedRows.length.toLocaleString()} sub="Current reporting period and filters" />
+            <KpiCard icon={CircleCheck} label="Passed to analysis" value={dataQualityGate.passedRows.length.toLocaleString()} sub="Eligible for forecasts and redistribution" tone="green" />
+            <KpiCard icon={ShieldCheck} label="Blocked records" value={dataQualityGate.blockedRows.length.toLocaleString()} sub="Require source-data validation" tone={dataQualityGate.blockedRows.length ? "red" : "green"} />
+            <KpiCard icon={CircleAlert} label="Blocking reasons" value={Object.keys(dataQualityGate.reasonCounts).length.toLocaleString()} sub="Distinct validation rules triggered" tone={Object.keys(dataQualityGate.reasonCounts).length ? "amber" : "green"} />
           </div>
           <div className="quality-compact-grid">
             <div className="quality-panel">
@@ -4785,10 +4785,10 @@ function App() {
 
           {predictiveTab === "overview" && <>
             <div className="stats-grid predictive-kpis">
-              <KpiCard label="National risk score" value={formatPercent(predictiveAverageLikelihood)} sub={forecastRiskLabel(predictiveAverageLikelihood)} tone={forecastRiskTone(predictiveAverageLikelihood)} />
-              <KpiCard label="Highest-risk province" value={predictiveTopProvince ? shortProvinceName(predictiveTopProvince.province) : "-"} sub={predictiveTopProvince ? `${formatPercent(predictiveTopProvince.likelihood)} priority score` : "No matching reports"} tone={predictiveTopProvince?.tone || "neutral"} />
-              <KpiCard label="High-risk provinces" value={predictiveHighRiskRows.length.toLocaleString()} sub="Priority score of 60% or above" tone={predictiveHighRiskRows.length ? "red" : "green"} />
-              <KpiCard label="Facilities requiring attention" value={predictiveImpact.current.toLocaleString()} sub="Stockout or low-stock alert" tone={predictiveImpact.current ? "amber" : "green"} />
+              <KpiCard icon={Gauge} label="National risk score" value={formatPercent(predictiveAverageLikelihood)} sub={forecastRiskLabel(predictiveAverageLikelihood)} tone={forecastRiskTone(predictiveAverageLikelihood)} />
+              <KpiCard icon={MapPinned} label="Highest-risk province" value={predictiveTopProvince ? shortProvinceName(predictiveTopProvince.province) : "-"} sub={predictiveTopProvince ? `${formatPercent(predictiveTopProvince.likelihood)} priority score` : "No matching reports"} tone={predictiveTopProvince?.tone || "neutral"} />
+              <KpiCard icon={Siren} label="High-risk provinces" value={predictiveHighRiskRows.length.toLocaleString()} sub="Priority score of 60% or above" tone={predictiveHighRiskRows.length ? "red" : "green"} />
+              <KpiCard icon={Users} label="Facilities requiring attention" value={predictiveImpact.current.toLocaleString()} sub="Stockout or low-stock alert" tone={predictiveImpact.current ? "amber" : "green"} />
             </div>
 
             <div className="predictive-insight-strip"><b>Current outlook:</b> National priority score is {formatPercent(predictiveAverageLikelihood)} ({forecastRiskLabel(predictiveAverageLikelihood).toLowerCase()}). {predictiveTopProvince ? `${shortProvinceName(predictiveTopProvince.province)} ranks highest at ${formatPercent(predictiveTopProvince.likelihood)}.` : "No province ranking is available."} {predictiveWorseningCount} province{predictiveWorseningCount === 1 ? " has" : "s have"} a worsening pattern. Holt models cover {predictiveModelSummary.modelled} commodities; {predictiveModelSummary.seasonal} use an identified six-week seasonal cycle. {predictiveTopTransfer ? "One immediate redistribution opportunity is highlighted." : "No same-province redistribution opportunity is currently identified."}</div>
