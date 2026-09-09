@@ -503,6 +503,24 @@ def matches_named_district(facility_key, district):
     return bool(match and normalize_district(match.group(1)) == normalize_district(district))
 
 
+def facility_belongs_to_reporting_district(province, district, facility_name):
+    """Accept a named hospital only when its district attribution is defensible.
+
+    Clean historical summaries occasionally copied a hospital column beneath the
+    wrong district heading. Those rows must never establish an expected
+    reporting unit: they create persistent non-reporting findings that no
+    facility can correct. A verified raw identity is authoritative; otherwise
+    require the reporting district to be present in the hospital name.
+    """
+    facility_key = facility_match_key(facility_name)
+    verified = VERIFIED_FACILITY_IDENTITIES.get(facility_key) or RAW_FACILITY_IDENTITIES.get(facility_key)
+    if verified:
+        return verified[0] == province and verified[1] == district
+
+    district_key = norm_text(district)
+    return bool(district_key) and district_key in facility_key
+
+
 def normalize_province(value):
     text = (clean(value) or "Unknown").upper()
     aliases = {
@@ -1877,6 +1895,14 @@ def main():
         for period in periods
         for facility in period["facilities"]
         if facility["district"] != "UNKNOWN"
+        and (
+            facility["facilityLevel"] in {"HEALTH CENTRE", "HEALTH POST", "PRIMARY CARE - NOT SPECIFIED"}
+            or facility_belongs_to_reporting_district(
+                facility["province"],
+                facility["district"],
+                facility["name"],
+            )
+        )
         and not (
             period["id"] == "2026-07-26"
             and facility["facilityLevel"] == "PRIMARY CARE - NOT SPECIFIED"

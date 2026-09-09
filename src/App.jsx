@@ -5,6 +5,7 @@ import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
 import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName } from "./commodityNormalization.js";
+import { reportingFacilityType, sourceSupportedHospitalFacility } from "./dataQualityEvidence.js";
 import { facilityReportingRows, primaryCareDistrictRows, primaryCareDistrictSummary } from "./reportingQuality.js";
 import { buildRedistributionCandidates } from "./redistribution.js";
 import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTracerAnalysis.js";
@@ -2472,14 +2473,36 @@ function App() {
   // including Level 2 and non-reporting Muchinga districts.
   const qualityDirectoryPeriod = qualityRangePeriods[0] || tracerReportingPeriods[0];
   const qualityDistrictDirectory = qualityDirectoryPeriod?.dataQuality?.districts || [];
-  const qualityRoster = (qualityDirectoryPeriod?.dataQuality?.facilityTypes || []).map((row) => ({
-    province: row.province,
-    district: row.district,
-    facilityLevel: row.type,
-    facilityType: row.type,
-    name: `${row.district} — ${reportingFacilityLabel(row.type)}`,
-    isAggregate: true,
-  }));
+  const qualityHospitalRoster = useMemo(() => {
+    const rows = new Map();
+    tracerReportingPeriods.forEach((period) => {
+      (period.facilities || []).forEach((facility) => {
+        const type = reportingFacilityType(facility.facilityLevel);
+        if (!sourceSupportedHospitalFacility(facility)) return;
+        const key = `${facility.province}|${facility.district}|${type}`;
+        rows.set(key, {
+          province: facility.province,
+          district: facility.district,
+          facilityLevel: type,
+          facilityType: type,
+          name: `${facility.district} — ${reportingFacilityLabel(type)}`,
+          isAggregate: true,
+        });
+      });
+    });
+    return [...rows.values()];
+  }, []);
+  const qualityRoster = [
+    ...qualityDistrictDirectory.flatMap((row) => ["Health Centres", "Health Posts"].map((type) => ({
+      province: row.province,
+      district: row.name,
+      facilityLevel: type,
+      facilityType: type,
+      name: `${row.name} — ${reportingFacilityLabel(type)}`,
+      isAggregate: true,
+    }))),
+    ...qualityHospitalRoster,
+  ];
   const qualityProvinceOptions = [...new Set(qualityDistrictDirectory.map((row) => row.province))].sort();
   const qualityDistrictOptions = [...new Set(qualityDistrictDirectory
     .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
@@ -2498,7 +2521,13 @@ function App() {
       const key = `${facility.province}|${facility.district}|${facility.facilityLevel}`;
       const history = qualityRangePeriods.map((period) => {
         const row = qualityPeriodFacilityMaps.get(period.id)?.get(key);
-        return { id: period.id, month: period.month, label: period.label, expected: true, reported: Boolean(row?.reported) };
+        const primaryCare = primaryCareDistrictRows(period).find((district) => district.province === facility.province && district.name === facility.district);
+        const reported = facility.facilityLevel === "Health Centres"
+          ? Boolean(primaryCare?.healthCentreReported)
+          : facility.facilityLevel === "Health Posts"
+            ? Boolean(primaryCare?.healthPostReported)
+            : Boolean(row?.reported);
+        return { id: period.id, month: period.month, label: period.label, expected: true, reported };
       });
       const reports = history.filter((row) => row.reported).length;
       const missed = history.length - reports;
