@@ -6,7 +6,7 @@ import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
 import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName } from "./commodityNormalization.js";
 import { reportingFacilityType, sourceSupportedHospitalFacility } from "./dataQualityEvidence.js";
-import { facilityReportingRows, primaryCareDistrictRows, primaryCareDistrictSummary } from "./reportingQuality.js";
+import { facilityReportingRows, primaryCareDistrictRows, primaryCareDistrictSummary, primaryCareLevelReported } from "./reportingQuality.js";
 import { buildRedistributionCandidates } from "./redistribution.js";
 import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTracerAnalysis.js";
 
@@ -2522,10 +2522,8 @@ function App() {
       const history = qualityRangePeriods.map((period) => {
         const row = qualityPeriodFacilityMaps.get(period.id)?.get(key);
         const primaryCare = primaryCareDistrictRows(period).find((district) => district.province === facility.province && district.name === facility.district);
-        const reported = facility.facilityLevel === "Health Centres"
-          ? Boolean(primaryCare?.healthCentreReported)
-          : facility.facilityLevel === "Health Posts"
-            ? Boolean(primaryCare?.healthPostReported)
+        const reported = facility.facilityLevel === "Health Centres" || facility.facilityLevel === "Health Posts"
+          ? primaryCareLevelReported(primaryCare, facility.facilityLevel === "Health Centres" ? "HEALTH CENTRE" : "HEALTH POST")
             : Boolean(row?.reported);
         return { id: period.id, month: period.month, label: period.label, expected: true, reported };
       });

@@ -120,6 +120,16 @@ export function primaryCareDistrictRows(period) {
   });
 }
 
+export function primaryCareLevelReported(districtRow, facilityLevel) {
+  if (facilityLevel === DISTRICT_PRIMARY_CARE_LEVELS.healthCentre) {
+    return Boolean(districtRow?.healthCentreReported || districtRow?.combinedPrimaryCareReported);
+  }
+  if (facilityLevel === DISTRICT_PRIMARY_CARE_LEVELS.healthPost) {
+    return Boolean(districtRow?.healthPostReported || districtRow?.combinedPrimaryCareReported);
+  }
+  return false;
+}
+
 export function primaryCareDistrictSummary(period) {
   const rows = primaryCareDistrictRows(period);
   const reported = rows.filter((row) => row.submitted).length;
