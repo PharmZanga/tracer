@@ -496,15 +496,11 @@ function careLevelBucket(facilityLevel = "") {
     text.includes("OPTH") ||
     text.includes("OPHTH") ||
     text.includes("CANCER") ||
-    text.includes("RENAL") ||
     text.includes("MENTAL") ||
     text.includes("HEART") ||
     text.includes("WOMEN") ||
     text.includes("NEW BORN") ||
-    text.includes("PAEDIATRIC") ||
-    text.includes("TB") ||
-    text.includes("DS-TB") ||
-    text.includes("MDR")
+    text.includes("PAEDIATRIC")
   ) return "level3";
   if (text.includes("LEVEL 1") || text.includes("DISTRICT")) return "level1";
   return "other";
