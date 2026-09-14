@@ -8,9 +8,9 @@ import { primaryCareDistrictRows, primaryCareDistrictSummary, primaryCareLevelRe
 const districtNames = [...new Set(tracerReportingPeriods.flatMap((period) => (period.dataQuality?.districts || []).map((row) => row.name)))];
 
 test("January through September has one complete 116-district reporting universe every week", () => {
-  assert.equal(tracerReportingPeriods.length, 36);
+  assert.equal(tracerReportingPeriods.length, 37);
   assert.equal(tracerReportingPeriods[0].id, "2026-01-04");
-  assert.equal(tracerReportingPeriods.at(-1).id, "2026-09-06");
+  assert.equal(tracerReportingPeriods.at(-1).id, "2026-09-13");
 
   tracerReportingPeriods.forEach((period) => {
     const rows = primaryCareDistrictRows(period);
@@ -22,6 +22,21 @@ test("January through September has one complete 116-district reporting universe
     assert.equal(summary.expected, 116, `${period.label}: invalid expected district total`);
     assert.equal(summary.reported + summary.missing, summary.expected, `${period.label}: reporting total does not reconcile`);
   });
+});
+
+test("September Week 2 is a complete national submission before dashboard publication", () => {
+  const weekTwo = tracerReportingPeriods.find((period) => period.id === "2026-09-13");
+  const summary = primaryCareDistrictSummary(weekTwo);
+
+  assert.ok(weekTwo);
+  assert.equal(weekTwo.label, "Week 2 - 13 September 2026");
+  assert.equal(weekTwo.counts.provinces, 10);
+  assert.equal(weekTwo.counts.rows, 24786);
+  assert.equal(weekTwo.counts.facilityUnits, 410);
+  assert.equal(weekTwo.dataQuality.districts.length, 116);
+  assert.equal(summary.expected, 116);
+  assert.equal(summary.reported, 116);
+  assert.equal(summary.missing, 0);
 });
 
 test("all primary-care submissions have the same effective level result used by Data Quality", () => {

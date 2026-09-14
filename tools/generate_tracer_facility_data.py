@@ -38,6 +38,29 @@ SEPTEMBER_WEEK1_CONFIG = {
 for _september_source in SEPTEMBER_WEEK1_CONFIG["rawSources"]:
     _september_source["primaryCareSummaryLayout"] = True
 
+SEPTEMBER_WEEK2_CONFIG = {
+    "rawSources": [
+        {"province": "MUCHINGA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 2\11.9.26 MUCHINGA 2026 TRACER WEEKLY REPORT.xlsx")},
+        {"province": "EASTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 2\13 Sep EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (38).xlsx")},
+        {"province": "COPPERBELT PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 2\13.9.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx")},
+        {"province": "NORTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 2\13.09.26 NORTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx")},
+        {"province": "NORTH-WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 2\13-09-2026 NORTHWESTERN PROVINCE TRACER WEEKLY REPORT.xlsx")},
+        {"province": "WESTERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 2\13-09-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx")},
+        {"province": "CENTRAL PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 2\13_9_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx")},
+        {"province": "LUAPULA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 2\LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT  12 9 26.xlsx")},
+        {"province": "LUSAKA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 2\LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-11.09.2026.xlsx")},
+        {"province": "SOUTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 2\SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 11.09.26 Original.xlsx")},
+    ],
+    "source": "September Week 2 provincial raw submissions",
+    "reportDate": "2026-09-13",
+    "label": "Week 2 - 13 September 2026",
+    "month": "2026-09",
+    "week": "Week 2",
+}
+
+for _september_source in SEPTEMBER_WEEK2_CONFIG["rawSources"]:
+    _september_source["primaryCareSummaryLayout"] = True
+
 
 HISTORICAL_RAW_WEEK_CONFIGS = [
     {"directory": "march province submission\\week 1", "reportDate": "2026-03-08", "label": "Week 1 - 8 March 2026", "month": "2026-03", "week": "Week 1"},
@@ -1149,7 +1172,8 @@ def iter_raw_matrix_rows(source, report_date):
                 # values in the description column. Preserve a readable value
                 # instead of allowing a non-string cell to break normalisation.
                 item = str(item)
-                if "PERCENTAGE AVAILABILITY" in str(item).upper():
+                item_upper = str(item).upper()
+                if "PERCENTAGE AVAILABILITY" in item_upper or "AVERAGE MONTH OF STOCK" in item_upper:
                     continue
                 quantity = num(ws.cell(row_index, start_col).value)
                 amc = num(ws.cell(row_index, start_col + 1).value)
@@ -1871,6 +1895,9 @@ def main():
     september_week1 = dict(SEPTEMBER_WEEK1_CONFIG)
     september_week1["availabilityOverrides"] = availability_overrides
     configs.append(september_week1)
+    september_week2 = dict(SEPTEMBER_WEEK2_CONFIG)
+    september_week2["availabilityOverrides"] = availability_overrides
+    configs.append(september_week2)
     for config in historical_raw_configs:
         config["availabilityOverrides"] = availability_overrides
         configs.append(config)
