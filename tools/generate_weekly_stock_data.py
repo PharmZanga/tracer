@@ -100,6 +100,15 @@ SOURCES = [
             {"sheet": "LAB 28 August", "date": "2026-08-28", "label": "28 August 2026", "stream": "LAB"},
         ],
     },
+    {
+        "file": ROOT / "september" / "4th-11 September 2026 Stock position.xlsx",
+        "periods": [
+            {"sheet": "EMMS 4TH Sept", "date": "2026-09-04", "label": "4 September 2026", "stream": "EMMS"},
+            {"sheet": "LAB 4TH Sept", "date": "2026-09-04", "label": "4 September 2026", "stream": "LAB"},
+            {"sheet": "EMM 11TH Sept", "date": "2026-09-11", "label": "11 September 2026", "stream": "EMMS"},
+            {"sheet": "LAB 11TH Sept", "date": "2026-09-11", "label": "11 September 2026", "stream": "LAB"},
+        ],
+    },
 ]
 
 
