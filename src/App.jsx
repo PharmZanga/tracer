@@ -30,8 +30,8 @@ const dashboardPages = [
 
 const sidebarGroups = [
   { id: "overview", label: "Overview", pages: ["executive", "national", "provincial", "facilities"] },
-  { id: "tracer", label: "Tracer Intelligence", pages: ["commodities", "alerts", "comparison", "reporting", "quality", "gate", "predictive", "actions"] },
-  { id: "programmes", label: "Programme Views", programmeViews: true },
+  { id: "tracer", label: "Tracer Intelligence", pages: ["commodities", "alerts", "reporting", "quality", "gate", "predictive", "actions"] },
+  { id: "programmes", label: "Programme Intelligence", programmeViews: true },
   { id: "zammsa", label: "ZAMMSA Intelligence", stockViews: true },
   { id: "administration", label: "Administration", pages: ["imports"] },
 ];
@@ -43,6 +43,10 @@ const programmeNavigationViews = [
   { id: "malaria", label: "Malaria", match: /MALARIA/i },
   { id: "tb", label: "TB", match: /TB|MDR/i },
 ];
+
+function programmeMatchesView(programme, view) {
+  return !view.match || view.match.test(String(programme || ""));
+}
 
 const moduleDescriptions = {
   executive: "National decision summary for the selected reporting period.",
@@ -1822,8 +1826,8 @@ function App() {
 
   const fieldData = tracerReportingPeriods.find((period) => period.id === fieldPeriodId) || tracerReportingPeriods.at(-1);
   const activeDashboardPage = dashboardPages.find((page) => page.id === activePage);
-  const activePageLabel = activePage === "stock" && stockWorkspace === "navigator"
-    ? "ZAMMSA Stock Navigator"
+  const activePageLabel = activePage === "stock"
+    ? stockWorkspace === "navigator" ? "ZAMMSA Stock Navigator" : stockWorkspace === "alerts" ? "ZAMMSA Central Stock Alerts" : "ZAMMSA Control Tower"
     : activeDashboardPage?.label || "Tracer Dashboard";
   const ActivePageIcon = activeDashboardPage?.icon || Database;
   const fieldYears = [...availableTracerYears].sort((a, b) => b.localeCompare(a));
@@ -2730,7 +2734,42 @@ function App() {
     .filter((row) => !row.district || selectedDistrict === "all" || row.district === selectedDistrict)
     .filter((row) => !row.facilityLevel || matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel));
   const activeProgrammeNavigationView = programmeNavigationViews.find((view) => view.id === programmeNavigationFocus) || programmeNavigationViews[0];
-  const programmeRowsForPage = (fieldData.programmes || []).filter((program) => !activeProgrammeNavigationView.match || activeProgrammeNavigationView.match.test(program.name));
+  const programmeRowsForPage = (fieldData.programmes || []).filter((program) => programmeMatchesView(program.name, activeProgrammeNavigationView));
+  const programmeTracerRows = commodityRowsFromPeriod(fieldData)
+    .filter((row) => programmeMatchesView(row.programme, activeProgrammeNavigationView));
+  const programmeFacilityRows = Object.values(programmeTracerRows.reduce((groups, row) => {
+    const key = [row.province, row.district, row.facilityLevel, row.facility].join("|");
+    const group = groups[key] || {
+      province: row.province,
+      district: row.district,
+      facilityLevel: row.facilityLevel,
+      facility: row.facility,
+      rows: [],
+    };
+    group.rows.push(row);
+    groups[key] = group;
+    return groups;
+  }, {})).map((group) => {
+    const validMos = group.rows.map((row) => row.mos).filter(Number.isFinite);
+    const available = group.rows.filter((row) => Number(row.quantity) > 0).length;
+    const stockout = group.rows.filter((row) => Number(row.quantity) === 0).length;
+    const lowStock = group.rows.filter((row) => Number(row.quantity) > 0 && Number.isFinite(row.mos) && row.mos < 2).length;
+    return {
+      ...group,
+      availability: group.rows.length ? available / group.rows.length : 0,
+      mos: validMos.length ? validMos.reduce((sum, value) => sum + value, 0) / validMos.length : null,
+      stockout,
+      lowStock,
+    };
+  }).sort((a, b) => a.availability - b.availability || (a.mos ?? Infinity) - (b.mos ?? Infinity) || compareText(a.facility, b.facility));
+  const programmeFacilityMosRows = programmeFacilityRows.filter((row) => Number.isFinite(row.mos));
+  const programmeTracerSummary = {
+    facilities: programmeFacilityRows.length,
+    rows: programmeTracerRows.length,
+    availability: programmeTracerRows.length ? programmeTracerRows.filter((row) => Number(row.quantity) > 0).length / programmeTracerRows.length : 0,
+    mos: programmeFacilityMosRows.length ? programmeFacilityMosRows.reduce((sum, row) => sum + row.mos, 0) / programmeFacilityMosRows.length : null,
+    stockout: programmeTracerRows.filter((row) => Number(row.quantity) === 0).length,
+  };
   const productCategoryRows = aggregateRollups(scopedProgrammeRows, "name")
     .sort((a, b) => a.availability - b.availability || (a.mos || 0) - (b.mos || 0))
     .slice(0, 36);
@@ -3484,6 +3523,14 @@ function App() {
                 <span>{group.label}</span>{isOpen ? <ChevronDown size={15} aria-hidden="true" /> : <ChevronRight size={15} aria-hidden="true" />}
               </button>
               {isOpen && <div className="sidebar-nav-children">
+                {group.id === "tracer" && <>
+                  <button className={activePage === "national" ? "active" : ""} type="button" onClick={() => setActivePage("national")}>
+                    <span className="sidebar-nav-icon"><Activity size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Tracer overview</span>
+                  </button>
+                  <button className={activePage === "comparison" ? "active" : ""} type="button" onClick={() => { setComparisonProgram("all"); setComparisonCompareBy("program"); setActivePage("comparison"); }}>
+                    <span className="sidebar-nav-icon"><GitCompareArrows size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Programme comparison</span>
+                  </button>
+                </>}
                 {pages.map((page) => {
                   const PageIcon = page.icon;
                   return <button className={activePage === page.id ? "active" : ""} type="button" key={page.id} onClick={() => setActivePage(page.id)} title={page.label}>
@@ -3500,6 +3547,9 @@ function App() {
                   </button>
                   <button className={activePage === "stock" && stockWorkspace === "navigator" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("navigator"); setActivePage("stock"); }}>
                     <span className="sidebar-nav-icon"><PackageSearch size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Stock Navigator</span>
+                  </button>
+                  <button className={activePage === "stock" && stockWorkspace === "alerts" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("alerts"); setActivePage("stock"); }}>
+                    <span className="sidebar-nav-icon"><BellRing size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Central Stock Alerts</span>
                   </button>
                 </>}
               </div>}
@@ -4042,6 +4092,11 @@ function App() {
               <button type="button" onClick={() => window.print()}>Export PDF</button>
             </div>
           </div>
+          <div className="programme-source-strip comparison-source-strip">
+            <span><b>Current source</b> Weekly Tracer submissions</span>
+            <span><b>Comparison grain</b> Reporting period, facility, and programme</span>
+            <span className="programme-source-pending"><b>Dedicated programme feeds</b> Connect renal, cancer, or malaria submissions to compare SOH, AMC, and MOS without double counting.</span>
+          </div>
 
           <div className="comparison-filters">
             <label>
@@ -4423,9 +4478,20 @@ function App() {
             <div>
               <p className="eyebrow dark">Programme Performance</p>
               <h2>{activeProgrammeNavigationView.id === "all" ? "Programme availability from the selected tracer submission" : `${activeProgrammeNavigationView.label} in the selected tracer submission`}</h2>
-              <p>{activeProgrammeNavigationView.id === "all" ? "Programme managers can immediately see stockout and low-stock pressure in their portfolio." : "These values remain part of the overall Tracer totals. A dedicated programme repository can be compared here when it is connected."}</p>
+              <p>{activeProgrammeNavigationView.id === "all" ? "Programme managers can immediately see stockout and low-stock pressure in their portfolio." : "These values remain in the overall Tracer totals. They are filtered here for programme review only; they are never removed or counted twice."}</p>
             </div>
           </div>
+          <div className="programme-source-strip">
+            <span><b>Tracer source</b> {fieldData.source}</span>
+            <span><b>Reporting period</b> {fieldData.label}</span>
+            {activeProgrammeNavigationView.id !== "all" && <span className="programme-source-pending"><b>Dedicated {activeProgrammeNavigationView.label} source</b> Not connected</span>}
+          </div>
+          {activeProgrammeNavigationView.id !== "all" && <div className="stats-grid programme-kpis">
+            <KpiCard icon={Users} label="Reporting facilities" value={programmeTracerSummary.facilities.toLocaleString()} sub={`${programmeTracerSummary.rows.toLocaleString()} submitted commodity rows`} />
+            <KpiCard icon={CircleCheck} label="Commodity availability" value={programmeTracerSummary.rows ? formatPercent(programmeTracerSummary.availability) : "-"} sub="Tracer programme rows with positive SOH" tone="green" />
+            <KpiCard icon={Gauge} label="Average MOS" value={formatMos(programmeTracerSummary.mos)} sub="Average across reporting facilities" tone="amber" />
+            <KpiCard icon={CircleX} label="Stock-outs" value={programmeTracerSummary.stockout.toLocaleString()} sub="Submitted rows with SOH equal to zero" tone={programmeTracerSummary.stockout ? "red" : "green"} />
+          </div>}
           {programmeRowsForPage.length ? <div className="table-scroll">
             <table>
               <thead>
@@ -4452,6 +4518,10 @@ function App() {
               </tbody>
             </table>
           </div> : <div className="empty-state">No {activeProgrammeNavigationView.label.toLowerCase()} programme rows were identified in this Tracer submission. The Tracer total remains unchanged; add the dedicated programme repository to activate its source comparison.</div>}
+          {activeProgrammeNavigationView.id !== "all" && programmeFacilityRows.length > 0 && <div className="table-panel programme-facility-evidence">
+            <div className="table-headline"><div><h2>Facility evidence from the Tracer submission</h2><p>Use this as the baseline when the separate programme submission is connected for a source-by-source comparison.</p></div><span>{programmeFacilityRows.length} facilities</span></div>
+            <div className="table-scroll"><table><thead><tr><th>Province</th><th>District</th><th>Facility</th><th>Level of care</th><th>Rows</th><th>Availability</th><th>Average MOS</th><th>Stock-outs</th><th>Low stock</th></tr></thead><tbody>{programmeFacilityRows.map((row) => <tr key={`${row.province}-${row.district}-${row.facilityLevel}-${row.facility}`}><td>{row.province}</td><td>{row.district}</td><td><strong>{row.facility}</strong></td><td>{row.facilityLevel}</td><td>{row.rows.length}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.stockout}</td><td>{row.lowStock}</td></tr>)}</tbody></table></div>
+          </div>}
         </section>
 
         <section className="concerns-section">

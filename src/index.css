@@ -262,6 +262,45 @@ select:focus-visible {
   font-weight: 750;
 }
 
+.stock-alerts .weekly-stock-head,
+.stock-alerts .weekly-stock-grid,
+.stock-alerts .weekly-change-grid {
+  display: none;
+}
+
+.stock-alerts .weekly-hero h2::after {
+  content: "Central Stock Alerts";
+  display: block;
+  margin-top: 3px;
+  color: #fecaca;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.programme-source-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 0 0 16px;
+  padding: 10px 13px;
+  border-left: 3px solid #16875d;
+  background: #f1f7f3;
+  color: #385449;
+  font-size: 12px;
+}
+
+.programme-source-strip span { display: inline-flex; gap: 5px; align-items: baseline; }
+.programme-source-strip b { color: #164b36; }
+.programme-source-strip .programme-source-pending { color: #925a00; }
+.programme-source-strip .programme-source-pending b { color: #704400; }
+.programme-kpis { margin: 0 0 18px; }
+.programme-facility-evidence { margin-top: 18px; }
+.comparison-source-strip { margin: 0 0 14px; }
+
+@media (max-width: 720px) {
+  .programme-source-strip { display: grid; gap: 7px; }
+}
+
 .sidebar-nav-label {
   min-width: 0;
   line-height: 1.25;
