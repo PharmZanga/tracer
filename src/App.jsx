@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Users, Warehouse } from "lucide-react";
+import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Users, Warehouse } from "lucide-react";
 import { availableTracerYears, loadHistoricalTracerYear, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
@@ -13,7 +13,7 @@ import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTrace
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary", icon: LayoutDashboard },
   { id: "national", short: "NS", label: "National Stock Status", icon: Activity },
-  { id: "stock", short: "ZS", label: "ZAMMSA Weekly Stock Status", icon: Warehouse },
+  { id: "stock", short: "ZS", label: "ZAMMSA Control Tower", icon: Warehouse },
   { id: "provincial", short: "PP", label: "Provincial Performance", icon: MapPinned },
   { id: "facilities", short: "FA", label: "Facility Alerts", icon: Stethoscope },
   { id: "commodities", short: "CI", label: "Commodity Intelligence", icon: PackageSearch },
@@ -26,6 +26,22 @@ const dashboardPages = [
   { id: "predictive", short: "PA", label: "Predictive Analysis", icon: ChartNoAxesCombined },
   { id: "actions", short: "AT", label: "Action Tracker", icon: Siren },
   { id: "imports", short: "IM", label: "Submission Import", icon: FileUp, adminOnly: true },
+];
+
+const sidebarGroups = [
+  { id: "overview", label: "Overview", pages: ["executive", "national", "provincial", "facilities"] },
+  { id: "tracer", label: "Tracer Intelligence", pages: ["commodities", "alerts", "comparison", "reporting", "quality", "gate", "predictive", "actions"] },
+  { id: "programmes", label: "Programme Views", programmeViews: true },
+  { id: "zammsa", label: "ZAMMSA Intelligence", stockViews: true },
+  { id: "administration", label: "Administration", pages: ["imports"] },
+];
+
+const programmeNavigationViews = [
+  { id: "all", label: "Tracer programmes", match: null },
+  { id: "renal", label: "Renal", match: /RENAL/i },
+  { id: "cancer", label: "Cancer", match: /CANCER/i },
+  { id: "malaria", label: "Malaria", match: /MALARIA/i },
+  { id: "tb", label: "TB", match: /TB|MDR/i },
 ];
 
 const moduleDescriptions = {
@@ -1588,6 +1604,9 @@ function App() {
   const [, setHistoricalDataVersion] = useState(0);
   const [historicalYearLoading, setHistoricalYearLoading] = useState("");
   const [activePage, setActivePage] = useState(() => dashboardPages.some((page) => page.id === initialDashboardParam("page")) ? initialDashboardParam("page") : "executive");
+  const [openSidebarGroups, setOpenSidebarGroups] = useState(() => new Set(["overview"]));
+  const [programmeNavigationFocus, setProgrammeNavigationFocus] = useState("all");
+  const [stockWorkspace, setStockWorkspace] = useState("control");
   const [fieldPeriodId, setFieldPeriodId] = useState(() => tracerReportingPeriods.some((period) => period.id === initialDashboardParam("period")) ? initialDashboardParam("period") : tracerReportingPeriods.at(-1).id);
   const [selectedProvince, setSelectedProvince] = useState(() => initialDashboardParam("province", "all"));
   const [selectedDistrict, setSelectedDistrict] = useState(() => initialDashboardParam("district", "all"));
@@ -1803,7 +1822,9 @@ function App() {
 
   const fieldData = tracerReportingPeriods.find((period) => period.id === fieldPeriodId) || tracerReportingPeriods.at(-1);
   const activeDashboardPage = dashboardPages.find((page) => page.id === activePage);
-  const activePageLabel = activeDashboardPage?.label || "Tracer Dashboard";
+  const activePageLabel = activePage === "stock" && stockWorkspace === "navigator"
+    ? "ZAMMSA Stock Navigator"
+    : activeDashboardPage?.label || "Tracer Dashboard";
   const ActivePageIcon = activeDashboardPage?.icon || Database;
   const fieldYears = [...availableTracerYears].sort((a, b) => b.localeCompare(a));
   const selectedMonth = fieldData.month;
@@ -2708,6 +2729,8 @@ function App() {
     .filter((row) => !row.province || selectedProvince === "all" || row.province === selectedProvince)
     .filter((row) => !row.district || selectedDistrict === "all" || row.district === selectedDistrict)
     .filter((row) => !row.facilityLevel || matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel));
+  const activeProgrammeNavigationView = programmeNavigationViews.find((view) => view.id === programmeNavigationFocus) || programmeNavigationViews[0];
+  const programmeRowsForPage = (fieldData.programmes || []).filter((program) => !activeProgrammeNavigationView.match || activeProgrammeNavigationView.match.test(program.name));
   const productCategoryRows = aggregateRollups(scopedProgrammeRows, "name")
     .sort((a, b) => a.availability - b.availability || (a.mos || 0) - (b.mos || 0))
     .slice(0, 36);
@@ -3445,12 +3468,42 @@ function App() {
           </div>
         </div>
         <nav aria-label="Dashboard pages">
-          {visibleDashboardPages.map((page) => {
-            const PageIcon = page.icon;
-            return <button className={activePage === page.id ? "active" : ""} type="button" key={page.id} onClick={() => setActivePage(page.id)} title={page.label}>
-              <span className="sidebar-nav-icon"><PageIcon size={17} strokeWidth={2.1} aria-hidden="true" /></span>
-              <span className="sidebar-nav-label">{page.label}</span>
-            </button>;
+          {sidebarGroups.map((group) => {
+            const pages = (group.pages || []).map((id) => visibleDashboardPages.find((page) => page.id === id)).filter(Boolean);
+            if (!group.programmeViews && !group.stockViews && !pages.length) return null;
+            const isOpen = openSidebarGroups.has(group.id);
+            const hasActiveChild = group.programmeViews ? activePage === "programmes"
+              : group.stockViews ? activePage === "stock"
+                : pages.some((page) => page.id === activePage);
+            return <div className={`sidebar-nav-group ${isOpen ? "open" : ""}`} key={group.id}>
+              <button className={`sidebar-group-toggle ${hasActiveChild ? "contains-active" : ""}`} type="button" onClick={() => setOpenSidebarGroups((current) => {
+                const next = new Set(current);
+                if (next.has(group.id)) next.delete(group.id); else next.add(group.id);
+                return next;
+              })} aria-expanded={isOpen}>
+                <span>{group.label}</span>{isOpen ? <ChevronDown size={15} aria-hidden="true" /> : <ChevronRight size={15} aria-hidden="true" />}
+              </button>
+              {isOpen && <div className="sidebar-nav-children">
+                {pages.map((page) => {
+                  const PageIcon = page.icon;
+                  return <button className={activePage === page.id ? "active" : ""} type="button" key={page.id} onClick={() => setActivePage(page.id)} title={page.label}>
+                    <span className="sidebar-nav-icon"><PageIcon size={17} strokeWidth={2.1} aria-hidden="true" /></span>
+                    <span className="sidebar-nav-label">{page.label}</span>
+                  </button>;
+                })}
+                {group.programmeViews && programmeNavigationViews.map((view) => <button className={activePage === "programmes" && programmeNavigationFocus === view.id ? "active" : ""} type="button" key={view.id} onClick={() => { setProgrammeNavigationFocus(view.id); setActivePage("programmes"); }}>
+                  <span className="sidebar-nav-icon"><Gauge size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">{view.label}</span>
+                </button>)}
+                {group.stockViews && <>
+                  <button className={activePage === "stock" && stockWorkspace === "control" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("control"); setActivePage("stock"); }}>
+                    <span className="sidebar-nav-icon"><Warehouse size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Control Tower</span>
+                  </button>
+                  <button className={activePage === "stock" && stockWorkspace === "navigator" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("navigator"); setActivePage("stock"); }}>
+                    <span className="sidebar-nav-icon"><PackageSearch size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Stock Navigator</span>
+                  </button>
+                </>}
+              </div>}
+            </div>;
           })}
         </nav>
         <div className="sidebar-data">
@@ -3465,7 +3518,7 @@ function App() {
         </div>
       </aside>
 
-      <main className={`app-shell dashboard-page page-${activePage}`}>
+      <main className={`app-shell dashboard-page page-${activePage} stock-${stockWorkspace}`}>
         {!['stock', 'comparison', 'reporting'].includes(activePage) && <header className="dashboard-topbar">
           <div className="global-filter-bar">
             <label>
@@ -4369,11 +4422,11 @@ function App() {
           <div className="weekly-head">
             <div>
               <p className="eyebrow dark">Programme Performance</p>
-              <h2>Programme availability from the selected tracer submission</h2>
-              <p>Programme managers can immediately see stockout and low-stock pressure in their portfolio.</p>
+              <h2>{activeProgrammeNavigationView.id === "all" ? "Programme availability from the selected tracer submission" : `${activeProgrammeNavigationView.label} in the selected tracer submission`}</h2>
+              <p>{activeProgrammeNavigationView.id === "all" ? "Programme managers can immediately see stockout and low-stock pressure in their portfolio." : "These values remain part of the overall Tracer totals. A dedicated programme repository can be compared here when it is connected."}</p>
             </div>
           </div>
-          <div className="table-scroll">
+          {programmeRowsForPage.length ? <div className="table-scroll">
             <table>
               <thead>
                 <tr>
@@ -4386,7 +4439,7 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {fieldData.programmes.map((program) => (
+                {programmeRowsForPage.map((program) => (
                   <tr key={program.name}>
                     <td>{program.name}</td>
                     <td>{formatPercent(program.availability)}</td>
@@ -4398,7 +4451,7 @@ function App() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </div> : <div className="empty-state">No {activeProgrammeNavigationView.label.toLowerCase()} programme rows were identified in this Tracer submission. The Tracer total remains unchanged; add the dedicated programme repository to activate its source comparison.</div>}
         </section>
 
         <section className="concerns-section">

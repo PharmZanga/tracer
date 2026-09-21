@@ -61,7 +61,7 @@ test("August Week 4 records confirmed facility non-submissions without treating 
 });
 
 test("the complete facility mapping reconciles every loaded reporting week", () => {
-  assert.equal(tracerReportingPeriods.length, 37);
+  assert.equal(tracerReportingPeriods.length, 38);
 
   tracerReportingPeriods.forEach((period) => {
     const rows = facilityReportingRows(period);
@@ -98,7 +98,7 @@ test("all-week facility totals use the same reconciled mapping", () => {
     "2026-07-12": [282, 266, 16], "2026-07-19": [289, 272, 17], "2026-07-26": [429, 412, 17],
     "2026-08-02": [432, 412, 20], "2026-08-09": [429, 412, 17], "2026-08-16": [432, 416, 16],
     "2026-08-23": [438, 422, 16], "2026-08-30": [427, 410, 17], "2026-09-06": [413, 410, 3],
-    "2026-09-13": [413, 410, 3],
+    "2026-09-13": [413, 410, 3], "2026-09-20": [414, 411, 3],
   };
 
   tracerReportingPeriods.forEach((period) => {
