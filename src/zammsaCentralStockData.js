@@ -1,37 +1,30 @@
 export const zammsaCentralReports = [
   {
-    "date": "2026-08-31",
-    "label": "31 August 2026",
-    "source": "ZAMMSA CENTRAL STOCK STATUS REPORT AS AT 31ST AUGUST 2026.pdf",
+    "date": "2026-09-15",
+    "label": "15 September 2026",
+    "source": "ZAMMSA Central stock status report as at 15 September 2026.pdf",
     "summary": {
-      "listed": 660,
+      "listed": 635,
       "confirmedStockouts": 0,
-      "belowTwoMos": 155,
+      "belowTwoMos": 136,
       "twoToFourMos": 62,
-      "aboveSixMos": 100,
-      "mosDataGaps": 313
+      "aboveSixMos": 93,
+      "mosDataGaps": 311
     },
     "categories": [
       {
         "name": "Medical Supplies",
-        "listed": 109,
-        "belowTwoMos": 34,
+        "listed": 97,
+        "belowTwoMos": 24,
         "confirmedStockouts": 0,
-        "mosDataGaps": 62
+        "mosDataGaps": 61
       },
       {
         "name": "Other Essential Medicines",
-        "listed": 107,
-        "belowTwoMos": 24,
+        "listed": 100,
+        "belowTwoMos": 22,
         "confirmedStockouts": 0,
-        "mosDataGaps": 54
-      },
-      {
-        "name": "Laboratory Services",
-        "listed": 152,
-        "belowTwoMos": 18,
-        "confirmedStockouts": 0,
-        "mosDataGaps": 79
+        "mosDataGaps": 50
       },
       {
         "name": "Dental",
@@ -41,18 +34,25 @@ export const zammsaCentralReports = [
         "mosDataGaps": 25
       },
       {
-        "name": "Renal",
-        "listed": 57,
+        "name": "Laboratory Services",
+        "listed": 136,
         "belowTwoMos": 15,
         "confirmedStockouts": 0,
-        "mosDataGaps": 13
+        "mosDataGaps": 72
+      },
+      {
+        "name": "Renal",
+        "listed": 62,
+        "belowTwoMos": 10,
+        "confirmedStockouts": 0,
+        "mosDataGaps": 18
       },
       {
         "name": "Anti-TB Medicines",
-        "listed": 32,
-        "belowTwoMos": 9,
+        "listed": 33,
+        "belowTwoMos": 8,
         "confirmedStockouts": 0,
-        "mosDataGaps": 14
+        "mosDataGaps": 16
       },
       {
         "name": "Epidemic / PPE Supplies",
@@ -69,18 +69,32 @@ export const zammsaCentralReports = [
         "mosDataGaps": 7
       },
       {
-        "name": "Anti-Malarials",
-        "listed": 11,
-        "belowTwoMos": 4,
+        "name": "National ART Programme",
+        "listed": 15,
+        "belowTwoMos": 5,
         "confirmedStockouts": 0,
-        "mosDataGaps": 2
+        "mosDataGaps": 4
       },
       {
         "name": "Oncology",
-        "listed": 14,
+        "listed": 19,
+        "belowTwoMos": 5,
+        "confirmedStockouts": 0,
+        "mosDataGaps": 9
+      },
+      {
+        "name": "Reproductive Health",
+        "listed": 8,
         "belowTwoMos": 4,
         "confirmedStockouts": 0,
-        "mosDataGaps": 5
+        "mosDataGaps": 1
+      },
+      {
+        "name": "Anti-Malarials",
+        "listed": 10,
+        "belowTwoMos": 3,
+        "confirmedStockouts": 0,
+        "mosDataGaps": 2
       },
       {
         "name": "Gastrointestinal",
@@ -90,22 +104,15 @@ export const zammsaCentralReports = [
         "mosDataGaps": 0
       },
       {
-        "name": "National ART Programme",
-        "listed": 11,
-        "belowTwoMos": 3,
-        "confirmedStockouts": 0,
-        "mosDataGaps": 2
-      },
-      {
-        "name": "Reproductive Health",
-        "listed": 8,
-        "belowTwoMos": 3,
-        "confirmedStockouts": 0,
-        "mosDataGaps": 1
-      },
-      {
         "name": "Cardiovascular",
         "listed": 2,
+        "belowTwoMos": 2,
+        "confirmedStockouts": 0,
+        "mosDataGaps": 0
+      },
+      {
+        "name": "Essential Medicines",
+        "listed": 3,
         "belowTwoMos": 2,
         "confirmedStockouts": 0,
         "mosDataGaps": 0
@@ -119,17 +126,17 @@ export const zammsaCentralReports = [
       },
       {
         "name": "Vitamins & Minerals",
-        "listed": 4,
+        "listed": 3,
         "belowTwoMos": 2,
         "confirmedStockouts": 0,
-        "mosDataGaps": 1
+        "mosDataGaps": 0
       },
       {
         "name": "Anti-Infective",
-        "listed": 2,
+        "listed": 1,
         "belowTwoMos": 1,
         "confirmedStockouts": 0,
-        "mosDataGaps": 1
+        "mosDataGaps": 0
       },
       {
         "name": "Dermatology",
@@ -137,27 +144,6 @@ export const zammsaCentralReports = [
         "belowTwoMos": 1,
         "confirmedStockouts": 0,
         "mosDataGaps": 1
-      },
-      {
-        "name": "Essential Medicines",
-        "listed": 2,
-        "belowTwoMos": 1,
-        "confirmedStockouts": 0,
-        "mosDataGaps": 0
-      },
-      {
-        "name": "IV Fluids",
-        "listed": 2,
-        "belowTwoMos": 1,
-        "confirmedStockouts": 0,
-        "mosDataGaps": 0
-      },
-      {
-        "name": "Sutures",
-        "listed": 4,
-        "belowTwoMos": 1,
-        "confirmedStockouts": 0,
-        "mosDataGaps": 3
       },
       {
         "name": "Anaesthetics",
@@ -188,11 +174,25 @@ export const zammsaCentralReports = [
         "mosDataGaps": 0
       },
       {
-        "name": "Mental Health",
-        "listed": 4,
+        "name": "IV Fluids",
+        "listed": 1,
         "belowTwoMos": 0,
         "confirmedStockouts": 0,
-        "mosDataGaps": 2
+        "mosDataGaps": 0
+      },
+      {
+        "name": "Mental Health",
+        "listed": 3,
+        "belowTwoMos": 0,
+        "confirmedStockouts": 0,
+        "mosDataGaps": 1
+      },
+      {
+        "name": "Sutures",
+        "listed": 3,
+        "belowTwoMos": 0,
+        "confirmedStockouts": 0,
+        "mosDataGaps": 3
       }
     ],
     "rows": [
@@ -201,33 +201,33 @@ export const zammsaCentralReports = [
         "item": "Caffeine Citrate 10mg/ml, 1ml Amp (10)",
         "category": "Other Essential Medicines",
         "ami": 1038.0,
-        "stockOnHand": 32.0,
+        "stockOnHand": 22.0,
         "mos": 0.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2419",
         "item": "Caffeine Citrate, 10mg/mL, 2.5ml (50)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 154.0,
+        "stockOnHand": 118.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM3076",
         "item": "Ephedrine HCL 30mg/ml, 1ml Amp(10)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 92.0,
+        "stockOnHand": 70.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1560",
@@ -237,8 +237,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 3285.0,
         "mos": 3.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1866",
@@ -248,19 +248,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 851.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1561",
         "item": "Sevoflurane, 250ml bottle (1)",
         "category": "Essential Medicines",
         "ami": 429.0,
-        "stockOnHand": 349.0,
-        "mos": 0.8,
+        "stockOnHand": 183.0,
+        "mos": 0.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0043",
@@ -270,19 +270,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 74.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EPS0236",
-        "item": "Oxygen Tube 2M(50)",
-        "category": "Epidemic / PPE Supplies",
-        "ami": null,
-        "stockOnHand": 12.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2970",
@@ -292,8 +281,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 24.0,
         "mos": 0.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS3047",
@@ -303,19 +292,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 10.0,
         "mos": 0.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS3053",
-        "item": "Endotracheal Tube 3.0mm Uncuffed Disp Sterile (20)",
-        "category": "Medical Supplies",
-        "ami": 17.0,
-        "stockOnHand": 13.0,
-        "mos": 0.8,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2978",
@@ -325,63 +303,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 27.0,
         "mos": 1.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS3048",
-        "item": "Endotracheal Tube 3.5 Non Cuffed Disp Sterile (1)",
-        "category": "Medical Supplies",
-        "ami": 17.0,
-        "stockOnHand": 15.0,
-        "mos": 0.9,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS3054",
-        "item": "Endotracheal Tube 3.5mm Uncuffed Disp Sterile (20)",
-        "category": "Medical Supplies",
-        "ami": 17.0,
-        "stockOnHand": 13.0,
-        "mos": 0.8,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS2979",
-        "item": "Endotracheal Tube Uncuffed(Plain)3.5mm(50)",
-        "category": "Medical Supplies",
-        "ami": 17.0,
-        "stockOnHand": 46.0,
-        "mos": 2.7,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS3055",
-        "item": "Endotracheal Tube 4.0mm Uncuffed Disp Sterile (20)",
-        "category": "Medical Supplies",
-        "ami": 17.0,
-        "stockOnHand": 10.0,
-        "mos": 0.6,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1499",
         "item": "Epidural Set with luer cone (1)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 700.0,
+        "stockOnHand": 616.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1029",
@@ -391,8 +325,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 160.0,
         "mos": 0.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1030",
@@ -402,8 +336,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 300.0,
         "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2919",
@@ -413,8 +347,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 249.0,
         "mos": 0.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2920",
@@ -424,8 +358,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 600.0,
         "mos": 0.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2921",
@@ -435,8 +369,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1900.0,
         "mos": 1.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1895",
@@ -446,8 +380,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 165.0,
         "mos": 0.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1896",
@@ -457,8 +391,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 120.0,
         "mos": 0.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1953",
@@ -468,41 +402,41 @@ export const zammsaCentralReports = [
         "stockOnHand": 270.0,
         "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0440",
         "item": "Endotracheal Tube 6.5mm, cuffed, sterile, disposable (1)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 533.0,
+        "stockOnHand": 325.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0589",
         "item": "Needle Spinal 24G x 90mm sterile, disposable (50)",
         "category": "Medical Supplies",
         "ami": 179.0,
-        "stockOnHand": 560.0,
-        "mos": 3.1,
+        "stockOnHand": 509.0,
+        "mos": 2.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0590",
         "item": "Needle Spinal 25G x 90mm sterile, disposable (50)",
         "category": "Medical Supplies",
         "ami": 52.0,
-        "stockOnHand": 240.0,
-        "mos": 4.6,
+        "stockOnHand": 180.0,
+        "mos": 3.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1514",
@@ -512,8 +446,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 200.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1515",
@@ -523,8 +457,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 200.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1513",
@@ -534,30 +468,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 200.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS1200",
-        "item": "Central Line Adult Trio 7Fr, 20cm (1)",
-        "category": "Medical Supplies",
-        "ami": 546.0,
-        "stockOnHand": 6.0,
-        "mos": 0.0,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS1993",
-        "item": "Central Line Adult Trio 8.5Fr, 20cm (1)",
-        "category": "Medical Supplies",
-        "ami": 546.0,
-        "stockOnHand": 6.0,
-        "mos": 0.0,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1997",
@@ -567,8 +479,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 6.0,
         "mos": 0.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1201",
@@ -578,8 +490,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 5.0,
         "mos": 0.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1205",
@@ -589,19 +501,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 50.0,
         "mos": 0.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS0654",
-        "item": "Airway Guedel Size 4 Approx 90mm Adult (50)",
-        "category": "Medical Supplies",
-        "ami": null,
-        "stockOnHand": 60.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS3123",
@@ -611,8 +512,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 300.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0661",
@@ -622,8 +523,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 130.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0653",
@@ -633,8 +534,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 130.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0651",
@@ -644,19 +545,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 79.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0650",
         "item": "Airway,Guedel Size 00 Approx 40mm Neonate (50)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 540.0,
+        "stockOnHand": 445.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2849",
@@ -666,8 +567,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 38.0,
         "mos": 1.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2850",
@@ -677,52 +578,63 @@ export const zammsaCentralReports = [
         "stockOnHand": 7.0,
         "mos": 0.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2948",
         "item": "Diclofenac Sodium 75mg/3ml Inj(50)",
         "category": "Other Essential Medicines",
         "ami": 2574.0,
-        "stockOnHand": 2398.0,
-        "mos": 0.9,
+        "stockOnHand": 35.0,
+        "mos": 0.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1583",
         "item": "Fentanyl 100mcg/2ml injection (10)",
         "category": "Pain & Palliative",
         "ami": 75882.0,
-        "stockOnHand": 122608.0,
+        "stockOnHand": 122588.0,
         "mos": 1.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "EM0253",
+        "item": "Ibuprofen 200mg Tab/Capsule (100)",
+        "category": "Essential Medicines",
+        "ami": 5447.0,
+        "stockOnHand": 7349.0,
+        "mos": 1.3,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1093",
         "item": "Ibuprofen 100mg/5ml syrup 100ml Bottle (1)",
         "category": "Other Essential Medicines",
         "ami": 75540.0,
-        "stockOnHand": 734362.0,
-        "mos": 9.7,
+        "stockOnHand": 701747.0,
+        "mos": 9.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1294",
         "item": "Morphine Sulphate Injection 10mg/ml, 1ml Amp (5)",
         "category": "Pain & Palliative",
         "ami": 57311.0,
-        "stockOnHand": 989.0,
+        "stockOnHand": 789.0,
         "mos": 1.2,
         "comment": "AMI and SOH based on pack of",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0564",
@@ -731,64 +643,64 @@ export const zammsaCentralReports = [
         "ami": null,
         "stockOnHand": 32838.0,
         "mos": null,
-        "comment": "5s SOH=66,665",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "comment": "5s SOH=66,465",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0348",
         "item": "Paracetamol 500mg tablet (1000)",
         "category": "Pain & Palliative",
         "ami": 24784.0,
-        "stockOnHand": 77461.0,
-        "mos": 3.1,
+        "stockOnHand": 65810.0,
+        "mos": 2.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0342",
         "item": "Paracetamol syrup 120mg/5ml, 100ml bottle (1)",
         "category": "Pain & Palliative",
         "ami": 86873.0,
-        "stockOnHand": 1347314.0,
-        "mos": 15.5,
+        "stockOnHand": 1297086.0,
+        "mos": 14.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1334",
         "item": "Paracetamol 125mg Suppositories (100)",
         "category": "Pain & Palliative",
         "ami": 913.0,
-        "stockOnHand": 5461.0,
-        "mos": 6.0,
+        "stockOnHand": 5359.0,
+        "mos": 5.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4018",
         "item": "Noradrenaline Injection 2mg/ml, 2ml (10)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 866.0,
+        "stockOnHand": 836.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0385",
         "item": "Prednisolone 5mg Tablet(1000)",
         "category": "Other Essential Medicines",
         "ami": 12562.0,
-        "stockOnHand": 13808.0,
-        "mos": 1.1,
+        "stockOnHand": 9283.0,
+        "mos": 0.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2372",
@@ -798,162 +710,129 @@ export const zammsaCentralReports = [
         "stockOnHand": 218626.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0363",
         "item": "Phenobarbitone 30mg Tablet (1000)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 9274.0,
+        "stockOnHand": 8917.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM2949",
-        "item": "Sodium Valproate 200mg Tablet(40)",
-        "category": "Mental Health",
-        "ami": null,
-        "stockOnHand": 145.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1323",
         "item": "Amoxicillin 125mg Tablet for Oral Suspension (100)",
         "category": "Anti-Infective",
         "ami": 171960.0,
-        "stockOnHand": 57600.0,
-        "mos": 0.3,
+        "stockOnHand": 36960.0,
+        "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4049",
         "item": "Amoxycillin Trihydrate 125mg/5ml Suspension, 80ml (1)",
         "category": "Other Essential Medicines",
         "ami": 83862.0,
-        "stockOnHand": 119916.0,
-        "mos": 1.4,
+        "stockOnHand": 75613.0,
+        "mos": 0.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM2035",
-        "item": "Amphotericin B, 50mg Injection Powder, Liposomal (10)",
-        "category": "Anti-Infective",
-        "ami": null,
-        "stockOnHand": 331.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2378",
         "item": "Ampicillin/Salbactum 1/0.5g IV Injection (10)",
         "category": "Other Essential Medicines",
         "ami": 248.0,
-        "stockOnHand": 250.0,
-        "mos": 1.0,
+        "stockOnHand": 225.0,
+        "mos": 0.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2988",
         "item": "Azithromycin Capsules 500mg(150)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 1768.0,
+        "stockOnHand": 63.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM0935",
-        "item": "Cefixime 100mg/5ml suspension 30ml Bottle (1)",
-        "category": "Other Essential Medicines",
-        "ami": null,
-        "stockOnHand": 4400.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1838",
         "item": "Ceftazidime 1g Pwd for injection(1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 19369.0,
+        "stockOnHand": 16869.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2008",
         "item": "Flucytosine 500mg Tab/Cap (100)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 306.0,
+        "stockOnHand": 198.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0606",
         "item": "Ganciclovir 500mg powder for injection (1)",
         "category": "Other Essential Medicines",
         "ami": 4042.0,
-        "stockOnHand": 6010.0,
-        "mos": 1.5,
+        "stockOnHand": 5710.0,
+        "mos": 1.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0479",
         "item": "Metronidazole 5mg/ml injection, 100ml Bottle (1)",
         "category": "Other Essential Medicines",
         "ami": 8337.0,
-        "stockOnHand": 194906.0,
-        "mos": 23.4,
+        "stockOnHand": 141925.0,
+        "mos": 17.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0319",
         "item": "Nalidixic Acid 500mg tablet (100)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 13407.0,
+        "stockOnHand": 6844.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0380",
         "item": "Praziquantel 600mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": 3600.0,
-        "stockOnHand": 14639.0,
+        "stockOnHand": 14594.0,
         "mos": 4.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4014",
@@ -963,96 +842,85 @@ export const zammsaCentralReports = [
         "stockOnHand": 348.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2358",
         "item": "Vancomycin 500mg Injection, 10ml Vial (1)",
         "category": "Other Essential Medicines",
         "ami": 8691.0,
-        "stockOnHand": 23212.0,
-        "mos": 2.7,
+        "stockOnHand": 20512.0,
+        "mos": 2.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1317",
         "item": "Adenosine Injection, 3mg/ml, 2ml Amp (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 1923.0,
+        "stockOnHand": 1473.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1315",
         "item": "Amiodarone HCl 200mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": 1253.0,
-        "stockOnHand": 5926.0,
+        "stockOnHand": 5924.0,
         "mos": 4.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4092",
         "item": "Bosentan 62.5mg Tablet (100)",
         "category": "Essential Medicines",
         "ami": 100.0,
-        "stockOnHand": 343.0,
+        "stockOnHand": 336.0,
         "mos": 3.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1314",
         "item": "Carvedilol 3.125mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 177.0,
+        "stockOnHand": 1174.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0937",
         "item": "Carvedilol 6.25mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": 19578.0,
-        "stockOnHand": 2023.0,
+        "stockOnHand": 1683.0,
         "mos": 0.5,
-        "comment": "AMI and SOH based on pack of 100s SOH=9,003",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM2992",
-        "item": "Carvedilol Tablet 6.25mg(20)",
-        "category": "Other Essential Medicines",
-        "ami": null,
-        "stockOnHand": 34899.0,
-        "mos": null,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1448",
         "item": "Dobutamine 250mg/20ml Injection (1)",
         "category": "Other Essential Medicines",
         "ami": 1881.0,
-        "stockOnHand": 8320.0,
-        "mos": 4.4,
+        "stockOnHand": 5820.0,
+        "mos": 3.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4016",
@@ -1062,41 +930,30 @@ export const zammsaCentralReports = [
         "stockOnHand": 117.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM0217",
-        "item": "Frusemide 40mg Tablet (100)",
-        "category": "Other Essential Medicines",
-        "ami": null,
-        "stockOnHand": 1244.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2436",
         "item": "Furosemide 10mg|ml,4mls Ampoule (10)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 1934.0,
+        "stockOnHand": 201.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1332",
         "item": "Hydrochlorothiazide 25mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": 1412.0,
-        "stockOnHand": 10634.0,
-        "mos": 7.5,
+        "stockOnHand": 9324.0,
+        "mos": 6.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2364",
@@ -1106,63 +963,63 @@ export const zammsaCentralReports = [
         "stockOnHand": 22415.0,
         "mos": 6.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2369",
         "item": "Labetalol HCL Injection, 5mg/ml, 4ml Amp (5)",
         "category": "Cardiovascular",
         "ami": 56830.0,
-        "stockOnHand": 62888.0,
+        "stockOnHand": 62178.0,
         "mos": 1.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2155",
         "item": "LabetaloL HCL 100mg Tablet (30)",
         "category": "Cardiovascular",
         "ami": 4913.0,
-        "stockOnHand": 2933.0,
-        "mos": 0.6,
+        "stockOnHand": 1755.0,
+        "mos": 0.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2976",
         "item": "Potassium Chloride 150mg/ml,15% inj,5ml(50)",
         "category": "Other Essential Medicines",
         "ami": 969.0,
-        "stockOnHand": 25680.0,
-        "mos": 26.5,
+        "stockOnHand": 22415.0,
+        "mos": 23.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1494",
         "item": "Sildenafil Citrate 50mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 2967.0,
+        "stockOnHand": 1578.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4055",
         "item": "Spironolactone 25mg Tablet (1000)",
         "category": "Vitamins & Minerals",
         "ami": 765.0,
-        "stockOnHand": 7462.0,
-        "mos": 9.8,
+        "stockOnHand": 7183.0,
+        "mos": 9.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1490",
@@ -1172,8 +1029,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 17.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1491",
@@ -1183,19 +1040,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 17.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2437",
         "item": "Telmisartan 80mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 2350.0,
+        "stockOnHand": 10.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1802",
@@ -1205,107 +1062,107 @@ export const zammsaCentralReports = [
         "stockOnHand": 14.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1083",
         "item": "Verapamil 40mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": 211.0,
-        "stockOnHand": 225.0,
-        "mos": 1.1,
+        "stockOnHand": 75.0,
+        "mos": 0.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2433",
         "item": "Allopurinol 100mg Tablets (1000)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 480.0,
+        "stockOnHand": 6.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1739",
         "item": "Hydroxychloroquine 200mg tablet (100)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 9270.0,
+        "stockOnHand": 9207.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2982",
         "item": "Sulfasalazine 500mg Tablet(1000)",
         "category": "Other Essential Medicines",
         "ami": 3427.0,
-        "stockOnHand": 3099.0,
+        "stockOnHand": 3098.0,
         "mos": 0.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0413",
         "item": "Salbutamol Inhaler 0.1mg dose, 200doses, (1)",
         "category": "Other Essential Medicines",
         "ami": 33822.0,
-        "stockOnHand": 89000.0,
-        "mos": 2.6,
+        "stockOnHand": 81888.0,
+        "mos": 2.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2418",
         "item": "Ipratropium bromide Nebulizer Solution 250mcg/ml, 2ml (50)",
         "category": "Other Essential Medicines",
         "ami": 310.0,
-        "stockOnHand": 328.0,
-        "mos": 1.1,
+        "stockOnHand": 324.0,
+        "mos": 1.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0053",
         "item": "Beclomethasone 50mcg Inhaler(1)",
         "category": "Other Essential Medicines",
         "ami": 8030.0,
-        "stockOnHand": 57243.0,
-        "mos": 7.1,
+        "stockOnHand": 52663.0,
+        "mos": 6.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4057",
         "item": "Amitriptyline HCL 50mg Tablet (30)",
         "category": "Other Essential Medicines",
         "ami": 707.0,
-        "stockOnHand": 11096.0,
-        "mos": 15.7,
+        "stockOnHand": 7141.0,
+        "mos": 10.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0163",
         "item": "Diazepam Inj Bp 5mg/ml, 2ml Amp (100)",
         "category": "Other Essential Medicines",
         "ami": 15081.0,
-        "stockOnHand": 14463.0,
+        "stockOnHand": 14450.0,
         "mos": 1.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0166",
@@ -1315,107 +1172,85 @@ export const zammsaCentralReports = [
         "stockOnHand": 9299.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2414",
         "item": "Duloxetine Hydrochloride 30mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": 790.0,
-        "stockOnHand": 146.0,
+        "stockOnHand": 143.0,
         "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM0725",
-        "item": "Fluphenazine Decanoate Inj, 25mg/mL, 1mL Amp (10)",
-        "category": "Other Essential Medicines",
-        "ami": 255.0,
-        "stockOnHand": 467.0,
-        "mos": 1.8,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0235",
         "item": "Haloperidol 5mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": 5168.0,
-        "stockOnHand": 3688.0,
-        "mos": 2.1,
-        "comment": "AMI and SOH based on pack of 100s SOH =10,788",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "stockOnHand": 3542.0,
+        "mos": 2.0,
+        "comment": "AMI and SOH based on pack of 100s SOH =10,182",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0237",
         "item": "Haloperidol 5mg Tablet (1000)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 710.0,
+        "stockOnHand": 664.0,
         "mos": null,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0772",
         "item": "Haloperidol 5mg/ml injection 1ml amp (10)",
         "category": "Other Essential Medicines",
         "ami": 958.0,
-        "stockOnHand": 6268.0,
-        "mos": 6.5,
+        "stockOnHand": 5769.0,
+        "mos": 6.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM4058",
-        "item": "Levetiracetam 500mg Tablet (10)",
-        "category": "Other Essential Medicines",
-        "ami": 2040.0,
-        "stockOnHand": 1080.0,
-        "mos": 0.5,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2991",
         "item": "Lamotrigine Tablet 50mg(30)",
         "category": "Mental Health",
         "ami": 270.0,
-        "stockOnHand": 487513.0,
-        "mos": 1805.6,
+        "stockOnHand": 487469.0,
+        "mos": 1805.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0965",
         "item": "Lorazepam 2mg/ml Injection (10)",
         "category": "Other Essential Medicines",
         "ami": 7943.0,
-        "stockOnHand": 1865.0,
+        "stockOnHand": 1815.0,
         "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1293",
         "item": "Midazolam Hydrochloride 15mg/3ml Inj (50)",
         "category": "Other Essential Medicines",
         "ami": 8724.0,
-        "stockOnHand": 58102.0,
-        "mos": 6.7,
+        "stockOnHand": 57262.0,
+        "mos": 6.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1296",
@@ -1425,8 +1260,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 40.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2956",
@@ -1436,107 +1271,85 @@ export const zammsaCentralReports = [
         "stockOnHand": 4495.0,
         "mos": 118.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1902",
         "item": "Olanzapine 10mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": 520.0,
-        "stockOnHand": 348.0,
-        "mos": 0.7,
+        "stockOnHand": 98.0,
+        "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM0872",
-        "item": "Risperidone 2mg Tablet (100)",
-        "category": "Other Essential Medicines",
-        "ami": 9584.0,
-        "stockOnHand": 11893.0,
-        "mos": 8.6,
-        "comment": "AMI and MOS based on pack of 100",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2130",
         "item": "Risperidone Tab 2mg(1000)",
         "category": "Other Essential Medicines",
-        "ami": null,
-        "stockOnHand": 2804.0,
-        "mos": null,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM3093",
-        "item": "Risperidone 2mg Tablet (60)",
-        "category": "Other Essential Medicines",
-        "ami": null,
-        "stockOnHand": 62392.0,
-        "mos": null,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "ami": 9584.0,
+        "stockOnHand": 2754.0,
+        "mos": 3.5,
+        "comment": "AMI and SOH based on pack of 100s SOH =33,602",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM3084",
         "item": "Risperidone 2mg Tablet (200)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 3040.0,
+        "stockOnHand": 3031.0,
         "mos": null,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2401",
         "item": "Brimonidine Tartrate 0.2% Ophthalmic Solution 5ml (1)",
         "category": "Other Essential Medicines",
         "ami": 1600.0,
-        "stockOnHand": 1805.0,
-        "mos": 1.1,
+        "stockOnHand": 1154.0,
+        "mos": 0.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1934",
         "item": "Dexamethasone/Chloramphenicol 0.1%/1% Ophthalmic Solution, 10m (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 5984.0,
+        "stockOnHand": 2950.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1935",
         "item": "Dexamethasone/Ofloxacin 0.1%/0.3% Ophthalmic Solution, 5mL (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 4018.0,
+        "stockOnHand": 133.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1009",
         "item": "Fluorometholone 0.1% Ophthalmic Solution, 5ml (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 2880.0,
+        "stockOnHand": 2770.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2384",
@@ -1546,393 +1359,382 @@ export const zammsaCentralReports = [
         "stockOnHand": 50.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1941",
         "item": "Nepafenac 0.1%, Opthalmic Eye Solution 5ml (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 2880.0,
+        "stockOnHand": 2329.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2385",
         "item": "Prednisolone Acetate 1% Ophthalmic Solution 10ml (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 4161.0,
+        "stockOnHand": 2221.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4066",
         "item": "Olopatadine 0.2% Eye Drops 10ml (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 62315.0,
+        "stockOnHand": 59379.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2022",
         "item": "Latanoprost 0.005 mcg Ophthalmic solution 5ml(1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 14990.0,
+        "stockOnHand": 12797.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2323",
         "item": "Sodium Cromoglycate 2% Ophthalmic Solution 10ml (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 36466.0,
+        "stockOnHand": 34640.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2288",
         "item": "Tetracycline Eye Ointment 1% 5g tube (10)",
         "category": "Dermatology",
         "ami": null,
-        "stockOnHand": 67717.0,
+        "stockOnHand": 66344.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1948",
         "item": "Tropicamide/Phenylephrine 0.8%/5% Ophthalmic Solution, 5 ml (1)",
         "category": "Other Essential Medicines",
         "ami": 21948.0,
-        "stockOnHand": 4385.0,
+        "stockOnHand": 3734.0,
         "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM3034",
         "item": "Xylometazoline HCL Nasal Solution 10ml (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 486432.0,
+        "stockOnHand": 421196.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2368",
         "item": "Glucagon Hydrochloride, Lyophilised 1mg/vial, 5ml vial (1)",
         "category": "Endocrine",
         "ami": 155.0,
-        "stockOnHand": 13548.0,
-        "mos": 87.4,
+        "stockOnHand": 12960.0,
+        "mos": 83.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2050",
         "item": "Insulin Soluble Short Acting 100iu,10ml Inj(1)",
         "category": "Endocrine",
         "ami": 6718.0,
-        "stockOnHand": 47528.0,
-        "mos": 7.1,
+        "stockOnHand": 41762.0,
+        "mos": 6.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM2287",
-        "item": "Levothyroxine Sodium 200mcg /vial, 5ml (1)",
-        "category": "Other Essential Medicines",
-        "ami": 20.0,
-        "stockOnHand": 12707.0,
-        "mos": 635.4,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2980",
         "item": "Levothyroxine Sodium 50mcg(100)",
         "category": "Other Essential Medicines",
         "ami": 113.0,
-        "stockOnHand": 9806.0,
-        "mos": 86.8,
+        "stockOnHand": 9786.0,
+        "mos": 86.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1526",
         "item": "Rabeprazole Sodium 20mg, Pwd for Inj BP (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 875.0,
+        "stockOnHand": 432.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0706",
         "item": "Metformin 500mg tablet (1000)",
         "category": "Endocrine",
         "ami": 3963.0,
-        "stockOnHand": 56670.0,
-        "mos": 14.3,
+        "stockOnHand": 54711.0,
+        "mos": 13.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2995",
         "item": "Esomeprazole Tablet 20mg(500)",
         "category": "Gastrointestinal",
         "ami": 807.0,
-        "stockOnHand": 1118.0,
-        "mos": 1.4,
+        "stockOnHand": 1003.0,
+        "mos": 1.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2047",
         "item": "Esomeprazole Sodium Pwd Solution Inj.40mg(1)",
         "category": "Gastrointestinal",
         "ami": 37500.0,
-        "stockOnHand": 40551.0,
-        "mos": 1.1,
+        "stockOnHand": 31924.0,
+        "mos": 0.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1099",
         "item": "Lactulose 10g/15ml solution (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 13578.0,
+        "stockOnHand": 13078.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1402",
         "item": "Lactulose 3.33g/5ml,100ml Solution (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 30274.0,
+        "stockOnHand": 24986.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0839",
         "item": "Ondansetron 4mg/2ml Injection(10)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 7704.0,
+        "stockOnHand": 4500.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1776",
         "item": "Ondansentron Injection USP 4mg/2ml (100)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 359.0,
+        "stockOnHand": 270.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0875",
         "item": "Ondansetron HCl 4mg Tablet (100)",
         "category": "Gastrointestinal",
         "ami": 159.0,
-        "stockOnHand": 157.0,
-        "mos": 1.0,
+        "stockOnHand": 47.0,
+        "mos": 0.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4012",
         "item": "Sodium Bicarbonate 8.4%/10ml Injection (5)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 2967.0,
+        "stockOnHand": 2963.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0530",
         "item": "Oral Rehydration Salts W.H.O formula, Satchet (10)",
         "category": "Other Essential Medicines",
         "ami": 84089.0,
-        "stockOnHand": 498908.0,
-        "mos": 5.9,
+        "stockOnHand": 416955.0,
+        "mos": 5.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1686",
         "item": "Zinc sulphate 20mg tablets (100)",
         "category": "Other Essential Medicines",
         "ami": 56593.0,
-        "stockOnHand": 158575.0,
-        "mos": 2.8,
+        "stockOnHand": 121973.0,
+        "mos": 2.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1058",
         "item": "Dextrose 5% solution 500ml (20)",
         "category": "Other Essential Medicines",
         "ami": 86970.0,
-        "stockOnHand": 33602.0,
+        "stockOnHand": 32864.0,
         "mos": 0.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2128",
         "item": "Dextrose 50% Injection 50ml (1)",
         "category": "IV Fluids",
         "ami": 40080.0,
-        "stockOnHand": 332473.0,
-        "mos": 8.3,
+        "stockOnHand": 83659.0,
+        "mos": 2.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1156",
         "item": "Ringers Lactate solution 500ml(24)",
         "category": "Other Essential Medicines",
         "ami": 2200.0,
-        "stockOnHand": 1350.0,
-        "mos": 0.6,
+        "stockOnHand": 1130.0,
+        "mos": 0.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM4053",
-        "item": "Water for Injection 50ml (100)",
-        "category": "IV Fluids",
-        "ami": 6748.0,
-        "stockOnHand": 7.0,
-        "mos": 0.0,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2116",
         "item": "Iron 60mg Tablets Pack 100(100)",
         "category": "Vitamins & Minerals",
         "ami": 56846.0,
-        "stockOnHand": 31194.0,
+        "stockOnHand": 29093.0,
         "mos": 0.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4004",
         "item": "Multiple Micronutrient Tablets (180)",
         "category": "Other Essential Medicines",
         "ami": 21030.0,
-        "stockOnHand": 86391.0,
+        "stockOnHand": 86277.0,
         "mos": 4.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2380",
         "item": "Thiamine 100mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": 900.0,
-        "stockOnHand": 42169.0,
-        "mos": 46.9,
+        "stockOnHand": 41595.0,
+        "mos": 46.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "EM2432",
+        "item": "Dabigatran Etexilate Mesylate 150mg Cap (60)",
+        "category": "Other Essential Medicines",
+        "ami": null,
+        "stockOnHand": 100.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2426",
         "item": "Ferrous Fumerate 100mg/5ml Oral Suspension 100ml (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 117596.0,
+        "stockOnHand": 107350.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2064",
         "item": "Tranexamic Acid Injection 500mg/5ml(5)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 34271.0,
+        "stockOnHand": 27352.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2360",
         "item": "Tranexamic Acid Injection Solution 100mg/1ml, 10ml Amp (10)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 591.0,
+        "stockOnHand": 564.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1084",
         "item": "Iron Sucrose 100mg/5ml Injection (5)",
         "category": "Vitamins & Minerals",
         "ami": 39428.0,
-        "stockOnHand": 14784.0,
+        "stockOnHand": 14762.0,
         "mos": 0.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2370",
@@ -1942,107 +1744,107 @@ export const zammsaCentralReports = [
         "stockOnHand": 1040.0,
         "mos": 1.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2289",
         "item": "Lidocaine 2.5mg + Prilocaine 2.5mg 5% Topical Cream 5g (1)",
         "category": "Dermatology",
         "ami": 1839.0,
-        "stockOnHand": 46660.0,
-        "mos": 25.4,
+        "stockOnHand": 46568.0,
+        "mos": 25.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1333",
         "item": "Miconazole Nitrate cream 2% 15g Tube (1)",
         "category": "Dermatology",
         "ami": 5705.0,
-        "stockOnHand": 4889.0,
-        "mos": 0.9,
+        "stockOnHand": 2435.0,
+        "mos": 0.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2176",
         "item": "Zinc Oxide 32% w/w Topical Cream, 15g (1)",
         "category": "Dermatology",
         "ami": 6722.0,
-        "stockOnHand": 78942.0,
+        "stockOnHand": 78342.0,
         "mos": 11.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2084",
         "item": "Anti-Snake Venom 20ml Vial With 10mls Water for Injection(1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 7507.0,
+        "stockOnHand": 7057.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2366",
         "item": "Deferasirox 100mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": 21.0,
-        "stockOnHand": 1997.0,
-        "mos": 95.1,
+        "stockOnHand": 1987.0,
+        "mos": 94.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2238",
         "item": "Diosmin/Hesperidin 450/50 mg Tablet (100)",
         "category": "Other Essential Medicines",
         "ami": 2441.0,
-        "stockOnHand": 9723.0,
-        "mos": 4.0,
+        "stockOnHand": 9572.0,
+        "mos": 3.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2901",
         "item": "Glycopyrronium Bromide 200mcg/ml Inj (10)",
         "category": "Anaesthetics",
         "ami": null,
-        "stockOnHand": 1509.0,
+        "stockOnHand": 1327.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2126",
         "item": "Mannitol 20%,Solution 100ml (1)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 16300.0,
+        "stockOnHand": 6430.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2381",
         "item": "Naloxone HCL 0.4mg/ml Injection, 1ml (5)",
         "category": "Other Essential Medicines",
         "ami": 28.0,
-        "stockOnHand": 346.0,
-        "mos": 12.4,
+        "stockOnHand": 321.0,
+        "mos": 11.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1140",
@@ -2052,8 +1854,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1998.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2435",
@@ -2063,85 +1865,107 @@ export const zammsaCentralReports = [
         "stockOnHand": 240.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "ARV0091",
         "item": "Abacavir Sulfate +Lamivudine+Dolutegravir Tablet 60/30/5mg(180)",
         "category": "National ART Programme",
         "ami": 23495.0,
-        "stockOnHand": 183427.0,
-        "mos": 7.8,
+        "stockOnHand": 178306.0,
+        "mos": 7.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "ARV0081",
+        "item": "Abacavir Sulphate/Lamivudine 120/60mg Tablet(30)",
+        "category": "National ART Programme",
+        "ami": 759.0,
+        "stockOnHand": 24.0,
+        "mos": 0.0,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "ARV0090",
         "item": "Cabotegravir IM inj, 600mg/3ml(25)",
         "category": "National ART Programme",
         "ami": 111.0,
-        "stockOnHand": 167.0,
-        "mos": 1.5,
+        "stockOnHand": 159.0,
+        "mos": 1.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "ARV0078",
         "item": "Dolutegravir 50mg Tablet(30)",
         "category": "National ART Programme",
         "ami": 21055.0,
-        "stockOnHand": 198949.0,
-        "mos": 9.4,
+        "stockOnHand": 194238.0,
+        "mos": 9.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "ARV0086",
         "item": "Dolutegravir 10mg Scored Dispersible Tablets(90)",
         "category": "National ART Programme",
         "ami": 1563.0,
-        "stockOnHand": 1667.0,
-        "mos": 1.1,
+        "stockOnHand": 1374.0,
+        "mos": 0.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "ARV0089",
         "item": "Darunavir/Ritonavir 400/50mg Tab(60)",
         "category": "National ART Programme",
         "ami": 1417.0,
-        "stockOnHand": 2863.0,
-        "mos": 2.0,
+        "stockOnHand": 2099.0,
+        "mos": 1.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "ARV0077",
         "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(30)",
         "category": "National ART Programme",
         "ami": 1313777.0,
-        "stockOnHand": 116452.0,
-        "mos": 3.4,
-        "comment": "AMI and MOS based on the pack of 30s.",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "stockOnHand": 21296.0,
+        "mos": 4.4,
+        "comment": "AMI and MOS based on the pack of 30s. SOH = 5,832,384",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "ARV0084",
+        "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(180)",
+        "category": "National ART Programme",
+        "ami": null,
+        "stockOnHand": 636.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "ARV0082",
         "item": "Dolutegravir/Lamivudine/Tenofovir 50/300/300mg Tablet(90)",
         "category": "National ART Programme",
         "ami": null,
-        "stockOnHand": 1457739.0,
+        "stockOnHand": 1944128.0,
         "mos": null,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "ARV0058",
@@ -2151,151 +1975,162 @@ export const zammsaCentralReports = [
         "stockOnHand": 560.0,
         "mos": 8.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "ARV0096",
         "item": "Lenacapavir 300mg Tablet (4)",
         "category": "National ART Programme",
         "ami": null,
-        "stockOnHand": 8956.0,
+        "stockOnHand": 17356.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "ARV0094",
         "item": "Lenacapavir 463.5mg/1.5ml solution for injection (2)",
         "category": "National ART Programme",
         "ami": 1032.0,
-        "stockOnHand": 19022.0,
-        "mos": 18.4,
+        "stockOnHand": 27422.0,
+        "mos": 26.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "ARV0018",
+        "item": "Lopinavir/Ritonavir 200/50mg Tablet(120)",
+        "category": "National ART Programme",
+        "ami": null,
+        "stockOnHand": 2052.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "ARV0092",
+        "item": "Tenofovir Alafenamide/Emtricitabine/Dolutegravir 25/200/50mg Tablet(90)",
+        "category": "National ART Programme",
+        "ami": 28810.0,
+        "stockOnHand": 91982.0,
+        "mos": 3.2,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "ARV0032",
         "item": "Tenofovir/Emricitabine 300/200mg Tablet(30)",
         "category": "National ART Programme",
         "ami": 73367.0,
-        "stockOnHand": 136904.0,
-        "mos": 1.9,
+        "stockOnHand": 117821.0,
+        "mos": 1.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0130",
         "item": "Co-Trimoxazole 480mg Tablet(1000)",
         "category": "Other Essential Medicines",
         "ami": 19849.0,
-        "stockOnHand": 33473.0,
-        "mos": 1.7,
+        "stockOnHand": 9716.0,
+        "mos": 0.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0524",
         "item": "Co-Trimoxazole suspension 240mg/5ml, 100ml Bottle (1)",
         "category": "Other Essential Medicines",
         "ami": 198293.0,
-        "stockOnHand": 1325848.0,
-        "mos": 6.7,
+        "stockOnHand": 1290619.0,
+        "mos": 6.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MAL0001",
         "item": "Artemether + Lumefantrine 20/120mg 6's tab (30)",
         "category": "Anti-Malarials",
         "ami": 6932.0,
-        "stockOnHand": 1646.0,
+        "stockOnHand": 1524.0,
         "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MAL0002",
         "item": "Artemether + Lumefantrine 20/120mg 12's tab (30)",
         "category": "Anti-Malarials",
         "ami": 16704.0,
-        "stockOnHand": 64485.0,
-        "mos": 3.9,
+        "stockOnHand": 54455.0,
+        "mos": 3.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MAL0004",
         "item": "Artemether + Lumefantrine 20/120mg 24's tab (30)",
         "category": "Anti-Malarials",
         "ami": 51047.0,
-        "stockOnHand": 106504.0,
+        "stockOnHand": 106219.0,
         "mos": 2.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MAL0015",
         "item": "Rapid Diagnostic Test for Malaria kit (25)",
         "category": "Anti-Malarials",
         "ami": 169589.0,
-        "stockOnHand": 240516.0,
-        "mos": 1.4,
+        "stockOnHand": 172728.0,
+        "mos": 1.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MAL0064",
-        "item": "Artemether + Lumefantrine 20/120mg 24's tab (1)",
-        "category": "Anti-Malarials",
-        "ami": 51.0,
-        "stockOnHand": 30.0,
-        "mos": 0.6,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MAL0034",
         "item": "Artesunate 60mg injection (5)",
         "category": "Anti-Malarials",
         "ami": 40675.0,
-        "stockOnHand": 104961.0,
-        "mos": 3.7,
+        "stockOnHand": 82754.0,
+        "mos": 10.4,
         "comment": "SOH and AMI in 1`s",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MAL0069",
         "item": "Artesunate 60mg injection (1)",
         "category": "Anti-Malarials",
         "ami": null,
-        "stockOnHand": 9411.0,
+        "stockOnHand": 8761.0,
         "mos": null,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MAL0123",
         "item": "Artesunate 120mg injection(5)",
         "category": "Anti-Malarials",
         "ami": null,
-        "stockOnHand": 14000.0,
+        "stockOnHand": 110.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MAL0083",
@@ -2305,19 +2140,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 8125.0,
         "mos": 2.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MAL0085",
-        "item": "Dihydroartemisinin+Piperaquine Phosphate\ufffd 40mg/320mg 3s Tab (25)",
+        "item": "Dihydroartemisinin+Piperaquine Phosphate 40mg/320mg 3s Tab (25)",
         "category": "Anti-Malarials",
         "ami": 579.0,
         "stockOnHand": 3697.0,
         "mos": 6.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MAL0101",
@@ -2327,19 +2162,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 4300.0,
         "mos": 1.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1678",
         "item": "Amikacin 100mg/2ml IV injection (6)",
         "category": "Other Essential Medicines",
         "ami": 21054.0,
-        "stockOnHand": 391.0,
+        "stockOnHand": 40.0,
         "mos": 0.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0117",
@@ -2349,96 +2184,107 @@ export const zammsaCentralReports = [
         "stockOnHand": 9.0,
         "mos": 0.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "TB0124",
+        "item": "Bedaquiline 100mg Tablets(100)",
+        "category": "Anti-TB Medicines",
+        "ami": null,
+        "stockOnHand": 1241.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0113",
         "item": "Bedaquiline 20mg Tablet(60)",
         "category": "Anti-TB Medicines",
         "ami": null,
-        "stockOnHand": 107.0,
+        "stockOnHand": 91.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0073",
         "item": "Clofazimine 100mg Capsule/Tablet(100)",
         "category": "Anti-TB Medicines",
         "ami": 199.0,
-        "stockOnHand": 482.0,
+        "stockOnHand": 470.0,
         "mos": 2.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0118",
         "item": "Clofazimine 50mg Tablet (100)",
         "category": "Anti-TB Medicines",
         "ami": 793.0,
-        "stockOnHand": 56.0,
+        "stockOnHand": 54.0,
         "mos": 0.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0110",
-        "item": "Cycloserine 125mg Capsule(100) Cycloserine 250mg Capsule (100)",
+        "item": "Cycloserine 125mg Capsule(100)",
         "category": "Anti-TB Medicines",
         "ami": null,
-        "stockOnHand": 17.0,
+        "stockOnHand": 14.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "TB0076",
-        "item": "",
-        "category": "Anti-TB Medicines",
-        "ami": 568.0,
-        "stockOnHand": 15.0,
-        "mos": 0.0,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0119",
         "item": "Delamanid 25mg Tablet (48)",
         "category": "Anti-TB Medicines",
         "ami": null,
-        "stockOnHand": 146.0,
+        "stockOnHand": 133.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0112",
         "item": "Delamanid 50mg Tablet(48)",
         "category": "Anti-TB Medicines",
         "ami": 6887.0,
-        "stockOnHand": 1043.0,
+        "stockOnHand": 1042.0,
         "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0057",
         "item": "Ethambutol 100mg Tablet(100)",
         "category": "Anti-TB Medicines",
         "ami": 648.0,
-        "stockOnHand": 6410.0,
-        "mos": 9.9,
+        "stockOnHand": 10013.0,
+        "mos": 15.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "TB0069",
+        "item": "Ethambutol 400mg Tablet (672)",
+        "category": "Anti-TB Medicines",
+        "ami": null,
+        "stockOnHand": 232.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0090",
@@ -2448,8 +2294,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 38.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0078",
@@ -2459,8 +2305,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 315.0,
         "mos": 0.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0091",
@@ -2470,129 +2316,129 @@ export const zammsaCentralReports = [
         "stockOnHand": 146.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0007",
         "item": "Isoniazid 100mg Tablet (100)",
         "category": "Anti-TB Medicines",
         "ami": null,
-        "stockOnHand": 25998.0,
+        "stockOnHand": 22988.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0055",
         "item": "Isoniazid 300mg Tablet (672)",
         "category": "Anti-TB Medicines",
         "ami": null,
-        "stockOnHand": 8865.0,
+        "stockOnHand": 5448.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0109",
         "item": "Levofloxacin 100mg Dispersible Tab (100)",
         "category": "Anti-TB Medicines",
         "ami": 27.0,
-        "stockOnHand": 167.0,
-        "mos": 6.2,
+        "stockOnHand": 158.0,
+        "mos": 5.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0079",
         "item": "Levofloxacin 250mg Tablet(100)",
         "category": "Anti-TB Medicines",
         "ami": 426.0,
-        "stockOnHand": 840.0,
-        "mos": 2.0,
+        "stockOnHand": 561.0,
+        "mos": 1.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0104",
         "item": "Linezolid 600mg Tablet (100)",
         "category": "Anti-TB Medicines",
         "ami": 16583.0,
-        "stockOnHand": 1269.0,
+        "stockOnHand": 1247.0,
         "mos": 0.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0120",
         "item": "Linezolid tablet 150mg (100)",
         "category": "Anti-TB Medicines",
         "ami": null,
-        "stockOnHand": 67.0,
+        "stockOnHand": 62.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0052",
         "item": "MDT MB Blister Adult (Rifampicin/Clofazimine/Dapsone) 300/100/100mg Tablet(6)",
         "category": "Anti-TB Medicines",
         "ami": null,
-        "stockOnHand": 672.0,
+        "stockOnHand": 627.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0049",
         "item": "MDT MB Blister Child (Rifampicin/Clofazimine/Dapsone) 150/50/50mg Tablet(6)",
         "category": "Anti-TB Medicines",
         "ami": null,
-        "stockOnHand": 62.0,
+        "stockOnHand": 48.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0072",
         "item": "Moxifloxacin 400mg Tablet (100)",
         "category": "Anti-TB Medicines",
         "ami": null,
-        "stockOnHand": 586.0,
+        "stockOnHand": 549.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0123",
         "item": "Pretomanid 200mg Tablets (100)",
         "category": "Anti-TB Medicines",
         "ami": 106.0,
-        "stockOnHand": 507.0,
-        "mos": 4.8,
+        "stockOnHand": 493.0,
+        "mos": 4.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0116",
         "item": "Pretomanid Tablet 200mg (26)",
         "category": "Anti-TB Medicines",
         "ami": 408.0,
-        "stockOnHand": 559.0,
-        "mos": 1.4,
+        "stockOnHand": 546.0,
+        "mos": 1.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0092",
@@ -2602,41 +2448,30 @@ export const zammsaCentralReports = [
         "stockOnHand": 63.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0067",
         "item": "Pyrazinamide 500mg Tablet (672)",
         "category": "Anti-TB Medicines",
         "ami": 230.0,
-        "stockOnHand": 184.0,
-        "mos": 0.8,
+        "stockOnHand": 495.0,
+        "mos": 2.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM0400",
-        "item": "Pyridoxine (Vitamin B6) 50mg Tablet (1000)",
-        "category": "Vitamins & Minerals",
-        "ami": null,
-        "stockOnHand": 16.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0122",
         "item": "Pyridoxine (Vitamin B6) 50mg Tablet (1000)",
         "category": "Anti-TB Medicines",
         "ami": 2699.0,
-        "stockOnHand": 4368.0,
-        "mos": 1.6,
+        "stockOnHand": 2232.0,
+        "mos": 0.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0121",
@@ -2646,8 +2481,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 2207.0,
         "mos": 40.6,
         "comment": "Slow Moving",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0020",
@@ -2657,767 +2492,228 @@ export const zammsaCentralReports = [
         "stockOnHand": 1044.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0051",
         "item": "Rifampicin/Isoniazid 150/75mg Tablet(672)",
         "category": "Anti-TB Medicines",
         "ami": 3096.0,
-        "stockOnHand": 42584.0,
-        "mos": 13.8,
+        "stockOnHand": 40568.0,
+        "mos": 13.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0070",
         "item": "Rifampicin/Isoniazid/Pyrazinamide 75/50/150mg Tab(84)",
         "category": "Anti-TB Medicines",
         "ami": null,
-        "stockOnHand": 16509.0,
+        "stockOnHand": 15490.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0048",
         "item": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol 150/75/400/275mg Tablet(672)",
         "category": "Anti-TB Medicines",
         "ami": 2107.0,
-        "stockOnHand": 17881.0,
-        "mos": 8.5,
+        "stockOnHand": 24985.0,
+        "mos": 11.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "TB0111",
         "item": "Rifapentine/Isoniazid 300/300mg Tablet(36)",
         "category": "Anti-TB Medicines",
         "ami": 14600.0,
-        "stockOnHand": 198847.0,
-        "mos": 13.6,
+        "stockOnHand": 215629.0,
+        "mos": 14.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4062",
         "item": "Clomiphene Citrate 50mg Tablet (20)",
         "category": "Other Essential Medicines",
         "ami": 400.0,
-        "stockOnHand": 87883.0,
-        "mos": 219.7,
+        "stockOnHand": 87826.0,
+        "mos": 219.6,
         "comment": "Forecast AMI",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM4063",
         "item": "Norethisterone 5mg Tablet (30)",
         "category": "Other Essential Medicines",
         "ami": null,
-        "stockOnHand": 148136.0,
+        "stockOnHand": 142171.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "RH0002",
         "item": "Condoms Latex Male (144)",
         "category": "Reproductive Health",
         "ami": 103952.0,
-        "stockOnHand": 758875.0,
-        "mos": 7.3,
+        "stockOnHand": 863977.0,
+        "mos": 8.3,
         "comment": "Forecast AMI",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "RH0057",
         "item": "Condoms Latex Female (100)",
         "category": "Reproductive Health",
         "ami": 103.0,
-        "stockOnHand": 1937.0,
-        "mos": 18.8,
+        "stockOnHand": 1428.0,
+        "mos": 13.9,
         "comment": "Forecast AMI",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "RH0028",
         "item": "Etonogestrel (Implanon) 68mg/rod implant subdermal (1)",
         "category": "Reproductive Health",
         "ami": 28426.0,
-        "stockOnHand": 41031.0,
+        "stockOnHand": 40879.0,
         "mos": 1.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "RH0004",
         "item": "Ethinyloestradiol/Levonorgestrel 130mg/150mcg tablet, cycle (3)",
         "category": "Reproductive Health",
         "ami": 62963.0,
-        "stockOnHand": 71.0,
+        "stockOnHand": 69.0,
         "mos": 0.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "RH0056",
         "item": "Levonorgestrel 52mg IUD (1)",
         "category": "Reproductive Health",
         "ami": 2281.0,
-        "stockOnHand": 4533.0,
-        "mos": 2.0,
+        "stockOnHand": 4263.0,
+        "mos": 1.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "RH0033",
         "item": "Medroxyprogesterone Acetate 104mg/0.65ml,(Sayana ) SC inj (200)",
         "category": "Reproductive Health",
         "ami": 1527.0,
-        "stockOnHand": 1600.0,
+        "stockOnHand": 1491.0,
         "mos": 1.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "RH0008",
         "item": "Levonogestrel 0.75mg tab (Emergency pill) (2)",
         "category": "Reproductive Health",
         "ami": 20055.0,
-        "stockOnHand": 167988.0,
-        "mos": 8.4,
+        "stockOnHand": 136272.0,
+        "mos": 6.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "EM1529",
-        "item": "Oxytocin IV 10IU/ml injection 1ml amp (10)",
-        "category": "Other Essential Medicines",
-        "ami": 10970.0,
-        "stockOnHand": 20475.0,
-        "mos": 1.9,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2207",
         "item": "Male Circumcision Re-usable Kit (1)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 1685.0,
+        "stockOnHand": 1157.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EQP1378",
         "item": "Male Circumcision Consumables Kit(1)",
         "category": "Reproductive Health",
         "ami": null,
-        "stockOnHand": 156276.0,
+        "stockOnHand": 144119.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "EM1529",
+        "item": "Oxytocin IV 10IU/ml injection 1ml amp (10)",
+        "category": "Other Essential Medicines",
+        "ami": 10970.0,
+        "stockOnHand": 2405.0,
+        "mos": 0.2,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0238",
         "item": "Syringe 1ml auto disable, 22G DMPA IM/Norethisterone (200)",
         "category": "Medical Supplies",
         "ami": 636.0,
-        "stockOnHand": 563.0,
+        "stockOnHand": 546.0,
         "mos": 0.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0016",
-        "item": "Nipro: Elisio Dialyser 21H (1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 700.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0032",
-        "item": "Fresenius: Bi-Bag 5008 650g (1)",
-        "category": "Renal",
-        "ami": 2351.0,
-        "stockOnHand": 4063.0,
-        "mos": 1.7,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0038",
-        "item": "Fresenius: Catheter Adaptor Luer Lock SS (1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 105.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0040",
-        "item": "Fresenius: Citrosteril 5L (1)",
-        "category": "Renal",
-        "ami": 34.0,
-        "stockOnHand": 1.0,
-        "mos": 0.0,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0044",
-        "item": "Fresenius: Dialysis Fistula Needle 15G (1)",
-        "category": "Renal",
-        "ami": 742.0,
-        "stockOnHand": 1747.0,
-        "mos": 2.4,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0045",
-        "item": "Fresenius: Dialysis Fistula Needle 16G (1)",
-        "category": "Renal",
-        "ami": 933.0,
-        "stockOnHand": 871.0,
-        "mos": 0.9,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0047",
-        "item": "Fresenius: Diasafe Plus (1)",
-        "category": "Renal",
-        "ami": 48.0,
-        "stockOnHand": 296.0,
-        "mos": 6.2,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0056",
-        "item": "Fresenius: FX100 Dialysers (1)",
-        "category": "Renal",
-        "ami": 334.0,
-        "stockOnHand": 621.0,
-        "mos": 1.9,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0059",
-        "item": "Fresenius: FX60 Dialysers (1)",
-        "category": "Renal",
-        "ami": 1178.0,
-        "stockOnHand": 1932.0,
-        "mos": 1.6,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0060",
-        "item": "Fresenius: FX80 Dialysers (1)",
-        "category": "Renal",
-        "ami": 542.0,
-        "stockOnHand": 76.0,
-        "mos": 0.1,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0087",
-        "item": "Nipro: AV Blood Line Set (Blood Tubing Set) (1)",
-        "category": "Renal",
-        "ami": 1281.0,
-        "stockOnHand": 11200.0,
-        "mos": 8.7,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0094",
-        "item": "Nipro: Elisio Dialyser 15H (1)",
-        "category": "Renal",
-        "ami": 728.0,
-        "stockOnHand": 4033.0,
-        "mos": 5.5,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0111",
-        "item": "Nipro: Sabax Low Calcium Acid 5ltr (1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 7383.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0116",
-        "item": "Nipro: Elisio Dialyser 17H (1)",
-        "category": "Renal",
-        "ami": 783.0,
-        "stockOnHand": 3994.0,
-        "mos": 5.1,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0121",
-        "item": "Sporotal (1)",
-        "category": "Renal",
-        "ami": 6.0,
-        "stockOnHand": 22.0,
-        "mos": 3.7,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0124",
-        "item": "Fresenius:Renal Acid(Smartbag 211.75) SKF 213 HC (1)",
-        "category": "Renal",
-        "ami": 344.0,
-        "stockOnHand": 67.0,
-        "mos": 0.2,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0125",
-        "item": "Fresenius: Renal Acid (Smartbag 211.25) SKF 219 LC (1)",
-        "category": "Renal",
-        "ami": 2241.0,
-        "stockOnHand": 3894.0,
-        "mos": 1.7,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0134",
-        "item": "Fresenius: Sleep Safe Set Plus (1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 833.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0137",
-        "item": "Fresenius: Multifiltrate Substitute System Line (1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 49.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0153",
-        "item": "Fresenius: Peritonial Dialysis Catheter 42cm PD (1)",
-        "category": "Renal",
-        "ami": 8.0,
-        "stockOnHand": 12.0,
-        "mos": 1.6,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0156",
-        "item": "Fresenius: AV-Set SRB-R 4008 (1)",
-        "category": "Renal",
-        "ami": 1664.0,
-        "stockOnHand": 3915.0,
-        "mos": 2.4,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0157",
-        "item": "Fresenius: AV-Set Online Plus 5008-R (1)",
-        "category": "Renal",
-        "ami": 635.0,
-        "stockOnHand": 2810.0,
-        "mos": 4.4,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0159",
-        "item": "Clip for Stay Safe Organizer (Sleep Safe) (1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 40.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0163",
-        "item": "APD Drainage Set (1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 225.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0164",
-        "item": "Erythropoetin injection ,4000IU (1)",
-        "category": "Renal",
-        "ami": 2006.0,
-        "stockOnHand": 26521.0,
-        "mos": 13.2,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0167",
-        "item": "Temporary Catheter Set 12F X 15CM (Curved)(1)",
-        "category": "Renal",
-        "ami": 95.0,
-        "stockOnHand": 481.0,
-        "mos": 5.1,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0170",
-        "item": "Nipro: Elisio Dialyser 19H (1)",
-        "category": "Renal",
-        "ami": 115.0,
-        "stockOnHand": 1656.0,
-        "mos": 14.4,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0174",
-        "item": "Catheter Set 12 F X 13cm(Temporary,Curved)(1)",
-        "category": "Renal",
-        "ami": 47.0,
-        "stockOnHand": 482.0,
-        "mos": 10.2,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0176",
-        "item": "Temporary Catheter Set 12F X 20CM (1) Curved",
-        "category": "Renal",
-        "ami": 150.0,
-        "stockOnHand": 1270.0,
-        "mos": 8.5,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0177",
-        "item": "Dual CAP (350)",
-        "category": "Renal",
-        "ami": 4.0,
-        "stockOnHand": 434.0,
-        "mos": 108.5,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0178",
-        "item": "Enoxaparin Sodium Injection 60mg(1)",
-        "category": "Renal",
-        "ami": 2138.0,
-        "stockOnHand": 970.0,
-        "mos": 0.5,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0182",
-        "item": "B/Braun: Bicarbonate Haemodialysis Concentrate Acidic W139A 6L(1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 3.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0185",
-        "item": "Lignocaine Patch 700mg, 5%, 10cm x 14cm, Adhesive (1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 3.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0186",
-        "item": "Lignocaine Patch 700mg, 5%, 10cm x 14cm, Adhesive (10)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 425.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0235",
-        "item": "Coarse salt 25kg(1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 522.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0241",
-        "item": "Pyrogenic and Endotoxin Filter (1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 317.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0315",
-        "item": "Acute PD Catheter 8.5 Fr, coiled, 12.5cm (1)",
-        "category": "Renal",
-        "ami": 1.0,
-        "stockOnHand": 21.0,
-        "mos": 15.8,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0316",
-        "item": "Acute PD Catheter 9 Fr, coiled, 12cm (1)",
-        "category": "Renal",
-        "ami": 1.0,
-        "stockOnHand": 21.0,
-        "mos": 15.8,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0330",
-        "item": "Acute HD Catheters 7Fr (Single Lumen), 12cm (1)",
-        "category": "Renal",
-        "ami": null,
-        "stockOnHand": 5.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0331",
-        "item": "Acute HD Catheters 8Fr (Single Lumen), 12cm (1)",
-        "category": "Renal",
-        "ami": 2.0,
-        "stockOnHand": 18.0,
-        "mos": 7.7,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0343",
-        "item": "Nipro: B - Cartridge 760g Sodium Bicarbonate (1)",
-        "category": "Renal",
-        "ami": 673.0,
-        "stockOnHand": 11724.0,
-        "mos": 17.4,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0347",
-        "item": "Transfer Mini Cap Set with Povidone-Iodine (1)",
-        "category": "Renal",
-        "ami": 683.0,
-        "stockOnHand": 38.0,
-        "mos": 0.1,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0351",
-        "item": "Peritoneal Dialysis Solution with 1.5% Dextrose 2000ml (1)",
-        "category": "Renal",
-        "ami": 440.0,
-        "stockOnHand": 1330.0,
-        "mos": 3.0,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0352",
-        "item": "Fresenius: Dual Cap (1)",
-        "category": "Renal",
-        "ami": 13.0,
-        "stockOnHand": 50.0,
-        "mos": 3.8,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0353",
-        "item": "Erythropoetin 2,000IU Injection 1ml Prefilled Syringe (1)",
-        "category": "Renal",
-        "ami": 445.0,
-        "stockOnHand": 13080.0,
-        "mos": 29.4,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0354",
-        "item": "Permanent catheter 14.5F x 19cm (1)",
-        "category": "Renal",
-        "ami": 29.0,
-        "stockOnHand": 1.0,
-        "mos": 0.0,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0357",
-        "item": "Permanent catheter 14.5F x 55cm (1)",
-        "category": "Renal",
-        "ami": 11.0,
-        "stockOnHand": 2.0,
-        "mos": 0.2,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0358",
-        "item": "Citric Acid solution 50%, 10 liters (1)",
-        "category": "Renal",
-        "ami": 8.0,
-        "stockOnHand": 107.0,
-        "mos": 14.0,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "RN0359",
-        "item": "Peritoneal Dialysis Solution with 2.5% Dextrose 2000ml(1)",
-        "category": "Renal",
-        "ami": 80.0,
-        "stockOnHand": 162.0,
-        "mos": 2.0,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM0609",
         "item": "Heparin Sodium 5000IU/ml, 5ml Injection (1)",
         "category": "Blood & Coagulation",
-        "ami": 4097.0,
-        "stockOnHand": 45800.0,
-        "mos": 11.2,
+        "ami": 5431.0,
+        "stockOnHand": 36800.0,
+        "mos": 6.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1186",
         "item": "Mycophenolate Mofetil 250mg Tablet (60)",
         "category": "Renal",
-        "ami": 1.0,
+        "ami": null,
         "stockOnHand": 148.0,
-        "mos": 220.9,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1190",
         "item": "Mycophenolate Mofetil 500mg tablet (60)",
         "category": "Renal",
-        "ami": 22.0,
-        "stockOnHand": 334.0,
-        "mos": 15.2,
+        "ami": 39.0,
+        "stockOnHand": 284.0,
+        "mos": 7.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1192",
@@ -3425,10 +2721,10 @@ export const zammsaCentralReports = [
         "category": "Renal",
         "ami": null,
         "stockOnHand": 150.0,
-        "mos": 0.0,
+        "mos": null,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1565",
@@ -3438,63 +2734,657 @@ export const zammsaCentralReports = [
         "stockOnHand": 649.0,
         "mos": 13.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2082",
         "item": "Tacrolimus 0.5mg Capsule(60)",
         "category": "Renal",
-        "ami": 84.0,
-        "stockOnHand": 548.0,
-        "mos": 6.5,
+        "ami": 102.0,
+        "stockOnHand": 494.0,
+        "mos": 4.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2083",
         "item": "Tacrolimus 1mg Capsule(60)",
         "category": "Renal",
-        "ami": 83.0,
-        "stockOnHand": 550.0,
-        "mos": 6.6,
+        "ami": 101.0,
+        "stockOnHand": 496.0,
+        "mos": 4.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM2423",
         "item": "Sevelamer carbonate 800mg tablet(60)",
         "category": "Other Essential Medicines",
-        "ami": 29.0,
-        "stockOnHand": 1187.0,
-        "mos": 41.4,
+        "ami": 52.0,
+        "stockOnHand": 1117.0,
+        "mos": 21.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM3001",
         "item": "Tacrolimus Tablet 2mg (60)",
         "category": "Renal",
-        "ami": 67.0,
-        "stockOnHand": 598.0,
-        "mos": 8.9,
+        "ami": 85.0,
+        "stockOnHand": 540.0,
+        "mos": 6.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0016",
+        "item": "Nipro: Elisio Dialyser 21H (1)",
+        "category": "Renal",
+        "ami": 4.0,
+        "stockOnHand": 560.0,
+        "mos": 140.0,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0032",
+        "item": "Fresenius: Bi-Bag 5008 650g (1)",
+        "category": "Renal",
+        "ami": 2520.0,
+        "stockOnHand": 11692.0,
+        "mos": 4.6,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0038",
+        "item": "Fresenius: Catheter Adaptor Luer Lock SS (1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 105.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0040",
+        "item": "Fresenius: Citrosteril 5L (1)",
+        "category": "Renal",
+        "ami": 27.0,
+        "stockOnHand": 1.0,
+        "mos": 0.0,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0044",
+        "item": "Fresenius: Dialysis Fistula Needle 15G (1)",
+        "category": "Renal",
+        "ami": 752.0,
+        "stockOnHand": 1347.0,
+        "mos": 1.8,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0045",
+        "item": "Fresenius: Dialysis Fistula Needle 16G (1)",
+        "category": "Renal",
+        "ami": 706.0,
+        "stockOnHand": 4836.0,
+        "mos": 6.8,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0046",
+        "item": "Fresenius: Dialysis Fistula Needle 17G (1)",
+        "category": "Renal",
+        "ami": 100.0,
+        "stockOnHand": 1833.0,
+        "mos": 18.3,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0047",
+        "item": "Fresenius: Diasafe Plus (1)",
+        "category": "Renal",
+        "ami": 46.0,
+        "stockOnHand": 276.0,
+        "mos": 6.0,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0056",
+        "item": "Fresenius: FX100 Dialysers (1)",
+        "category": "Renal",
+        "ami": 340.0,
+        "stockOnHand": 1602.0,
+        "mos": 4.7,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0057",
+        "item": "Fresenius: FX40 Dialysers (1)",
+        "category": "Renal",
+        "ami": 322.0,
+        "stockOnHand": 480.0,
+        "mos": 1.5,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0058",
+        "item": "Fresenius: FX50 Dialysers (1)",
+        "category": "Renal",
+        "ami": 371.0,
+        "stockOnHand": 2688.0,
+        "mos": 7.2,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0059",
+        "item": "Fresenius: FX60 Dialysers (1)",
+        "category": "Renal",
+        "ami": 1502.0,
+        "stockOnHand": 2777.0,
+        "mos": 1.8,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0060",
+        "item": "Fresenius: FX80 Dialysers (1)",
+        "category": "Renal",
+        "ami": 564.0,
+        "stockOnHand": 3096.0,
+        "mos": 5.5,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0073",
+        "item": "Fresenius: PROHD and Set M (1)",
+        "category": "Renal",
+        "ami": 1868.0,
+        "stockOnHand": 7852.0,
+        "mos": 4.2,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0087",
+        "item": "Nipro: AV Blood Line Set (Blood Tubing Set) (1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 10024.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0094",
+        "item": "Nipro: Elisio Dialyser 15H (1)",
+        "category": "Renal",
+        "ami": 609.0,
+        "stockOnHand": 3445.0,
+        "mos": 5.7,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0111",
+        "item": "Nipro: Sabax Low Calcium Acid 5ltr (1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 7239.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0116",
+        "item": "Nipro: Elisio Dialyser 17H (1)",
+        "category": "Renal",
+        "ami": 650.0,
+        "stockOnHand": 3406.0,
+        "mos": 5.2,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0121",
+        "item": "Sporotal (1)",
+        "category": "Renal",
+        "ami": 7.0,
+        "stockOnHand": 10.0,
+        "mos": 1.5,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0124",
+        "item": "Fresenius:Renal Acid(Smartbag 211.75) SKF 213 HC (1)",
+        "category": "Renal",
+        "ami": 294.0,
+        "stockOnHand": 2.0,
+        "mos": 0.0,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0125",
+        "item": "Fresenius: Renal Acid (Smartbag 211.25) SKF 219 LC (1)",
+        "category": "Renal",
+        "ami": 3211.0,
+        "stockOnHand": 152.0,
+        "mos": 0.0,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0134",
+        "item": "Fresenius: Sleep Safe Set Plus (1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 833.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0137",
+        "item": "Fresenius: Multifiltrate Substitute System Line (1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 49.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0156",
+        "item": "Fresenius: AV-Set SRB-R 4008 (1)",
+        "category": "Renal",
+        "ami": 1953.0,
+        "stockOnHand": 9813.0,
+        "mos": 5.0,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0157",
+        "item": "Fresenius: AV-Set Online Plus 5008-R (1)",
+        "category": "Renal",
+        "ami": 768.0,
+        "stockOnHand": 4508.0,
+        "mos": 5.9,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0159",
+        "item": "Clip for Stay Safe Organizer (Sleep Safe) (1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 40.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0163",
+        "item": "APD Drainage Set (1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 225.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0164",
+        "item": "Erythropoetin injection ,4000IU (1)",
+        "category": "Renal",
+        "ami": 2507.0,
+        "stockOnHand": 24233.0,
+        "mos": 9.7,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0167",
+        "item": "Temporary Catheter Set 12F X 15CM (Curved)(1)",
+        "category": "Renal",
+        "ami": 115.0,
+        "stockOnHand": 451.0,
+        "mos": 3.9,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0170",
+        "item": "Nipro: Elisio Dialyser 19H (1)",
+        "category": "Renal",
+        "ami": 36.0,
+        "stockOnHand": 1644.0,
+        "mos": 45.7,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0174",
+        "item": "Catheter Set 12 F X 13cm(Temporary,Curved)(1)",
+        "category": "Renal",
+        "ami": 61.0,
+        "stockOnHand": 435.0,
+        "mos": 7.1,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0176",
+        "item": "Temporary Catheter Set 12F X 20CM (1) Curved",
+        "category": "Renal",
+        "ami": 165.0,
+        "stockOnHand": 1170.0,
+        "mos": 7.1,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0177",
+        "item": "Dual CAP (350)",
+        "category": "Renal",
+        "ami": 4.0,
+        "stockOnHand": 431.0,
+        "mos": 99.5,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0178",
+        "item": "Enoxaparin Sodium Injection 60mg(1)",
+        "category": "Renal",
+        "ami": 2102.0,
+        "stockOnHand": 2.0,
+        "mos": 0.0,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0182",
+        "item": "B/Braun: Bicarbonate Haemodialysis Concentrate Acidic W139A 6L(1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 3.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0185",
+        "item": "Lignocaine Patch 700mg, 5%, 10cm x 14cm, Adhesive (1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 3.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0186",
+        "item": "Lignocaine Patch 700mg, 5%, 10cm x 14cm, Adhesive (10)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 425.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0235",
+        "item": "Coarse salt 25kg(1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 522.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0241",
+        "item": "Pyrogenic and Endotoxin Filter (1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 317.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0315",
+        "item": "Acute PD Catheter 8.5 Fr, coiled, 12.5cm (1)",
+        "category": "Renal",
+        "ami": 1.0,
+        "stockOnHand": 21.0,
+        "mos": 15.8,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0316",
+        "item": "Acute PD Catheter 9 Fr, coiled, 12cm (1)",
+        "category": "Renal",
+        "ami": 1.0,
+        "stockOnHand": 21.0,
+        "mos": 15.8,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0330",
+        "item": "Acute HD Catheters 7Fr (Single Lumen), 12cm (1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 5.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0331",
+        "item": "Acute HD Catheters 8Fr (Single Lumen), 12cm (1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 18.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0343",
+        "item": "Nipro: B - Cartridge 760g Sodium Bicarbonate (1)",
+        "category": "Renal",
+        "ami": 615.0,
+        "stockOnHand": 10744.0,
+        "mos": 17.5,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0344",
+        "item": "Peritonial Dialysis Catheter 63cm PD (1)\"",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 13.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0346",
+        "item": "Titanium Adapter For Peritoneal Dialysis Catheter (1)",
+        "category": "Renal",
+        "ami": 13.0,
+        "stockOnHand": 34.0,
+        "mos": 2.6,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0347",
+        "item": "Transfer Mini Cap Set with Povidone-Iodine (1)",
+        "category": "Renal",
+        "ami": 683.0,
+        "stockOnHand": 38.0,
+        "mos": 0.1,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0352",
+        "item": "Fresenius: Dual Cap (1)",
+        "category": "Renal",
+        "ami": 13.0,
+        "stockOnHand": 50.0,
+        "mos": 3.8,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0353",
+        "item": "Erythropoetin 2,000IU Injection 1ml Prefilled Syringe (1)",
+        "category": "Renal",
+        "ami": 482.0,
+        "stockOnHand": 12420.0,
+        "mos": 25.8,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0357",
+        "item": "Permanent catheter 14.5F x 55cm (1)",
+        "category": "Renal",
+        "ami": 11.0,
+        "stockOnHand": 2.0,
+        "mos": 0.2,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0358",
+        "item": "Citric Acid solution 50%, 10 liters (1)",
+        "category": "Renal",
+        "ami": 3.0,
+        "stockOnHand": 119.0,
+        "mos": 44.6,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0360",
+        "item": "Nipro Sabax High Calcium Acid 5L(1)",
+        "category": "Renal",
+        "ami": null,
+        "stockOnHand": 717.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0361",
+        "item": "Tolvaptan 15mg Tablet(40)",
+        "category": "Renal",
+        "ami": 1.0,
+        "stockOnHand": 47.0,
+        "mos": 47.0,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "RN0396",
+        "item": "Extended PD Transfer Set 6'' With Twist Clamp(1)",
+        "category": "Renal",
+        "ami": 13.0,
+        "stockOnHand": 38.0,
+        "mos": 2.9,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "RN0430",
         "item": "Peritonial Dialysis Catheter 57cm PD (1)",
         "category": "Renal",
-        "ami": 7.0,
-        "stockOnHand": 11.0,
-        "mos": 1.6,
+        "ami": 2.0,
+        "stockOnHand": 24.0,
+        "mos": 14.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0035",
@@ -3504,8 +3394,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 29.0,
         "mos": 1.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0171",
@@ -3515,19 +3405,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 492.0,
         "mos": 0.8,
         "comment": "-",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0172",
         "item": "Acrylic Teeth U/L Anteriors (96)",
         "category": "Dental",
         "ami": null,
-        "stockOnHand": 300.0,
+        "stockOnHand": 294.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0221",
@@ -3537,19 +3427,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 2170.0,
         "mos": 45.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0086",
         "item": "Alginate 500g powder (1)",
         "category": "Dental",
         "ami": 25.0,
-        "stockOnHand": 165.0,
-        "mos": 6.6,
+        "stockOnHand": 160.0,
+        "mos": 6.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0222",
@@ -3559,8 +3449,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1010.0,
         "mos": 14.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0194",
@@ -3570,8 +3460,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 5.0,
         "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0195",
@@ -3581,8 +3471,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 723.0,
         "mos": 28.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0232",
@@ -3592,8 +3482,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 12.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0152",
@@ -3603,8 +3493,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 150.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0183",
@@ -3614,8 +3504,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 4.0,
         "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0135",
@@ -3625,41 +3515,41 @@ export const zammsaCentralReports = [
         "stockOnHand": 3.0,
         "mos": 0.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0094",
         "item": "Dental Light Curing Unit (1)",
         "category": "Dental",
         "ami": null,
-        "stockOnHand": 960.0,
+        "stockOnHand": 955.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0045",
         "item": "Dental Needles 27G Long (100)",
         "category": "Dental",
         "ami": null,
-        "stockOnHand": 1500.0,
+        "stockOnHand": 1268.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0046",
         "item": "Dental Needles 30G Short (100)",
         "category": "Dental",
         "ami": null,
-        "stockOnHand": 400.0,
+        "stockOnHand": 363.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0197",
@@ -3669,8 +3559,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 5.0,
         "mos": 0.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0198",
@@ -3680,8 +3570,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 2.0,
         "mos": 0.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0042",
@@ -3691,8 +3581,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 57.0,
         "mos": 1.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0180",
@@ -3702,8 +3592,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 50.0,
         "mos": 1.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0230",
@@ -3713,8 +3603,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1200.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0191",
@@ -3724,8 +3614,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 27.0,
         "mos": 1.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0192",
@@ -3735,8 +3625,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 35.0,
         "mos": 1.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0193",
@@ -3746,8 +3636,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 21.0,
         "mos": 0.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0227",
@@ -3757,8 +3647,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 12.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0049",
@@ -3768,8 +3658,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 45.0,
         "mos": 0.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0229",
@@ -3779,8 +3669,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 3.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0228",
@@ -3790,8 +3680,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0234",
@@ -3801,8 +3691,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 12.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0203",
@@ -3812,8 +3702,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 27.0,
         "mos": 0.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0015",
@@ -3823,8 +3713,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 34.0,
         "mos": 0.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0168",
@@ -3834,8 +3724,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0185",
@@ -3845,8 +3735,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 26.0,
         "mos": 26.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0233",
@@ -3856,19 +3746,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 12.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0125",
         "item": "Lead Apron(1)",
         "category": "Dental",
         "ami": null,
-        "stockOnHand": 280.0,
+        "stockOnHand": 279.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0225",
@@ -3878,19 +3768,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 12.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0070",
         "item": "Mouth Wash Tablets (1000)",
         "category": "Dental",
         "ami": null,
-        "stockOnHand": 587.0,
+        "stockOnHand": 557.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0150",
@@ -3900,8 +3790,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 9.0,
         "mos": 6.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0226",
@@ -3911,8 +3801,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1200.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0188",
@@ -3922,8 +3812,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 26.0,
         "mos": 38.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0231",
@@ -3933,19 +3823,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 600.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0224",
         "item": "Saliva ejecctors disposable(200)",
         "category": "Dental",
         "ami": null,
-        "stockOnHand": 900.0,
+        "stockOnHand": 899.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0173",
@@ -3955,19 +3845,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 228.0,
         "mos": 114.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0006",
         "item": "Self Cure Composite With Bonding System Kit(1)",
         "category": "Dental",
         "ami": null,
-        "stockOnHand": 800.0,
+        "stockOnHand": 796.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0175",
@@ -3977,8 +3867,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 45.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0201",
@@ -3988,8 +3878,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 16.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0039",
@@ -3999,8 +3889,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 720.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0163",
@@ -4010,8 +3900,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0095",
@@ -4021,8 +3911,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 496.0,
         "mos": 740.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0176",
@@ -4032,8 +3922,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 24.0,
         "mos": null,
         "comment": "TBD; -",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "DEN0147",
@@ -4043,41 +3933,41 @@ export const zammsaCentralReports = [
         "stockOnHand": 69.0,
         "mos": 25.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2871",
         "item": "Cetrimide/Chlorhexidine Gluconate 3g/0.3g 2.5l(1)",
         "category": "Medical Supplies",
         "ami": 3777.0,
-        "stockOnHand": 20378.0,
-        "mos": 5.4,
+        "stockOnHand": 17469.0,
+        "mos": 4.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1986",
         "item": "Mouth Wash 100ml (1)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 2784.0,
+        "stockOnHand": 2496.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2213",
         "item": "Hydrogen Peroxide 6% W/V, disinfectant 2.5L (1)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 20879.0,
+        "stockOnHand": 19353.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2997",
@@ -4087,52 +3977,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 10178.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0022",
         "item": "Cannulae I.V Short Sterile Disposable 20G (50)",
         "category": "Medical Supplies",
         "ami": 1715.0,
-        "stockOnHand": 12512.0,
-        "mos": 7.3,
+        "stockOnHand": 11692.0,
+        "mos": 6.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS0023",
-        "item": "Cannulae I.V Short Sterile Disposable 22G (50)",
-        "category": "Medical Supplies",
-        "ami": 2638.0,
-        "stockOnHand": 53.0,
-        "mos": 0.0,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS0162",
-        "item": "Cannulae I.V 16G, disposable (100)",
-        "category": "Medical Supplies",
-        "ami": 2922.0,
-        "stockOnHand": 303.0,
-        "mos": 0.1,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS2405",
-        "item": "Cannulae I.V 16G without fixation Wings (1)",
-        "category": "Medical Supplies",
-        "ami": null,
-        "stockOnHand": 229.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2923",
@@ -4142,8 +3999,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 50.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2924",
@@ -4153,8 +4010,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 50.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2925",
@@ -4164,30 +4021,52 @@ export const zammsaCentralReports = [
         "stockOnHand": 192.0,
         "mos": 192.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2868",
         "item": "Hypodermic Needle 23G(100)",
         "category": "Medical Supplies",
         "ami": 5529.0,
-        "stockOnHand": 13933.0,
-        "mos": 3.0,
+        "stockOnHand": 9414.0,
+        "mos": 2.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "MS0781",
+        "item": "IV solution Giving Set with Flow Regulator 15 drop Air Inlet and Needle(25)",
+        "category": "Medical Supplies",
+        "ami": null,
+        "stockOnHand": 11312.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "MS0780",
+        "item": "IV solution Giving Set with Flow Regulator 60 drop, peadiatric Air-Inlet and Needle(25)",
+        "category": "Medical Supplies",
+        "ami": null,
+        "stockOnHand": 2912.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1630",
         "item": "Ophthalmic Cannula 27G, angled (10)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 174.0,
+        "stockOnHand": 124.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0495",
@@ -4197,8 +4076,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 336.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0572",
@@ -4208,19 +4087,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 164.0,
         "mos": 0.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2959",
         "item": "Syringe Insulin 1ml(250)",
         "category": "Medical Supplies",
         "ami": 1180.0,
-        "stockOnHand": 2134.0,
-        "mos": 1.8,
+        "stockOnHand": 1157.0,
+        "mos": 1.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2869",
@@ -4230,85 +4109,63 @@ export const zammsaCentralReports = [
         "stockOnHand": 5014.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2109",
         "item": "Syringe 2ml Disposable with needle 21Gx1.5 (100)",
         "category": "Medical Supplies",
         "ami": 2662.0,
-        "stockOnHand": 358.0,
+        "stockOnHand": 347.0,
         "mos": 0.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS1414",
-        "item": "Syringe Disposable 2ml without Needle Luer Lock (100)",
-        "category": "Medical Supplies",
-        "ami": 4408.0,
-        "stockOnHand": 146.0,
-        "mos": 0.1,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1413",
         "item": "Syringe Disposable 2ml without Needle Luer Slip (100)",
         "category": "Medical Supplies",
-        "ami": null,
-        "stockOnHand": 381.0,
-        "mos": null,
+        "ami": 2008.0,
+        "stockOnHand": 120.0,
+        "mos": 0.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2963",
         "item": "Syringe Disposable 3ml(150)",
         "category": "Medical Supplies",
         "ami": 153.0,
-        "stockOnHand": 3884.0,
-        "mos": 25.4,
+        "stockOnHand": 3777.0,
+        "mos": 24.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS3021",
         "item": "Syringe 3ml with Needle, 23G (150)",
         "category": "Medical Supplies",
         "ami": 667.0,
-        "stockOnHand": 4247.0,
-        "mos": 6.4,
+        "stockOnHand": 4101.0,
+        "mos": 6.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0239",
         "item": "Syringe 1ml auto disable, 22G DMPA IM/Norethisterone (100)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 95.0,
+        "stockOnHand": 83.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS3022",
-        "item": "Syringe 5ml with Needle, 22G (120)",
-        "category": "Medical Supplies",
-        "ami": 493.0,
-        "stockOnHand": 55.0,
-        "mos": 0.1,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2567",
@@ -4318,19 +4175,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 238.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS2112",
-        "item": "Syringe 5ml Disposable with needle 21Gx1.5 (100)",
-        "category": "Medical Supplies",
-        "ami": 1138.0,
-        "stockOnHand": 380.0,
-        "mos": 0.3,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1524",
@@ -4340,74 +4186,63 @@ export const zammsaCentralReports = [
         "stockOnHand": 70.0,
         "mos": 0.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS3130",
         "item": "Catheter Foley 2-Way 22FR 30ml (10)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 1495.0,
+        "stockOnHand": 1050.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS3129",
         "item": "Catheter Foley 2-Way 20FR 30ml (10)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 2000.0,
+        "stockOnHand": 1450.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0176",
         "item": "Catheter Suction CH06, Sterile disposable (10)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 9542.0,
+        "stockOnHand": 9200.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0490",
         "item": "Catheter Suction CH16, Sterile disposable (10)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 15000.0,
+        "stockOnHand": 14760.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS3050",
-        "item": "Colostomy Bag, Adult (20)",
-        "category": "Medical Supplies",
-        "ami": null,
-        "stockOnHand": 60.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2842",
         "item": "Twin Nasal Oxygen Adult Catheter(10)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 9260.0,
+        "stockOnHand": 9160.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0118",
@@ -4417,8 +4252,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 60.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1940",
@@ -4428,8 +4263,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 85.0,
         "mos": 0.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS3051",
@@ -4439,8 +4274,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 140.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "MS3134",
+        "item": "Silicon Double J catheter stent 5FR,26CM",
+        "category": "Medical Supplies",
+        "ami": null,
+        "stockOnHand": 60.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0828",
@@ -4450,19 +4296,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 3797.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0787",
         "item": "Urine bags, pediatrics 500mls (10)",
         "category": "Medical Supplies",
         "ami": 201.0,
-        "stockOnHand": 3730.0,
-        "mos": 19.0,
+        "stockOnHand": 3337.0,
+        "mos": 17.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2988",
@@ -4472,30 +4318,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 79.0,
         "mos": 0.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS3128",
-        "item": "Adhesive Tape Zinc Oxide 15cm x 5m Roll (6)",
-        "category": "Medical Supplies",
-        "ami": null,
-        "stockOnHand": 3338423.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0677",
         "item": "Bandages Triangular 90 x 90 x 127cm (1)",
         "category": "Medical Supplies",
         "ami": 3639.0,
-        "stockOnHand": null,
-        "mos": 2.3,
+        "stockOnHand": 7099.0,
+        "mos": 2.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "SUT0262",
@@ -4505,8 +4340,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 50.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "SUT0098",
@@ -4516,8 +4351,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 479.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "SUT0096",
@@ -4527,19 +4362,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 300.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "SUT0125",
-        "item": "Suture Silk Monofilament Non Absorbable 4/0, R/C (12)",
-        "category": "Sutures",
-        "ami": 60.0,
-        "stockOnHand": 107.0,
-        "mos": 1.8,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1394",
@@ -4549,8 +4373,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 119.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2003",
@@ -4560,8 +4384,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 889.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS3110",
@@ -4571,30 +4395,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 56.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1523",
         "item": "Objective Blood Measurement (OBM) Drape, Single use (1)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 4849.0,
+        "stockOnHand": 4313.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "MS1636",
-        "item": "Disposable Eye Drapes With Draining Pouch Sterile 120x 100cm (5)",
-        "category": "Medical Supplies",
-        "ami": null,
-        "stockOnHand": 62.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2557",
@@ -4604,19 +4417,41 @@ export const zammsaCentralReports = [
         "stockOnHand": 140.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1943",
         "item": "Fluorescein Sodium Opthalmic Strips (100)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 99.0,
+        "stockOnHand": 67.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "MS3133",
+        "item": "Plastic Steril Plain Drape 100cmX150cm (1)",
+        "category": "Medical Supplies",
+        "ami": null,
+        "stockOnHand": 60.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "MS3131",
+        "item": "Safety Box 5L (60)",
+        "category": "Medical Supplies",
+        "ami": null,
+        "stockOnHand": 266.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1253",
@@ -4626,19 +4461,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 80.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1929",
         "item": "Disposable shoe covers M (100)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 1130.0,
+        "stockOnHand": 1030.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1972",
@@ -4647,9 +4482,9 @@ export const zammsaCentralReports = [
         "ami": null,
         "stockOnHand": 2882.0,
         "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS3103",
@@ -4659,8 +4494,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 80.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0976",
@@ -4670,8 +4505,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 290.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0977",
@@ -4681,8 +4516,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 290.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1733",
@@ -4692,8 +4527,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 84.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1734",
@@ -4703,8 +4538,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 50.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1735",
@@ -4714,8 +4549,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 50.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1736",
@@ -4725,8 +4560,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 56.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1737",
@@ -4736,8 +4571,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 82.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0943",
@@ -4747,8 +4582,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 224.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0942",
@@ -4758,8 +4593,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 132.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0941",
@@ -4769,8 +4604,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 101.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS0917",
@@ -4780,30 +4615,30 @@ export const zammsaCentralReports = [
         "stockOnHand": 310.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2715",
         "item": "Infrared Thermometer(1)",
         "category": "Medical Supplies",
         "ami": 67.0,
-        "stockOnHand": 542.0,
-        "mos": 8.1,
+        "stockOnHand": 530.0,
+        "mos": 7.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1913",
         "item": "Eye patches (1)",
         "category": "Medical Supplies",
         "ami": null,
-        "stockOnHand": 8352.0,
+        "stockOnHand": 8342.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2026",
@@ -4813,8 +4648,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 783.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS3124",
@@ -4824,8 +4659,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 9850.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2719",
@@ -4835,8 +4670,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 160.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1927",
@@ -4846,8 +4681,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 4400.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS2611",
@@ -4857,8 +4692,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 5940.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "MS1658",
@@ -4868,349 +4703,261 @@ export const zammsaCentralReports = [
         "stockOnHand": 80.0,
         "mos": 5.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "HTK0002",
         "item": "Determine HIV 1/2 Rapid Test Inc Chase Buffer (100)",
         "category": "HIV Test Kits",
         "ami": 4577.0,
-        "stockOnHand": 38778.0,
-        "mos": 8.5,
+        "stockOnHand": 34217.0,
+        "mos": 7.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "HTK0016",
         "item": "HIV 1/2 Blood based self test kit (1)",
         "category": "HIV Test Kits",
         "ami": 39697.0,
-        "stockOnHand": 115492.0,
-        "mos": 2.9,
+        "stockOnHand": 257827.0,
+        "mos": 6.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "HTK0015",
         "item": "Standard Q HIV/Syphilis Combo(25)",
         "category": "HIV Test Kits",
         "ami": 4854.0,
-        "stockOnHand": 29471.0,
-        "mos": 6.1,
+        "stockOnHand": 24601.0,
+        "mos": 5.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "HTK0007",
         "item": "SD Bioline Hiv-1/2.3.0 , 25 Tests(25)",
         "category": "HIV Test Kits",
         "ami": 1305.0,
-        "stockOnHand": 5786.0,
-        "mos": 4.4,
+        "stockOnHand": 3941.0,
+        "mos": 3.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0453",
         "item": "Accu-check blood glucose test strips (50)",
         "category": "Laboratory Services",
         "ami": 6162.0,
-        "stockOnHand": 14522.0,
-        "mos": 2.4,
+        "stockOnHand": 11659.0,
+        "mos": 1.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7865",
         "item": "Cryptococcus Latex Antigen Test Kit (50)",
         "category": "Laboratory Services",
         "ami": 6162.0,
-        "stockOnHand": 2006.0,
+        "stockOnHand": 1861.0,
         "mos": 0.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7823",
         "item": "Sickle Scan Rapid Test Kits(20)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 5766.0,
+        "stockOnHand": 5174.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7874",
         "item": "Determine HbsAg2 tests (100)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 73.0,
+        "stockOnHand": 33.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0923",
         "item": "Rapid Syphylis Test kits",
         "category": "Laboratory Services",
         "ami": 2566.0,
-        "stockOnHand": 40123.0,
-        "mos": 15.6,
+        "stockOnHand": 35612.0,
+        "mos": 13.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0438",
         "item": "Pregnancy Test Kit - HCG Strips (50)",
         "category": "Laboratory Services",
         "ami": 7028.0,
-        "stockOnHand": 15177.0,
-        "mos": 2.2,
+        "stockOnHand": 12729.0,
+        "mos": 1.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2274",
         "item": "Urine Test Strips Reagent, 14 Parameters (100)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": null,
+        "stockOnHand": 27778.0,
         "mos": null,
-        "comment": "TBD; Source PDF SOH cell contains LAB2275; treated as missing",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1205",
         "item": "Eosin Stain Powder,100g(1)",
         "category": "Laboratory Services",
         "ami": 28.0,
-        "stockOnHand": 132.0,
-        "mos": 4.7,
+        "stockOnHand": 129.0,
+        "mos": 4.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB7863",
-        "item": "Lysercell WDF 5L (1)",
-        "category": "Laboratory Services",
-        "ami": 30.0,
-        "stockOnHand": 11.0,
-        "mos": 0.4,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0578",
         "item": "Sysmex Cell Pack, 20L (1)",
         "category": "Laboratory Services",
         "ami": 37.0,
-        "stockOnHand": 1082.0,
-        "mos": 29.0,
+        "stockOnHand": 952.0,
+        "mos": 25.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0573",
         "item": "Sysmex Sulfolyser, 5L (1)",
         "category": "Laboratory Services",
         "ami": 18.0,
-        "stockOnHand": 90.0,
-        "mos": 5.1,
+        "stockOnHand": 39.0,
+        "mos": 2.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7811",
         "item": "Sysmex: XN-Cell Pack DCL, 20L (1)",
         "category": "Laboratory Services",
         "ami": 129.0,
-        "stockOnHand": 789.0,
-        "mos": 6.1,
+        "stockOnHand": 589.0,
+        "mos": 4.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB2821",
-        "item": "Yumizen: ABX Diluent, 20L (1)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 51.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2220",
         "item": "ABX Pentra C200: Cuvette - 96 (60)",
         "category": "Laboratory Services",
         "ami": 24.0,
-        "stockOnHand": 65.0,
+        "stockOnHand": 64.0,
         "mos": 2.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB1632",
-        "item": "Cobas C111: ALT (GPT) Tests (400)",
-        "category": "Laboratory Services",
-        "ami": 100.0,
-        "stockOnHand": 56.0,
-        "mos": 0.6,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1633",
         "item": "Cobas C111: AST (GOT) Tests (400)",
         "category": "Laboratory Services",
         "ami": 100.0,
-        "stockOnHand": 55.0,
-        "mos": 0.6,
+        "stockOnHand": 16.0,
+        "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB1259",
-        "item": "Cobas C111: Bilirubin Direct Tests (100)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 22.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB1257",
-        "item": "Cobas C111: Bilirubin Total Tests (400)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 10.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB1634",
-        "item": "Cobas C111: Cholesterol Tests (400)",
-        "category": "Laboratory Services",
-        "ami": 100.0,
-        "stockOnHand": 36.0,
-        "mos": 0.4,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1635",
         "item": "Cobas C111: Creatinine Tests (400)",
         "category": "Laboratory Services",
         "ami": 150.0,
-        "stockOnHand": 562.0,
-        "mos": 3.7,
+        "stockOnHand": 504.0,
+        "mos": 3.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB8009",
         "item": "Cobas C111: ISE Deproteinizer, 2x11ml (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 237.0,
+        "stockOnHand": 221.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7821",
         "item": "Cobas C111: Nacl Diluent 9% (04774230 190) (4)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 121.0,
+        "stockOnHand": 102.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0949",
         "item": "Cobas C111: Thermal Printer Paper Roll (5)",
         "category": "Laboratory Services",
         "ami": 100.0,
-        "stockOnHand": 322.0,
-        "mos": 3.2,
+        "stockOnHand": 308.0,
+        "mos": 3.1,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB1255",
-        "item": "Cobas C111: Triglycerides Tests (200)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 19.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1256",
         "item": "Cobas C111: UreaTests (400)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 35.0,
+        "stockOnHand": 10.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1258",
         "item": "Cobas C111:Total Protein Tests (400)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 13.0,
+        "stockOnHand": 10.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB0038",
-        "item": "Cobas Cleaner 1 Litre (1)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 24.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0035",
@@ -5220,8 +4967,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 400.0,
         "mos": 1.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB891",
@@ -5231,184 +4978,151 @@ export const zammsaCentralReports = [
         "stockOnHand": 55.0,
         "mos": 2.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1162",
         "item": "Humalyte Plus 3 - reagent pack ,1000ml (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 72.0,
+        "stockOnHand": 62.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1155",
         "item": "Humastar 600 - CK MB liquid UV, tests (200)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 74.0,
+        "stockOnHand": 69.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB2098",
-        "item": "Humastar 600 Cuvette Clean 6x55ml(1)",
-        "category": "Laboratory Services",
-        "ami": 7.0,
-        "stockOnHand": 24.0,
-        "mos": 3.4,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2099",
         "item": "Humastar 600 -Iron TPTZ Liquicolor(200)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 18.0,
+        "stockOnHand": 14.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2817",
         "item": "Humastar 600- LDH liqui UV, Tests (360)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 42.0,
+        "stockOnHand": 36.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1131",
         "item": "Humastar 600- Magnesium liquicolur tests (240)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 15.0,
+        "stockOnHand": 12.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1133",
         "item": "Humastar 600- Phosphorous liquirapid,Tests (240)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 18.0,
+        "stockOnHand": 14.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1513",
         "item": "Humastar 600- Serodos 5ml (6)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 62.0,
+        "stockOnHand": 55.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1511",
         "item": "Humastar 600- Serodos Plus 5ml (6)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 62.0,
+        "stockOnHand": 55.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1135",
         "item": "Humastar 600-HDL Cholesterol liquicolour tests (360)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 48.0,
+        "stockOnHand": 42.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1157",
         "item": "Humastare 600 -Tip Cleaning solution, 20ml (8)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 46.0,
+        "stockOnHand": 28.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB2794",
-        "item": "I -Chroma CK-MB Reagent (25)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 21.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1912",
         "item": "I Chroma II CRP Reagent Cartridges(25)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 22.0,
+        "stockOnHand": 12.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1910",
         "item": "I Chroma II HBAIC Reagent Cartridges(25)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 26.0,
+        "stockOnHand": 17.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1919",
         "item": "CRP Detection Buffer",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 22.0,
+        "stockOnHand": 12.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB2786",
-        "item": "I-Chroma PSA Reagent Cartridges(25)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 44.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2212",
@@ -5418,371 +5132,371 @@ export const zammsaCentralReports = [
         "stockOnHand": 14.0,
         "mos": 4.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2226",
         "item": "Mindray: BS120/130/180 Reaction Cuvettes (1000)",
         "category": "Laboratory Services",
         "ami": 8.0,
-        "stockOnHand": 24.0,
-        "mos": 3.0,
+        "stockOnHand": 22.0,
+        "mos": 2.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB4175",
-        "item": "Mindray: Clinchem Multi Control Level 1 (1)",
-        "category": "Laboratory Services",
-        "ami": 2.0,
-        "stockOnHand": 12.0,
-        "mos": 6.0,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB4177",
-        "item": "Mindray: Lactate Dehydrokenase (LDH) (1)",
-        "category": "Laboratory Services",
-        "ami": 2.0,
-        "stockOnHand": 11.0,
-        "mos": 5.5,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7852",
         "item": "Precicontrol Clinchem Mult 1, 5ml (4)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 53.0,
+        "stockOnHand": 30.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7853",
         "item": "Precicontrol Clinchem Mult 2, 5ml (4)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 48.0,
+        "stockOnHand": 25.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7917",
         "item": "Antibiotic Sens Disc Cefepime 30ug (250)",
         "category": "Laboratory Services",
         "ami": 33.0,
-        "stockOnHand": 160.0,
+        "stockOnHand": 150.0,
         "mos": 5.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1309",
         "item": "Antibiotic Sensitive Disc, Ciprofloxacin 5mcg (250)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 169.0,
+        "stockOnHand": 123.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0931",
         "item": "Antibiotic Sensitivity Disc Amoxyclav 30ug (250)",
         "category": "Laboratory Services",
         "ami": 33.0,
-        "stockOnHand": 116.0,
-        "mos": 4.0,
+        "stockOnHand": 104.0,
+        "mos": 3.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1551",
         "item": "Antibiotic Sensitivity Disc, Cefoxitin 30ug (250)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 54.0,
+        "stockOnHand": 39.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0084",
         "item": "Antibiotic Sensitivity Disc, Ceftazidine 30ug (250)",
         "category": "Laboratory Services",
         "ami": 33.0,
-        "stockOnHand": 162.0,
+        "stockOnHand": 153.0,
         "mos": 5.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0085",
         "item": "Antibiotic Sensitivity Disc, Ceftriaxone 30ug (250)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 112.0,
+        "stockOnHand": 85.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0087",
         "item": "Antibiotic Sensitivity Disc, Chloramphenicol 30ug (250)",
         "category": "Laboratory Services",
         "ami": 42.0,
-        "stockOnHand": 181.0,
+        "stockOnHand": 152.0,
         "mos": 4.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0089",
         "item": "Antibiotic Sensitivity Disc, Clindamycin 2ug (250)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 58.0,
+        "stockOnHand": 37.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1549",
         "item": "Antibiotic Sensitivity Disc, Colistin 10ug (250)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 291.0,
+        "stockOnHand": 274.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7916",
         "item": "Antibiotic Sensitivity Disc, Cotrimoxazole 25ug(250)",
         "category": "Laboratory Services",
         "ami": 42.0,
-        "stockOnHand": 89.0,
+        "stockOnHand": 66.0,
         "mos": 2.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB0094",
-        "item": "Antibiotic Sensitivity Disc, Gentamycin 10ug (250)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 11.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0099",
         "item": "Antibiotic Sensitivity Disc, Nalidixic Acid 30ug (250)",
         "category": "Laboratory Services",
         "ami": 39.0,
-        "stockOnHand": 148.0,
-        "mos": 4.0,
+        "stockOnHand": 128.0,
+        "mos": 3.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1018",
         "item": "Antibiotic Sensitivity Disc, Nitrofurantoin 300ug (250)",
         "category": "Laboratory Services",
         "ami": 40.0,
-        "stockOnHand": 144.0,
-        "mos": 4.0,
+        "stockOnHand": 126.0,
+        "mos": 3.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0101",
         "item": "Antibiotic Sensitivity Disc, Norfloxacin 10ug (250)",
         "category": "Laboratory Services",
         "ami": 40.0,
-        "stockOnHand": 171.0,
+        "stockOnHand": 162.0,
         "mos": 4.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0103",
         "item": "Antibiotic Sensitivity Disc, Penicillin 10 Units (250)",
         "category": "Laboratory Services",
         "ami": 32.0,
-        "stockOnHand": 117.0,
-        "mos": 4.0,
+        "stockOnHand": 100.0,
+        "mos": 3.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0275",
         "item": "Antibiotic Sensitivity Disc, Tetracycline 30ug (250)",
         "category": "Laboratory Services",
         "ami": 42.0,
-        "stockOnHand": 169.0,
+        "stockOnHand": 160.0,
         "mos": 4.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7832",
         "item": "Antibiotic Sensitivity Disc,Azithromycin 15ug(250)",
         "category": "Laboratory Services",
         "ami": 32.0,
-        "stockOnHand": 151.0,
-        "mos": 5.0,
+        "stockOnHand": 100.0,
+        "mos": 3.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB0092",
-        "item": "Antibiotic Sensitivity Disc,Erythromycin 15uG(250)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 10.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1497",
         "item": "Antibiotic Sensitivity Disc,Novobiocin 5ug (250)",
         "category": "Laboratory Services",
         "ami": 15.0,
-        "stockOnHand": 67.0,
+        "stockOnHand": 61.0,
         "mos": 4.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7834",
         "item": "Antibiotic Sensitivity Disc: Ampicillin/Sulbactam 10/10ug (250)",
         "category": "Laboratory Services",
         "ami": 33.0,
-        "stockOnHand": 149.0,
-        "mos": 5.0,
+        "stockOnHand": 139.0,
+        "mos": 4.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0950",
         "item": "Antibiotic Sensitivity Disc: Bacitracin 10ug (250)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 30.0,
+        "stockOnHand": 18.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB8002",
         "item": "Antibiotic Sensitivity Disc: Cephazolin 30ug (250)",
         "category": "Laboratory Services",
         "ami": 40.0,
-        "stockOnHand": 217.0,
-        "mos": 5.0,
+        "stockOnHand": 156.0,
+        "mos": 4.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB8003",
         "item": "Antibiotic Sensitivity Disc: Imipenem 10ug (250)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 158.0,
+        "stockOnHand": 146.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1329",
         "item": "Antimicrobial Susceptibility Disc: Aztreonan 30\u00b5g Disc (250)",
         "category": "Laboratory Services",
         "ami": 33.0,
-        "stockOnHand": 164.0,
-        "mos": 5.0,
+        "stockOnHand": 107.0,
+        "mos": 3.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "LAB2240",
+        "item": "Antiserum, E.Coli 57 H 5ml (1)",
+        "category": "Laboratory Services",
+        "ami": null,
+        "stockOnHand": 16.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "LAB2264",
+        "item": "Antiserum, Shigella Dysenteriae Poly A1-7 and 8-12 2ml (1)",
+        "category": "Laboratory Services",
+        "ami": null,
+        "stockOnHand": 189.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "LAB2263",
+        "item": "Antiserum, Shigella Flexineri Poly B 1-7 2ml (1)",
+        "category": "Laboratory Services",
+        "ami": null,
+        "stockOnHand": 170.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "LAB2262",
+        "item": "Antiserum, Shigella Sonnei phase 1 2ml (1)",
+        "category": "Laboratory Services",
+        "ami": null,
+        "stockOnHand": 26.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0116",
         "item": "Blood Agar Base ,500g (1)",
         "category": "Laboratory Services",
         "ami": 74.0,
-        "stockOnHand": 170.0,
-        "mos": 2.0,
+        "stockOnHand": 52.0,
+        "mos": 1.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1654",
         "item": "Blood Culture Medium - Adult, 70ml (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 20539.0,
+        "stockOnHand": 22506.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0121",
         "item": "Campylobacter Agar Bas, 500g (1)",
         "category": "Laboratory Services",
         "ami": 14.0,
-        "stockOnHand": 33.0,
+        "stockOnHand": 26.0,
         "mos": 2.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2113",
         "item": "DBS Cards-Watman Proteinsaver Card 903(20)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 673.0,
+        "stockOnHand": 112.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2058",
@@ -5792,52 +5506,74 @@ export const zammsaCentralReports = [
         "stockOnHand": 24.0,
         "mos": 2.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "LAB0880",
+        "item": "Gram stain reagents kit (1)",
+        "category": "Laboratory Services",
+        "ami": 138.0,
+        "stockOnHand": 16.0,
+        "mos": 0.0,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "LAB1525",
+        "item": "Laboratory wipes 2ply (100)",
+        "category": "Laboratory Services",
+        "ami": null,
+        "stockOnHand": 188.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0241",
         "item": "Lysin Iron Agar 500g (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 80.0,
+        "stockOnHand": 64.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0163",
         "item": "Mueller Hinton Agar 500g (1)",
         "category": "Laboratory Services",
         "ami": 43.0,
-        "stockOnHand": 37.0,
+        "stockOnHand": 31.0,
         "mos": 1.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0456",
         "item": "Salmonella Paratyphi A-O (5ml) (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 20.0,
+        "stockOnHand": 18.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0459",
         "item": "Salmonella Paratyphi B-H (5ml) (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 33.0,
+        "stockOnHand": 20.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0455",
@@ -5847,151 +5583,140 @@ export const zammsaCentralReports = [
         "stockOnHand": 16.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0458",
         "item": "Salmonella Paratyphi C-H (5ml) (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 30.0,
+        "stockOnHand": 26.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0454",
         "item": "Salmonella Paratyphi C-O (5ml) (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 47.0,
+        "stockOnHand": 55.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0461",
         "item": "Shigella Boydii Polyvalent 12 - 15, 2ml (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 11.0,
+        "stockOnHand": 168.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0184",
         "item": "Simmon Citrate Agar,500g (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 100.0,
+        "stockOnHand": 90.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0186",
         "item": "Sulphide Indole Motility(SIM) 500g (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 80.0,
+        "stockOnHand": 60.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0548",
         "item": "Vibrio Cholera Polyvalent, 2ml (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 140.0,
+        "stockOnHand": 138.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0610",
         "item": "Vibrio Cholerae Ogawa, 2ml (1)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 130.0,
+        "stockOnHand": 128.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2234",
         "item": "McFarland Standard Set 0.5, 10ml (5)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 83.0,
+        "stockOnHand": 78.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB1000",
-        "item": "Histopathology Microtome blades (50)",
-        "category": "Laboratory Services",
-        "ami": 84.0,
-        "stockOnHand": 39.0,
-        "mos": 0.5,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0933",
         "item": "Tissue Embedding Cassettes (500)",
         "category": "Laboratory Services",
         "ami": 30.0,
-        "stockOnHand": 77.0,
-        "mos": 2.6,
+        "stockOnHand": 70.0,
+        "mos": 2.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1890",
         "item": "Gene Xpert: (Xpert MTB/RIF Ultra), test (50)",
         "category": "Laboratory Services",
         "ami": 1731.0,
-        "stockOnHand": 5681.0,
-        "mos": 3.3,
+        "stockOnHand": 6500.0,
+        "mos": 3.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
-        "code": "LAB7891",
-        "item": "GeneXpert HPV(10)",
+        "code": "LAB2049",
+        "item": "Gene Xpert HIV-1 Viral Load",
         "category": "Laboratory Services",
-        "ami": 65.0,
-        "stockOnHand": 1295.0,
-        "mos": 19.9,
+        "ami": 1190.0,
+        "stockOnHand": 4325.0,
+        "mos": 3.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2012",
         "item": "GeneXpert HIV-1 Qual(10)",
         "category": "Laboratory Services",
         "ami": 1252.0,
-        "stockOnHand": 220.0,
-        "mos": 0.2,
+        "stockOnHand": 3031.0,
+        "mos": 2.4,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1781",
@@ -6001,30 +5726,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 16.0,
         "mos": 4.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB2215",
-        "item": "Truenat: MTB-RIF Dx (5)",
-        "category": "Laboratory Services",
-        "ami": 28.0,
-        "stockOnHand": 22.0,
-        "mos": 0.8,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB2800",
-        "item": "Rapid Diagnostic Test for CD4 Advanced Disease(25)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 174.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7897",
@@ -6034,8 +5737,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 82.0,
         "mos": 0.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7881",
@@ -6045,8 +5748,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1412.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0049",
@@ -6056,19 +5759,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 1296.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1688",
         "item": "Ethanol - absolute,AR, 99.9%, 2.5L (1)",
         "category": "Laboratory Services",
         "ami": 156.0,
-        "stockOnHand": 87.0,
-        "mos": 0.6,
+        "stockOnHand": 34.0,
+        "mos": 0.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB8017",
@@ -6078,19 +5781,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 510.0,
         "mos": 10.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0170",
         "item": "Phenol Crystals, 500g (1)",
         "category": "Laboratory Services",
         "ami": 164.0,
-        "stockOnHand": 3058.0,
-        "mos": 18.6,
+        "stockOnHand": 2995.0,
+        "mos": 18.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2738",
@@ -6100,63 +5803,85 @@ export const zammsaCentralReports = [
         "stockOnHand": 2517.0,
         "mos": 1.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0663",
         "item": "Vacutainer Blood Collection tubes- EDTA K2/K3 4ml (100)",
         "category": "Laboratory Services",
         "ami": 3192.0,
-        "stockOnHand": 265.0,
-        "mos": 0.1,
+        "stockOnHand": 152.0,
+        "mos": 0.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7850",
         "item": "Sputum Container with Scoop 50ml (500)",
         "category": "Laboratory Services",
         "ami": 180.0,
-        "stockOnHand": 5209.0,
-        "mos": 28.9,
+        "stockOnHand": 4953.0,
+        "mos": 27.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7849",
         "item": "Stool Container with Scoop 50ml (500)",
         "category": "Laboratory Services",
         "ami": 373.0,
-        "stockOnHand": 5763.0,
-        "mos": 15.5,
+        "stockOnHand": 5489.0,
+        "mos": 14.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0229",
         "item": "Fluoride Oxalate Blood Collection tubes 4ml(100)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 21.0,
+        "stockOnHand": 650.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0224",
         "item": "Plain Blood Collection tubes vacuum Red top 4ml (100)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 48.0,
+        "stockOnHand": 3824.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "LAB0338",
+        "item": "Plastic pastuer pipette, graduated 3ml (500)",
+        "category": "Laboratory Services",
+        "ami": null,
+        "stockOnHand": 1810.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "LAB0662",
+        "item": "Vacutainer Lithium Heparin tube 4ml (100)",
+        "category": "Laboratory Services",
+        "ami": null,
+        "stockOnHand": 2450.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1244",
@@ -6166,19 +5891,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 1181.0,
         "mos": 3.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2805",
         "item": "Universal Container, 30ml, Screw Cap (500)",
         "category": "Laboratory Services",
         "ami": 2728.0,
-        "stockOnHand": 12631.0,
+        "stockOnHand": 12545.0,
         "mos": 4.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2079",
@@ -6188,63 +5913,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 15.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB2240",
-        "item": "Antiserum, E.Coli 57 H 5ml (1)",
-        "category": "Laboratory Services",
-        "ami": 38.0,
-        "stockOnHand": 20.0,
-        "mos": 0.5,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB2264",
-        "item": "Antiserum, Shigella Dysenteriae Poly A1-7 and 8-12 2ml (1)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 21.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB2263",
-        "item": "Antiserum, Shigella Flexineri Poly B 1-7 2ml (1)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 66.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB2262",
-        "item": "Antiserum, Shigella Sonnei phase 1 2ml (1)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 27.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2243",
         "item": "Aptima HPV Calibrator 2.7ml (5)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 135.0,
+        "stockOnHand": 603.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1028",
@@ -6254,52 +5935,52 @@ export const zammsaCentralReports = [
         "stockOnHand": 20.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2813",
         "item": "Blood Collection Tube Holder, Multi-Purpose (100)",
         "category": "Laboratory Services",
         "ami": 400.0,
-        "stockOnHand": 4378.0,
-        "mos": 10.9,
+        "stockOnHand": 4304.0,
+        "mos": 10.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0629",
         "item": "Centrifuge Tube Conical Bottom, 15ml (100)",
         "category": "Laboratory Services",
         "ami": 952.0,
-        "stockOnHand": 5403.0,
-        "mos": 5.7,
+        "stockOnHand": 5335.0,
+        "mos": 5.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1021",
         "item": "Cryo- vials skirted screw cups 2ml (500)",
         "category": "Laboratory Services",
         "ami": 75.0,
-        "stockOnHand": 5722.0,
-        "mos": 76.3,
+        "stockOnHand": 120.0,
+        "mos": 1.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2810",
         "item": "Cryogenic Vial, 5ml (500)",
         "category": "Laboratory Services",
         "ami": 75.0,
-        "stockOnHand": 1337.0,
-        "mos": 17.8,
+        "stockOnHand": 1222.0,
+        "mos": 16.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1012",
@@ -6309,19 +5990,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1996.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB0880",
-        "item": "Gram stain reagents kit (1)",
-        "category": "Laboratory Services",
-        "ami": null,
-        "stockOnHand": 69.0,
-        "mos": null,
-        "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1920",
@@ -6331,19 +6001,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 10.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2008",
         "item": "Hologic Spare Hard Caps(100)",
         "category": "Laboratory Services",
         "ami": null,
-        "stockOnHand": 615.0,
+        "stockOnHand": 621.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0203",
@@ -6353,8 +6023,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 10.0,
         "mos": 0.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7880",
@@ -6364,8 +6034,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 356.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7883",
@@ -6375,8 +6045,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 661.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7882",
@@ -6386,19 +6056,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 140.0,
         "mos": 2.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
-      },
-      {
-        "code": "LAB1525",
-        "item": "Laboratory wipes 2ply (100)",
-        "category": "Laboratory Services",
-        "ami": 402.0,
-        "stockOnHand": 188.0,
-        "mos": 0.5,
-        "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2080",
@@ -6408,8 +6067,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 6509.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2115",
@@ -6419,19 +6078,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 170.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2809",
         "item": "Microscope Slide, Frosted Ground Edges, 25.4mm x 76.2mm (50)",
         "category": "Laboratory Services",
         "ami": 14723.0,
-        "stockOnHand": 36166.0,
-        "mos": 2.5,
+        "stockOnHand": 34326.0,
+        "mos": 2.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1330",
@@ -6441,8 +6100,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 56731.0,
         "mos": 3.85,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2825",
@@ -6452,8 +6111,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 119.0,
         "mos": 5.95,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2826",
@@ -6463,8 +6122,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 50.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2065",
@@ -6474,8 +6133,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 138.0,
         "mos": 9.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB8019",
@@ -6485,8 +6144,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 4082.0,
         "mos": 102.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1905",
@@ -6496,19 +6155,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 200.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1027",
         "item": "Sharp Containers with Lid 5L (1)",
         "category": "Laboratory Services",
         "ami": 1542.0,
-        "stockOnHand": 525.0,
+        "stockOnHand": 439.0,
         "mos": 0.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB0814",
@@ -6518,8 +6177,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 168.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB7875",
@@ -6529,8 +6188,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 36.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1793",
@@ -6540,8 +6199,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 11.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2103",
@@ -6551,8 +6210,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 285.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB1823",
@@ -6562,8 +6221,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 20.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2005",
@@ -6573,8 +6232,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 72.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "LAB2081",
@@ -6584,8 +6243,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 348.0,
         "mos": 6.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0005",
@@ -6595,8 +6254,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 55.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0021",
@@ -6606,8 +6265,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 29.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0041",
@@ -6617,8 +6276,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 74.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0042",
@@ -6628,8 +6287,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 116.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0047",
@@ -6639,8 +6298,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 8.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0048",
@@ -6650,8 +6309,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 16.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0050",
@@ -6661,8 +6320,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 32.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0054",
@@ -6672,8 +6331,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0057",
@@ -6683,8 +6342,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 15.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0070",
@@ -6694,8 +6353,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 18.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0122",
@@ -6705,8 +6364,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 26.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0125",
@@ -6716,8 +6375,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 72.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0127",
@@ -6727,8 +6386,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 80.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0130",
@@ -6738,8 +6397,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 26.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0136",
@@ -6749,8 +6408,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 108.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0137",
@@ -6760,8 +6419,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 100.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0143",
@@ -6771,8 +6430,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 616.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0150",
@@ -6782,8 +6441,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 48.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0157",
@@ -6793,8 +6452,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 59.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0164",
@@ -6804,8 +6463,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 43.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0182",
@@ -6815,8 +6474,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 61.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0200",
@@ -6826,8 +6485,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 79.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "EPS0236",
+        "item": "Oxygen Tube 2M(50)",
+        "category": "Epidemic / PPE Supplies",
+        "ami": null,
+        "stockOnHand": 12.0,
+        "mos": null,
+        "comment": "TBD; Low Demand",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0262",
@@ -6837,8 +6507,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 3891.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0263",
@@ -6848,8 +6518,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 8797.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0271",
@@ -6859,8 +6529,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1226.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0274",
@@ -6870,8 +6540,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 85.0,
         "mos": 25.53,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0280",
@@ -6881,8 +6551,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 188.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0284",
@@ -6892,8 +6562,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 72.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0285",
@@ -6903,8 +6573,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 88.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0286",
@@ -6914,8 +6584,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 26.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EPS0287",
@@ -6925,8 +6595,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 36.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0015",
@@ -6936,8 +6606,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 772.0,
         "mos": 0.39,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0018",
@@ -6947,8 +6617,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 17.0,
         "mos": 0.06,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0019",
@@ -6958,8 +6628,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 85.0,
         "mos": 0.61,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0024",
@@ -6969,8 +6639,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 26.0,
         "mos": 0.45,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0048",
@@ -6980,8 +6650,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 49.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0052",
@@ -6991,8 +6661,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1766.0,
         "mos": 10.37,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0054",
@@ -7002,8 +6672,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 22998.0,
         "mos": 125.45,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0055",
@@ -7013,8 +6683,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 18.0,
         "mos": 0.1,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0057",
@@ -7024,8 +6694,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 100.0,
         "mos": 1.43,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0066",
@@ -7035,8 +6705,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 93284.0,
         "mos": 3.0,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0068",
@@ -7046,8 +6716,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 70093.0,
         "mos": 3.0,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0069",
@@ -7057,8 +6727,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 908.0,
         "mos": 3.0,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0086",
@@ -7068,8 +6738,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 151.0,
         "mos": 0.0,
         "comment": "Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0113",
@@ -7079,8 +6749,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 340.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0134",
@@ -7090,8 +6760,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 90.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0137",
@@ -7101,8 +6771,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 500.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0141",
@@ -7112,8 +6782,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 59.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0144",
@@ -7123,8 +6793,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 33.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "PC0145",
@@ -7134,8 +6804,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 105.0,
         "mos": null,
         "comment": "TBD; Low Demand",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0004",
@@ -7145,8 +6815,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 199.0,
         "mos": 1.19,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0020",
@@ -7156,8 +6826,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 34.0,
         "mos": 0.73,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0021",
@@ -7167,8 +6837,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 8.0,
         "mos": 0.13,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0091",
@@ -7178,8 +6848,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0147",
@@ -7189,8 +6859,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 6.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0159",
@@ -7200,8 +6870,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 30.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0161",
@@ -7211,8 +6881,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 95.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0207",
@@ -7222,8 +6892,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0213",
@@ -7233,8 +6903,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 197.0,
         "mos": 1.05,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0214",
@@ -7244,8 +6914,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 63.0,
         "mos": 1.93,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0223",
@@ -7255,8 +6925,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 597.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0224",
@@ -7266,8 +6936,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 7928.0,
         "mos": 371.68,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0225",
@@ -7277,8 +6947,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 8013.0,
         "mos": 375.67,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "IMAG0276",
@@ -7288,8 +6958,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 100.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0022",
@@ -7299,8 +6969,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 1512.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0027",
@@ -7310,19 +6980,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 1814.0,
         "mos": 0.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0029",
         "item": "Ifosfamide/Mesna 1gm/600mg injection (1)",
         "category": "Oncology",
         "ami": null,
-        "stockOnHand": 3600.0,
+        "stockOnHand": 3598.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0057",
@@ -7332,19 +7002,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 181.0,
         "mos": 2.9,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0065",
         "item": "Rituximab 100mg Injection (1)",
         "category": "Oncology",
         "ami": 100.0,
-        "stockOnHand": 400.0,
-        "mos": 4.0,
+        "stockOnHand": 420.0,
+        "mos": 4.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0079",
@@ -7354,8 +7024,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 13.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0117",
@@ -7365,8 +7035,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 944.0,
         "mos": 4.5,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "CAN0143",
+        "item": "Paclitaxel Injection 300mg/50ml(1)",
+        "category": "Oncology",
+        "ami": null,
+        "stockOnHand": 9095.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0149",
@@ -7376,8 +7057,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 2000.0,
         "mos": 2.0,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0161",
@@ -7387,8 +7068,19 @@ export const zammsaCentralReports = [
         "stockOnHand": 899.0,
         "mos": 1.6,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "CAN0167",
+        "item": "Vinblastine sulphate 10mg/10ml Injection(1)",
+        "category": "Oncology",
+        "ami": null,
+        "stockOnHand": 32.0,
+        "mos": null,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0184",
@@ -7398,8 +7090,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 350.0,
         "mos": 2.3,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0186",
@@ -7409,8 +7101,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 720.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0200",
@@ -7420,8 +7112,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 283.0,
         "mos": 0.8,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0219",
@@ -7431,8 +7123,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 2904.0,
         "mos": 0.7,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "CAN0236",
@@ -7440,10 +7132,43 @@ export const zammsaCentralReports = [
         "category": "Oncology",
         "ami": 1250.0,
         "stockOnHand": 55.0,
+        "mos": 0.0,
+        "comment": "",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "CAN0245",
+        "item": "Bleomycin injection USP 15 Units (20)",
+        "category": "Oncology",
+        "ami": null,
+        "stockOnHand": 70.0,
         "mos": null,
         "comment": "TBD",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "CAN0246",
+        "item": "Filgrastim 300mcg/1ml Injection (10)",
+        "category": "Oncology",
+        "ami": null,
+        "stockOnHand": 240.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
+      },
+      {
+        "code": "CAN0247",
+        "item": "Bleomycin Powder for injection 15mg(1)",
+        "category": "Oncology",
+        "ami": null,
+        "stockOnHand": 30.0,
+        "mos": null,
+        "comment": "TBD",
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       },
       {
         "code": "EM1053",
@@ -7453,8 +7178,8 @@ export const zammsaCentralReports = [
         "stockOnHand": 4683.0,
         "mos": 54.2,
         "comment": "",
-        "reportDate": "2026-08-31",
-        "reportLabel": "31 August 2026"
+        "reportDate": "2026-09-15",
+        "reportLabel": "15 September 2026"
       }
     ]
   }

@@ -19,8 +19,10 @@ def main():
     args = parser.parse_args()
 
     rows = [row for row in load_js_export(args.history, "stockHistory") if row.get("reportDate") == args.date]
-    if len(rows) < 650:
-        raise ValueError(f"Expected at least 650 rows for {args.date}; found {len(rows)}")
+    # The fully reviewed 15 September report contains 635 unique rows across
+    # 12 pages. Keep a lower bound that still rejects a partial extraction.
+    if len(rows) < 600:
+        raise ValueError(f"Expected at least 600 rows for {args.date}; found {len(rows)}")
     if len({row["code"] for row in rows}) != len(rows):
         raise ValueError("The selected report contains duplicate ordering codes")
 
