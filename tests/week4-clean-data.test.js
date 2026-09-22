@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { tracerReportingPeriods } from "../src/tracerFacilityDataJul.js";
+import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
+
+await loadHistoricalTracerYear("2026");
 
 const week4 = tracerReportingPeriods.find((period) => period.id === "2026-07-26");
 

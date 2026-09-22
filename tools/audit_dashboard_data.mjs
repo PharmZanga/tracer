@@ -1,5 +1,7 @@
-import { tracerReportingPeriods } from "../src/tracerFacilityData.js";
+import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
 import { weeklyStockPeriods } from "../src/weeklyStockData.js";
+
+await loadHistoricalTracerYear("2026");
 
 const errors = [];
 const tolerance = 0.00011;

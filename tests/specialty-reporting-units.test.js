@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { tracerReportingPeriods as marchAprilPeriods } from "../src/tracerFacilityDataMarApr.js";
-import { tracerReportingPeriods as mayJunePeriods } from "../src/tracerFacilityDataMayJun.js";
-import { tracerReportingPeriods } from "../src/tracerFacilityDataSep.js";
+import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
+
+await loadHistoricalTracerYear("2026");
+
+const marchAprilPeriods = tracerReportingPeriods;
+const mayJunePeriods = tracerReportingPeriods;
 
 test("Kabwe Adult and Eye Unit submissions remain separate for Normal Saline", () => {
   const period = tracerReportingPeriods.find((entry) => entry.id === "2026-09-06");

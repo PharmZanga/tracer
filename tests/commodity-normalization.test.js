@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName, SODIUM_CHLORIDE_500ML } from "../src/commodityNormalization.js";
-import { tracerReportingPeriods } from "../src/tracerFacilityData.js";
+import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
+
+await loadHistoricalTracerYear("2026");
 
 test("500 ml sodium chloride spelling variants resolve to one commodity", () => {
   const variants = [

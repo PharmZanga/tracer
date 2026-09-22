@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
-import { availableTracerYears, loadHistoricalTracerYear, tracerReportingPeriods } from "./tracerFacilityData.js";
+import { availableTracerYears, loadHistoricalTracerYear, loadLiveTracerData, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
@@ -1650,6 +1650,14 @@ function App() {
   const [stockStream, setStockStream] = useState(weeklyStockPeriods.some((period) => period.stream === "EMMS") ? "EMMS" : weeklyStockPeriods.at(-1)?.stream || "LAB");
   const [stockCategory, setStockCategory] = useState("");
   const [stockCategoryDialog, setStockCategoryDialog] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    loadLiveTracerData()
+      .then(() => { if (mounted) setHistoricalDataVersion((version) => version + 1); })
+      .catch(() => { /* The compact latest-period bootstrap remains available. */ });
+    return () => { mounted = false; };
+  }, []);
 
   useEffect(() => {
     const historyWorkspace = ["comparison", "commodities", "quality", "predictive", "alerts"].includes(activePage);

@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { tracerReportingPeriods } from "../src/tracerFacilityDataMarApr.js";
+import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
 import { primaryCareDistrictRows, primaryCareLevelReported } from "../src/reportingQuality.js";
+
+await loadHistoricalTracerYear("2026");
 
 test("Chongwe combined April Week 2 primary-care report satisfies both levels", () => {
   const period = tracerReportingPeriods.find((row) => row.id === "2026-04-12");

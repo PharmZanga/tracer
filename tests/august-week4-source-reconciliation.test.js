@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { tracerReportingPeriods } from "../src/tracerFacilityDataJul.js";
+import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
+
+await loadHistoricalTracerYear("2026");
 
 test("August Week 4 preserves the verified Chilenje Normal Saline submission", () => {
   const period = tracerReportingPeriods.find((entry) => entry.id === "2026-08-30");

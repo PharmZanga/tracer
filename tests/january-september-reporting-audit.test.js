@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { tracerReportingPeriods } from "../src/tracerFacilityData.js";
+import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
 import { facilityNameMatchesDifferentDistrict, reportingFacilityType, sourceSupportedHospitalFacility } from "../src/dataQualityEvidence.js";
 import { primaryCareDistrictRows, primaryCareDistrictSummary, primaryCareLevelReported } from "../src/reportingQuality.js";
+
+await loadHistoricalTracerYear("2026");
 
 const districtNames = [...new Set(tracerReportingPeriods.flatMap((period) => (period.dataQuality?.districts || []).map((row) => row.name)))];
 

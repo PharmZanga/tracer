@@ -2,10 +2,12 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-import { tracerReportingPeriods } from "../src/tracerFacilityData.js";
+import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
 import { primaryCareDistrictRows, primaryCareDistrictSummary } from "../src/reportingQuality.js";
 import { buildRedistributionCandidates } from "../src/redistribution.js";
 import { analyseFacilityTracer } from "../src/facilityTracerAnalysis.js";
+
+await loadHistoricalTracerYear("2026");
 
 const week5 = tracerReportingPeriods.find((period) => period.id === "2026-08-02");
 

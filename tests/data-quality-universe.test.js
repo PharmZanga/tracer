@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { tracerReportingPeriods } from "../src/tracerFacilityData.js";
+import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
+
+await loadHistoricalTracerYear("2026");
 
 test("Data Quality retains the complete Muchinga district universe", () => {
   const period = tracerReportingPeriods[0];

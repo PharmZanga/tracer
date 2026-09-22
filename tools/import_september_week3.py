@@ -8,13 +8,13 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "src" / "tracerFacilityDataSep.js"
+OUTPUT = ROOT / "public" / "data" / "tracer" / "2026" / "sep.json"
 GENERATOR = ROOT / "tools" / "generate_tracer_facility_data.py"
 DATA_MODULES = [
-    ROOT / "src" / "tracerFacilityDataJanFeb.js",
-    ROOT / "src" / "tracerFacilityDataMarApr.js",
-    ROOT / "src" / "tracerFacilityDataMayJun.js",
-    ROOT / "src" / "tracerFacilityDataJul.js",
+    ROOT / "public" / "data" / "tracer" / "2026" / "jan-feb.json",
+    ROOT / "public" / "data" / "tracer" / "2026" / "mar-apr.json",
+    ROOT / "public" / "data" / "tracer" / "2026" / "may-jun.json",
+    ROOT / "public" / "data" / "tracer" / "2026" / "jul-aug.json",
     OUTPUT,
 ]
 
@@ -28,11 +28,7 @@ def load_generator():
 
 
 def load_periods(path):
-    prefix = "export const tracerReportingPeriods = "
-    content = path.read_text(encoding="utf-8").strip()
-    if not content.startswith(prefix) or not content.endswith(";"):
-        raise ValueError(f"Unexpected data module format: {path}")
-    return json.loads(content[len(prefix):-1])
+    return json.loads(path.read_text(encoding="utf-8"))["tracerReportingPeriods"]
 
 
 def reporting_expectations(generator, periods):
@@ -68,10 +64,7 @@ def main():
     expected_districts, expected_facilities = reporting_expectations(generator, periods)
     generator.build_reporting_quality(periods, expected_districts, expected_facilities)
     september_periods = [period for period in periods if period["month"] >= "2026-09"]
-    OUTPUT.write_text(
-        "export const tracerReportingPeriods = " + json.dumps(september_periods, separators=(",", ":")) + ";\n",
-        encoding="utf-8",
-    )
+    OUTPUT.write_text(json.dumps({"tracerReportingPeriods": september_periods}, separators=(",", ":")), encoding="utf-8")
     print(f"Imported {week_three['label']}: {week_three['counts']}")
 
 

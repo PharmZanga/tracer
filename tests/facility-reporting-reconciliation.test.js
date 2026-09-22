@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { tracerReportingPeriods } from "../src/tracerFacilityData.js";
+import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
 import { facilityReportingKey, facilityReportingRows, primaryCareDistrictRows, primaryCareDistrictSummary, reconciledExpectedFacilityRows } from "../src/reportingQuality.js";
+
+await loadHistoricalTracerYear("2026");
 
 test("every reporting week deduplicates expected facilities and honours actual tracer submissions", () => {
   tracerReportingPeriods.forEach((period) => {
