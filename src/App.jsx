@@ -1650,6 +1650,8 @@ function App() {
   const [stockStream, setStockStream] = useState(weeklyStockPeriods.some((period) => period.stream === "EMMS") ? "EMMS" : weeklyStockPeriods.at(-1)?.stream || "LAB");
   const [stockCategory, setStockCategory] = useState("");
   const [stockCategoryDialog, setStockCategoryDialog] = useState(false);
+  const [centralStockQuery, setCentralStockQuery] = useState("");
+  const [centralStockCategory, setCentralStockCategory] = useState("all");
 
   useEffect(() => {
     let mounted = true;
@@ -1863,7 +1865,14 @@ function App() {
   const fieldData = tracerReportingPeriods.find((period) => period.id === fieldPeriodId) || tracerReportingPeriods.at(-1);
   const activeDashboardPage = dashboardPages.find((page) => page.id === activePage);
   const activePageLabel = activePage === "stock"
-    ? stockWorkspace === "navigator" ? "ZAMMSA Stock Navigator" : stockWorkspace === "alerts" ? "ZAMMSA Central Stock Alerts" : "ZAMMSA Control Tower"
+    ? ({
+      control: "ZAMMSA Overview",
+      navigator: "ZAMMSA Stock Navigator",
+      weekly: "ZAMMSA Weekly Availability",
+      changes: "ZAMMSA Availability Changes",
+      predictive: "ZAMMSA Predictive Analysis",
+      trend: "ZAMMSA Stock Trend",
+    }[stockWorkspace] || "ZAMMSA Overview")
     : activeDashboardPage?.label || "Tracer Dashboard";
   const ActivePageIcon = activeDashboardPage?.icon || Database;
   const fieldYears = [...availableTracerYears].sort((a, b) => b.localeCompare(a));
@@ -1879,9 +1888,29 @@ function App() {
     .filter((row) => row.mos !== null && row.mos < 2)
     .sort((a, b) => a.mos - b.mos || a.category.localeCompare(b.category) || a.item.localeCompare(b.item))
     .slice(0, 20);
+  const centralStockCategories = [...new Set((centralStock?.rows || []).map((row) => row.category).filter(Boolean))].sort();
+  const centralNavigatorRows = (centralStock?.rows || [])
+    .filter((row) => centralStockCategory === "all" || row.category === centralStockCategory)
+    .filter((row) => !centralStockQuery.trim() || `${row.code} ${row.item}`.toLowerCase().includes(centralStockQuery.trim().toLowerCase()))
+    .sort((a, b) => (a.mos ?? Number.POSITIVE_INFINITY) - (b.mos ?? Number.POSITIVE_INFINITY) || a.item.localeCompare(b.item));
   const stockTrendRows = weeklyStockPeriods
     .filter((period) => period.stream === stockStream)
     .sort((a, b) => a.date.localeCompare(b.date));
+  const stockAvailabilityForecast = useMemo(() => {
+    const history = stockTrendRows.map((period) => Math.round((period.overallAvailability || 0) * 1000) / 10);
+    const result = fitForecast(history, { horizon: 4, seasonalPeriod: 6 });
+    const nextValue = result.forecast[0];
+    const latestValue = history.at(-1);
+    return {
+      observations: history.length,
+      latestValue,
+      nextValue: Number.isFinite(nextValue) ? nextValue : null,
+      direction: Number.isFinite(nextValue) && Number.isFinite(latestValue)
+        ? nextValue > latestValue + 0.5 ? "Improving" : nextValue < latestValue - 0.5 ? "Worsening" : "Stable"
+        : "Insufficient history",
+      method: result.method === "holt_winters_additive" ? "Holt-Winters" : "Holt linear",
+    };
+  }, [stockTrendRows]);
   const stockDates = stockTrendRows.map((period) => ({ date: period.date, label: period.label }));
   const stockData = stockTrendRows.find((period) => period.date === stockDate) || stockTrendRows.at(-1);
   const currentStockPeriod = weeklyStockPeriods.find((period) => period.date === stockData?.date && period.stream === stockData?.stream);
@@ -3627,13 +3656,22 @@ function App() {
                 </button>}
                 {group.stockViews && <>
                   <button className={activePage === "stock" && stockWorkspace === "control" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("control"); setActivePage("stock"); }}>
-                    <span className="sidebar-nav-icon"><Warehouse size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Control Tower</span>
+                    <span className="sidebar-nav-icon"><Warehouse size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Overview</span>
                   </button>
                   <button className={activePage === "stock" && stockWorkspace === "navigator" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("navigator"); setActivePage("stock"); }}>
                     <span className="sidebar-nav-icon"><PackageSearch size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Stock Navigator</span>
                   </button>
-                  <button className={activePage === "stock" && stockWorkspace === "alerts" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("alerts"); setActivePage("stock"); }}>
-                    <span className="sidebar-nav-icon"><BellRing size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Central Stock Alerts</span>
+                  <button className={activePage === "stock" && stockWorkspace === "weekly" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("weekly"); setActivePage("stock"); }}>
+                    <span className="sidebar-nav-icon"><Gauge size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Weekly Availability</span>
+                  </button>
+                  <button className={activePage === "stock" && stockWorkspace === "changes" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("changes"); setActivePage("stock"); }}>
+                    <span className="sidebar-nav-icon"><GitCompareArrows size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Availability Changes</span>
+                  </button>
+                  <button className={activePage === "stock" && stockWorkspace === "predictive" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("predictive"); setActivePage("stock"); }}>
+                    <span className="sidebar-nav-icon"><ChartNoAxesCombined size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Predictive Analysis</span>
+                  </button>
+                  <button className={activePage === "stock" && stockWorkspace === "trend" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("trend"); setActivePage("stock"); }}>
+                    <span className="sidebar-nav-icon"><Activity size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Stock Trend</span>
                   </button>
                 </>}
               </div>}
@@ -3873,11 +3911,43 @@ function App() {
               })}</tbody></table></div>
             </div>
           </div> : null}
+          <section className="zammsa-stock-navigator">
+            <div className="weekly-stock-head">
+              <div>
+                <p className="eyebrow dark">Central stock inventory</p>
+                <h2>ZAMMSA Stock Navigator</h2>
+                <p>Search the selected central stock-status report by ordering code or item name, then review reported stock on hand, average monthly issue and months of stock.</p>
+              </div>
+              <b>{centralNavigatorRows.length.toLocaleString()} items shown</b>
+            </div>
+            <div className="weekly-stock-controls zammsa-navigator-controls">
+              <label><span>Search stock item</span><input value={centralStockQuery} onChange={(event) => setCentralStockQuery(event.target.value)} placeholder="Ordering code or item name" /></label>
+              <label><span>Programme / category</span><select value={centralStockCategory} onChange={(event) => setCentralStockCategory(event.target.value)}><option value="all">All categories</option>{centralStockCategories.map((category) => <option value={category} key={category}>{category}</option>)}</select></label>
+              <button type="button" onClick={() => { setCentralStockQuery(""); setCentralStockCategory("all"); }}>Reset filters</button>
+            </div>
+            <div className="central-stock-table-wrap zammsa-navigator-table"><table><thead><tr><th>Ordering code</th><th>Item name</th><th>Category</th><th>Report presence</th><th>MOS · {centralStock?.label}</th><th>SOH · {centralStock?.label}</th><th>Average monthly issue</th></tr></thead><tbody>{centralNavigatorRows.map((row) => <tr key={row.code}><td><b>{row.code}</b></td><td><strong>{row.item}</strong></td><td>{row.category}</td><td><span className="central-stock-status listed">Listed</span></td><td>{formatMos(row.mos)}</td><td>{row.stockOnHand?.toLocaleString() ?? "TBD"}</td><td>{row.ami?.toLocaleString() ?? "TBD"}</td></tr>)}{!centralNavigatorRows.length && <tr><td colSpan="7">No ZAMMSA central-stock items match these filters.</td></tr>}</tbody></table></div>
+          </section>
+          <section className="zammsa-predictive-panel">
+            <div className="weekly-stock-head">
+              <div>
+                <p className="eyebrow dark">Availability outlook</p>
+                <h2>Weekly inventory predictive analysis</h2>
+                <p>The outlook uses the selected ZAMMSA weekly inventory series. It is an early-warning signal and should be validated against the next central stock-status report.</p>
+              </div>
+              <span>{stockStreamLabels[stockStream] || stockStream}</span>
+            </div>
+            <div className="stats-grid zammsa-predictive-kpis">
+              <KpiCard icon={Gauge} label="Latest availability" value={Number.isFinite(stockAvailabilityForecast.latestValue) ? `${stockAvailabilityForecast.latestValue.toFixed(1)}%` : "-"} sub={stockData?.label || "No reporting week"} tone="green" />
+              <KpiCard icon={ChartNoAxesCombined} label="Next-week outlook" value={Number.isFinite(stockAvailabilityForecast.nextValue) ? `${Math.max(0, Math.min(100, stockAvailabilityForecast.nextValue)).toFixed(1)}%` : "-"} sub={`${stockAvailabilityForecast.method} forecast`} tone={stockAvailabilityForecast.direction === "Worsening" ? "amber" : "green"} />
+              <KpiCard icon={Activity} label="Direction" value={stockAvailabilityForecast.direction} sub={`${stockAvailabilityForecast.observations} submitted weekly observations`} tone={stockAvailabilityForecast.direction === "Worsening" ? "red" : stockAvailabilityForecast.direction === "Improving" ? "green" : "neutral"} />
+              <KpiCard icon={CircleAlert} label="Central low stock" value={centralStock?.summary.belowTwoMos.toLocaleString() || "0"} sub={`Items below 2 MOS as at ${centralStock?.label || "latest report"}`} tone="amber" />
+            </div>
+          </section>
           <div className="weekly-stock-head">
             <div>
-              <p className="eyebrow dark">Weekly Inventory Availability</p>
-              <h2>ZAMMSA weekly stock status</h2>
-              <p>This tab uses only ZAMMSA weekly stock-status submissions. Select EMMS or laboratory and a reporting week, then click a category bar to see related medicines in the latest weekly stock-status report.</p>
+              <p className="eyebrow dark">{stockWorkspace === "changes" ? "Week-to-week stock movement" : stockWorkspace === "trend" ? "Weekly inventory trend" : "Weekly Inventory Availability"}</p>
+              <h2>{stockWorkspace === "changes" ? "Availability changes" : stockWorkspace === "trend" ? "Stock availability trend" : "ZAMMSA weekly stock status"}</h2>
+              <p>{stockWorkspace === "changes" ? "Compare the selected reporting week with the preceding ZAMMSA submission to see newly unavailable and recovered items." : stockWorkspace === "trend" ? "Track submitted ZAMMSA availability over time for the selected programme stream." : "This tab uses only ZAMMSA weekly stock-status submissions. Select EMMS or laboratory and a reporting week, then click a category bar to see related medicines in the latest weekly stock-status report."}</p>
             </div>
             <div className="weekly-stock-controls">
               <label>

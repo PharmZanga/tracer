@@ -253,28 +253,99 @@ select:focus-visible {
   display: none;
 }
 
-.stock-navigator .weekly-hero h2::after {
-  content: "Stock Navigator";
-  display: block;
-  margin-top: 3px;
-  color: #c7f0d4;
-  font-size: 14px;
-  font-weight: 750;
-}
-
-.stock-alerts .weekly-stock-head,
-.stock-alerts .weekly-stock-grid,
-.stock-alerts .weekly-change-grid {
+.stock-navigator .weekly-stock-section > .weekly-stock-head,
+.stock-navigator .weekly-stock-grid,
+.stock-navigator .weekly-change-grid,
+.stock-navigator .zammsa-predictive-panel {
   display: none;
 }
 
-.stock-alerts .weekly-hero h2::after {
-  content: "Central Stock Alerts";
-  display: block;
-  margin-top: 3px;
-  color: #fecaca;
-  font-size: 14px;
-  font-weight: 750;
+.stock-weekly .central-stock-snapshot,
+.stock-weekly .zammsa-stock-navigator,
+.stock-weekly .zammsa-predictive-panel,
+.stock-weekly .weekly-change-grid {
+  display: none;
+}
+
+.stock-changes .central-stock-snapshot,
+.stock-changes .zammsa-stock-navigator,
+.stock-changes .zammsa-predictive-panel,
+.stock-changes .weekly-stock-grid {
+  display: none;
+}
+
+.stock-predictive .central-stock-snapshot,
+.stock-predictive .zammsa-stock-navigator,
+.stock-predictive .weekly-stock-section > .weekly-stock-head,
+.stock-predictive .weekly-stock-grid,
+.stock-predictive .weekly-change-grid {
+  display: none;
+}
+
+.stock-trend .central-stock-snapshot,
+.stock-trend .zammsa-stock-navigator,
+.stock-trend .zammsa-predictive-panel,
+.stock-trend .weekly-change-grid {
+  display: none;
+}
+
+.stock-trend .weekly-stock-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.stock-trend .weekly-stock-grid > :not(.stock-trend-panel) {
+  display: none;
+}
+
+.zammsa-stock-navigator,
+.zammsa-predictive-panel {
+  display: none;
+  gap: 16px;
+}
+
+.stock-navigator .zammsa-stock-navigator,
+.stock-predictive .zammsa-predictive-panel {
+  display: grid;
+}
+
+.zammsa-navigator-controls {
+  grid-template-columns: minmax(260px, 1fr) minmax(220px, .6fr) auto;
+  align-items: end;
+}
+
+.zammsa-navigator-controls input,
+.zammsa-navigator-controls select {
+  width: 100%;
+}
+
+.zammsa-navigator-controls button {
+  min-height: 42px;
+  padding: 9px 14px;
+  border: 1px solid #087e45;
+  border-radius: 4px;
+  background: #fff;
+  color: #087e45;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.zammsa-navigator-table {
+  max-height: 620px;
+}
+
+.zammsa-predictive-kpis {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 880px) {
+  .zammsa-navigator-controls,
+  .zammsa-predictive-kpis { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 560px) {
+  .zammsa-navigator-controls,
+  .zammsa-predictive-kpis { grid-template-columns: 1fr; }
 }
 
 .programme-source-strip {
