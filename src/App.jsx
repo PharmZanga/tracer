@@ -2969,6 +2969,7 @@ function App() {
   const comparisonMonths = [...new Set(tracerReportingPeriods
     .filter((period) => String(period.month).startsWith(comparisonYear))
     .map((period) => period.month))].sort();
+  const comparisonHistoryLoading = activePage === "comparison" && historicalYearLoading === "2026";
   const comparisonRangeOptions = comparisonPeriodType === "weekly"
     ? tracerReportingPeriods.filter((period) => String(period.month).startsWith(comparisonYear)).map((period) => ({ value: period.id, label: period.label }))
     : comparisonPeriodType === "monthly"
@@ -4377,6 +4378,7 @@ function App() {
           </div>
 
           <div className="comparison-filters">
+            {comparisonHistoryLoading && <div className="comparison-history-loading" role="status">Loading January to September 2026 reporting history for comparison...</div>}
             <label>
               <span>Period type</span>
               <select value={comparisonPeriodType} onChange={(event) => {
@@ -4450,7 +4452,7 @@ function App() {
             </label>}
             <label>
               <span>First period</span>
-              <select value={comparisonBaselineStart} onChange={(event) => {
+              <select value={comparisonBaselineStart} disabled={comparisonHistoryLoading} onChange={(event) => {
                 setComparisonBaselineStart(event.target.value);
                 setComparisonBaselineEnd(event.target.value);
               }}>
@@ -4459,7 +4461,7 @@ function App() {
             </label>
             <label>
               <span>Second period</span>
-              <select value={comparisonRangeStart} onChange={(event) => {
+              <select value={comparisonRangeStart} disabled={comparisonHistoryLoading} onChange={(event) => {
                 setComparisonRangeStart(event.target.value);
                 setComparisonRangeEnd(event.target.value);
               }}>

@@ -5991,6 +5991,16 @@ td.neutral {
   gap: 16px;
 }
 
+.comparison-history-loading {
+  grid-column: 1 / -1;
+  padding: 9px 11px;
+  border-left: 3px solid #087e45;
+  color: #175437;
+  background: #edf8f0;
+  font-size: 13px;
+  font-weight: 760;
+}
+
 .commodity-alert-centre { display: grid; gap: 16px; }
 .alert-kpis { margin: 0; }
 .alert-toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; padding: 14px; }
