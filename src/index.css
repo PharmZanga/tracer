@@ -176,7 +176,7 @@ select:focus-visible {
 
 .sidebar-nav-group {
   display: grid;
-  gap: 3px;
+  gap: 6px;
 }
 
 .sidebar-group-toggle {
@@ -186,10 +186,11 @@ select:focus-visible {
   width: 100%;
   min-height: 42px;
   padding: 7px 10px;
-  border: 1px solid rgba(194, 224, 204, 0.28);
+  border: 1px solid #5d866c;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.035);
-  color: rgba(255, 255, 255, 0.72);
+  background: #183b27;
+  color: #e4f4e8;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   cursor: pointer;
   font: inherit;
   font-size: 10px;
@@ -201,9 +202,9 @@ select:focus-visible {
 
 .sidebar-group-toggle:hover,
 .sidebar-group-toggle.contains-active {
-  color: #a8e3bd;
-  border-color: rgba(168, 227, 189, 0.72);
-  background: rgba(67, 144, 92, 0.19);
+  color: #ffffff;
+  border-color: #a8e3bd;
+  background: #245335;
 }
 
 .sidebar-group-toggle:focus-visible {
