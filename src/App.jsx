@@ -2857,12 +2857,23 @@ function App() {
       .filter((row) => vaccineProvince === "all" || row.province === vaccineProvince)
       .map((row) => row.district))].sort(compareText);
     const vaccineNameOptions = [...new Set(periodRows.map((row) => row.vaccine))].sort(compareText);
-    if (activePage !== "vaccines") return { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows: [], vaccineSummary: { districts: 0, availability: 0, mos: null, stockouts: 0, stock: 0, consumption: 0, expiring: 0, expired: 0 }, vaccineTrendRows: [], vaccineProductRows: [], vaccineExpiryRows: [], vaccineStockoutRows: [] };
+    if (activePage !== "vaccines") return { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows: [], vaccineSummary: { districts: 0, availability: 0, mos: null, stockouts: 0, stock: 0, consumption: 0, expiring: 0, expired: 0, nonReporting: 0 }, vaccineTrendRows: [], vaccineProductRows: [], vaccineExpiryRows: [], vaccineStockoutRows: [], vaccineNonReportingDistricts: [] };
 
     const vaccineRows = periodRows
       .filter((row) => vaccineProvince === "all" || row.province === vaccineProvince)
       .filter((row) => vaccineDistrict === "all" || row.district === vaccineDistrict)
       .filter((row) => vaccineName === "all" || row.vaccine === vaccineName);
+    const vaccineHistoricalDistricts = new Map();
+    vaccineStockData.periods.forEach((period) => vaccineRowsFromPeriod(period)
+      .filter((row) => vaccineProvince === "all" || row.province === vaccineProvince)
+      .filter((row) => vaccineDistrict === "all" || row.district === vaccineDistrict)
+      .filter((row) => vaccineName === "all" || row.vaccine === vaccineName)
+      .forEach((row) => vaccineHistoricalDistricts.set(`${row.province}|${row.district}`, { province: row.province, district: row.district })));
+    const vaccineReportedDistrictKeys = new Set(vaccineRows.map((row) => `${row.province}|${row.district}`));
+    const vaccineNonReportingDistricts = [...vaccineHistoricalDistricts.entries()]
+      .filter(([key]) => !vaccineReportedDistrictKeys.has(key))
+      .map(([, district]) => district)
+      .sort((a, b) => compareText(a.province, b.province) || compareText(a.district, b.district));
     const vaccineMosRows = vaccineRows.filter((row) => Number.isFinite(row.mos));
     const selectedPeriodEnd = vaccinePeriodEnd(selectedVaccinePeriod);
     const expiryWindowEnd = selectedPeriodEnd ? new Date(Date.UTC(selectedPeriodEnd.getUTCFullYear(), selectedPeriodEnd.getUTCMonth() + 7, 0)) : null;
@@ -2881,6 +2892,7 @@ function App() {
       consumption: vaccineRows.reduce((sum, row) => sum + (Number(row.amc) || 0), 0),
       expiring: vaccineExpiryRows.filter((row) => row.expiryStatus === "Expiring within 6 months").length,
       expired: vaccineExpiryRows.filter((row) => row.expiryStatus === "Expired").length,
+      nonReporting: vaccineNonReportingDistricts.length,
     };
     const vaccineTrendRows = vaccineStockData.periods.map((period) => {
       const rows = vaccineRowsFromPeriod(period)
@@ -2905,9 +2917,9 @@ function App() {
       const mosRows = group.rows.filter((row) => Number.isFinite(row.mos));
       return { ...group, availability: group.rows.length ? group.rows.filter((row) => row.stock > 0).length / group.rows.length : 0, mos: mosRows.length ? mosRows.reduce((sum, row) => sum + row.mos, 0) / mosRows.length : null };
     }).sort((a, b) => a.availability - b.availability || (a.mos ?? Infinity) - (b.mos ?? Infinity) || compareText(a.name, b.name));
-    return { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows, vaccineSummary, vaccineTrendRows, vaccineProductRows, vaccineExpiryRows, vaccineStockoutRows };
+    return { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows, vaccineSummary, vaccineTrendRows, vaccineProductRows, vaccineExpiryRows, vaccineStockoutRows, vaccineNonReportingDistricts };
   }, [activePage, vaccinePeriodId, vaccineProvince, vaccineDistrict, vaccineName]);
-  const { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows, vaccineSummary, vaccineTrendRows, vaccineProductRows, vaccineExpiryRows, vaccineStockoutRows } = vaccineWorkspace;
+  const { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows, vaccineSummary, vaccineTrendRows, vaccineProductRows, vaccineExpiryRows, vaccineStockoutRows, vaccineNonReportingDistricts } = vaccineWorkspace;
   const programmeRowsForPage = (fieldData.programmes || []).filter((program) => programmeMatchesView(program.name, activeProgrammeNavigationView));
   const programmeTracerRows = commodityRowsFromPeriod(fieldData)
     .filter((row) => programmeMatchesView(row.programme, activeProgrammeNavigationView));
@@ -3756,7 +3768,7 @@ function App() {
                   <button className={`sidebar-vaccine-toggle ${activePage === "vaccines" ? "active" : ""}`} type="button" onClick={() => setVaccineNavOpen((open) => !open)} aria-expanded={vaccineNavOpen}>
                     <span className="sidebar-nav-icon"><Syringe size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Vaccine Stock 2025-2026</span>{vaccineNavOpen ? <ChevronDown size={15} aria-hidden="true" /> : <ChevronRight size={15} aria-hidden="true" />}
                   </button>
-                  {vaccineNavOpen && <div className="sidebar-vaccine-children">{[{ id: "overview", label: "Vaccine overview", icon: Syringe }, { id: "consumption", label: "Consumption trend", icon: ChartNoAxesCombined }, { id: "stock", label: "Stock on hand", icon: Boxes }, { id: "expiry", label: "Expiry monitoring", icon: CalendarDays }, { id: "reporting", label: "Reporting trend", icon: ClipboardCheck }, { id: "stockouts", label: "Stock-outs", icon: CircleX }].map((view) => {
+                  {vaccineNavOpen && <div className="sidebar-vaccine-children">{[{ id: "overview", label: "Vaccine overview", icon: Syringe }, { id: "consumption", label: "Consumption trend", icon: ChartNoAxesCombined }, { id: "stock", label: "Stock on hand", icon: Boxes }, { id: "expiry", label: "Expiry monitoring", icon: CalendarDays }, { id: "reporting", label: "Reporting trend", icon: ClipboardCheck }, { id: "nonreporting", label: "Non-reporting", icon: FileX }, { id: "stockouts", label: "Stock-outs", icon: CircleX }].map((view) => {
                     const VaccineIcon = view.icon;
                     return <button className={activePage === "vaccines" && vaccineWorkspaceView === view.id ? "active" : ""} type="button" key={view.id} onClick={() => { setVaccineWorkspaceView(view.id); setVaccineNavOpen(true); setActivePage("vaccines"); }}>
                       <span className="sidebar-nav-icon"><VaccineIcon size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">{view.label}</span>
@@ -4757,10 +4769,11 @@ function App() {
           </div>
           <div className="vaccine-view vaccine-overview-view">
             <div className="stats-grid vaccine-kpis">
-              <KpiCard icon={MapPinned} label="Reporting districts" value={vaccineSummary.districts.toLocaleString()} sub={`${vaccineRows.length.toLocaleString()} vaccine records in ${selectedVaccinePeriod?.label || "the selected month"}`} />
-              <KpiCard icon={Boxes} label="Stock on hand" value={Math.round(vaccineSummary.stock).toLocaleString()} sub="Total reported doses in the current filter" tone="green" />
-              <KpiCard icon={ChartNoAxesCombined} label="Monthly consumption" value={Math.round(vaccineSummary.consumption).toLocaleString()} sub="Total reported AMC in the current filter" tone="amber" />
-              <KpiCard icon={CircleX} label="Stock-outs" value={vaccineSummary.stockouts.toLocaleString()} sub="Submitted district-vaccine records with zero stock" tone={vaccineSummary.stockouts ? "red" : "green"} />
+              <KpiCard icon={MapPinned} label="Reporting districts" value={vaccineSummary.districts.toLocaleString()} sub={`${vaccineRows.length.toLocaleString()} vaccine records in ${selectedVaccinePeriod?.label || "the selected month"}`} onClick={() => setVaccineWorkspaceView("reporting")} title="Open reporting trend" />
+              <KpiCard icon={Boxes} label="Stock on hand" value={Math.round(vaccineSummary.stock).toLocaleString()} sub="Total reported doses in the current filter" tone="green" onClick={() => setVaccineWorkspaceView("stock")} title="Open stock on hand analysis" />
+              <KpiCard icon={ChartNoAxesCombined} label="Monthly consumption" value={Math.round(vaccineSummary.consumption).toLocaleString()} sub="Total reported AMC in the current filter" tone="amber" onClick={() => setVaccineWorkspaceView("consumption")} title="Open consumption trend" />
+              <KpiCard icon={FileX} label="Non-reporting" value={vaccineSummary.nonReporting.toLocaleString()} sub="Historically observed districts absent this month" tone={vaccineSummary.nonReporting ? "amber" : "green"} onClick={() => setVaccineWorkspaceView("nonreporting")} title="Open non-reporting districts" />
+              <KpiCard icon={CircleX} label="Stock-outs" value={vaccineSummary.stockouts.toLocaleString()} sub="Submitted district-vaccine records with zero stock" tone={vaccineSummary.stockouts ? "red" : "green"} onClick={() => setVaccineWorkspaceView("stockouts")} title="Open stock-out register" />
             </div>
             <VaccineBarChart title="Availability by antigen" subtitle="Lowest availability is shown first for the selected reporting month." rows={vaccineProductRows.slice(0, 10)} value={(row) => row.availability * 100} label={(row) => row.name} format={(value) => `${value.toFixed(0)}%`} tone="green" onSelect={(row) => setVaccineName(row.name)} />
             <div className="table-panel vaccine-product-panel">
@@ -4792,6 +4805,11 @@ function App() {
             <div className="stats-grid vaccine-kpis"><KpiCard icon={MapPinned} label="Districts reporting" value={vaccineSummary.districts.toLocaleString()} sub="Districts represented in the selected month" /><KpiCard icon={ClipboardCheck} label="Vaccine records" value={vaccineRows.length.toLocaleString()} sub="Submitted district-vaccine rows" /><KpiCard icon={CircleCheck} label="Availability" value={formatPercent(vaccineSummary.availability)} sub="Submitted rows with positive stock" tone="green" /><KpiCard icon={FileQuestion} label="Reporting measure" value="Records" sub="No official expected district register was supplied with this workbook" tone="neutral" /></div>
             <VaccineBarChart title="District reporting trend" subtitle="Districts represented in each monthly vaccine workbook." rows={vaccineTrendRows} value={(row) => row.districts} label={(row) => row.label} onSelect={(row) => setVaccinePeriodId(row.id)} tone="green" />
             <div className="table-panel"><div className="table-headline"><div><h2>Reporting trend</h2><p>Counts are the districts and district-vaccine records found in each monthly workbook; this is not an assumed completeness rate.</p></div></div><div className="table-scroll"><table><thead><tr><th>Month</th><th>Reporting districts</th><th>Vaccine records</th><th>Source sheet</th></tr></thead><tbody>{vaccineTrendRows.map((row) => <tr key={row.id} className={row.id === selectedVaccinePeriod?.id ? "selected-row" : ""}><td><button type="button" className="table-link-button" onClick={() => setVaccinePeriodId(row.id)}>{row.label}</button></td><td>{row.districts.toLocaleString()}</td><td>{row.rows.toLocaleString()}</td><td>{row.sourceSheet}</td></tr>)}</tbody></table></div></div>
+          </div>
+
+          <div className="vaccine-view vaccine-nonreporting-view">
+            <div className="stats-grid vaccine-kpis"><KpiCard icon={FileX} label="Non-reporting districts" value={vaccineSummary.nonReporting.toLocaleString()} sub="Absent from the selected month's vaccine workbook" tone={vaccineSummary.nonReporting ? "amber" : "green"} /><KpiCard icon={MapPinned} label="Historical district universe" value={(vaccineSummary.districts + vaccineSummary.nonReporting).toLocaleString()} sub="Districts observed in this vaccine dataset" /><KpiCard icon={ClipboardCheck} label="Reporting districts" value={vaccineSummary.districts.toLocaleString()} sub="Districts represented in the selected month" /><KpiCard icon={FileQuestion} label="Method" value="Observed" sub="This is not an official expected-reporting register" tone="neutral" /></div>
+            <div className="table-panel"><div className="table-headline"><div><h2>Districts without a vaccine report</h2><p>These districts appear in the historical vaccine data for the selected scope but have no vaccine record in {selectedVaccinePeriod?.label}. Confirm against the programme reporting schedule before escalation.</p></div><span>{vaccineNonReportingDistricts.length.toLocaleString()} districts</span></div><div className="table-scroll"><table><thead><tr><th>Province</th><th>District</th><th>Selected month</th><th>Follow-up</th></tr></thead><tbody>{vaccineNonReportingDistricts.map((row) => <tr key={`${row.province}-${row.district}`}><td>{row.province}</td><td><strong>{row.district}</strong></td><td>{selectedVaccinePeriod?.label}</td><td>Validate monthly vaccine submission</td></tr>)}{!vaccineNonReportingDistricts.length && <tr><td colSpan="4">Every district observed in the historical vaccine data is represented in this selected month.</td></tr>}</tbody></table></div></div>
           </div>
 
           <div className="vaccine-view vaccine-stockouts-view">

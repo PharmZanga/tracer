@@ -1381,6 +1381,7 @@ select:focus-visible {
 .vaccine-stock .vaccine-stock-view,
 .vaccine-expiry .vaccine-expiry-view,
 .vaccine-reporting .vaccine-reporting-view,
+.vaccine-nonreporting .vaccine-nonreporting-view,
 .vaccine-stockouts .vaccine-stockouts-view { display: grid; }
 .vaccine-chart { min-height: 290px; }
 .vaccine-bar-chart { display: grid; grid-template-columns: repeat(auto-fit, minmax(58px, 1fr)); align-items: end; gap: 10px; min-height: 205px; padding: 12px 8px 0; border-top: 1px solid #dce8df; }
