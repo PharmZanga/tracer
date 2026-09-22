@@ -1370,7 +1370,13 @@ select:focus-visible {
 .vaccine-source-strip { margin-top: -3px; }
 .vaccine-filter-bar { grid-template-columns: repeat(4, minmax(160px, 1fr)); }
 .vaccine-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.vaccine-trend-panel, .vaccine-product-panel { display: grid; gap: 12px; }
+.vaccine-view { display: none; gap: 16px; }
+.vaccine-overview .vaccine-overview-view,
+.vaccine-consumption .vaccine-consumption-view,
+.vaccine-stock .vaccine-stock-view,
+.vaccine-expiry .vaccine-expiry-view,
+.vaccine-reporting .vaccine-reporting-view,
+.vaccine-stockouts .vaccine-stockouts-view { display: grid; }
 .selected-row { background: #edf7f0; }
 .table-link-button { border: 0; padding: 0; color: #06713d; background: transparent; font: inherit; font-weight: 800; cursor: pointer; text-align: left; }
 .table-link-button:hover { text-decoration: underline; }
