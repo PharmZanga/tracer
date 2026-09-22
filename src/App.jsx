@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Users, Warehouse } from "lucide-react";
+import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
 import { availableTracerYears, loadHistoricalTracerYear, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
@@ -9,6 +9,7 @@ import { reportingFacilityType, sourceSupportedHospitalFacility } from "./dataQu
 import { facilityReportingRows, primaryCareDistrictRows, primaryCareDistrictSummary, primaryCareLevelReported } from "./reportingQuality.js";
 import { buildRedistributionCandidates } from "./redistribution.js";
 import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTracerAnalysis.js";
+import { vaccineStockData } from "./vaccineStockData.js";
 
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary", icon: LayoutDashboard },
@@ -20,6 +21,7 @@ const dashboardPages = [
   { id: "alerts", short: "CA", label: "Commodity Alerts", icon: BellRing },
   { id: "comparison", short: "CP", label: "Comparison", icon: GitCompareArrows },
   { id: "programmes", short: "PR", label: "Programme Performance", icon: Gauge },
+  { id: "vaccines", short: "VX", label: "Vaccine Stock", icon: Syringe },
   { id: "reporting", short: "RR", label: "Reporting Rate", icon: ClipboardCheck },
   { id: "quality", short: "DQ", label: "Data Quality", icon: ScanSearch },
   { id: "gate", short: "QG", label: "Data Quality Gate", icon: ShieldCheck },
@@ -31,7 +33,7 @@ const dashboardPages = [
 const sidebarGroups = [
   { id: "overview", label: "Overview", pages: ["executive", "national", "provincial", "facilities"] },
   { id: "tracer", label: "Tracer Intelligence", pages: ["commodities", "alerts", "reporting", "quality", "gate", "predictive", "actions"] },
-  { id: "programmes", label: "Programme Intelligence", programmeViews: true },
+  { id: "programmes", label: "Programme Intelligence", programmeViews: true, vaccineViews: true },
   { id: "zammsa", label: "ZAMMSA Intelligence", stockViews: true },
   { id: "administration", label: "Administration", pages: ["imports"] },
 ];
@@ -58,6 +60,7 @@ const moduleDescriptions = {
   alerts: "Prioritised supply risks requiring monitoring, redistribution, or replenishment.",
   comparison: "Period-on-period comparison of national tracer performance.",
   programmes: "Programme-specific commodity availability and stock risks.",
+  vaccines: "Monthly vaccine stock, consumption, months of stock, and expiry monitoring.",
   reporting: "District and facility reporting completeness for tracer submissions.",
   quality: "Data completeness, consistency, and reporting quality checks.",
   gate: "Records held from operational analysis until source-data issues are corrected.",
@@ -135,6 +138,21 @@ function commodityRowsFromPeriod(period) {
     amc: amc === null || amc === undefined || amc === "" ? null : Number(amc),
     mos: mos === null || mos === undefined || mos === "" || !Number.isFinite(Number(mos)) ? null : Number(mos),
   })).filter((row) => isCommodityName(row.item));
+}
+
+function vaccineRowsFromPeriod(period) {
+  if (!period) return [];
+  const { provinces = [], districts = [], vaccines = [] } = vaccineStockData.dictionaries;
+  return period.rows.map(([province, district, vaccine, stock, amc, mos, expiryDate, vvmStage]) => ({
+    province: provinces[province],
+    district: districts[district],
+    vaccine: vaccines[vaccine],
+    stock,
+    amc,
+    mos,
+    expiryDate,
+    vvmStage,
+  }));
 }
 
 function facilityCommodityKey(row) {
@@ -1610,6 +1628,10 @@ function App() {
   const [activePage, setActivePage] = useState(() => dashboardPages.some((page) => page.id === initialDashboardParam("page")) ? initialDashboardParam("page") : "executive");
   const [openSidebarGroups, setOpenSidebarGroups] = useState(() => new Set(["overview"]));
   const [programmeNavigationFocus, setProgrammeNavigationFocus] = useState("all");
+  const [vaccinePeriodId, setVaccinePeriodId] = useState(() => vaccineStockData.periods.at(-1)?.id || "");
+  const [vaccineProvince, setVaccineProvince] = useState("all");
+  const [vaccineDistrict, setVaccineDistrict] = useState("all");
+  const [vaccineName, setVaccineName] = useState("all");
   const [stockWorkspace, setStockWorkspace] = useState("control");
   const [fieldPeriodId, setFieldPeriodId] = useState(() => tracerReportingPeriods.some((period) => period.id === initialDashboardParam("period")) ? initialDashboardParam("period") : tracerReportingPeriods.at(-1).id);
   const [selectedProvince, setSelectedProvince] = useState(() => initialDashboardParam("province", "all"));
@@ -2734,6 +2756,54 @@ function App() {
     .filter((row) => !row.district || selectedDistrict === "all" || row.district === selectedDistrict)
     .filter((row) => !row.facilityLevel || matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel));
   const activeProgrammeNavigationView = programmeNavigationViews.find((view) => view.id === programmeNavigationFocus) || programmeNavigationViews[0];
+  const selectedVaccinePeriod = vaccineStockData.periods.find((period) => period.id === vaccinePeriodId) || vaccineStockData.periods.at(-1);
+  const vaccineRows = vaccineRowsFromPeriod(selectedVaccinePeriod)
+    .filter((row) => vaccineProvince === "all" || row.province === vaccineProvince)
+    .filter((row) => vaccineDistrict === "all" || row.district === vaccineDistrict)
+    .filter((row) => vaccineName === "all" || row.vaccine === vaccineName);
+  const vaccineProvinceOptions = [...new Set(vaccineRowsFromPeriod(selectedVaccinePeriod).map((row) => row.province))].sort(compareText);
+  const vaccineDistrictOptions = [...new Set(vaccineRowsFromPeriod(selectedVaccinePeriod)
+    .filter((row) => vaccineProvince === "all" || row.province === vaccineProvince)
+    .map((row) => row.district))].sort(compareText);
+  const vaccineNameOptions = [...new Set(vaccineRowsFromPeriod(selectedVaccinePeriod).map((row) => row.vaccine))].sort(compareText);
+  const vaccineMosRows = vaccineRows.filter((row) => Number.isFinite(row.mos));
+  const vaccineSummary = {
+    districts: new Set(vaccineRows.map((row) => `${row.province}|${row.district}`)).size,
+    availability: vaccineRows.length ? vaccineRows.filter((row) => row.stock > 0).length / vaccineRows.length : 0,
+    mos: vaccineMosRows.length ? vaccineMosRows.reduce((sum, row) => sum + row.mos, 0) / vaccineMosRows.length : null,
+    stockouts: vaccineRows.filter((row) => row.stock === 0).length,
+  };
+  const vaccineTrendRows = vaccineStockData.periods.map((period) => {
+    const rows = vaccineRowsFromPeriod(period)
+      .filter((row) => vaccineProvince === "all" || row.province === vaccineProvince)
+      .filter((row) => vaccineDistrict === "all" || row.district === vaccineDistrict)
+      .filter((row) => vaccineName === "all" || row.vaccine === vaccineName);
+    const mosRows = rows.filter((row) => Number.isFinite(row.mos));
+    return {
+      id: period.id,
+      label: period.label,
+      sourceSheet: period.sourceSheet,
+      availability: rows.length ? rows.filter((row) => row.stock > 0).length / rows.length : null,
+      mos: mosRows.length ? mosRows.reduce((sum, row) => sum + row.mos, 0) / mosRows.length : null,
+      rows: rows.length,
+    };
+  });
+  const vaccineProductRows = Object.values(vaccineRows.reduce((groups, row) => {
+    const group = groups[row.vaccine] || { name: row.vaccine, rows: [], stock: 0, amc: 0, stockouts: 0 };
+    group.rows.push(row);
+    group.stock += row.stock || 0;
+    group.amc += row.amc || 0;
+    if (row.stock === 0) group.stockouts += 1;
+    groups[row.vaccine] = group;
+    return groups;
+  }, {})).map((group) => {
+    const mosRows = group.rows.filter((row) => Number.isFinite(row.mos));
+    return {
+      ...group,
+      availability: group.rows.length ? group.rows.filter((row) => row.stock > 0).length / group.rows.length : 0,
+      mos: mosRows.length ? mosRows.reduce((sum, row) => sum + row.mos, 0) / mosRows.length : null,
+    };
+  }).sort((a, b) => a.availability - b.availability || (a.mos ?? Infinity) - (b.mos ?? Infinity) || compareText(a.name, b.name));
   const programmeRowsForPage = (fieldData.programmes || []).filter((program) => programmeMatchesView(program.name, activeProgrammeNavigationView));
   const programmeTracerRows = commodityRowsFromPeriod(fieldData)
     .filter((row) => programmeMatchesView(row.programme, activeProgrammeNavigationView));
@@ -3511,7 +3581,7 @@ function App() {
             const pages = (group.pages || []).map((id) => visibleDashboardPages.find((page) => page.id === id)).filter(Boolean);
             if (!group.programmeViews && !group.stockViews && !pages.length) return null;
             const isOpen = openSidebarGroups.has(group.id);
-            const hasActiveChild = group.programmeViews ? activePage === "programmes"
+            const hasActiveChild = group.programmeViews ? ["programmes", "vaccines"].includes(activePage)
               : group.stockViews ? activePage === "stock"
                 : pages.some((page) => page.id === activePage);
             return <div className={`sidebar-nav-group ${isOpen ? "open" : ""}`} key={group.id}>
@@ -3541,6 +3611,9 @@ function App() {
                 {group.programmeViews && programmeNavigationViews.map((view) => <button className={activePage === "programmes" && programmeNavigationFocus === view.id ? "active" : ""} type="button" key={view.id} onClick={() => { setProgrammeNavigationFocus(view.id); setActivePage("programmes"); }}>
                   <span className="sidebar-nav-icon"><Gauge size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">{view.label}</span>
                 </button>)}
+                {group.vaccineViews && <button className={activePage === "vaccines" ? "active" : ""} type="button" onClick={() => setActivePage("vaccines")}>
+                  <span className="sidebar-nav-icon"><Syringe size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Vaccine stock 2025-2026</span>
+                </button>}
                 {group.stockViews && <>
                   <button className={activePage === "stock" && stockWorkspace === "control" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("control"); setActivePage("stock"); }}>
                     <span className="sidebar-nav-icon"><Warehouse size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Control Tower</span>
@@ -3569,7 +3642,7 @@ function App() {
       </aside>
 
       <main className={`app-shell dashboard-page page-${activePage} stock-${stockWorkspace}`}>
-        {!['stock', 'comparison', 'reporting'].includes(activePage) && <header className="dashboard-topbar">
+        {!['stock', 'comparison', 'reporting', 'vaccines'].includes(activePage) && <header className="dashboard-topbar">
           <div className="global-filter-bar">
             <label>
               <span>Year</span>
@@ -4470,6 +4543,41 @@ function App() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </section>
+
+        <section className="vaccine-stock-section">
+          <div className="weekly-head">
+            <div>
+              <p className="eyebrow dark">Vaccine Programme</p>
+              <h2>Monthly vaccine stock counts</h2>
+              <p>District vaccine stock, consumption, MOS, and stockout visibility from the programme officer's monthly workbook.</p>
+            </div>
+          </div>
+          <div className="programme-source-strip vaccine-source-strip">
+            <span><b>Source</b> {vaccineStockData.source}</span>
+            <span><b>Coverage</b> {vaccineStockData.coverage}</span>
+            <span className="programme-source-pending"><b>Scope</b> Separate programme stream; excluded from Tracer, Data Quality, and ZAMMSA totals</span>
+          </div>
+          <div className="reporting-filter-bar vaccine-filter-bar">
+            <label><span>Reporting month</span><select value={selectedVaccinePeriod?.id || ""} onChange={(event) => setVaccinePeriodId(event.target.value)}>{vaccineStockData.periods.map((period) => <option value={period.id} key={period.id}>{period.label}</option>)}</select></label>
+            <label><span>Province</span><select value={vaccineProvince} onChange={(event) => { setVaccineProvince(event.target.value); setVaccineDistrict("all"); }}><option value="all">All provinces</option>{vaccineProvinceOptions.map((province) => <option value={province} key={province}>{province}</option>)}</select></label>
+            <label><span>District</span><select value={vaccineDistrict} onChange={(event) => setVaccineDistrict(event.target.value)}><option value="all">All districts</option>{vaccineDistrictOptions.map((district) => <option value={district} key={district}>{district}</option>)}</select></label>
+            <label><span>Vaccine</span><select value={vaccineName} onChange={(event) => setVaccineName(event.target.value)}><option value="all">All vaccines</option>{vaccineNameOptions.map((vaccine) => <option value={vaccine} key={vaccine}>{vaccine}</option>)}</select></label>
+          </div>
+          <div className="stats-grid vaccine-kpis">
+            <KpiCard icon={MapPinned} label="Reporting districts" value={vaccineSummary.districts.toLocaleString()} sub={`${vaccineRows.length.toLocaleString()} vaccine records in ${selectedVaccinePeriod?.label || "the selected month"}`} />
+            <KpiCard icon={CircleCheck} label="Vaccine availability" value={formatPercent(vaccineSummary.availability)} sub="Submitted district-vaccine records with positive stock" tone="green" />
+            <KpiCard icon={Gauge} label="Average MOS" value={formatMos(vaccineSummary.mos)} sub="Records with a submitted months-of-stock value" tone="amber" />
+            <KpiCard icon={CircleX} label="Stock-outs" value={vaccineSummary.stockouts.toLocaleString()} sub="Submitted district-vaccine records with zero stock" tone={vaccineSummary.stockouts ? "red" : "green"} />
+          </div>
+          <div className="table-panel vaccine-trend-panel">
+            <div className="table-headline"><div><h2>2025-2026 vaccine trend</h2><p>Availability and MOS stay within the vaccine programme source. Select a province, district, or vaccine to narrow the trend.</p></div><span>{vaccineTrendRows.length} reporting months</span></div>
+            <div className="table-scroll"><table><thead><tr><th>Month</th><th>Availability</th><th>Average MOS</th><th>Records</th><th>Source sheet</th></tr></thead><tbody>{vaccineTrendRows.map((row) => <tr key={row.id} className={row.id === selectedVaccinePeriod?.id ? "selected-row" : ""}><td><button type="button" className="table-link-button" onClick={() => setVaccinePeriodId(row.id)}>{row.label}</button></td><td>{row.availability === null ? "No usable stock records" : formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.rows.toLocaleString()}</td><td>{row.sourceSheet}</td></tr>)}</tbody></table></div>
+          </div>
+          <div className="table-panel vaccine-product-panel">
+            <div className="table-headline"><div><h2>Vaccine stock by antigen</h2><p>Current filtered month: {selectedVaccinePeriod?.label}. Stock and AMC are reported in the units provided by the programme source.</p></div><span>{vaccineProductRows.length} vaccines</span></div>
+            <div className="table-scroll"><table><thead><tr><th>Vaccine</th><th>Availability</th><th>Average MOS</th><th>Stock-out records</th><th>Total stock</th><th>Total AMC</th><th>District records</th></tr></thead><tbody>{vaccineProductRows.map((row) => <tr key={row.name}><td><strong>{row.name}</strong></td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.stockouts.toLocaleString()}</td><td>{Math.round(row.stock).toLocaleString()}</td><td>{Math.round(row.amc).toLocaleString()}</td><td>{row.rows.length.toLocaleString()}</td></tr>)}</tbody></table></div>
           </div>
         </section>
 

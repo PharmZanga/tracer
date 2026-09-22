@@ -1285,6 +1285,7 @@ select:focus-visible {
 .page-alerts > .commodity-alert-centre,
 .page-comparison > .comparison-section,
 .page-programmes > .weekly-section,
+.page-vaccines > .vaccine-stock-section,
 .page-quality > .concerns-section,
 .page-gate > .data-quality-gate,
 .page-reporting > .reporting-rate-section,
@@ -1292,6 +1293,23 @@ select:focus-visible {
 .page-actions > .action-tracker,
 .page-imports > .submission-import-section {
   display: grid;
+}
+
+.vaccine-stock-section { gap: 16px; }
+.vaccine-source-strip { margin-top: -3px; }
+.vaccine-filter-bar { grid-template-columns: repeat(4, minmax(160px, 1fr)); }
+.vaccine-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.vaccine-trend-panel, .vaccine-product-panel { display: grid; gap: 12px; }
+.selected-row { background: #edf7f0; }
+.table-link-button { border: 0; padding: 0; color: #06713d; background: transparent; font: inherit; font-weight: 800; cursor: pointer; text-align: left; }
+.table-link-button:hover { text-decoration: underline; }
+
+@media (max-width: 920px) {
+  .vaccine-filter-bar, .vaccine-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .vaccine-filter-bar, .vaccine-kpis { grid-template-columns: 1fr; }
 }
 
 .data-quality-gate { gap: 16px; }
