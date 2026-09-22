@@ -7089,7 +7089,13 @@ td.neutral {
   cursor: pointer;
   font: inherit;
   font-weight: 800;
+  touch-action: none;
+  user-select: none;
 }
+
+.copilot-launcher:hover { cursor: grab; }
+.copilot-launcher.dragging,
+.copilot-launcher.dragging:hover { cursor: grabbing; }
 
 .copilot-launcher span {
   display: grid;

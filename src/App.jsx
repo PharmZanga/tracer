@@ -1759,6 +1759,10 @@ function App() {
   const [copilotMessages, setCopilotMessages] = useState([]);
   const [copilotLoading, setCopilotLoading] = useState(false);
   const [copilotFeedback, setCopilotFeedback] = useState({});
+  const [copilotPosition, setCopilotPosition] = useState(null);
+  const [copilotDragging, setCopilotDragging] = useState(false);
+  const copilotDragRef = useRef(null);
+  const copilotDidDragRef = useRef(false);
   const [dashboardUser, setDashboardUser] = useState(null);
   const [importFiles, setImportFiles] = useState([]);
   const [importPeriod, setImportPeriod] = useState("");
@@ -3476,6 +3480,46 @@ function App() {
         return next;
       });
     }
+  }
+
+  function beginCopilotDrag(event) {
+    if (event.button !== 0) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    copilotDidDragRef.current = false;
+    copilotDragRef.current = {
+      pointerId: event.pointerId,
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+      width: rect.width,
+      height: rect.height,
+      startX: event.clientX,
+      startY: event.clientY,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function moveCopilotDrag(event) {
+    const drag = copilotDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const hasMoved = Math.abs(event.clientX - drag.startX) > 4 || Math.abs(event.clientY - drag.startY) > 4;
+    if (hasMoved) {
+      copilotDidDragRef.current = true;
+      setCopilotDragging(true);
+    }
+    if (!copilotDidDragRef.current) return;
+    const margin = 12;
+    setCopilotPosition({
+      left: Math.min(Math.max(margin, event.clientX - drag.offsetX), Math.max(margin, window.innerWidth - drag.width - margin)),
+      top: Math.min(Math.max(margin, event.clientY - drag.offsetY), Math.max(margin, window.innerHeight - drag.height - margin)),
+    });
+  }
+
+  function endCopilotDrag(event) {
+    const drag = copilotDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    copilotDragRef.current = null;
+    setCopilotDragging(false);
   }
 
   function exportStockCategoryExcel() {
@@ -5377,7 +5421,7 @@ function App() {
           </> : <div className="empty-state">Only a signed-in dashboard administrator can upload or publish provincial tracer submissions.</div>}
         </section>
       </main>
-      <button type="button" className={`copilot-launcher ${activePage === "predictive" ? "copilot-launcher-compact" : ""}`} onClick={() => setCopilotOpen(true)} aria-label="Open Tracer Copilot">
+      <button type="button" className={`copilot-launcher ${activePage === "predictive" ? "copilot-launcher-compact" : ""} ${copilotDragging ? "dragging" : ""}`} style={copilotPosition ? { left: `${copilotPosition.left}px`, top: `${copilotPosition.top}px`, right: "auto", bottom: "auto" } : undefined} onPointerDown={beginCopilotDrag} onPointerMove={moveCopilotDrag} onPointerUp={endCopilotDrag} onPointerCancel={endCopilotDrag} onClick={(event) => { if (copilotDidDragRef.current) { event.preventDefault(); copilotDidDragRef.current = false; return; } setCopilotOpen(true); }} aria-label="Open Tracer Copilot" title="Drag to reposition. Click to open Tracer Copilot.">
         <span>AI</span> Ask Tracer Copilot
       </button>
       {copilotOpen && <div className="copilot-backdrop" role="presentation" onMouseDown={() => setCopilotOpen(false)}>
