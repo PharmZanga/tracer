@@ -140,10 +140,9 @@ function commodityRowsFromPeriod(period) {
   })).filter((row) => isCommodityName(row.item));
 }
 
-function vaccineRowsFromPeriod(period) {
-  if (!period) return [];
+const vaccineRowsByPeriod = new Map(vaccineStockData.periods.map((period) => {
   const { provinces = [], districts = [], vaccines = [] } = vaccineStockData.dictionaries;
-  return period.rows.map(([province, district, vaccine, stock, amc, mos, expiryDate, vvmStage]) => ({
+  const rows = period.rows.map(([province, district, vaccine, stock, amc, mos, expiryDate, vvmStage]) => ({
     province: provinces[province],
     district: districts[district],
     vaccine: vaccines[vaccine],
@@ -153,6 +152,11 @@ function vaccineRowsFromPeriod(period) {
     expiryDate,
     vvmStage,
   }));
+  return [period.id, rows];
+}));
+
+function vaccineRowsFromPeriod(period) {
+  return vaccineRowsByPeriod.get(period?.id) || [];
 }
 
 function facilityCommodityKey(row) {
@@ -2756,54 +2760,48 @@ function App() {
     .filter((row) => !row.district || selectedDistrict === "all" || row.district === selectedDistrict)
     .filter((row) => !row.facilityLevel || matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel));
   const activeProgrammeNavigationView = programmeNavigationViews.find((view) => view.id === programmeNavigationFocus) || programmeNavigationViews[0];
-  const selectedVaccinePeriod = vaccineStockData.periods.find((period) => period.id === vaccinePeriodId) || vaccineStockData.periods.at(-1);
-  const vaccineRows = vaccineRowsFromPeriod(selectedVaccinePeriod)
-    .filter((row) => vaccineProvince === "all" || row.province === vaccineProvince)
-    .filter((row) => vaccineDistrict === "all" || row.district === vaccineDistrict)
-    .filter((row) => vaccineName === "all" || row.vaccine === vaccineName);
-  const vaccineProvinceOptions = [...new Set(vaccineRowsFromPeriod(selectedVaccinePeriod).map((row) => row.province))].sort(compareText);
-  const vaccineDistrictOptions = [...new Set(vaccineRowsFromPeriod(selectedVaccinePeriod)
-    .filter((row) => vaccineProvince === "all" || row.province === vaccineProvince)
-    .map((row) => row.district))].sort(compareText);
-  const vaccineNameOptions = [...new Set(vaccineRowsFromPeriod(selectedVaccinePeriod).map((row) => row.vaccine))].sort(compareText);
-  const vaccineMosRows = vaccineRows.filter((row) => Number.isFinite(row.mos));
-  const vaccineSummary = {
-    districts: new Set(vaccineRows.map((row) => `${row.province}|${row.district}`)).size,
-    availability: vaccineRows.length ? vaccineRows.filter((row) => row.stock > 0).length / vaccineRows.length : 0,
-    mos: vaccineMosRows.length ? vaccineMosRows.reduce((sum, row) => sum + row.mos, 0) / vaccineMosRows.length : null,
-    stockouts: vaccineRows.filter((row) => row.stock === 0).length,
-  };
-  const vaccineTrendRows = vaccineStockData.periods.map((period) => {
-    const rows = vaccineRowsFromPeriod(period)
+  const vaccineWorkspace = useMemo(() => {
+    const selectedVaccinePeriod = vaccineStockData.periods.find((period) => period.id === vaccinePeriodId) || vaccineStockData.periods.at(-1);
+    const periodRows = vaccineRowsFromPeriod(selectedVaccinePeriod);
+    const vaccineProvinceOptions = [...new Set(periodRows.map((row) => row.province))].sort(compareText);
+    const vaccineDistrictOptions = [...new Set(periodRows
+      .filter((row) => vaccineProvince === "all" || row.province === vaccineProvince)
+      .map((row) => row.district))].sort(compareText);
+    const vaccineNameOptions = [...new Set(periodRows.map((row) => row.vaccine))].sort(compareText);
+    if (activePage !== "vaccines") return { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows: [], vaccineSummary: { districts: 0, availability: 0, mos: null, stockouts: 0 }, vaccineTrendRows: [], vaccineProductRows: [] };
+
+    const vaccineRows = periodRows
       .filter((row) => vaccineProvince === "all" || row.province === vaccineProvince)
       .filter((row) => vaccineDistrict === "all" || row.district === vaccineDistrict)
       .filter((row) => vaccineName === "all" || row.vaccine === vaccineName);
-    const mosRows = rows.filter((row) => Number.isFinite(row.mos));
-    return {
-      id: period.id,
-      label: period.label,
-      sourceSheet: period.sourceSheet,
-      availability: rows.length ? rows.filter((row) => row.stock > 0).length / rows.length : null,
-      mos: mosRows.length ? mosRows.reduce((sum, row) => sum + row.mos, 0) / mosRows.length : null,
-      rows: rows.length,
+    const vaccineMosRows = vaccineRows.filter((row) => Number.isFinite(row.mos));
+    const vaccineSummary = {
+      districts: new Set(vaccineRows.map((row) => `${row.province}|${row.district}`)).size,
+      availability: vaccineRows.length ? vaccineRows.filter((row) => row.stock > 0).length / vaccineRows.length : 0,
+      mos: vaccineMosRows.length ? vaccineMosRows.reduce((sum, row) => sum + row.mos, 0) / vaccineMosRows.length : null,
+      stockouts: vaccineRows.filter((row) => row.stock === 0).length,
     };
-  });
-  const vaccineProductRows = Object.values(vaccineRows.reduce((groups, row) => {
-    const group = groups[row.vaccine] || { name: row.vaccine, rows: [], stock: 0, amc: 0, stockouts: 0 };
-    group.rows.push(row);
-    group.stock += row.stock || 0;
-    group.amc += row.amc || 0;
-    if (row.stock === 0) group.stockouts += 1;
-    groups[row.vaccine] = group;
-    return groups;
-  }, {})).map((group) => {
-    const mosRows = group.rows.filter((row) => Number.isFinite(row.mos));
-    return {
-      ...group,
-      availability: group.rows.length ? group.rows.filter((row) => row.stock > 0).length / group.rows.length : 0,
-      mos: mosRows.length ? mosRows.reduce((sum, row) => sum + row.mos, 0) / mosRows.length : null,
-    };
-  }).sort((a, b) => a.availability - b.availability || (a.mos ?? Infinity) - (b.mos ?? Infinity) || compareText(a.name, b.name));
+    const vaccineTrendRows = vaccineStockData.periods.map((period) => {
+      const rows = vaccineRowsFromPeriod(period)
+        .filter((row) => vaccineProvince === "all" || row.province === vaccineProvince)
+        .filter((row) => vaccineDistrict === "all" || row.district === vaccineDistrict)
+        .filter((row) => vaccineName === "all" || row.vaccine === vaccineName);
+      const mosRows = rows.filter((row) => Number.isFinite(row.mos));
+      return { id: period.id, label: period.label, sourceSheet: period.sourceSheet, availability: rows.length ? rows.filter((row) => row.stock > 0).length / rows.length : null, mos: mosRows.length ? mosRows.reduce((sum, row) => sum + row.mos, 0) / mosRows.length : null, rows: rows.length };
+    });
+    const vaccineProductRows = Object.values(vaccineRows.reduce((groups, row) => {
+      const group = groups[row.vaccine] || { name: row.vaccine, rows: [], stock: 0, amc: 0, stockouts: 0 };
+      group.rows.push(row); group.stock += row.stock || 0; group.amc += row.amc || 0;
+      if (row.stock === 0) group.stockouts += 1;
+      groups[row.vaccine] = group;
+      return groups;
+    }, {})).map((group) => {
+      const mosRows = group.rows.filter((row) => Number.isFinite(row.mos));
+      return { ...group, availability: group.rows.length ? group.rows.filter((row) => row.stock > 0).length / group.rows.length : 0, mos: mosRows.length ? mosRows.reduce((sum, row) => sum + row.mos, 0) / mosRows.length : null };
+    }).sort((a, b) => a.availability - b.availability || (a.mos ?? Infinity) - (b.mos ?? Infinity) || compareText(a.name, b.name));
+    return { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows, vaccineSummary, vaccineTrendRows, vaccineProductRows };
+  }, [activePage, vaccinePeriodId, vaccineProvince, vaccineDistrict, vaccineName]);
+  const { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows, vaccineSummary, vaccineTrendRows, vaccineProductRows } = vaccineWorkspace;
   const programmeRowsForPage = (fieldData.programmes || []).filter((program) => programmeMatchesView(program.name, activeProgrammeNavigationView));
   const programmeTracerRows = commodityRowsFromPeriod(fieldData)
     .filter((row) => programmeMatchesView(row.programme, activeProgrammeNavigationView));
