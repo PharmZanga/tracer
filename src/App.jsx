@@ -1652,6 +1652,8 @@ function App() {
   const [stockCategoryDialog, setStockCategoryDialog] = useState(false);
 
   useEffect(() => {
+    const historyWorkspace = ["comparison", "commodities", "quality", "predictive", "alerts"].includes(activePage);
+    if (!historyWorkspace) return undefined;
     let mounted = true;
     setHistoricalYearLoading("2026");
     loadHistoricalTracerYear("2026")
@@ -1659,7 +1661,7 @@ function App() {
       .catch(() => { if (mounted) setHistoricalYearLoading(""); })
       .finally(() => { if (mounted) setHistoricalYearLoading(""); });
     return () => { mounted = false; };
-  }, []);
+  }, [activePage]);
   const [reportPeriodId, setReportPeriodId] = useState(tracerReportingPeriods.at(-1).id);
   const [reportProvince, setReportProvince] = useState("all");
   const [reportDistrict, setReportDistrict] = useState("all");
@@ -2138,7 +2140,9 @@ function App() {
     : activeFacilityStatusOptions.length > 1
       ? "Facilities matching selected stock and reporting conditions"
       : "All assessed facilities";
-  const redistributionCandidates = useMemo(() => buildRedistributionCandidates(dataQualityGate.passedRows), [dataQualityGate]);
+  const needsRedistribution = ["actions", "predictive"].includes(activePage);
+  const needsForecasting = ["predictive", "alerts"].includes(activePage);
+  const redistributionCandidates = useMemo(() => needsRedistribution ? buildRedistributionCandidates(dataQualityGate.passedRows) : [], [needsRedistribution, dataQualityGate]);
   const actionCommodityCandidates = useMemo(() => redistributionCandidates.filter((item) => !actionCommodityQuery.trim() || item.commodity.toLowerCase().includes(actionCommodityQuery.trim().toLowerCase())), [redistributionCandidates, actionCommodityQuery]);
   const actionPageCount = Math.max(1, Math.ceil(actionCommodityCandidates.length / actionPageSize));
   const actionCurrentPage = Math.min(actionPage, actionPageCount);
@@ -2150,15 +2154,15 @@ function App() {
   }, { Open: 0, "In progress": 0, Completed: 0 });
   const facilityAlerts = filteredFacilityAlerts;
   const districtsInScope = scopedDistrictRows;
-  const predictiveHistoryPeriods = useMemo(() => tracerReportingPeriods
+  const predictiveHistoryPeriods = useMemo(() => needsForecasting ? tracerReportingPeriods
     .filter((period) => period.reportDate <= fieldData.reportDate)
-    .sort((a, b) => a.reportDate.localeCompare(b.reportDate)), [fieldData.reportDate]);
-  const predictiveProvinceRows = useMemo(() => buildProvinceForecast(predictiveHistoryPeriods, {
+    .sort((a, b) => a.reportDate.localeCompare(b.reportDate)) : [], [needsForecasting, fieldData.reportDate]);
+  const predictiveProvinceRows = useMemo(() => needsForecasting ? buildProvinceForecast(predictiveHistoryPeriods, {
     province: selectedProvince,
     district: selectedDistrict,
     facilityLevel: selectedFacilityLevel,
     facility: selectedFacility,
-  }), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  }) : [], [needsForecasting, predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const predictiveHighRiskRows = predictiveProvinceRows.filter((row) => row.tone === "red");
   const predictiveAverageLikelihood = predictiveProvinceRows.length
     ? predictiveProvinceRows.reduce((total, row) => total + row.likelihood, 0) / predictiveProvinceRows.length
@@ -2169,7 +2173,7 @@ function App() {
     facilityLevel: selectedFacilityLevel,
     facility: selectedFacility,
   };
-  const predictiveCommodityRows = useMemo(() => buildCommodityForecast(predictiveHistoryPeriods, predictiveFilters), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const predictiveCommodityRows = useMemo(() => needsForecasting ? buildCommodityForecast(predictiveHistoryPeriods, predictiveFilters) : [], [needsForecasting, predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const predictiveModelSummary = useMemo(() => {
     const errors = predictiveCommodityRows.map((row) => row.forecastMape).filter(Number.isFinite).sort((a, b) => a - b);
     const middle = Math.floor(errors.length / 2);
@@ -2203,7 +2207,7 @@ function App() {
       && (!search || `${row.name} ${row.programme}`.toLowerCase().includes(search)));
   }, [commodityAlertRows, alertSeverityFilter, alertQuery]);
   const commodityAlertCounts = commodityAlertRows.reduce((counts, row) => ({ ...counts, [row.severity]: counts[row.severity] + 1 }), { critical: 0, warning: 0, watch: 0 });
-  const predictiveImpact = useMemo(() => buildForecastImpact(predictiveHistoryPeriods, predictiveFilters), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const predictiveImpact = useMemo(() => needsForecasting ? buildForecastImpact(predictiveHistoryPeriods, predictiveFilters) : { current: 0 }, [needsForecasting, predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const predictiveTimeline = useMemo(() => predictiveHistoryPeriods.map((period) => {
     const rollup = combineRollups(forecastRollupsForPeriod(period, predictiveFilters), makeEmptyRollup());
     return { label: period.label, rate: rollup.rows ? rollup.riskRows / rollup.rows : 0 };
@@ -2216,14 +2220,16 @@ function App() {
     return `${x},${y}`;
   }).join(" ");
   const predictiveProvinceMos = useMemo(() => {
+    if (!needsForecasting) return new Map();
     const groups = new Map();
     commodityRowsFromPeriod(fieldData).forEach((row) => {
       if (!groups.has(row.province)) groups.set(row.province, []);
       groups.get(row.province).push(row);
     });
     return new Map([...groups.entries()].map(([province, rows]) => [province, cappedAverageMos(rows)]));
-  }, [fieldData]);
+  }, [needsForecasting, fieldData]);
   const predictiveAttentionByProvince = useMemo(() => {
+    if (!needsForecasting) return new Map();
     const groups = new Map();
     filteredFacilities.forEach((facility) => {
       if ((facility.stockoutItemCount || 0) > 0 || (facility.lowStockItemCount || 0) > 0) {
@@ -2231,12 +2237,12 @@ function App() {
       }
     });
     return groups;
-  }, [filteredFacilities]);
+  }, [needsForecasting, filteredFacilities]);
   const predictiveTopProvince = predictiveProvinceRows[0];
   const predictiveWorseningCount = predictiveProvinceRows.filter((row) => row.worsening > 0.02).length;
   const predictiveTopTransfer = redistributionCandidates[0];
   const predictiveTopTransferStatus = predictiveTopTransfer ? actionUpdates[redistributionActionKey(predictiveTopTransfer)]?.status || "Open" : "Needs validation";
-  const predictiveFeedback = useMemo(() => buildForecastFeedback(predictiveHistoryPeriods, predictiveFilters), [predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const predictiveFeedback = useMemo(() => needsForecasting ? buildForecastFeedback(predictiveHistoryPeriods, predictiveFilters) : { evaluated: [], total: 0, accuracy: 0, confirmed: 0, highForecasts: 0, missedActions: [] }, [needsForecasting, predictiveHistoryPeriods, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const predictiveFeedbackRows = predictiveFeedback.evaluated.slice(0, 8);
   const predictiveRecommendations = predictiveProvinceRows.slice(0, 5).map((row) => {
     const transfer = redistributionCandidates.find((candidate) => candidate.province === row.province);
@@ -2523,18 +2529,20 @@ function App() {
     { label: "Actions closed", value: actionTotal ? formatPercent(actionSummary.Completed / actionTotal) : "-", sub: actionTotal ? `${actionSummary.Completed} of ${actionTotal} redistribution actions` : "No active redistribution actions", tone: actionSummary.Completed ? "green" : "neutral" },
   ];
   const dataQuality = fieldData.dataQuality || { provinces: [], districts: [], facilityTypes: [] };
+  const needsQualityHistory = activePage === "quality";
   const qualityMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))].sort();
   const qualityRangeLower = qualityRangeStart <= qualityRangeEnd ? qualityRangeStart : qualityRangeEnd;
   const qualityRangeUpper = qualityRangeStart <= qualityRangeEnd ? qualityRangeEnd : qualityRangeStart;
-  const qualityRangePeriods = tracerReportingPeriods.filter((period) => period.month >= qualityRangeLower && period.month <= qualityRangeUpper);
+  const qualityRangePeriods = needsQualityHistory ? tracerReportingPeriods.filter((period) => period.month >= qualityRangeLower && period.month <= qualityRangeUpper) : [];
   // Data Quality must use the complete expected reporting universe, not the
   // named facilities that happened to appear in the first selected period.
   // The facilityTypes roster retains districts and levels with no submission,
   // including Level 2 and non-reporting Muchinga districts.
-  const qualityDirectoryPeriod = qualityRangePeriods[0] || tracerReportingPeriods[0];
+  const qualityDirectoryPeriod = needsQualityHistory ? qualityRangePeriods[0] || tracerReportingPeriods[0] : null;
   const qualityDistrictDirectory = qualityDirectoryPeriod?.dataQuality?.districts || [];
   const qualityDistrictNames = useMemo(() => [...new Set(qualityDistrictDirectory.map((row) => row.name))], [qualityDistrictDirectory]);
   const qualityHospitalRoster = useMemo(() => {
+    if (!needsQualityHistory) return [];
     const rows = new Map();
     tracerReportingPeriods.forEach((period) => {
       (period.facilities || []).forEach((facility) => {
@@ -2552,7 +2560,7 @@ function App() {
       });
     });
     return [...rows.values()];
-  }, [qualityDistrictNames]);
+  }, [needsQualityHistory, qualityDistrictNames]);
   const qualityRoster = [
     ...qualityDistrictDirectory.flatMap((row) => ["Health Centres", "Health Posts"].map((type) => ({
       province: row.province,
@@ -2713,7 +2721,7 @@ function App() {
         : `${selectedQualityDistrictLabel} reported in every selected week for this level-of-care scope.`;
   const qualityFollowupRows = nonReportingFacilityRows.slice(0, 6);
   const persistentQualityRows = qualityFacilityHistories.filter((row) => ["Persistent non-reporting", "No reporting"].includes(row.consistency));
-  const weeklyReportLibraryRows = useMemo(() => tracerReportingPeriods.map((period) => {
+  const weeklyReportLibraryRows = useMemo(() => needsQualityHistory ? tracerReportingPeriods.map((period) => {
     const facilities = facilityReportingRows(period);
     const reported = facilities.filter((row) => row.reported).length;
     const districtSummary = primaryCareDistrictSummary(period);
@@ -2733,7 +2741,7 @@ function App() {
       reportedFacilities: reported,
       rate: facilities.length ? reported / facilities.length : 0,
     };
-  }).sort((a, b) => b.reportDate.localeCompare(a.reportDate)), []);
+  }).sort((a, b) => b.reportDate.localeCompare(a.reportDate)) : [], [needsQualityHistory]);
   const selectedLibraryPeriod = weeklyReportLibraryRows.find((row) => row.id === selectedLibraryPeriodId) || weeklyReportLibraryRows[0];
   const provinceQualityRows = dataQuality.provinces || [];
   const selectedProvinceQuality = selectedProvince === "all"

@@ -1,24 +1,35 @@
-import { tracerReportingPeriods as tracerFacilityDataJanFeb } from "./tracerFacilityDataJanFeb.js";
-import { tracerReportingPeriods as tracerFacilityDataMarApr } from "./tracerFacilityDataMarApr.js";
-import { tracerReportingPeriods as tracerFacilityDataMayJun } from "./tracerFacilityDataMayJun.js";
-import { tracerReportingPeriods as tracerFacilityDataJul } from "./tracerFacilityDataJul.js";
 import { tracerReportingPeriods as tracerFacilityDataSep } from "./tracerFacilityDataSep.js";
 
 export const availableTracerYears = ["2024", "2025", "2026"];
 
-export let tracerReportingPeriods = [...tracerFacilityDataJanFeb, ...tracerFacilityDataMarApr, ...tracerFacilityDataMayJun, ...tracerFacilityDataJul, ...tracerFacilityDataSep].sort((left, right) => left.reportDate.localeCompare(right.reportDate));
+// Keep the live reporting weeks responsive. Earlier 2026 periods are loaded on
+// demand by history-heavy workspaces rather than blocking every dashboard click.
+export let tracerReportingPeriods = [...tracerFacilityDataSep].sort((left, right) => left.reportDate.localeCompare(right.reportDate));
 
 const loadedHistoricalYears = new Set();
 
 export async function loadHistoricalTracerYear(year) {
-  if (year === "2026" || loadedHistoricalYears.has(year)) return tracerReportingPeriods;
+  if (loadedHistoricalYears.has(year)) return tracerReportingPeriods;
   if (!availableTracerYears.includes(year)) throw new Error(`No tracer data is available for ${year}.`);
 
-  const module = await import(/* @vite-ignore */ `/historical/tracerFacilityData${year}.js`);
-  tracerReportingPeriods = [...tracerReportingPeriods, ...module.tracerReportingPeriods]
+  const modules = year === "2026"
+    ? await Promise.all([
+      import("./tracerFacilityDataJanFeb.js"),
+      import("./tracerFacilityDataMarApr.js"),
+      import("./tracerFacilityDataMayJun.js"),
+      import("./tracerFacilityDataJul.js"),
+    ])
+    : [await import(/* @vite-ignore */ `/historical/tracerFacilityData${year}.js`)];
+  tracerReportingPeriods = [...tracerReportingPeriods, ...modules.flatMap((module) => module.tracerReportingPeriods)]
     .sort((left, right) => left.reportDate.localeCompare(right.reportDate));
   loadedHistoricalYears.add(year);
   return tracerReportingPeriods;
+}
+
+// Node's test suite keeps its historical reconciliation coverage. Browsers do
+// not run this branch, so their initial bundle remains limited to live data.
+if (typeof process !== "undefined" && process.versions?.node) {
+  await loadHistoricalTracerYear("2026");
 }
 
 export const tracerFacilityData = tracerReportingPeriods.at(-1);
