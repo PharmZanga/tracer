@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
+import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
 import { availableTracerYears, loadHistoricalTracerYear, loadLiveTracerData, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
@@ -4765,6 +4765,7 @@ function App() {
             <label><span>Reporting unit</span><select value={vaccineDistrict} onChange={(event) => setVaccineDistrict(event.target.value)}><option value="all">All reporting units</option>{vaccineDistrictOptions.map((unit) => <option value={unit.key} key={unit.key}>{unit.district}</option>)}</select></label>
             <label><span>Vaccine</span><select value={vaccineName} onChange={(event) => setVaccineName(event.target.value)}><option value="all">All vaccines</option>{vaccineNameOptions.map((vaccine) => <option value={vaccine} key={vaccine}>{vaccine}</option>)}</select></label>
           </div>
+          {vaccineWorkspaceView !== "overview" && <div className="vaccine-back-row"><button type="button" className="vaccine-back-button" onClick={() => setVaccineWorkspaceView("overview")}><ChevronLeft size={17} aria-hidden="true" />Back to vaccine overview</button></div>}
           <div className="vaccine-view vaccine-overview-view">
             <div className="stats-grid vaccine-kpis">
               <KpiCard icon={MapPinned} label="Reporting units" value={vaccineSummary.districts.toLocaleString()} sub={`${vaccineRows.length.toLocaleString()} vaccine records in ${selectedVaccinePeriod?.label || "the selected month"}`} onClick={() => setVaccineWorkspaceView("reporting")} title="Open reporting trend" />

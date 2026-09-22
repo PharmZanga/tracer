@@ -1375,6 +1375,9 @@ select:focus-visible {
 .vaccine-source-strip { margin-top: -3px; }
 .vaccine-filter-bar { grid-template-columns: repeat(4, minmax(160px, 1fr)); }
 .vaccine-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.vaccine-back-row { display: flex; align-items: center; min-height: 32px; }
+.vaccine-back-button { display: inline-flex; align-items: center; gap: 5px; border: 1px solid #8fbda4; border-radius: 5px; padding: 7px 10px; color: #075e35; background: #f7fcf8; font: inherit; font-weight: 800; cursor: pointer; }
+.vaccine-back-button:hover, .vaccine-back-button:focus-visible { border-color: #087e45; background: #e8f6ed; }
 .vaccine-view { display: none; gap: 16px; }
 .vaccine-overview .vaccine-overview-view,
 .vaccine-consumption .vaccine-consumption-view,
