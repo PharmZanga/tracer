@@ -1668,6 +1668,7 @@ function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
 function App() {
   const [, setHistoricalDataVersion] = useState(0);
   const [historicalYearLoading, setHistoricalYearLoading] = useState("");
+  const [analysisHistoryLoading, setAnalysisHistoryLoading] = useState("");
   const [activePage, setActivePage] = useState(() => dashboardPages.some((page) => page.id === initialDashboardParam("page")) ? initialDashboardParam("page") : "executive");
   const [openSidebarGroups, setOpenSidebarGroups] = useState(() => new Set(["overview"]));
   const [programmeNavigationFocus, setProgrammeNavigationFocus] = useState("all");
@@ -1706,11 +1707,11 @@ function App() {
     const historyWorkspace = ["comparison", "commodities", "quality", "predictive", "alerts"].includes(activePage);
     if (!historyWorkspace) return undefined;
     let mounted = true;
-    setHistoricalYearLoading("2026");
+    setAnalysisHistoryLoading("2026");
     loadHistoricalTracerYear("2026")
       .then(() => { if (mounted) setHistoricalDataVersion((version) => version + 1); })
-      .catch(() => { if (mounted) setHistoricalYearLoading(""); })
-      .finally(() => { if (mounted) setHistoricalYearLoading(""); });
+      .catch(() => { if (mounted) setAnalysisHistoryLoading(""); })
+      .finally(() => { if (mounted) setAnalysisHistoryLoading(""); });
     return () => { mounted = false; };
   }, [activePage]);
   const [reportPeriodId, setReportPeriodId] = useState(tracerReportingPeriods.at(-1).id);
@@ -2969,7 +2970,7 @@ function App() {
   const comparisonMonths = [...new Set(tracerReportingPeriods
     .filter((period) => String(period.month).startsWith(comparisonYear))
     .map((period) => period.month))].sort();
-  const comparisonHistoryLoading = activePage === "comparison" && historicalYearLoading === "2026";
+  const comparisonHistoryLoading = activePage === "comparison" && analysisHistoryLoading === "2026";
   const comparisonRangeOptions = comparisonPeriodType === "weekly"
     ? tracerReportingPeriods.filter((period) => String(period.month).startsWith(comparisonYear)).map((period) => ({ value: period.id, label: period.label }))
     : comparisonPeriodType === "monthly"
