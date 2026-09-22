@@ -1675,6 +1675,7 @@ function App() {
   const [vaccineDistrict, setVaccineDistrict] = useState("all");
   const [vaccineName, setVaccineName] = useState("all");
   const [vaccineWorkspaceView, setVaccineWorkspaceView] = useState("overview");
+  const [vaccineNavOpen, setVaccineNavOpen] = useState(false);
   const [stockWorkspace, setStockWorkspace] = useState("control");
   const [fieldPeriodId, setFieldPeriodId] = useState(() => tracerReportingPeriods.some((period) => period.id === initialDashboardParam("period")) ? initialDashboardParam("period") : tracerReportingPeriods.at(-1).id);
   const [selectedProvince, setSelectedProvince] = useState(() => initialDashboardParam("province", "all"));
@@ -3752,12 +3753,15 @@ function App() {
                   <span className="sidebar-nav-icon"><Gauge size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">{view.label}</span>
                 </button>)}
                 {group.vaccineViews && <>
-                  {[{ id: "overview", label: "Vaccine overview", icon: Syringe }, { id: "consumption", label: "Consumption trend", icon: ChartNoAxesCombined }, { id: "stock", label: "Stock on hand", icon: Boxes }, { id: "expiry", label: "Expiry monitoring", icon: CalendarDays }, { id: "reporting", label: "Reporting trend", icon: ClipboardCheck }, { id: "stockouts", label: "Stock-outs", icon: CircleX }].map((view) => {
+                  <button className={`sidebar-vaccine-toggle ${activePage === "vaccines" ? "active" : ""}`} type="button" onClick={() => setVaccineNavOpen((open) => !open)} aria-expanded={vaccineNavOpen}>
+                    <span className="sidebar-nav-icon"><Syringe size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Vaccine Stock 2025-2026</span>{vaccineNavOpen ? <ChevronDown size={15} aria-hidden="true" /> : <ChevronRight size={15} aria-hidden="true" />}
+                  </button>
+                  {vaccineNavOpen && <div className="sidebar-vaccine-children">{[{ id: "overview", label: "Vaccine overview", icon: Syringe }, { id: "consumption", label: "Consumption trend", icon: ChartNoAxesCombined }, { id: "stock", label: "Stock on hand", icon: Boxes }, { id: "expiry", label: "Expiry monitoring", icon: CalendarDays }, { id: "reporting", label: "Reporting trend", icon: ClipboardCheck }, { id: "stockouts", label: "Stock-outs", icon: CircleX }].map((view) => {
                     const VaccineIcon = view.icon;
-                    return <button className={activePage === "vaccines" && vaccineWorkspaceView === view.id ? "active" : ""} type="button" key={view.id} onClick={() => { setVaccineWorkspaceView(view.id); setActivePage("vaccines"); }}>
+                    return <button className={activePage === "vaccines" && vaccineWorkspaceView === view.id ? "active" : ""} type="button" key={view.id} onClick={() => { setVaccineWorkspaceView(view.id); setVaccineNavOpen(true); setActivePage("vaccines"); }}>
                       <span className="sidebar-nav-icon"><VaccineIcon size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">{view.label}</span>
                     </button>;
-                  })}
+                  })}</div>}
                 </>}
                 {group.stockViews && <>
                   <button className={activePage === "stock" && stockWorkspace === "control" ? "active" : ""} type="button" onClick={() => { setStockWorkspace("control"); setActivePage("stock"); }}>
