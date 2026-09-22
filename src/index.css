@@ -1377,6 +1377,16 @@ select:focus-visible {
 .vaccine-expiry .vaccine-expiry-view,
 .vaccine-reporting .vaccine-reporting-view,
 .vaccine-stockouts .vaccine-stockouts-view { display: grid; }
+.vaccine-chart { min-height: 290px; }
+.vaccine-bar-chart { display: grid; grid-template-columns: repeat(auto-fit, minmax(58px, 1fr)); align-items: end; gap: 10px; min-height: 205px; padding: 12px 8px 0; border-top: 1px solid #dce8df; }
+.vaccine-bar { display: grid; grid-template-rows: auto 132px auto; align-items: end; gap: 7px; min-width: 0; border: 0; background: transparent; color: #254134; font: inherit; text-align: center; }
+button.vaccine-bar { cursor: pointer; }
+button.vaccine-bar:hover .vaccine-bar-value, button.vaccine-bar:focus-visible .vaccine-bar-value { color: #087e45; }
+.vaccine-bar i { display: block; width: 100%; min-height: 5px; align-self: end; border-radius: 3px 3px 0 0; background: #16875d; }
+.tone-amber .vaccine-bar i { background: #bd7200; }
+.tone-red .vaccine-bar i { background: #c5321d; }
+.vaccine-bar-value { overflow: hidden; color: #183627; font-size: 12px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.vaccine-bar small { display: -webkit-box; overflow: hidden; min-height: 30px; color: #61746a; font-size: 10px; line-height: 1.25; text-align: center; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .selected-row { background: #edf7f0; }
 .table-link-button { border: 0; padding: 0; color: #06713d; background: transparent; font: inherit; font-weight: 800; cursor: pointer; text-align: left; }
 .table-link-button:hover { text-decoration: underline; }
@@ -1387,6 +1397,7 @@ select:focus-visible {
 
 @media (max-width: 560px) {
   .vaccine-filter-bar, .vaccine-kpis { grid-template-columns: 1fr; }
+  .vaccine-bar-chart { grid-template-columns: repeat(auto-fit, minmax(48px, 1fr)); gap: 7px; }
 }
 
 .data-quality-gate { gap: 16px; }
