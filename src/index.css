@@ -1383,6 +1383,7 @@ select:focus-visible {
 .vaccine-consumption .vaccine-consumption-view,
 .vaccine-stock .vaccine-stock-view,
 .vaccine-expiry .vaccine-expiry-view,
+.vaccine-issues .vaccine-issues-view,
 .vaccine-reporting .vaccine-reporting-view,
 .vaccine-nonreporting .vaccine-nonreporting-view,
 .vaccine-stockouts .vaccine-stockouts-view { display: grid; }
