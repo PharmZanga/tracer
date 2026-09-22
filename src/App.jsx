@@ -31,8 +31,8 @@ const dashboardPages = [
 ];
 
 const sidebarGroups = [
-  { id: "overview", label: "Overview", pages: ["executive", "national", "provincial", "facilities"] },
-  { id: "tracer", label: "Tracer Intelligence", pages: ["commodities", "alerts", "reporting", "quality", "gate", "predictive", "actions"] },
+  { id: "overview", label: "Overview", pages: ["executive"] },
+  { id: "tracer", label: "Tracer Intelligence", pages: ["national", "provincial", "facilities", "commodities", "alerts", "reporting", "quality", "gate", "predictive", "actions"] },
   { id: "programmes", label: "Programme Intelligence", programmeViews: true, vaccineViews: true },
   { id: "zammsa", label: "ZAMMSA Intelligence", stockViews: true },
   { id: "administration", label: "Administration", pages: ["imports"] },
@@ -3608,9 +3608,6 @@ function App() {
               </button>
               {isOpen && <div className="sidebar-nav-children">
                 {group.id === "tracer" && <>
-                  <button className={activePage === "national" ? "active" : ""} type="button" onClick={() => setActivePage("national")}>
-                    <span className="sidebar-nav-icon"><Activity size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Tracer overview</span>
-                  </button>
                   <button className={activePage === "comparison" ? "active" : ""} type="button" onClick={() => { setComparisonProgram("all"); setComparisonCompareBy("program"); setActivePage("comparison"); }}>
                     <span className="sidebar-nav-icon"><GitCompareArrows size={17} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-nav-label">Programme comparison</span>
                   </button>
