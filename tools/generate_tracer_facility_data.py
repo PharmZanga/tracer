@@ -85,6 +85,30 @@ for _september_source in SEPTEMBER_WEEK3_CONFIG["rawSources"]:
     _september_source["primaryCareSummaryLayout"] = True
 
 
+SEPTEMBER_WEEK4_CONFIG = {
+    "rawSources": [
+        {"province": "MUCHINGA PROVINCE", "path": Path(r"C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\september\\week 4\\25.09.2026 MUCHINGA WEEKLY REPORT.xlsx")},
+        {"province": "EASTERN PROVINCE", "path": Path(r"C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\september\\week 4\\27 sep EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (39).xlsx")},
+        {"province": "COPPERBELT PROVINCE", "path": Path(r"C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\september\\week 4\\27.9.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx")},
+        {"province": "NORTHERN PROVINCE", "path": Path(r"C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\september\\week 4\\27.09.26. ORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx")},
+        {"province": "NORTH-WESTERN PROVINCE", "path": Path(r"C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\september\\week 4\\27-09-2026 NORTHWESTERN PROVINCE TRACER WEEKLY REPORT.xlsx")},
+        {"province": "WESTERN PROVINCE", "path": Path(r"C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\september\\week 4\\27-09-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx")},
+        {"province": "CENTRAL PROVINCE", "path": Path(r"C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\september\\week 4\\27_09_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx")},
+        {"province": "LUAPULA PROVINCE", "path": Path(r"C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\september\\week 4\\27.09.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx")},
+        {"province": "LUSAKA PROVINCE", "path": Path(r"C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\september\\week 4\\25.09.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx")},
+        {"province": "SOUTHERN PROVINCE", "path": Path(r"C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\september\\week 4\\SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 25.09.26 (1).xlsx")},
+    ],
+    "source": "September Week 4 provincial raw submissions",
+    "reportDate": "2026-09-27",
+    "label": "Week 4 - 27 September 2026",
+    "month": "2026-09",
+    "week": "Week 4",
+}
+
+for _september_source in SEPTEMBER_WEEK4_CONFIG["rawSources"]:
+    _september_source["primaryCareSummaryLayout"] = True
+
+
 HISTORICAL_RAW_WEEK_CONFIGS = [
     {"directory": "march province submission\\week 1", "reportDate": "2026-03-08", "label": "Week 1 - 8 March 2026", "month": "2026-03", "week": "Week 1"},
     {"directory": "march province submission\\week 2", "reportDate": "2026-03-15", "label": "Week 2 - 15 March 2026", "month": "2026-03", "week": "Week 2"},

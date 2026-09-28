@@ -10,9 +10,9 @@ await loadHistoricalTracerYear("2026");
 const districtNames = [...new Set(tracerReportingPeriods.flatMap((period) => (period.dataQuality?.districts || []).map((row) => row.name)))];
 
 test("January through September has one complete 116-district reporting universe every week", () => {
-  assert.equal(tracerReportingPeriods.length, 38);
+  assert.equal(tracerReportingPeriods.length, 39);
   assert.equal(tracerReportingPeriods[0].id, "2026-01-04");
-  assert.equal(tracerReportingPeriods.at(-1).id, "2026-09-20");
+  assert.equal(tracerReportingPeriods.at(-1).id, "2026-09-27");
 
   tracerReportingPeriods.forEach((period) => {
     const rows = primaryCareDistrictRows(period);
@@ -51,6 +51,21 @@ test("September Week 3 is a complete national submission before dashboard public
   assert.equal(weekThree.counts.rows, 24853);
   assert.equal(weekThree.counts.facilityUnits, 411);
   assert.equal(weekThree.dataQuality.districts.length, 116);
+  assert.equal(summary.expected, 116);
+  assert.equal(summary.reported, 116);
+  assert.equal(summary.missing, 0);
+});
+
+test("September Week 4 is a complete national submission before dashboard publication", () => {
+  const weekFour = tracerReportingPeriods.find((period) => period.id === "2026-09-27");
+  const summary = primaryCareDistrictSummary(weekFour);
+
+  assert.ok(weekFour);
+  assert.equal(weekFour.label, "Week 4 - 27 September 2026");
+  assert.equal(weekFour.counts.provinces, 10);
+  assert.equal(weekFour.counts.rows, 24781);
+  assert.equal(weekFour.counts.facilityUnits, 410);
+  assert.equal(weekFour.dataQuality.districts.length, 116);
   assert.equal(summary.expected, 116);
   assert.equal(summary.reported, 116);
   assert.equal(summary.missing, 0);
