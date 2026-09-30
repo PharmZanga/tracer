@@ -1,13 +1,17 @@
 import { tracerBootstrapPeriod } from "./tracerBootstrap.js";
 
 export const availableTracerYears = ["2024", "2025", "2026"];
+export const availableTracerMonths = ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09"];
 export let tracerReportingPeriods = [tracerBootstrapPeriod];
 
 const loadedSets = new Set();
 const loadingSets = new Map();
 const dataPaths = {
   live: ["/data/tracer/2026/sep.json"],
-  2026: ["/data/tracer/2026/jan-feb.json", "/data/tracer/2026/mar-apr.json", "/data/tracer/2026/may-jun.json", "/data/tracer/2026/jul-aug.json"],
+  "2026-01-02": ["/data/tracer/2026/jan-feb.json"],
+  "2026-03-04": ["/data/tracer/2026/mar-apr.json"],
+  "2026-05-06": ["/data/tracer/2026/may-jun.json"],
+  "2026-07-08": ["/data/tracer/2026/jul-aug.json"],
   2025: ["/data/tracer/2025.json"],
   2024: ["/data/tracer/2024.json"],
 };
@@ -51,9 +55,23 @@ export function loadLiveTracerData() {
   return loadSet("live");
 }
 
+export async function loadTracerMonth(month) {
+  if (!/^2026-\d{2}$/.test(month)) return loadHistoricalTracerYear(month.slice(0, 4));
+  if (month === "2026-09") return loadLiveTracerData();
+  const key = month <= "2026-02" ? "2026-01-02"
+    : month <= "2026-04" ? "2026-03-04"
+      : month <= "2026-06" ? "2026-05-06"
+        : "2026-07-08";
+  return loadSet(key);
+}
+
 export async function loadHistoricalTracerYear(year) {
   if (!availableTracerYears.includes(year)) throw new Error(`No tracer data is available for ${year}.`);
-  if (year === "2026") await loadLiveTracerData();
+  if (year === "2026") {
+    await loadLiveTracerData();
+    for (const key of ["2026-01-02", "2026-03-04", "2026-05-06", "2026-07-08"]) await loadSet(key);
+    return tracerReportingPeriods;
+  }
   return loadSet(year);
 }
 

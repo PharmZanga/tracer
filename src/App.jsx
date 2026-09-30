@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
-import { availableTracerYears, loadHistoricalTracerYear, loadLiveTracerData, tracerReportingPeriods } from "./tracerFacilityData.js";
+import { availableTracerMonths, availableTracerYears, loadHistoricalTracerYear, loadLiveTracerData, loadTracerMonth, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
@@ -1670,7 +1670,6 @@ function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
 function App() {
   const [, setHistoricalDataVersion] = useState(0);
   const [historicalYearLoading, setHistoricalYearLoading] = useState("");
-  const [analysisHistoryLoading, setAnalysisHistoryLoading] = useState("");
   const [activePage, setActivePage] = useState(() => dashboardPages.some((page) => page.id === initialDashboardParam("page")) ? initialDashboardParam("page") : "executive");
   const [openSidebarGroups, setOpenSidebarGroups] = useState(() => new Set(["overview"]));
   const [programmeNavigationFocus, setProgrammeNavigationFocus] = useState("all");
@@ -1705,18 +1704,8 @@ function App() {
     return () => { mounted = false; };
   }, []);
 
-  useEffect(() => {
-    const historyWorkspace = ["comparison", "commodities", "quality", "predictive", "alerts"].includes(activePage);
-    if (!historyWorkspace) return undefined;
-    let mounted = true;
-    setAnalysisHistoryLoading("2026");
-    loadHistoricalTracerYear("2026")
-      .then(() => { if (mounted) setHistoricalDataVersion((version) => version + 1); })
-      .catch(() => { if (mounted) setAnalysisHistoryLoading(""); })
-      .finally(() => { if (mounted) setAnalysisHistoryLoading(""); });
-    return () => { mounted = false; };
-  }, [activePage]);
   const [reportPeriodId, setReportPeriodId] = useState(tracerReportingPeriods.at(-1).id);
+  const [monthLoading, setMonthLoading] = useState("");
   const [reportProvince, setReportProvince] = useState("all");
   const [reportDistrict, setReportDistrict] = useState("all");
   const [reportFacilityType, setReportFacilityType] = useState("all");
@@ -1926,9 +1915,9 @@ function App() {
   const fieldYears = [...availableTracerYears].sort((a, b) => b.localeCompare(a));
   const selectedMonth = fieldData.month;
   const selectedYear = selectedMonth.slice(0, 4);
-  const fieldMonths = [...new Set(tracerReportingPeriods
-    .filter((period) => period.month.startsWith(`${selectedYear}-`))
-    .map((period) => period.month))];
+  const fieldMonths = selectedYear === "2026"
+    ? availableTracerMonths
+    : [...new Set(tracerReportingPeriods.filter((period) => period.month.startsWith(`${selectedYear}-`)).map((period) => period.month))];
   const weeksInMonth = tracerReportingPeriods.filter((period) => period.month === selectedMonth && period.month.startsWith(`${selectedYear}-`));
   const stockStreams = [...new Set(weeklyStockPeriods.map((period) => period.stream))].sort();
   const centralStock = latestZammsaCentralReport;
@@ -2972,7 +2961,7 @@ function App() {
   const comparisonMonths = [...new Set(tracerReportingPeriods
     .filter((period) => String(period.month).startsWith(comparisonYear))
     .map((period) => period.month))].sort();
-  const comparisonHistoryLoading = activePage === "comparison" && analysisHistoryLoading === "2026";
+  const comparisonHistoryLoading = false;
   const comparisonRangeOptions = comparisonPeriodType === "weekly"
     ? tracerReportingPeriods.filter((period) => String(period.month).startsWith(comparisonYear)).map((period) => ({ value: period.id, label: period.label }))
     : comparisonPeriodType === "monthly"
@@ -3090,7 +3079,19 @@ function App() {
     setSelectedFacility("all");
   }
 
-  function changeMonth(month) {
+  async function changeMonth(month) {
+    if (!tracerReportingPeriods.some((period) => period.month === month)) {
+      setMonthLoading(month);
+      try {
+        await loadTracerMonth(month);
+        setHistoricalDataVersion((version) => version + 1);
+      } catch {
+        window.alert(`Could not load ${monthLabel(month)} data. Please try again.`);
+        return;
+      } finally {
+        setMonthLoading("");
+      }
+    }
     const latestInMonth = tracerReportingPeriods.filter((period) => period.month === month).at(-1);
     if (!latestInMonth) return;
     setFieldPeriodId(latestInMonth.id);
@@ -3844,8 +3845,8 @@ function App() {
             </label>
             <label>
               <span>Month</span>
-              <select value={selectedMonth} onChange={(event) => changeMonth(event.target.value)}>
-                {fieldMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}
+              <select value={selectedMonth} onChange={(event) => changeMonth(event.target.value)} disabled={Boolean(monthLoading)}>
+                {fieldMonths.map((month) => <option value={month} key={month}>{monthLoading === month ? `Loading ${monthLabel(month)}...` : monthLabel(month)}</option>)}
               </select>
             </label>
             <label>
