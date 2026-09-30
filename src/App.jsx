@@ -92,6 +92,8 @@ const copilotApiUrl = window.__TRACER_SECURE_DASHBOARD__ ? window.location.origi
 
 const copilotSuggestions = [
   "What are the priority stockout risks in the current filters?",
+  "Which facilities are most likely to stock out in the next four weeks?",
+  "How has availability changed over the available reporting history?",
   "Which provinces need the most urgent follow-up?",
   "Summarise reporting coverage for this reporting week.",
   "What should a provincial pharmacist act on first?",
@@ -3410,6 +3412,14 @@ function App() {
   }
 
   function currentCopilotContext() {
+    const historicalTrend = tracerReportingPeriods
+      .filter((period) => period.reportDate <= fieldData.reportDate)
+      .slice(-16)
+      .map((period) => {
+        const scoped = selectedProvince === "all" ? period.national : period.provinces.find((row) => row.name === selectedProvince);
+        return scoped ? { reportingDate: period.reportDate, availability: formatPercent(scoped.availability), averageMos: formatMos(scoped.mos), stockoutRows: scoped.stockout || 0 } : null;
+      })
+      .filter(Boolean);
     const priorityFacilities = [...facilityAlerts]
       .slice(0, 12)
       .map((facility) => ({
@@ -3432,6 +3442,8 @@ function App() {
       .map((commodity) => ({ commodity: commodity.name, availability: formatPercent(commodity.availability), averageMos: formatMos(commodity.mos), reportingRows: commodity.rows }));
     return {
       reportingPeriod: fieldData.label,
+      reportingDate: fieldData.reportDate,
+      source: fieldData.source,
       activeDashboardPage: activePageLabel,
       filters: {
         province: selectedProvince === "all" ? "All provinces" : selectedProvince,
@@ -3451,6 +3463,8 @@ function App() {
       lowestAvailabilityProvinces: lowestProvinces,
       priorityFacilities,
       highRiskCommodities,
+      historicalTrend,
+      reportingCompleteness: { expectedDistricts: fieldDistrictReporting.expected, reportedDistricts: fieldDistrictReporting.reported, missingDistricts: fieldDistrictReporting.missing, expectedFacilityUnits, missingFacilityUnits },
       dataDefinition: "Availability is submitted tracer rows with stock on hand above zero. MOS is stock on hand divided by average monthly consumption. Missing submissions are not stockouts.",
     };
   }
@@ -3514,6 +3528,9 @@ function App() {
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 45000);
     try {
+      if (/\b(history|historical|trend|changed|since 2024|since 2025)\b/i.test(message)) {
+        await Promise.all([loadHistoricalTracerYear("2024"), loadHistoricalTracerYear("2025")]);
+      }
       const response = await fetch(`${copilotApiUrl}/api/copilot/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -3522,7 +3539,7 @@ function App() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Tracer Copilot could not answer right now.");
-      setCopilotMessages((current) => [...current, { id: data.id, role: "assistant", text: data.answer, evidence: `${fieldData.label} | ${selectedProvince === "all" ? "All provinces" : selectedProvince} | ${selectedDistrict === "all" ? "All districts" : selectedDistrict}` }]);
+      setCopilotMessages((current) => [...current, { id: data.id, role: "assistant", text: data.answer, evidence: `${fieldData.label} | ${fieldData.source} | ${selectedProvince === "all" ? "All provinces" : selectedProvince} | ${selectedDistrict === "all" ? "All districts" : selectedDistrict}`, modelEvidence: data.modelEvidence }]);
     } catch (error) {
       const fallback = localCopilotReply(message);
       const text = error.name === "AbortError"
@@ -5559,7 +5576,7 @@ function App() {
             <div><p className="eyebrow dark">Tracer Copilot</p><h2>Ask the selected tracer data</h2><span>{fieldData.label} | {selectedProvince === "all" ? "Zambia" : selectedProvince}</span></div>
             <button type="button" className="ghost-button" onClick={() => setCopilotOpen(false)}>Close</button>
           </div>
-          <p className="copilot-guidance">Answers use only the active reporting period and filters. Check the evidence line before taking action.</p>
+          <p className="copilot-guidance">Answers use verified read-only data tools. Observed facts, fixed-rule calculations, predictions, and suggested actions are kept separate.</p>
           <div className="copilot-suggestions">
             {copilotSuggestions.map((suggestion) => <button type="button" key={suggestion} onClick={() => askCopilot(suggestion)} disabled={copilotLoading}>{suggestion}</button>)}
           </div>
@@ -5568,6 +5585,7 @@ function App() {
               <strong>{message.role === "user" ? "You" : "Tracer Copilot"}</strong>
               <p>{message.text}</p>
               {message.evidence && <small>Evidence: {message.evidence}</small>}
+              {message.modelEvidence && <small className={`copilot-model-status ${message.modelEvidence.predictionStatus}`}>Stock-out model: {message.modelEvidence.predictionStatus === "validated" ? "validated" : "predictions unavailable"}{message.modelEvidence.limitation ? ` - ${message.modelEvidence.limitation}` : ""}</small>}
               {message.retryQuestion && <button type="button" className="copilot-retry" onClick={() => askCopilot(message.retryQuestion)}>Try again</button>}
               {message.role === "assistant" && Number.isInteger(Number(message.id)) && <div className="copilot-feedback"><span>Was this useful?</span><button type="button" className={copilotFeedback[message.id] === 1 ? "active" : ""} onClick={() => rateCopilotAnswer(message.id, 1)}>Helpful</button><button type="button" className={copilotFeedback[message.id] === -1 ? "active" : ""} onClick={() => rateCopilotAnswer(message.id, -1)}>Needs correction</button></div>}
             </article>) : <div className="copilot-empty">Ask about availability, stockouts, reporting, commodities, provinces, districts, or immediate follow-up actions.</div>}

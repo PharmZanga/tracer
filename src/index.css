@@ -7246,6 +7246,9 @@ td.neutral {
 .copilot-message strong { display: block; color: #087e45; font-size: 12px; }
 .copilot-message p { margin: 6px 0; color: #24382d; line-height: 1.5; white-space: pre-wrap; }
 .copilot-message small { color: #61746a; font-size: 11px; }
+.copilot-model-status { display: block; margin-top: 7px; font-weight: 700; }
+.copilot-model-status.unavailable { color: #a86700; }
+.copilot-model-status.validated { color: #087e45; }
 
 .copilot-feedback { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
 .copilot-feedback span { color: #61746a; font-size: 12px; }
