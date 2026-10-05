@@ -2618,10 +2618,30 @@ function App() {
   const qualityHospitalRoster = useMemo(() => {
     if (!needsQualityHistory) return [];
     const rows = new Map();
+    const namedTypes = new Set();
+
+    tracerReportingPeriods.forEach((period) => {
+      (period.dataQuality?.facilities || []).forEach((facility) => {
+        const type = reportingFacilityType(facility.facilityLevel);
+        const key = facilityReportingKey(facility);
+        namedTypes.add(`${facility.province}|${facility.district}|${type}`);
+        rows.set(key, {
+          province: facility.province,
+          district: facility.district,
+          facilityLevel: type,
+          facilityType: type,
+          name: facility.name,
+          reportingKey: key,
+          isAggregate: false,
+        });
+      });
+    });
+
     tracerReportingPeriods.forEach((period) => {
       (period.facilities || []).forEach((facility) => {
         const type = reportingFacilityType(facility.facilityLevel);
         if (!sourceSupportedHospitalFacility(facility, qualityDistrictNames)) return;
+        if (namedTypes.has(`${facility.province}|${facility.district}|${type}`)) return;
         const key = `${facility.province}|${facility.district}|${type}`;
         rows.set(key, {
           province: facility.province,
@@ -2662,7 +2682,7 @@ function App() {
     period.id,
     new Set((period.facilities || [])
       .filter((facility) => sourceSupportedHospitalFacility(facility, qualityDistrictNames))
-      .map((facility) => `${facility.province}|${facility.district}|${reportingFacilityType(facility.facilityLevel)}`)),
+      .map((facility) => facilityReportingKey(facility))),
   ])), [qualityRangePeriods, qualityDistrictNames]);
   const qualityFacilityHistories = useMemo(() => qualityRoster
     .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
@@ -2674,7 +2694,11 @@ function App() {
         const primaryCare = primaryCareDistrictRows(period).find((district) => district.province === facility.province && district.name === facility.district);
         const reported = facility.facilityLevel === "Health Centres" || facility.facilityLevel === "Health Posts"
           ? primaryCareLevelReported(primaryCare, facility.facilityLevel === "Health Centres" ? "HEALTH CENTRE" : "HEALTH POST")
-            : qualityPeriodHospitalKeys.get(period.id)?.has(key) || false;
+            : facility.reportingKey
+              ? qualityPeriodHospitalKeys.get(period.id)?.has(facility.reportingKey) || false
+              : (period.facilities || []).some((candidate) => candidate.province === facility.province
+                && candidate.district === facility.district
+                && reportingFacilityType(candidate.facilityLevel) === facility.facilityLevel);
         return { id: period.id, month: period.month, label: period.label, expected: true, reported };
       });
       const reports = history.filter((row) => row.reported).length;

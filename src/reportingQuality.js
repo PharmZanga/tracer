@@ -4,9 +4,15 @@ export const DISTRICT_PRIMARY_CARE_LEVELS = Object.freeze({
   combined: "PRIMARY CARE - NOT SPECIFIED",
 });
 
+function reportingFacilityNameKey(value) {
+  const name = String(value || "").trim().toUpperCase().replace(/\s+/g, " ");
+  return name === "LEVY MWANAWASA UTH" ? "LEVY MWANAWASA UNIVERSITY TEACHING HOSPITAL" : name;
+}
+
 export function facilityReportingKey(facility) {
-  return [facility?.province, facility?.district, facility?.facilityLevel, facility?.name || facility?.facility]
+  return [facility?.province, facility?.district, facility?.facilityLevel]
     .map((value) => String(value || "").trim().toUpperCase())
+    .concat(reportingFacilityNameKey(facility?.name || facility?.facility))
     .join("|");
 }
 

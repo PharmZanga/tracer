@@ -423,6 +423,12 @@ CONFIRMED_NON_SUBMITTED_LEVELS = {
     ("2026-07-26", "MUCHINGA PROVINCE", "NAKONDE", "PRIMARY CARE - NOT SPECIFIED"),
     ("2026-08-30", "LUSAKA PROVINCE", "RUFUNSA", "HEALTH CENTRE"),
     ("2026-08-30", "LUSAKA PROVINCE", "RUFUNSA", "HEALTH POST"),
+    # Week 5 Muchinga contains the Health Post templates for these districts,
+    # but no reported stock values. They are non-submissions, not zero stock.
+    ("2026-10-04", "MUCHINGA PROVINCE", "CHINSALI", "HEALTH POST"),
+    ("2026-10-04", "MUCHINGA PROVINCE", "LAVUSHIMANDA", "HEALTH POST"),
+    ("2026-10-04", "MUCHINGA PROVINCE", "MPIKA", "HEALTH POST"),
+    ("2026-10-04", "MUCHINGA PROVINCE", "SHIWANG'ANDU", "HEALTH POST"),
 }
 
 # Confirmed Week 4 non-submissions that affect one named facility or clinical
@@ -921,6 +927,13 @@ SPECIALTY_UNIT_SUFFIXES = {
     "RENAL UNITS": "Renal Unit",
     "TB-DS/TB-MDR UNITS": "TB Unit",
     "MENTAL HEALTH UNITS": "Mental Health Unit",
+}
+
+# These named units are expected every reporting week even when their whole
+# worksheet is absent. This prevents another Level 3 facility in the same
+# district from masking a missing Levy Mwanawasa Level 3 submission.
+EXPECTED_NAMED_REPORTING_UNITS = {
+    ("LUSAKA PROVINCE", "LUSAKA", "LEVEL 3 HOSPITAL", "Levy Mwanawasa University Teaching Hospital"),
 }
 
 
@@ -1741,6 +1754,7 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
         if district != "UNKNOWN" and (
             facility_match_key(facility) in VERIFIED_FACILITY_IDENTITIES
             or facility_match_key(facility) in TRUSTED_RAW_FACILITY_KEYS
+            or (province, district, facility_level, facility) in EXPECTED_NAMED_REPORTING_UNITS
         )
     }
 
@@ -1749,6 +1763,10 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
         present_facilities = {
             (facility["province"], facility["district"], facility["facilityLevel"], facility["name"])
             for facility in period["facilities"]
+        }
+        present_facility_keys = {
+            (province, district, facility_level, facility_match_key(facility))
+            for province, district, facility_level, facility in present_facilities
         }
         present_level_reports = {
             (province, district, reporting_facility_type(facility_level))
@@ -1834,7 +1852,7 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
 
         facility_rows = []
         for province, district, facility_level, facility in sorted(expected_named_reports):
-            reported = 1 if (province, district, facility_level, facility) in present_facilities else 0
+            reported = 1 if (province, district, facility_level, facility_match_key(facility)) in present_facility_keys else 0
             facility_rows.append({
                 "province": province,
                 "district": district,
@@ -2006,6 +2024,7 @@ def main():
             and facility["facilityLevel"] == "PRIMARY CARE - NOT SPECIFIED"
         )
     }
+    expected_facilities.update(EXPECTED_NAMED_REPORTING_UNITS)
     build_reporting_quality(periods, expected_districts, expected_facilities)
     # Keep each generated module below GitHub's 100 MB file limit while
     # preserving the complete Jan-Jun history available to the dashboard.

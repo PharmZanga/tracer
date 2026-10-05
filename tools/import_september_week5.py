@@ -46,6 +46,7 @@ def reporting_expectations(generator, periods):
             or generator.facility_belongs_to_reporting_district(facility["province"], facility["district"], facility["name"])
         )
     }
+    expected_facilities.update(generator.EXPECTED_NAMED_REPORTING_UNITS)
     return expected_districts, expected_facilities
 
 

@@ -78,12 +78,12 @@ test("September Week 5 is a complete national submission before dashboard public
   assert.ok(weekFive);
   assert.equal(weekFive.label, "Week 5 - 4 October 2026");
   assert.equal(weekFive.month, "2026-09");
-  assert.equal(weekFive.counts.rows, 24705);
+  assert.equal(weekFive.counts.rows, 24425);
   assert.equal(weekFive.counts.provinces, 10);
-  assert.equal(weekFive.counts.facilityUnits, 410);
+  assert.equal(weekFive.counts.facilityUnits, 406);
   assert.equal(summary.expected, 116);
-  assert.equal(summary.reported, 116);
-  assert.equal(summary.missing, 0);
+  assert.equal(summary.reported, 112);
+  assert.equal(summary.missing, 4);
 });
 
 test("all primary-care submissions have the same effective level result used by Data Quality", () => {
