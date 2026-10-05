@@ -52,7 +52,7 @@ for (const datasetName of DATASETS) {
 }
 
 const periods = [...periodMap.values()].sort((left, right) => left.id.localeCompare(right.id));
-if (periods.length !== 39) errors.push(`Expected 39 January-September periods, found ${periods.length}`);
+if (periods.length !== 40) errors.push(`Expected 40 January-September periods, found ${periods.length}`);
 
 const report = { reviewedAt: new Date().toISOString(), periods: [], errors, warnings };
 for (const period of periods) {
