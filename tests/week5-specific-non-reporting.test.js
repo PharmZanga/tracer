@@ -25,3 +25,18 @@ test("Week 5 does not use Levy Mwanawasa renal or TB data as a Level 3 submissio
   assert.ok(levy, "Levy Mwanawasa Level 3 is expected");
   assert.equal(levy.reported, false);
 });
+
+test("zero-only facility blocks never count as submitted across January to September", () => {
+  tracerReportingPeriods.forEach((period) => {
+    const { dictionaries, rows } = period.commodityFacilityData;
+    const blockHasQuantity = new Map();
+    rows.forEach(([province, district, level, facility, , , quantity]) => {
+      const key = [province, district, level, facility].join("|");
+      blockHasQuantity.set(key, Boolean(blockHasQuantity.get(key)) || Number(quantity || 0) > 0);
+    });
+    assert.ok(
+      [...blockHasQuantity.values()].every(Boolean),
+      `${period.label} still contains an all-zero submitted reporting block (${dictionaries.provinces.length} provinces checked)`,
+    );
+  });
+});

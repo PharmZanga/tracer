@@ -18,19 +18,19 @@ test("2 August remains classified as July Week 5 after later August reporting pe
   assert.equal(week5.month, "2026-07");
   assert.equal(week5.week, "Week 5");
   assert.equal(week5.source, "TRACER SUMMARY 02 AUAGUST 2026.xlsx");
-  assert.equal(week5.counts.rows, 24348);
-  assert.equal(week5.counts.facilityUnits, 412);
+  assert.equal(week5.counts.rows, 24109);
+  assert.equal(week5.counts.facilityUnits, 405);
 });
 
 test("Week 5 DHO compliance requires both Health Centre and Health Post", () => {
   const summary = primaryCareDistrictSummary(week5);
   assert.equal(summary.expected, 116);
-  assert.equal(summary.reported, 114);
-  assert.equal(summary.missing, 2);
+  assert.equal(summary.reported, 113);
+  assert.equal(summary.missing, 3);
   assert.equal(summary.partial, 1);
 
   const missing = primaryCareDistrictRows(week5).filter((row) => !row.submitted);
-  assert.deepEqual(missing.map((row) => row.name).sort(), ["LAVUSHIMANDA", "NALOLO"]);
+  assert.deepEqual(missing.map((row) => row.name).sort(), ["CHIENGE", "LAVUSHIMANDA", "NALOLO"]);
 
   const lavushimanda = missing.find((row) => row.name === "LAVUSHIMANDA");
   assert.equal(lavushimanda.healthCentreReported, false);

@@ -1441,6 +1441,42 @@ def finalize(name, bucket, extra=None):
     return result
 
 
+def reporting_block_identity(row, config):
+    """Return the canonical identity used to decide whether a block submitted."""
+    province = normalize_province(row.get("PROVINCE"))
+    district = normalize_district(row.get("DISTRICT"))
+    facility = clean(row.get("FACILITY NAME")) or "Unknown reporting unit"
+    facility_level = canonical_facility_level(row.get("FACILITY LEVEL"))
+    identity = canonical_facility_identity(province, district, facility_level, facility)
+    if identity is None:
+        return None
+    report_date = config.get("reportDate") or date_id(row.get("DATE"))
+    return (report_date, *identity)
+
+
+def exclude_zero_quantity_reporting_blocks(rows_iter, config):
+    """Remove template-only blocks before they can become tracer submissions.
+
+    A reported facility block has at least one positive quantity. A sheet with
+    quantities of zero for every listed commodity is an unsubmitted template,
+    not evidence of a reported stock-out or of district reporting.
+    """
+    rows = list(rows_iter)
+    block_has_quantity = defaultdict(bool)
+    row_blocks = []
+    for row in rows:
+        block = reporting_block_identity(row, config)
+        row_blocks.append(block)
+        if block and (num(row.get("QUANTITY")) or 0) > 0:
+            block_has_quantity[block] = True
+
+    return (
+        row
+        for row, block in zip(rows, row_blocks)
+        if block is None or block_has_quantity[block]
+    )
+
+
 def summarize(config):
     workbook_path = config.get("path")
     availability_overrides = config.get("availabilityOverrides", {})
@@ -1465,6 +1501,8 @@ def summarize(config):
             for row_values in ws.iter_rows(min_row=2, values_only=True)
         )
         source_name = workbook_path.name
+
+    rows_iter = exclude_zero_quantity_reporting_blocks(rows_iter, config)
 
     national = make_bucket()
     by_province = defaultdict(make_bucket)
@@ -1739,7 +1777,7 @@ def reporting_facility_type(facility_level):
     return "Other reporting units"
 
 
-def build_reporting_quality(periods, expected_districts, expected_facilities):
+def build_reporting_quality(periods, expected_districts, expected_facilities, expected_named_facilities=None):
     primary_care_types = {"Health Centres", "Health Posts"}
     combined_primary_care_type = "Health Centres and Posts (combined)"
     province_names = sorted({province for province, _district in expected_districts})
@@ -1748,13 +1786,14 @@ def build_reporting_quality(periods, expected_districts, expected_facilities):
         (province, district, reporting_facility_type(facility_level))
         for province, district, facility_level, _facility in expected_facilities
     }
+    explicit_named_reports = set(expected_named_facilities or EXPECTED_NAMED_REPORTING_UNITS)
     expected_named_reports = {
         (province, district, facility_level, facility)
         for province, district, facility_level, facility in expected_facilities
         if district != "UNKNOWN" and (
             facility_match_key(facility) in VERIFIED_FACILITY_IDENTITIES
             or facility_match_key(facility) in TRUSTED_RAW_FACILITY_KEYS
-            or (province, district, facility_level, facility) in EXPECTED_NAMED_REPORTING_UNITS
+            or (province, district, facility_level, facility) in explicit_named_reports
         )
     }
 

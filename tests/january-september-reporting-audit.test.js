@@ -33,8 +33,8 @@ test("September Week 2 is a complete national submission before dashboard public
   assert.ok(weekTwo);
   assert.equal(weekTwo.label, "Week 2 - 13 September 2026");
   assert.equal(weekTwo.counts.provinces, 10);
-  assert.equal(weekTwo.counts.rows, 24786);
-  assert.equal(weekTwo.counts.facilityUnits, 410);
+  assert.equal(weekTwo.counts.rows, 24516);
+  assert.equal(weekTwo.counts.facilityUnits, 401);
   assert.equal(weekTwo.dataQuality.districts.length, 116);
   assert.equal(summary.expected, 116);
   assert.equal(summary.reported, 116);
@@ -48,12 +48,12 @@ test("September Week 3 is a complete national submission before dashboard public
   assert.ok(weekThree);
   assert.equal(weekThree.label, "Week 3 - 20 September 2026");
   assert.equal(weekThree.counts.provinces, 10);
-  assert.equal(weekThree.counts.rows, 24853);
-  assert.equal(weekThree.counts.facilityUnits, 411);
+  assert.equal(weekThree.counts.rows, 24368);
+  assert.equal(weekThree.counts.facilityUnits, 398);
   assert.equal(weekThree.dataQuality.districts.length, 116);
   assert.equal(summary.expected, 116);
-  assert.equal(summary.reported, 116);
-  assert.equal(summary.missing, 0);
+  assert.equal(summary.reported, 115);
+  assert.equal(summary.missing, 1);
 });
 
 test("September Week 4 is a complete national submission before dashboard publication", () => {
@@ -63,12 +63,12 @@ test("September Week 4 is a complete national submission before dashboard public
   assert.ok(weekFour);
   assert.equal(weekFour.label, "Week 4 - 27 September 2026");
   assert.equal(weekFour.counts.provinces, 10);
-  assert.equal(weekFour.counts.rows, 24781);
-  assert.equal(weekFour.counts.facilityUnits, 410);
+  assert.equal(weekFour.counts.rows, 24285);
+  assert.equal(weekFour.counts.facilityUnits, 396);
   assert.equal(weekFour.dataQuality.districts.length, 116);
   assert.equal(summary.expected, 116);
-  assert.equal(summary.reported, 116);
-  assert.equal(summary.missing, 0);
+  assert.equal(summary.reported, 114);
+  assert.equal(summary.missing, 2);
 });
 
 test("September Week 5 is a complete national submission before dashboard publication", () => {
@@ -78,9 +78,9 @@ test("September Week 5 is a complete national submission before dashboard public
   assert.ok(weekFive);
   assert.equal(weekFive.label, "Week 5 - 4 October 2026");
   assert.equal(weekFive.month, "2026-09");
-  assert.equal(weekFive.counts.rows, 24425);
+  assert.equal(weekFive.counts.rows, 23969);
   assert.equal(weekFive.counts.provinces, 10);
-  assert.equal(weekFive.counts.facilityUnits, 406);
+  assert.equal(weekFive.counts.facilityUnits, 393);
   assert.equal(summary.expected, 116);
   assert.equal(summary.reported, 112);
   assert.equal(summary.missing, 4);
