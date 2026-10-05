@@ -53,12 +53,36 @@ def compact_bootstrap(period):
     return {key: period[key] for key in ("id", "reportDate", "label", "month", "week", "source", "counts", "national", "provinces", "districts", "facilityLevels", "programmes", "programmeScopes", "commodities", "missingFacilities")} | {"facilities": [], "dataQuality": {"provinces": [], "districts": [], "facilityTypes": []}}
 
 
+def verify_named_hospital_submissions(generator, period):
+    """Require Muchinga and Lusaka Level 1/2 facilities to match their source sheets."""
+    levels = {"LEVEL 1 HOSPITAL", "LEVEL 2/GENERAL HOSPITAL"}
+    for province in {"MUCHINGA PROVINCE", "LUSAKA PROVINCE"}:
+        source_rows = {
+            (row["DISTRICT"], row["FACILITY LEVEL"], row["FACILITY NAME"])
+            for source in generator.SEPTEMBER_WEEK5_CONFIG["rawSources"]
+            if source["province"] == province
+            for row in generator.iter_raw_matrix_rows(source, generator.SEPTEMBER_WEEK5_CONFIG["reportDate"])
+            if row["FACILITY LEVEL"] in levels
+        }
+        dashboard_rows = {
+            (facility["district"], facility["facilityLevel"], facility["name"])
+            for facility in period["facilities"]
+            if facility["province"] == province and facility["facilityLevel"] in levels
+        }
+        if source_rows != dashboard_rows:
+            raise ValueError(
+                f"{province} Level 1/2 reconciliation failed: "
+                f"missing={sorted(source_rows - dashboard_rows)}, extra={sorted(dashboard_rows - source_rows)}"
+            )
+
+
 def main():
     subprocess.run(["node", str(ROOT / "tools" / "convert_xls_workbook.mjs"), str(EASTERN_SOURCE), str(EASTERN_CONVERTED)], check=True)
     generator = load_generator()
     week_five = generator.summarize(generator.SEPTEMBER_WEEK5_CONFIG)
     if week_five["counts"]["provinces"] != 10 or week_five["counts"]["districts"] != 116:
         raise ValueError(f"Week 5 geography failed: {week_five['counts']}")
+    verify_named_hospital_submissions(generator, week_five)
 
     periods = [period for path in DATA_MODULES for period in load_periods(path) if period["id"] != week_five["id"]]
     periods.append(week_five)
