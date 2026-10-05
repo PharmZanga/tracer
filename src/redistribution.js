@@ -8,6 +8,16 @@ function roundQuantity(value) {
   return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
 }
 
+function isDistrictAggregate(row) {
+  const facility = String(row.facility || "").trim();
+  const district = String(row.district || "").trim();
+  const level = String(row.facilityLevel || "").trim();
+  const expectedName = `${district} ${level.toLowerCase()} facilities`;
+
+  return /\s(?:Health Centre|Health Post) facilities$/i.test(facility)
+    && facility.toLowerCase() === expectedName.toLowerCase();
+}
+
 function collapseFacilityCommodityRows(rows) {
   const grouped = new Map();
 
@@ -62,7 +72,9 @@ function geographyLabel(rank) {
  * Each source keeps at least one AMC (one month of stock) across all recommendations.
  */
 export function buildRedistributionCandidates(rows) {
-  const facilityItems = collapseFacilityCommodityRows(rows);
+  // HC/HP submissions are district totals, not named facilities. They are valid
+  // reporting evidence but cannot be a physical source or destination for stock.
+  const facilityItems = collapseFacilityCommodityRows(rows).filter((row) => !isDistrictAggregate(row));
   const destinations = facilityItems
     .filter((row) => row.quantity <= EPSILON && Number(row.mos) <= EPSILON && row.amc > EPSILON)
     .sort((a, b) => a.commodity.localeCompare(b.commodity) || a.province.localeCompare(b.province) || a.district.localeCompare(b.district) || a.facility.localeCompare(b.facility));

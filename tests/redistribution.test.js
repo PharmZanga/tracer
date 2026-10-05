@@ -82,6 +82,31 @@ test("only matches urgent receivers with zero quantity and zero MOS", () => {
   assert.equal(results.length, 0);
 });
 
+test("does not turn district Health Centre and Health Post totals into transfer facilities", () => {
+  const results = buildRedistributionCandidates([
+    row({
+      district: "CHAMA",
+      facilityLevel: "HEALTH CENTRE",
+      facility: "CHAMA Health Centre facilities",
+      item: "Ringers Lactate solution 500ml (1)",
+      quantity: 4300,
+      amc: 900,
+      mos: 4.8,
+    }),
+    row({
+      district: "CHAMA",
+      facilityLevel: "LEVEL 1 HOSPITAL",
+      facility: "Chama District Hospital",
+      item: "Ringers Lactate solution 500ml (1)",
+      quantity: 0,
+      amc: 20,
+      mos: 0,
+    }),
+  ]);
+
+  assert.deepEqual(results, []);
+});
+
 test("action tracker offers 10, 50 and 100 row pages", () => {
   const appSource = fs.readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
   assert.match(appSource, /useState\(10\)/);
