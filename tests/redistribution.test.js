@@ -107,6 +107,15 @@ test("does not turn district Health Centre and Health Post totals into transfer 
   assert.deepEqual(results, []);
 });
 
+test("does not turn legacy ALL rows into transfer facilities", () => {
+  const results = buildRedistributionCandidates([
+    row({ facility: "ALL", quantity: 100, amc: 10, mos: 10 }),
+    row({ facility: "Named hospital", quantity: 0, amc: 10, mos: 0 }),
+  ]);
+
+  assert.deepEqual(results, []);
+});
+
 test("action tracker offers 10, 50 and 100 row pages", () => {
   const appSource = fs.readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
   assert.match(appSource, /useState\(10\)/);

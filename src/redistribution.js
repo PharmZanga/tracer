@@ -10,12 +10,8 @@ function roundQuantity(value) {
 
 function isDistrictAggregate(row) {
   const facility = String(row.facility || "").trim();
-  const district = String(row.district || "").trim();
-  const level = String(row.facilityLevel || "").trim();
-  const expectedName = `${district} ${level.toLowerCase()} facilities`;
-
-  return /\s(?:Health Centre|Health Post) facilities$/i.test(facility)
-    && facility.toLowerCase() === expectedName.toLowerCase();
+  if (facility.toUpperCase() === "ALL") return true;
+  return /\s(?:Health Centre|Health Post) facilities$/i.test(facility);
 }
 
 function collapseFacilityCommodityRows(rows) {

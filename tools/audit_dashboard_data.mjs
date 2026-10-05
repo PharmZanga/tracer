@@ -27,13 +27,14 @@ const belongsToReportingMonth = (period) => {
   return daysAfterMonthEnd >= 1 && daysAfterMonthEnd <= 7;
 };
 
-const expectedMonths = ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06"];
+const expectedMonths = ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09"];
 const sourceScopes = ["provinces", "districts", "facilities", "programmes", "commodities"];
 const seenTracerDates = new Set();
 
 for (const period of tracerReportingPeriods) {
   check(!seenTracerDates.has(period.reportDate), `Duplicate tracer date: ${period.reportDate}`);
   seenTracerDates.add(period.reportDate);
+  check(Boolean(String(period.source || "").trim()), `${period.reportDate}: source label is missing`);
   check(belongsToReportingMonth(period), `Month mismatch: ${period.reportDate} is not a valid reporting date for ${period.month}`);
   check(period.counts.rows === period.national.rows, `${period.reportDate}: national row count mismatch`);
 
@@ -57,6 +58,7 @@ for (const period of tracerReportingPeriods) {
 for (const month of expectedMonths) {
   check(tracerReportingPeriods.some((period) => period.month === month), `Missing tracer month: ${month}`);
 }
+check(tracerReportingPeriods.length === 39, `January through September should contain 39 reporting weeks; found ${tracerReportingPeriods.length}`);
 
 const januaryPeriods = tracerReportingPeriods.filter((period) => period.month === "2026-01");
 check(januaryPeriods.length === 5, `January should contain 5 reporting weeks; found ${januaryPeriods.length}`);
