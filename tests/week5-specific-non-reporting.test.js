@@ -9,7 +9,7 @@ await loadHistoricalTracerYear("2026");
 const weekFive = tracerReportingPeriods.find((period) => period.id === "2026-10-04");
 
 test("Week 5 retains the confirmed Muchinga Health Post non-submissions", () => {
-  for (const district of ["CHINSALI", "LAVUSHIMANDA", "MPIKA", "SHIWANG'ANDU"]) {
+  for (const district of ["LAVUSHIMANDA", "SHIWANG'ANDU"]) {
     const row = primaryCareDistrictRows(weekFive).find((candidate) => candidate.province === "MUCHINGA PROVINCE" && candidate.name === district);
     assert.ok(row, `${district} is present in the reporting district directory`);
     assert.equal(primaryCareLevelReported(row, "HEALTH POST"), false, `${district} Health Post is not reported`);
@@ -24,6 +24,15 @@ test("Week 5 does not use Levy Mwanawasa renal or TB data as a Level 3 submissio
 
   assert.ok(levy, "Levy Mwanawasa Level 3 is expected");
   assert.equal(levy.reported, false);
+});
+
+test("revised Muchinga Week 5 accepts both primary-care streams for Chinsali and Mpika", () => {
+  for (const district of ["CHINSALI", "MPIKA"]) {
+    const row = primaryCareDistrictRows(weekFive).find((candidate) => candidate.province === "MUCHINGA PROVINCE" && candidate.name === district);
+    assert.ok(row);
+    assert.equal(primaryCareLevelReported(row, "HEALTH CENTRE"), true);
+    assert.equal(primaryCareLevelReported(row, "HEALTH POST"), true);
+  }
 });
 
 test("zero-only facility blocks never count as submitted across January to September", () => {

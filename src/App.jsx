@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
+import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileText, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, Printer, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
 import { availableTracerMonths, availableTracerYears, loadHistoricalTracerYear, loadLiveTracerData, loadTracerMonth, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
 import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
@@ -14,6 +14,7 @@ import { buildVaccineReportingUnits, cleanVaccineReportingRows } from "./vaccine
 
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary", icon: LayoutDashboard },
+  { id: "reports", short: "RP", label: "Generate Report", icon: FileText },
   { id: "national", short: "NS", label: "National Stock Status", icon: Activity },
   { id: "stock", short: "ZS", label: "ZAMMSA Control Tower", icon: Warehouse },
   { id: "provincial", short: "PP", label: "Provincial Performance", icon: MapPinned },
@@ -36,7 +37,7 @@ const sidebarGroups = [
   { id: "tracer", label: "Tracer Intelligence", pages: ["national", "provincial", "facilities", "commodities", "alerts", "reporting", "quality", "gate", "predictive", "actions"] },
   { id: "programmes", label: "Programme Intelligence", programmeViews: true, vaccineViews: true },
   { id: "zammsa", label: "ZAMMSA Intelligence", stockViews: true },
-  { id: "administration", label: "Administration", pages: ["imports"] },
+  { id: "administration", label: "Administration", pages: ["reports", "imports"] },
 ];
 
 const programmeNavigationViews = [
@@ -53,6 +54,7 @@ function programmeMatchesView(programme, view) {
 
 const moduleDescriptions = {
   executive: "National decision summary for the selected reporting period.",
+  reports: "Generate a national weekly tracer report for any available reporting date.",
   national: "National availability, stock status, and tracer commodity pressure.",
   stock: "Central warehouse stock position, pipeline signals, and priority commodities.",
   provincial: "Province-level availability, risk, and reporting performance.",
@@ -659,6 +661,103 @@ function LevelOfCarePerformance({ rows }) {
       ) : null}
     </section>
   );
+}
+
+function buildNationalReportSummary(period, previousPeriod) {
+  const commodityRows = commodityRowsFromPeriod(period);
+  const levelRows = careLevelBuckets.map((bucket) => {
+    const facilities = (period?.facilities || []).filter((facility) => careLevelBucket(facility.facilityLevel) === bucket.id);
+    const rows = commodityRows.filter((row) => careLevelBucket(row.facilityLevel) === bucket.id);
+    const rollup = combineRollups(facilities, makeEmptyRollup(bucket.label));
+    return { ...rollup, label: bucket.label, mos: cappedAverageMos(rows) };
+  }).filter((row) => row.rows > 0);
+  const provinces = aggregateRollups(period?.facilities || [], "province")
+    .sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows);
+  const programmes = aggregateRollups(period?.programmeScopes || period?.programmes || [], "name")
+    .sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)
+    .slice(0, 12);
+  const districtReporting = primaryCareDistrictSummary(period);
+  const stockStatusTotal = period?.national?.rows || 1;
+  const stockStatus = [
+    { label: "Stocked out", count: period?.national?.stockout || 0, tone: "red", action: "Verify physical stock and replenish or redistribute immediately." },
+    { label: "Emergency", count: period?.national?.nearCritical || 0, tone: "amber", action: "Prioritise order fulfilment before commodities reach stockout." },
+    { label: "Understocked", count: period?.national?.understocked || 0, tone: "amber", action: "Monitor consumption and replenish before the next reporting cycle." },
+    { label: "Overstocked", count: (period?.national?.abovePlan || 0) + (period?.national?.overstock || 0), tone: "blue", action: "Match excess stock to verified shortages, subject to expiry and programme controls." },
+  ].map((row) => ({ ...row, rate: row.count / stockStatusTotal }));
+  const previous = previousPeriod?.national;
+  return {
+    period,
+    levelRows,
+    provinces,
+    programmes,
+    districtReporting,
+    stockStatus,
+    availabilityChange: previous ? (period.national.availability || 0) - (previous.availability || 0) : null,
+    mosChange: previous && Number.isFinite(period.national.mos) && Number.isFinite(previous.mos) ? period.national.mos - previous.mos : null,
+  };
+}
+
+function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChange, onPrint }) {
+  const { period, levelRows, provinces, programmes, districtReporting, stockStatus, availabilityChange, mosChange } = summary;
+  const lowestLevel = [...levelRows].sort((a, b) => a.availability - b.availability).at(0);
+  const strongestProvince = [...provinces].sort((a, b) => b.availability - a.availability).at(0);
+  const weakestProvince = provinces[0];
+  const reportDate = new Date(`${period.reportDate}T00:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+  return <section className="national-report-workspace">
+    <div className="national-report-tools">
+      <label><span>Reporting date</span><select value={selectedPeriodId} onChange={(event) => onPeriodChange(event.target.value)}>{periods.map((item) => <option value={item.id} key={item.id}>{item.label}</option>)}</select></label>
+      <div className="national-report-tool-actions"><button type="button" onClick={onPrint}><Printer size={16} aria-hidden="true" />Generate PDF report</button></div>
+    </div>
+
+    <article className="national-weekly-report" id="national-weekly-report">
+      <header className="national-report-cover">
+        <p>Republic of Zambia | Ministry of Health</p>
+        <h1>Weekly Tracer Availability Report</h1>
+        <strong>National Supply Chain Coordination Unit</strong>
+        <span>Report period: {reportDate}</span>
+        <small>Prepared from verified provincial tracer submissions | {period.source}</small>
+      </header>
+
+      <section className="national-report-section">
+        <div className="national-report-section-head"><p>A. National Overview</p><span>{period.label}</span></div>
+        <p className="national-report-narrative">For the reporting week ending {reportDate}, tracer commodity data from {period.counts.provinces} provinces was analysed, covering {period.national.rows.toLocaleString()} valid submitted commodity records. DHO reporting completeness stood at {districtReporting.reported} of {districtReporting.expected} districts. National tracer commodity availability was {formatPercent(period.national.availability)}, with an average Months of Stock (MOS) of {formatMos(period.national.mos)}.</p>
+        {availabilityChange !== null && <p className="national-report-narrative">Compared with the preceding submitted week, availability {availabilityChange >= 0 ? "increased" : "decreased"} by {Math.abs(availabilityChange * 100).toFixed(1)} percentage points and average MOS {mosChange >= 0 ? "increased" : "decreased"} by {Math.abs(mosChange || 0).toFixed(1)} months.</p>}
+        <div className="national-report-kpis">
+          <div><span>Availability</span><strong>{formatPercent(period.national.availability)}</strong><small>Submitted tracer rows</small></div>
+          <div><span>Average MOS</span><strong>{formatMos(period.national.mos)}</strong><small>Reported stock position</small></div>
+          <div><span>DHO reporting</span><strong>{districtReporting.reported}/{districtReporting.expected}</strong><small>Health Centre + Health Post required</small></div>
+          <div><span>Records analysed</span><strong>{period.national.rows.toLocaleString()}</strong><small>Valid facility-commodity records</small></div>
+        </div>
+        <p className="national-report-callout">{strongestProvince?.name || "-"} recorded the strongest availability at {formatPercent(strongestProvince?.availability)}, while {weakestProvince?.name || "-"} was lowest at {formatPercent(weakestProvince?.availability)}. {lowestLevel ? `${lowestLevel.label} had the lowest level-of-care performance at ${formatPercent(lowestLevel.availability)} availability and ${formatMos(lowestLevel.mos)} MOS.` : ""}</p>
+      </section>
+
+      <section className="national-report-section">
+        <div className="national-report-section-head"><p>Level Of Care Performance</p><span>Availability and MOS</span></div>
+        <div className="national-report-level-chart">{levelRows.map((row) => <div key={row.label}><span>{formatPercent(row.availability)}</span><i style={{ height: `${Math.max(7, Math.round((row.availability || 0) * 100))}%` }} /><strong>{formatMos(row.mos)} MOS</strong><small>{row.label}</small></div>)}</div>
+      </section>
+
+      <section className="national-report-section">
+        <div className="national-report-section-head"><p>B. National Stock Status</p><span>Submitted records only</span></div>
+        <div className="national-report-stock-grid">{stockStatus.map((row) => <article className={`tone-${row.tone}`} key={row.label}><span>{row.label}</span><strong>{row.count.toLocaleString()}</strong><b>{formatPercent(row.rate)}</b><small>{row.action}</small></article>)}</div>
+      </section>
+
+      <section className="national-report-section national-report-split">
+        <div><div className="national-report-section-head"><p>Provincial Performance</p><span>Lowest availability first</span></div><table><thead><tr><th>Province</th><th>Availability</th><th>MOS</th><th>Stock-outs</th><th>Low stock</th></tr></thead><tbody>{provinces.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.stockout.toLocaleString()}</td><td>{(row.nearCritical + row.understocked).toLocaleString()}</td></tr>)}</tbody></table></div>
+        <div><div className="national-report-section-head"><p>Programme Pressure</p><span>Priority review</span></div><table><thead><tr><th>Programme</th><th>Availability</th><th>MOS</th><th>Risk rows</th></tr></thead><tbody>{programmes.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.riskRows.toLocaleString()}</td></tr>)}</tbody></table></div>
+      </section>
+
+      <section className="national-report-section national-report-actions">
+        <div className="national-report-section-head"><p>C. Priority Actions</p><span>Management follow-up</span></div>
+        <ol>
+          <li>Verify and replenish {period.national.stockout.toLocaleString()} confirmed stock-out records, using validated excess stock for targeted redistribution where feasible.</li>
+          <li>Prioritise the {period.national.nearCritical.toLocaleString()} emergency records below one month of stock before they progress to stockout.</li>
+          <li>Follow up the {districtReporting.missing} DHO districts without a complete Health Centre and Health Post submission; missing reports are not treated as stock data.</li>
+          <li>Review the lowest-performing province and level of care with provincial teams, including AMC, physical stock, order fulfilment and expiry constraints.</li>
+        </ol>
+      </section>
+      <footer>National Weekly Supply Chain Tracer Report | Generated from the dashboard on {new Date().toLocaleDateString()}</footer>
+    </article>
+  </section>;
 }
 
 function redistributionActionKey(item) {
@@ -1681,6 +1780,7 @@ function App() {
   const [vaccineNavOpen, setVaccineNavOpen] = useState(false);
   const [stockWorkspace, setStockWorkspace] = useState("control");
   const [fieldPeriodId, setFieldPeriodId] = useState(() => tracerReportingPeriods.some((period) => period.id === initialDashboardParam("period")) ? initialDashboardParam("period") : tracerReportingPeriods.at(-1).id);
+  const [nationalReportPeriodId, setNationalReportPeriodId] = useState(() => tracerReportingPeriods.some((period) => period.id === initialDashboardParam("period")) ? initialDashboardParam("period") : tracerReportingPeriods.at(-1).id);
   const [selectedProvince, setSelectedProvince] = useState(() => initialDashboardParam("province", "all"));
   const [selectedDistrict, setSelectedDistrict] = useState(() => initialDashboardParam("district", "all"));
   const [selectedFacilityLevel, setSelectedFacilityLevel] = useState(() => initialDashboardParam("level", "all"));
@@ -2978,6 +3078,15 @@ function App() {
   const productCategoryRows = aggregateRollups(scopedProgrammeRows, "name")
     .sort((a, b) => a.availability - b.availability || (a.mos || 0) - (b.mos || 0))
     .slice(0, 36);
+  const nationalReportPeriod = tracerReportingPeriods.find((period) => period.id === nationalReportPeriodId) || tracerReportingPeriods.at(-1);
+  const nationalReportPreviousPeriod = tracerReportingPeriods
+    .filter((period) => period.reportDate < nationalReportPeriod.reportDate)
+    .sort((a, b) => b.reportDate.localeCompare(a.reportDate))
+    .at(0);
+  const nationalReportSummary = useMemo(
+    () => buildNationalReportSummary(nationalReportPeriod, nationalReportPreviousPeriod),
+    [nationalReportPeriod, nationalReportPreviousPeriod],
+  );
   const programmePressureRows = aggregateRollups(scopedProgrammeRows, "name")
     .sort((a, b) => b.riskRows - a.riskRows || a.availability - b.availability)
     .slice(0, 12);
@@ -3859,7 +3968,7 @@ function App() {
       </aside>
 
       <main className={`app-shell dashboard-page page-${activePage} stock-${stockWorkspace} vaccine-${vaccineWorkspaceView}`}>
-        {!['stock', 'comparison', 'reporting', 'vaccines'].includes(activePage) && <header className="dashboard-topbar">
+        {!['stock', 'comparison', 'reporting', 'vaccines', 'reports'].includes(activePage) && <header className="dashboard-topbar">
           <div className="global-filter-bar">
             <label>
               <span>Year</span>
@@ -5572,6 +5681,13 @@ function App() {
             </div>
           </div>
         </section>
+        <NationalWeeklyReport
+          summary={nationalReportSummary}
+          periods={tracerReportingPeriods}
+          selectedPeriodId={nationalReportPeriodId}
+          onPeriodChange={setNationalReportPeriodId}
+          onPrint={() => window.print()}
+        />
         <section className="submission-import-section">
           <div className="section-head">
             <div>

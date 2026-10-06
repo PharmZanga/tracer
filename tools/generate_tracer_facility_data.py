@@ -111,7 +111,7 @@ for _september_source in SEPTEMBER_WEEK4_CONFIG["rawSources"]:
 
 SEPTEMBER_WEEK5_CONFIG = {
     "rawSources": [
-        {"province": "MUCHINGA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 5\05.10.2026 MUCHINGA WEEKLY REPORT.xlsx")},
+        {"province": "MUCHINGA PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 5\MUCHINGA. 06_10_2026.xlsx")},
         {"province": "EASTERN PROVINCE", "path": Path(__file__).resolve().parents[1] / "tmp" / "eastern-september-week5.xlsx"},
         {"province": "COPPERBELT PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 5\4.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx")},
         {"province": "NORTHERN PROVINCE", "path": Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\september\week 5\04.10.26. NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx")},
@@ -425,9 +425,7 @@ CONFIRMED_NON_SUBMITTED_LEVELS = {
     ("2026-08-30", "LUSAKA PROVINCE", "RUFUNSA", "HEALTH POST"),
     # Week 5 Muchinga contains the Health Post templates for these districts,
     # but no reported stock values. They are non-submissions, not zero stock.
-    ("2026-10-04", "MUCHINGA PROVINCE", "CHINSALI", "HEALTH POST"),
     ("2026-10-04", "MUCHINGA PROVINCE", "LAVUSHIMANDA", "HEALTH POST"),
-    ("2026-10-04", "MUCHINGA PROVINCE", "MPIKA", "HEALTH POST"),
     ("2026-10-04", "MUCHINGA PROVINCE", "SHIWANG'ANDU", "HEALTH POST"),
 }
 
