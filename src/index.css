@@ -1427,18 +1427,18 @@ button.vaccine-bar:hover .vaccine-bar-value, button.vaccine-bar:focus-visible .v
 
 .national-report-workspace { gap: 16px; }
 .national-report-tools { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding: 14px 16px; border: 1px solid #d3e2d8; border-radius: 7px; background: #fff; }
-.national-report-tools label { display: grid; gap: 6px; min-width: min(360px, 100%); color: #496057; font-size: 12px; font-weight: 800; }
+.national-report-tools label { display: grid; gap: 6px; min-width: 0; flex: 1; color: #496057; font-size: 12px; font-weight: 800; }
 .national-report-tools select { min-height: 40px; border: 1px solid #bcd1c3; border-radius: 4px; padding: 8px 10px; background: #fff; color: #15281d; font: inherit; }
 .national-report-tool-actions button { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 9px 13px; border: 1px solid #087e45; border-radius: 4px; background: #087e45; color: #fff; cursor: pointer; font: inherit; font-size: 12px; font-weight: 850; }
 .national-report-tool-actions button:hover { background: #056638; }
-.national-weekly-report { display: grid; gap: 16px; max-width: 1120px; margin: 0 auto; padding: 30px; border: 1px solid #cedbd2; background: #fff; color: #17251d; }
+.national-weekly-report { display: grid; gap: 16px; width: 100%; min-width: 0; max-width: 1120px; margin: 0 auto; padding: 30px; border: 1px solid #cedbd2; background: #fff; color: #17251d; }
 .national-report-cover { display: grid; justify-items: center; gap: 8px; min-height: 270px; padding: 38px 24px; border: 1px solid #1b5e3e; background: linear-gradient(135deg, #083b29, #127648); color: #fff; text-align: center; }
 .national-report-cover p { margin: 0; color: #cfeedd; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.national-report-cover h1 { max-width: 720px; margin: 18px 0 2px; color: #fff; font-size: clamp(30px, 5vw, 52px); line-height: 1.04; }
+.national-report-cover h1 { max-width: 720px; margin: 18px 0 2px; color: #fff; font-size: 32px; line-height: 1.15; }
 .national-report-cover strong { color: #d7f6e5; font-size: 14px; }
 .national-report-cover span { margin-top: 16px; font-size: 17px; font-weight: 850; }
 .national-report-cover small { color: #d1e8db; font-size: 11px; }
-.national-report-section { display: grid; gap: 13px; break-inside: avoid; }
+.national-report-section { display: grid; min-width: 0; gap: 13px; break-inside: avoid; }
 .national-report-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding-bottom: 8px; border-bottom: 2px solid #218454; }
 .national-report-section-head p { margin: 0; color: #075e3b; font-size: 15px; font-weight: 900; text-transform: uppercase; }
 .national-report-section-head span { color: #63766b; font-size: 11px; font-weight: 700; text-align: right; }
@@ -1455,7 +1455,7 @@ button.vaccine-bar:hover .vaccine-bar-value, button.vaccine-bar:focus-visible .v
 .national-report-level-chart i { display: block; width: 62%; min-height: 8px; justify-self: center; background: #72b66b; }
 .national-report-level-chart strong { color: #1b2c22; font-size: 12px; }
 .national-report-level-chart small { min-height: 31px; color: #52675a; font-size: 11px; font-weight: 750; }
-.national-report-stock-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.national-report-stock-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .national-report-stock-grid article { display: grid; gap: 4px; min-width: 0; padding: 14px; border: 1px solid #d9e4dd; border-top: 4px solid #278150; background: #fff; }
 .national-report-stock-grid article.tone-red { border-top-color: #c92d20; }
 .national-report-stock-grid article.tone-amber { border-top-color: #b36b00; }
@@ -1466,7 +1466,7 @@ button.vaccine-bar:hover .vaccine-bar-value, button.vaccine-bar:focus-visible .v
 .national-report-stock-grid small { line-height: 1.42; }
 .national-report-split { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .national-report-split > div { min-width: 0; }
-.national-weekly-report table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.national-weekly-report table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 11px; }
 .national-weekly-report th, .national-weekly-report td { padding: 8px 7px; border-bottom: 1px solid #dbe6df; text-align: left; vertical-align: top; }
 .national-weekly-report th { color: #075e3b; background: #eef6f1; font-size: 10px; text-transform: uppercase; }
 .national-report-actions ol { display: grid; gap: 9px; margin: 0; padding-left: 22px; color: #283f31; font-size: 13px; line-height: 1.5; }
@@ -7398,4 +7398,25 @@ td.neutral {
   gap: 9px;
   padding: 10px 15px;
   color: #fff;
+}
+.comparison-section[aria-busy="true"] .comparison-filters ~ * {
+  visibility: hidden;
+}
+.national-report-tools select { width: 100%; }
+.national-report-tool-actions button:disabled { opacity: .5; cursor: wait; }
+.national-report-trend { display: flex; gap: 12px; overflow-x: auto; min-height: 180px; padding: 12px; border-bottom: 1px solid #c9dbcf; }
+.national-report-trend > div { min-width: 70px; flex: 1; display: grid; grid-template-rows: auto 110px auto; align-items: end; gap: 6px; text-align: center; font-size: 10px; }
+.national-report-trend i { display: block; width: 60%; background: #087e4a; justify-self: center; }
+.national-report-category-bar { position: relative; min-width: 90px; padding: 4px; background: #eef6f1; isolation: isolate; }
+.national-report-category-bar i { position: absolute; inset: 0 auto 0 0; background: #b7dfca; z-index: -1; }
+.national-report-section table { overflow-wrap: anywhere; }
+@media print {
+  .national-report-cover { background: white !important; color: #163b28 !important; min-height: 650px; break-after: page; }
+  .national-report-cover h1, .national-report-cover p, .national-report-cover strong, .national-report-cover small { color: #163b28 !important; }
+  .national-report-section { break-inside: auto !important; }
+  .national-weekly-report thead { display: table-header-group; }
+  .national-weekly-report tr { break-inside: avoid; }
+  .national-report-split { grid-template-columns: 1fr !important; }
+  .national-report-trend { overflow: visible; }
+  .national-report-trend > div { min-width: 0; }
 }

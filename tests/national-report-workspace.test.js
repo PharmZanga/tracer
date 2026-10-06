@@ -9,7 +9,7 @@ test("national weekly report workspace is available from the sidebar and uses it
   assert.match(appSource, /id: "administration", label: "Administration", pages: \["reports", "imports"\]/);
   assert.match(appSource, /function NationalWeeklyReport/);
   assert.match(appSource, /nationalReportPeriodId/);
-  assert.match(appSource, /buildNationalReportSummary\(nationalReportPeriod, nationalReportPreviousPeriod\)/);
+  assert.match(appSource, /buildNationalReportSummary\(selectReportPeriods/);
   assert.match(appSource, /Generate PDF report/);
   assert.match(appSource, /DHO reporting completeness stood at/);
   assert.match(appSource, /missing reports are not treated as stock data/);
