@@ -719,12 +719,42 @@ function buildNationalReportSummary(selectedPeriods, previousPeriods, option, ty
   };
 }
 
+function ReportAvailabilityChart({ weekly, care = false }) {
+  const width = Math.max(680, weekly.length * (care ? 115 : 80));
+  const left = 48, top = 42, height = 210, step = (width - 100) / weekly.length;
+  const colors = ["#ed7d31", "#4472c4", "#70ad47", "#a5a5a5"];
+  const mosMaximum = Math.max(4, ...weekly.map((w) => w.mos || 0));
+  const mosPoints = weekly.filter((w) => Number.isFinite(w.mos)).map((w) => {
+    const index = weekly.indexOf(w);
+    return `${left+step*(index+.5)},${top+height-(w.mos/mosMaximum)*height}`;
+  }).join(" ");
+  return <div className="national-report-chart"><svg viewBox={`0 0 ${width} 340`} role="img" aria-label={care ? "Weekly availability by level of care" : "Weekly availability and average months of stock"}>
+    {[0,20,40,60,80,100].map((value) => <g key={value}><line x1={left} x2={width-50} y1={top+height-value*height/100} y2={top+height-value*height/100} stroke="#d4d4d4" strokeDasharray="3 3"/><text x={left-8} y={top+height-value*height/100+4} textAnchor="end">{value}%</text></g>)}
+    {weekly.map((w,index) => <g key={w.period.id}>{(care ? w.levels : [{availability:w.period.national.availability}]).map((r,j,rows) => {
+      const barWidth=step*.7/rows.length, x=left+step*index+step*.15+j*barWidth, barHeight=(r.availability || 0)*height;
+      return <g key={j}><rect x={x} y={top+height-barHeight} width={barWidth-2} height={barHeight} fill={colors[j]}/><text x={x+barWidth/2} y={top+height-barHeight-6} textAnchor="middle" fontSize={care ? "8" : "11"}>{formatPercent(r.availability)}</text></g>;
+    })}<text x={left+step*(index+.5)} y={top+height+22} textAnchor="middle">{w.period.reportDate.slice(5)}</text></g>)}
+    {!care && <><polyline points={mosPoints} fill="none" stroke="#4472c4" strokeWidth="2"/>{weekly.map((w,i) => Number.isFinite(w.mos) && <g key={w.period.id}><rect x={left+step*(i+.5)-4} y={top+height-w.mos/mosMaximum*height-4} width="8" height="8" fill="#4472c4"/><text x={left+step*(i+.5)} y={top+height-w.mos/mosMaximum*height-12} textAnchor="middle">{formatMos(w.mos)}</text></g>)}{[0,1,2,3,4].map((i) => <text key={i} x={width-42} y={top+height-i*height/4+4}>{(i*mosMaximum/4).toFixed(1)}</text>)}</>}
+    {(care ? careLevelBuckets.map((b) => b.label) : ["Availability", "Average MOS"]).map((label,i) => <g key={label}><rect x={left} y={294+i*11} width="12" height="7" fill={colors[i]}/><text x={left+18} y={301+i*11}>{label}</text></g>)}
+  </svg></div>;
+}
+
 function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChange, onPrint, type, year, onTypeChange, onYearChange, loading, error, onRetry }) {
+  const sectionOptions = [
+    ["overview", "A. National Overview"], ["care", "B. Availability by Level of Care"],
+    ["provinces", "C. Provincial Performance"], ["programmes", "D. Programme Performance"],
+    ["zammsa", "E. ZAMMSA Central Stock Status"], ["reporting", "F. Reporting Completeness"],
+    ["stock", "National Stock Status"], ["commodities", "Commodity Priorities"],
+    ["actions", "Recommended Actions"], ["sources", "Methodology and Sources"],
+  ];
+  const [includedSections, setIncludedSections] = useState(() => sectionOptions.map(([id]) => id));
+  const sectionProps = (id) => ({ hidden: !includedSections.includes(id), "data-report-section": id });
   const tools = <div className="national-report-tools">
     <label><span>Report frequency</span><select value={type} onChange={(e) => onTypeChange(e.target.value)}><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option></select></label>
     <label><span>Year</span><select value={year} onChange={(e) => onYearChange(e.target.value)}>{availableTracerYears.map((y) => <option key={y}>{y}</option>)}</select></label>
     <label><span>Report period</span><select value={selectedPeriodId} onChange={(event) => onPeriodChange(event.target.value)}>{periods.map((item) => <option value={item.id} key={item.id}>{item.label}</option>)}</select></label>
-    <div className="national-report-tool-actions"><button type="button" disabled={loading || Boolean(error) || !summary} onClick={onPrint}><Printer size={16} aria-hidden="true" />Generate PDF report</button></div>
+    <div className="national-report-tool-actions"><button type="button" disabled={loading || Boolean(error) || !summary || !includedSections.length} onClick={onPrint}><Printer size={16} aria-hidden="true" />Generate PDF report</button></div>
+    <fieldset className="national-report-section-picker"><legend>Report sections</legend>{sectionOptions.map(([id,label]) => <label key={id}><input type="checkbox" checked={includedSections.includes(id)} onChange={(e) => setIncludedSections((current) => e.target.checked ? [...current,id] : current.filter((key) => key !== id))}/><span>{label}</span></label>)}</fieldset>
   </div>;
   if (loading || error || !summary || summary.selectedPeriods.length !== summary.option.periods.length) return <section className="national-report-workspace">{tools}<div role={error ? "alert" : "status"}>{error || "Loading selected reporting periods..."}{error && <button type="button" onClick={onRetry}>Try again</button>}</div></section>;
   const { period, levelRows, provinces, programmes, districtReporting, stockStatus, availabilityChange, mosChange } = summary;
@@ -738,18 +768,19 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
     <article className="national-weekly-report" id="national-weekly-report">
       <header className="national-report-cover">
         <img src="/zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms" width="80" height="80" />
-        <p>Republic of Zambia | Ministry of Health</p>
+        <p>MINISTRY OF HEALTH</p>
         <h1>{type === "monthly" ? "Monthly" : type === "quarterly" ? "Quarterly" : "Weekly"} Tracer Availability Report</h1>
-        <strong>National Supply Chain Coordination Unit</strong>
+        <p className="national-report-cover-description">The report summarises national tracer availability, stock status and service-level performance for the selected reporting period. It identifies priority replenishment and redistribution needs using submitted dashboard data.</p>
         <span>Report period: {period.label}</span>
         <small>{summary.selectedPeriods[0].reportDate} to {period.reportDate} | {summary.selectedPeriods.length} reporting weeks</small>
-        <strong>Prepared by: Zanga Musakuzi</strong><small>Principal Pharmacist - Data Analytics</small>
+        <strong>Prepared by: Zanga Musakuzi</strong><small>Principal Pharmacist - Data Analytics</small><b className="national-report-cover-year">{year}</b>
       </header>
 
-      <section className="national-report-section"><h2>Contents</h2><p>A. National Overview and Level-of-care Performance<br/>B. National Stock Status, Provincial Availability and Programme Performance<br/>C. ZAMMSA Central Level Stock Status Analysis<br/>D. Reporting Completeness<br/>E. Priority Actions, Methodology and Sources</p></section>
-      <section className="national-report-section">
+      <section className="national-report-section national-report-contents"><h2>Contents</h2>{sectionOptions.filter(([id]) => includedSections.includes(id)).map(([id,label]) => <p key={id}>{label}</p>)}</section>
+      <section className="national-report-section" {...sectionProps("overview")}>
         <div className="national-report-section-head"><p>A. National Overview</p><span>{period.label}</span></div>
         <p className="national-report-narrative">For {period.label}, tracer commodity data from {period.counts.provinces} provinces was analysed, covering {period.national.rows.toLocaleString()} submitted commodity observations across {summary.selectedPeriods.length} reporting weeks. National reported availability was {formatPercent(period.national.availability)}, with an average Months of Stock (MOS) of {formatMos(period.national.mos)}. At the final reporting week ending {reportDate}, DHO reporting completeness stood at {districtReporting.reported} of {districtReporting.expected} districts.</p>
+        <p className="national-report-narrative">Across the selected reporting weeks, national availability ranged from {formatPercent(Math.min(...summary.weekly.map(({period:p}) => p.national.availability)))} to {formatPercent(Math.max(...summary.weekly.map(({period:p}) => p.national.availability)))}. Between the first and final observations, availability {period.national.availability === null ? "changed" : summary.weekly.at(-1).period.national.availability >= summary.weekly[0].period.national.availability ? "increased" : "declined"} by {Math.abs((summary.weekly.at(-1).period.national.availability-summary.weekly[0].period.national.availability)*100).toFixed(1)} percentage points, while average MOS moved from {formatMos(summary.weekly[0].mos)} to {formatMos(summary.weekly.at(-1).mos)} months. The aggregate position masks variation by level of care, province, programme and commodity; the sections below identify where closer stock review is required.</p>
         {type === "quarterly" && <p className="national-report-callout">Quarter coverage: {summary.option.months.map(monthLabel).join(", ")}. {summary.option.months.length < 3 ? "Partial quarter: only the listed submitted months are included." : "Three submitted months are included; individual weekly gaps remain visible below."}</p>}
         {availabilityChange !== null && <p className="national-report-narrative">Compared with the preceding available {type} reporting period ({summary.previousLabel}), availability changed by {(availabilityChange * 100).toFixed(1)} percentage points and average MOS changed by {(mosChange || 0).toFixed(1)} months. Changes can also reflect reporting coverage and commodity mix.</p>}
         <div className="national-report-kpis">
@@ -760,35 +791,36 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
         </div>
         <p className="national-report-callout">{strongestProvince?.name || "-"} recorded the strongest availability at {formatPercent(strongestProvince?.availability)}, while {weakestProvince?.name || "-"} was lowest at {formatPercent(weakestProvince?.availability)}. {lowestLevel ? `${lowestLevel.label} had the lowest level-of-care performance at ${formatPercent(lowestLevel.availability)} availability and ${formatMos(lowestLevel.mos)} MOS.` : ""}</p>
         <table><thead><tr><th>Reporting week</th><th>Availability</th><th>MOS</th><th>Records</th><th>DHO reporting</th></tr></thead><tbody>{summary.weekly.map(({period:p,reporting:r,mos}) => <tr key={p.id}><td>{p.label}</td><td>{formatPercent(p.national.availability)}</td><td>{formatMos(mos)}</td><td>{p.national.rows.toLocaleString()}</td><td>{r.reported}/{r.expected}</td></tr>)}</tbody></table>
-        <div className="national-report-trend">{summary.weekly.map(({period:p}) => <div key={p.id}><b>{formatPercent(p.national.availability)}</b><i style={{height:`${Math.max(2,p.national.availability*100)}%`}}/><small>{p.reportDate}</small></div>)}</div>
+        <h3>Weekly availability and average MOS - {period.label}</h3><ReportAvailabilityChart weekly={summary.weekly}/>
       </section>
 
-      <section className="national-report-section">
-        <div className="national-report-section-head"><p>Level Of Care Performance</p><span>Availability and MOS</span></div>
-        <div className="national-report-level-chart">{levelRows.map((row) => <div key={row.label}><span>{formatPercent(row.availability)}</span><i style={{ height: `${Math.max(7, Math.round((row.availability || 0) * 100))}%` }} /><strong>{formatMos(row.mos)} MOS</strong><small>{row.label}</small></div>)}</div>
+      <section className="national-report-section" {...sectionProps("care")}>
+        <div className="national-report-section-head"><p>B. Availability by Level of Care</p><span>Availability and MOS</span></div>
+        <p>Availability was highest in {[...levelRows].sort((a,b) => b.availability-a.availability)[0]?.label} at {formatPercent(Math.max(...levelRows.map((r) => r.availability)))}, while {lowestLevel?.label} recorded the lowest availability at {formatPercent(lowestLevel?.availability)}. {levelRows.map((r,i) => { const first=summary.weekly[0].levels[i]; const last=summary.weekly.at(-1).levels[i]; const delta=(last.availability-first.availability)*100; return `${r.label} ${delta >= 0 ? "increased" : "declined"} by ${Math.abs(delta).toFixed(1)} percentage points between the first and final reporting weeks.`; }).join(" ")}</p>
+        <h3>Weekly availability by level of care</h3><ReportAvailabilityChart weekly={summary.weekly} care/>
         <table><thead><tr><th>Level of care</th><th>Observations</th><th>Availability</th><th>Average MOS</th></tr></thead><tbody>{levelRows.map((r) => <tr key={r.label}><td>{r.label}</td><td>{r.rows.toLocaleString()}</td><td>{formatPercent(r.availability)}</td><td>{formatMos(r.mos)}</td></tr>)}</tbody></table>
         <table><thead><tr><th>Week</th>{careLevelBuckets.map((b) => <th key={b.id}>{b.label}</th>)}</tr></thead><tbody>{summary.weekly.map(({period:p,levels}) => <tr key={p.id}><td>{p.label}</td>{levels.map((r) => <td key={r.label}>{formatPercent(r.availability)}<br/>{formatMos(r.mos)} MOS</td>)}</tr>)}</tbody></table>
         <p className="national-report-narrative">Primary care and hospital levels are analysed separately. Renal and TB reporting remains in dedicated programme analysis rather than automatically entering the Level 3/specialised group. Availability changes must be interpreted with the reporting coverage and commodity mix.</p>
       </section>
 
-      <section className="national-report-section">
-        <div className="national-report-section-head"><p>B. National Stock Status</p><span>Submitted records only</span></div>
+      <section className="national-report-section" {...sectionProps("stock")}>
+        <div className="national-report-section-head"><p>National Stock Status</p><span>Submitted records only</span></div>
         <div className="national-report-stock-grid">{stockStatus.map((row) => <article className={`tone-${row.tone}`} key={row.label}><span>{row.label}</span><strong>{row.count.toLocaleString()}</strong><b>{formatPercent(row.rate)}</b><small>{row.action}</small></article>)}</div>
         <p className="national-report-narrative">Stock bands are based on submitted MOS. Zero or near-zero MOS can include positive quantities. {summary.hasCommodityEvidence ? `${summary.confirmedZero.toLocaleString()} observations have an explicitly reported zero quantity.` : "Detailed quantities are unavailable in this historical dataset; confirmed zero-stock counts cannot be verified."} Multi-week totals are repeated observations, not unique commodities or cumulative stock balances.</p>
       </section>
 
-      <section className="national-report-section national-report-split">
-        <div><div className="national-report-section-head"><p>Provincial Performance</p><span>Lowest availability first</span></div><table><thead><tr><th>Province</th><th>Availability</th><th>MOS</th><th>Zero/near-zero MOS</th><th>Low stock</th></tr></thead><tbody>{provinces.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.stockout.toLocaleString()}</td><td>{(row.nearCritical + row.understocked).toLocaleString()}</td></tr>)}</tbody></table></div>
-        <div><div className="national-report-section-head"><p>Programme Pressure</p><span>Priority review</span></div><table><thead><tr><th>Programme</th><th>Availability</th><th>MOS</th><th>Risk rows</th></tr></thead><tbody>{programmes.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.riskRows.toLocaleString()}</td></tr>)}</tbody></table></div>
+      <section className="national-report-section national-report-split" hidden={!includedSections.includes("provinces") && !includedSections.includes("programmes")}>
+        <div {...sectionProps("provinces")}><div className="national-report-section-head"><p>C. Provincial Performance</p><span>Lowest availability first</span></div><p>Provincial availability ranged from {formatPercent(weakestProvince?.availability)} in {weakestProvince?.name} to {formatPercent(strongestProvince?.availability)} in {strongestProvince?.name}. The lowest-performing provinces were {provinces.slice(0,3).map((r) => `${r.name} (${formatPercent(r.availability)})`).join(", ")}; these require closer review of commodity stock status and replenishment needs.</p><table><thead><tr><th>Province</th><th>Availability</th><th>MOS</th><th>Zero/near-zero MOS</th><th>Low stock</th></tr></thead><tbody>{provinces.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.stockout.toLocaleString()}</td><td>{(row.nearCritical + row.understocked).toLocaleString()}</td></tr>)}</tbody></table></div>
+        <div {...sectionProps("programmes")}><div className="national-report-section-head"><p>D. Programme Performance</p><span>Priority review</span></div><p>The greatest programme pressure was observed in {programmes.slice(0,3).map((r) => `${r.name} (${formatPercent(r.availability)}, ${formatMos(r.mos)} MOS)`).join(", ")}. {programmes.filter((r) => r.availability < .7).length} programme groups recorded availability below 70%, indicating a need for targeted commodity-level review and follow-up. Availability alone does not establish the cause of a shortage.</p><table><thead><tr><th>Programme</th><th>Availability</th><th>MOS</th><th>Risk rows</th></tr></thead><tbody>{programmes.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.riskRows.toLocaleString()}</td></tr>)}</tbody></table></div>
       </section>
 
-      <section className="national-report-section">
+      <section className="national-report-section" {...sectionProps("commodities")}>
         <div className="national-report-section-head"><p>Commodity Priorities</p><span>20 lowest-availability commodities</span></div>
         <p>Programme portfolios with the lowest reported availability are {programmes.slice(0,3).map((r) => `${r.name} (${formatPercent(r.availability)})`).join(", ")}. Review their commodity-level shortages and consumption assumptions before agreeing replenishment or redistribution.</p>
         <table><thead><tr><th>Commodity</th><th>Observations</th><th>Availability</th><th>MOS</th><th>Risk observations</th></tr></thead><tbody>{summary.priorityCommodities.map((r) => <tr key={r.name}><td>{r.name}</td><td>{r.rows.toLocaleString()}</td><td>{formatPercent(r.availability)}</td><td>{formatMos(r.mos)}</td><td>{r.riskRows.toLocaleString()}</td></tr>)}</tbody></table>
       </section>
-      <section className="national-report-section">
-        <div className="national-report-section-head"><p>C. ZAMMSA Central Level Stock Status Analysis</p><span>Separate inventory source</span></div>
+      <section className="national-report-section" {...sectionProps("zammsa")}>
+        <div className="national-report-section-head"><p>E. ZAMMSA Central Stock Status</p><span>Separate inventory source</span></div>
         {summary.stockPeriods.length ? <>
           <p className="national-report-narrative">Matching weekly central inventory reports cover {summary.stockPeriods[0].date} to {summary.stockPeriods.at(-1).date}. These indicators describe ZAMMSA inventory and are not pooled with facility tracer availability. Category results below use the latest matching report for each stream.</p>
           <table><thead><tr><th>Date</th><th>Stream</th><th>Availability</th><th>Available / listed items</th></tr></thead><tbody>{summary.stockPeriods.map((p) => <tr key={p.id}><td>{p.date}</td><td>{p.stream}</td><td>{formatPercent(p.overallAvailability)}</td><td>{p.counts.availableItems}/{p.counts.items}</td></tr>)}</tbody></table>
@@ -801,13 +833,13 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
           })}
         </> : <p>No matching ZAMMSA weekly inventory submission is available for this report period. No inventory values, shipment dates or receipts have been assumed.</p>}
       </section>
-      <section className="national-report-section">
-        <div className="national-report-section-head"><p>D. Reporting Completeness</p><span>Weekly reporting evidence</span></div>
+      <section className="national-report-section" {...sectionProps("reporting")}>
+        <div className="national-report-section-head"><p>F. Reporting Completeness</p><span>Weekly reporting evidence</span></div>
         <table><thead><tr><th>Week</th><th>Expected</th><th>Complete DHO reports</th><th>Missing / incomplete districts</th></tr></thead><tbody>{summary.weekly.map(({period:p,reporting:r}) => <tr key={p.id}><td>{p.label}</td><td>{r.expected}</td><td>{r.reported}</td><td>{primaryCareDistrictRows(p).filter((d) => !(d.healthCentreSubmissionReceived && d.healthPostSubmissionReceived)).map((d) => `${d.name} (${d.province})`).join("; ") || "None"}</td></tr>)}</tbody></table>
         <p>DHO reporting requires Health Centre and Health Post submissions, or valid combined primary-care evidence. Hospital-only submissions do not satisfy this requirement. All-zero quantity blocks are non-submissions, not evidence of stock-outs.</p>
       </section>
-      <section className="national-report-section national-report-actions">
-        <div className="national-report-section-head"><p>E. Priority Actions</p><span>Management follow-up</span></div>
+      <section className="national-report-section national-report-actions" {...sectionProps("actions")}>
+        <div className="national-report-section-head"><p>Recommended Actions</p><span>Management follow-up</span></div>
         <ol>
           <li>Validate zero-quantity observations and the {period.national.stockout.toLocaleString()} zero/near-zero MOS records, using verified excess stock for targeted redistribution where feasible.</li>
           <li>Prioritise the {period.national.nearCritical.toLocaleString()} emergency records below one month of stock before they progress to stockout.</li>
@@ -816,7 +848,7 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
         </ol>
         <table><thead><tr><th>Action</th><th>Responsible team</th><th>Timing</th></tr></thead><tbody><tr><td>Validate quantities, expiry and replenishment for critical commodities</td><td>Provincial and district pharmacists</td><td>Immediate</td></tr><tr><td>Review programme shortages and order fulfilment</td><td>Programme managers and Control Tower</td><td>Within one week</td></tr><tr><td>Close incomplete primary-care and hospital reporting</td><td>Provincial health offices</td><td>Before next submission</td></tr><tr><td>Review constrained central inventory categories</td><td>ZAMMSA and Ministry of Health</td><td>Weekly</td></tr></tbody></table>
       </section>
-      <section className="national-report-section"><h2>Methodology and Sources</h2><p>Availability is the commodity-row-weighted reported availability used by the dashboard. MOS is the arithmetic mean of submitted commodity MOS, capped at 12 months where detailed rows exist; historical summary-only periods use row-weighted source MOS. Stock status is reported separately from non-reporting. Multi-week totals are observations, not unique facilities, cumulative SOH or total consumption. Latest-week DHO coverage is distinct from the weekly reporting history.</p><p>Reporting periods follow the dashboard submission month, not the calendar month of the week-ending date. Partial quarters include only available submissions. Earlier period comparisons use the preceding available period of the same frequency. The attached August reports supply the structure; their older figures are not reused.</p><details open><summary>Provincial tracer sources</summary><ul>{[...new Set(summary.selectedPeriods.map((p) => p.source))].map((source) => <li key={source}>{source}</li>)}</ul></details></section>
+      <section className="national-report-section" {...sectionProps("sources")}><h2>Methodology and Sources</h2><p>Availability is the commodity-row-weighted reported availability used by the dashboard. MOS is the arithmetic mean of submitted commodity MOS, capped at 12 months where detailed rows exist; historical summary-only periods use row-weighted source MOS. Stock status is reported separately from non-reporting. Multi-week totals are observations, not unique facilities, cumulative SOH or total consumption. Latest-week DHO coverage is distinct from the weekly reporting history.</p><p>Reporting periods follow the dashboard submission month, not the calendar month of the week-ending date. Partial quarters include only available submissions. Earlier period comparisons use the preceding available period of the same frequency. The attached August reports supply the structure; their older figures are not reused.</p><details open><summary>Provincial tracer sources</summary><ul>{[...new Set(summary.selectedPeriods.map((p) => p.source))].map((source) => <li key={source}>{source}</li>)}</ul></details></section>
       <footer>National Supply Chain Tracer Report | Generated {new Date().toLocaleDateString("en-GB",{timeZone:"Africa/Lusaka"})}</footer>
     </article>
   </section>;
@@ -3977,13 +4009,13 @@ function App() {
           <span>National Tracer Drug Availability</span>
           <strong>Weekly Facility Reporting Dashboard</strong>
         </div>
-        <div className="national-brand control-tower-brand">
+        {activePage !== "reports" && <div className="national-brand control-tower-brand">
           <img src="./control-tower-logo.svg" alt="Control Tower logo" />
           <div>
             <span>Control Tower</span>
             <strong>National Supply Chain Coordinating Unit</strong>
           </div>
-        </div>
+        </div>}
       </header>
 
       <aside className="dashboard-sidebar">
