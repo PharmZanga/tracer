@@ -9,7 +9,7 @@ import { reportingFacilityType, sourceSupportedHospitalFacility } from "./dataQu
 import { facilityReportingRows, primaryCareDistrictRows, primaryCareDistrictSummary, primaryCareLevelReported } from "./reportingQuality.js";
 import { buildRedistributionCandidates } from "./redistribution.js";
 import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTracerAnalysis.js";
-import { vaccineStockData } from "./vaccineStockData.js";
+import { vaccineStockData } from "./vaccineData.js";
 import { buildVaccineReportingUnits, cleanVaccineReportingRows } from "./vaccineReportingUnits.js";
 import { reportCatalogue } from "./reportCatalogue.js";
 import { reportOptions, selectReportPeriods, matchingStockPeriods } from "./reportPeriods.js";

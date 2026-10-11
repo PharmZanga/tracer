@@ -1,13 +1,22 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
-import { vaccineStockData } from "../src/vaccineStockData.js";
+import { vaccineStockData } from "../src/vaccineData.js";
 import { buildVaccineReportingUnits, cleanVaccineReportingRows } from "../src/vaccineReportingUnits.js";
 
 await loadHistoricalTracerYear("2026");
 
 const officialDistricts = tracerReportingPeriods.at(-1).dataQuality.districts;
 const { provinces, districts, vaccines } = vaccineStockData.dictionaries;
+test('September vaccine source preserves observed values and missing Muchinga submissions',()=>{
+  const period=vaccineStockData.periods.find(p=>p.id==='2026-09');
+  assert.equal(period.sourceSheet,'SEPTEMBER 2026');
+  assert.equal(period.rows.length,1133);
+  const chadiza=period.rows.find(r=>districts[r[1]]==='Chadiza'&&vaccines[r[2]]==='BCG');
+  assert.equal(chadiza[3],1220);assert.equal(chadiza[4],1520);
+  for(const district of ['Lavushimanda','Isoka','Mpika']) assert.ok(!period.rows.some(r=>provinces[r[0]]==='Muchinga'&&districts[r[1]]===district));
+  assert.equal(period.rows.reduce((sum,r)=>sum+(r[3]||0),0),4178213);
+});
 const rawRows = vaccineStockData.periods.flatMap((period) => period.rows.map(([province, district, vaccine, stock, amc, mos, expiryDate, vvmStage]) => ({
   province: provinces[province], district: districts[district], vaccine: vaccines[vaccine], stock, amc, mos, expiryDate, vvmStage,
 })));
