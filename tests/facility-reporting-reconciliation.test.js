@@ -63,7 +63,7 @@ test("August Week 4 records confirmed facility non-submissions without treating 
 });
 
 test("the complete facility mapping reconciles every loaded reporting week", () => {
-  assert.equal(tracerReportingPeriods.length, 40);
+  assert.equal(tracerReportingPeriods.length, 41);
 
   tracerReportingPeriods.forEach((period) => {
     const rows = facilityReportingRows(period);

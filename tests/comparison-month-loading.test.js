@@ -4,7 +4,7 @@ import test from "node:test";
 import { availableTracerMonths, loadTracerMonth, tracerReportingPeriods } from "../src/tracerFacilityData.js";
 
 test("comparison month catalogue includes unloaded January through September", () => {
-  assert.equal(availableTracerMonths.length, 9);
+  assert.equal(availableTracerMonths.length, 10);
   const source = fs.readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
   assert.match(source, /const comparisonMonths = .*availableTracerMonths/);
   assert.match(source, /await loadTracerMonth\(month\)/);

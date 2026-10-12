@@ -8,6 +8,7 @@ const DATASETS = [
   "may-jun.json",
   "jul-aug.json",
   "sep.json",
+  "oct.json",
 ];
 const EXPECTED_MONTHS = ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09"];
 const errors = [];
@@ -52,11 +53,11 @@ for (const datasetName of DATASETS) {
 }
 
 const periods = [...periodMap.values()].sort((left, right) => left.id.localeCompare(right.id));
-if (periods.length !== 40) errors.push(`Expected 40 January-September periods, found ${periods.length}`);
+if (periods.length !== 41) errors.push(`Expected 41 January-October periods, found ${periods.length}`);
 
 const report = { reviewedAt: new Date().toISOString(), periods: [], errors, warnings };
 for (const period of periods) {
-  if (!EXPECTED_MONTHS.includes(period.month)) errors.push(`${period.id}: outside the January-September 2026 audit scope`);
+  if (![...EXPECTED_MONTHS,"2026-10"].includes(period.month)) errors.push(`${period.id}: outside the January-October 2026 audit scope`);
   if (period.id !== period.reportDate) errors.push(`${period.id}: period ID and report date differ`);
   if (period.counts?.provinces !== 10) warnings.push(`${period.id}: source submission includes ${period.counts?.provinces} provinces, not the full 10-province footprint`);
   if (period.dataQuality?.districts?.length !== 116) errors.push(`${period.id}: expected 116 district quality rows, found ${period.dataQuality?.districts?.length}`);

@@ -6,11 +6,11 @@ import { loadTracerMonth, tracerReportingPeriods } from "../src/tracerFacilityDa
 
 test("all January to September months and their 40 reporting weeks are selectable before loading", () => {
   const monthly = reportOptions(reportCatalogue,"monthly","2026");
-  assert.equal(monthly.length,9);
-  assert.equal(reportOptions(reportCatalogue,"weekly","2026").length,40);
-  const sep = monthly.at(-1);
+  assert.equal(monthly.length,10);
+  assert.equal(reportOptions(reportCatalogue,"weekly","2026").length,41);
+  const sep = monthly.find(p=>p.periods[0].month==='2026-09');
   assert.equal(sep.periods.at(-1).id,"2026-10-04");
-  assert.equal(reportOptions(reportCatalogue,"quarterly","2026").length,3);
+  assert.equal(reportOptions(reportCatalogue,"quarterly","2026").length,4);
   assert.equal(reportOptions(reportCatalogue,"quarterly","2026")[2].periods.length,14);
 });
 

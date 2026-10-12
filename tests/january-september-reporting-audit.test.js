@@ -10,9 +10,9 @@ await loadHistoricalTracerYear("2026");
 const districtNames = [...new Set(tracerReportingPeriods.flatMap((period) => (period.dataQuality?.districts || []).map((row) => row.name)))];
 
 test("January through September has one complete 116-district reporting universe every week", () => {
-  assert.equal(tracerReportingPeriods.length, 40);
+  assert.equal(tracerReportingPeriods.filter(p=>p.month<='2026-09').length, 40);
   assert.equal(tracerReportingPeriods[0].id, "2026-01-04");
-  assert.equal(tracerReportingPeriods.at(-1).id, "2026-10-04");
+  assert.equal(tracerReportingPeriods.filter(p=>p.month<='2026-09').at(-1).id, "2026-10-04");
 
   tracerReportingPeriods.forEach((period) => {
     const rows = primaryCareDistrictRows(period);
