@@ -59,7 +59,7 @@ for (const month of expectedMonths) {
   check(tracerReportingPeriods.some((period) => period.month === month), `Missing tracer month: ${month}`);
 }
 check(tracerReportingPeriods.filter(p=>p.month<='2026-09').length === 40, 'January through September should contain 40 reporting weeks');
-check(tracerReportingPeriods.some(p=>p.id==='2026-10-11'&&p.counts.provinces===9), 'October Week 1 must contain the nine received provincial submissions');
+check(tracerReportingPeriods.some(p=>p.id==='2026-10-11'&&p.counts.provinces===10), 'October Week 1 must contain all ten provincial submissions');
 
 const januaryPeriods = tracerReportingPeriods.filter((period) => period.month === "2026-01");
 check(januaryPeriods.length === 5, `January should contain 5 reporting weeks; found ${januaryPeriods.length}`);
