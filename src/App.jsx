@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import {ReportStockBars,ReportTrendSection} from './ReportAnalytics.jsx';
 import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileText, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, Printer, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
 import { availableTracerMonths, availableTracerYears, loadHistoricalTracerYear, loadLiveTracerData, loadTracerMonth, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
@@ -701,6 +702,7 @@ function buildNationalReportSummary(selectedPeriods, previousPeriods, option, ty
   if (previous && previousRows.length) previous.mos = cappedAverageMos(previousRows);
   return {
     selectedPeriods, type, option,
+    trendPeriods: tracerReportingPeriods.filter(p=>p.reportDate<=latest.reportDate&&p.month.slice(0,4)===latest.month.slice(0,4)).slice(-12),
     weekly: selectedPeriods.map((p) => ({ period: p, reporting: primaryCareDistrictSummary(p), mos: cappedAverageMos(rowsByPeriod.get(p.id)) ?? p.national.mos,
       levels: careLevelBuckets.map((b) => ({ label:b.label, availability:combineRollups((p.facilities?.length ? p.facilities : p.facilityLevels || []).filter((f) => careLevelBucket(f.facilityLevel || f.name) === b.id)).availability, mos:cappedAverageMos(rowsByPeriod.get(p.id).filter((r) => careLevelBucket(r.facilityLevel) === b.id)) })) })),
     priorityCommodities: aggregateRollups(selectedPeriods.flatMap((p) => p.commodities || []), "name").sort((a,b) => a.availability-b.availability || b.riskRows-a.riskRows).slice(0,20),
@@ -745,6 +747,7 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
     ["provinces", "C. Provincial Performance"], ["programmes", "D. Programme Performance"],
     ["zammsa", "E. ZAMMSA Central Stock Status"], ["reporting", "F. Reporting Completeness"],
     ["stock", "National Stock Status"], ["commodities", "Commodity Priorities"],
+    ["provincial-trends", "Provincial Trends"], ["commodity-trends", "Commodity Stock Status Trends"], ["predictive", "Predictive Analysis"],
     ["actions", "Recommended Actions"], ["sources", "Methodology and Sources"],
   ];
   const [includedSections, setIncludedSections] = useState(() => sectionOptions.map(([id]) => id));
@@ -805,7 +808,7 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
 
       <section className="national-report-section" {...sectionProps("stock")}>
         <div className="national-report-section-head"><p>National Stock Status</p><span>Submitted records only</span></div>
-        <div className="national-report-stock-grid">{stockStatus.map((row) => <article className={`tone-${row.tone}`} key={row.label}><span>{row.label}</span><strong>{row.count.toLocaleString()}</strong><b>{formatPercent(row.rate)}</b><small>{row.action}</small></article>)}</div>
+        <ReportStockBars rows={stockStatus}/>
         <p className="national-report-narrative">Stock bands are based on submitted MOS. Zero or near-zero MOS can include positive quantities. {summary.hasCommodityEvidence ? `${summary.confirmedZero.toLocaleString()} observations have an explicitly reported zero quantity.` : "Detailed quantities are unavailable in this historical dataset; confirmed zero-stock counts cannot be verified."} Multi-week totals are repeated observations, not unique commodities or cumulative stock balances.</p>
       </section>
 
@@ -818,6 +821,18 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
         <div className="national-report-section-head"><p>Commodity Priorities</p><span>20 lowest-availability commodities</span></div>
         <p>Programme portfolios with the lowest reported availability are {programmes.slice(0,3).map((r) => `${r.name} (${formatPercent(r.availability)})`).join(", ")}. Review their commodity-level shortages and consumption assumptions before agreeing replenishment or redistribution.</p>
         <table><thead><tr><th>Commodity</th><th>Observations</th><th>Availability</th><th>MOS</th><th>Risk observations</th></tr></thead><tbody>{summary.priorityCommodities.map((r) => <tr key={r.name}><td>{r.name}</td><td>{r.rows.toLocaleString()}</td><td>{formatPercent(r.availability)}</td><td>{formatMos(r.mos)}</td><td>{r.riskRows.toLocaleString()}</td></tr>)}</tbody></table>
+      </section>
+      <section className="national-report-section" {...sectionProps("provincial-trends")}>
+        <div className="national-report-section-head"><p>Provincial Trends</p><span>Up to 12 reporting weeks</span></div>
+        <ReportTrendSection periods={summary.trendPeriods} scope="provinces"/>
+      </section>
+      <section className="national-report-section" {...sectionProps("commodity-trends")}>
+        <div className="national-report-section-head"><p>Commodity Stock Status Trends</p><span>Weekly stock-band shares</span></div>
+        <ReportTrendSection periods={summary.trendPeriods} scope="commodities"/>
+      </section>
+      <section className="national-report-section" {...sectionProps("predictive")}>
+        <div className="national-report-section-head"><p>Predictive Analysis</p><span>Exploratory availability forecast</span></div>
+        <ReportTrendSection periods={summary.trendPeriods} scope="commodities" predictive/>
       </section>
       <section className="national-report-section" {...sectionProps("zammsa")}>
         <div className="national-report-section-head"><p>E. ZAMMSA Central Stock Status</p><span>Separate inventory source</span></div>
@@ -3192,6 +3207,8 @@ function App() {
     setNationalReportError("");
     const load = async () => {
       const months = new Set([...nationalReportOption.months, ...(nationalReportPreviousOption?.months || [])]);
+      const end=nationalReportOption.periods.at(-1)?.reportDate;
+      reportCatalogue.filter(p=>p.reportDate<=end&&p.month.startsWith(nationalReportYear)).slice(-12).forEach(p=>months.add(p.month));
       for (const month of months) await loadTracerMonth(month);
       if (!cancelled) setHistoricalDataVersion((version) => version + 1);
     };
