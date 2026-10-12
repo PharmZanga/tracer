@@ -1,4 +1,4 @@
-"""Import eight October Week 1 sources; Central/Eastern remain missing."""
+"""Import nine October Week 1 sources; Eastern remains missing."""
 import json
 from pathlib import Path
 from import_september_week5 import load_generator, load_periods, reporting_expectations, compact_bootstrap, DATA_MODULES, BOOTSTRAP
@@ -6,6 +6,7 @@ from import_september_week5 import load_generator, load_periods, reporting_expec
 ROOT=Path(__file__).resolve().parents[1]
 DIRECTORY=Path(r'C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\province submissions\october\week 1')
 FILES={
+ 'CENTRAL PROVINCE':'11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx',
  'LUSAKA PROVINCE':'09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx',
  'COPPERBELT PROVINCE':'11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx',
  'LUAPULA PROVINCE':'11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx',
@@ -17,12 +18,12 @@ FILES={
 }
 def main():
  generator=load_generator()
- config={'rawSources':[{'province':province,'path':DIRECTORY/name,'primaryCareSummaryLayout':True} for province,name in FILES.items()], 'source':'October Week 1: eight provincial submissions; Central and Eastern not received','reportDate':'2026-10-11','label':'Week 1 - 11 October 2026','month':'2026-10','week':'Week 1'}
+ config={'rawSources':[{'province':province,'path':DIRECTORY/name,'primaryCareSummaryLayout':True} for province,name in FILES.items()], 'source':'October Week 1: nine provincial submissions; Eastern not received','reportDate':'2026-10-11','label':'Week 1 - 11 October 2026','month':'2026-10','week':'Week 1'}
  for source in config['rawSources']:
   if not source['path'].is_file(): raise FileNotFoundError(source['path'])
  period=generator.summarize(config)
- assert period['counts']['provinces']==8,period['counts']
- assert not any(f['province'] in {'CENTRAL PROVINCE','EASTERN PROVINCE'} for f in period['facilities'])
+ assert period['counts']['provinces']==9,period['counts']
+ assert not any(f['province']=='EASTERN PROVINCE' for f in period['facilities'])
  history=[p for path in DATA_MODULES for p in load_periods(path)]
  periods=history+[period]
  expected_districts,expected_facilities=reporting_expectations(generator,periods)
