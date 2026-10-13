@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {reportSections,stockImbalanceShares} from '../src/reportSections.js';
+test('report stylesheet does not override document section order',()=>{
+  const css=readFileSync(new URL('../src/index.css',import.meta.url),'utf8');
+  assert.doesNotMatch(css,/\.national[^{}]*\{[^{}]*\border\s*:/);
+});
 test('report section labels continue A through R in declared order',()=>{
   assert.equal(reportSections.length,18);
   reportSections.forEach(([,title],i)=>assert.ok(title.startsWith(`${String.fromCharCode(65+i)}. `)));

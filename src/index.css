@@ -7416,18 +7416,6 @@ td.neutral {
 .national-report-section-picker input { width: 16px; height: 16px; margin: 0; accent-color: #4472c4; }
 .national-weekly-report [hidden] { display: none !important; }
 .national-weekly-report { display: flex; flex-direction: column; font-family: "Times New Roman",Times,serif; color: #111; gap: 0; }
-.national-report-cover { order: 0; }
-.national-report-contents { order: 1; }
-.national-weekly-report [data-report-section="overview"] { order: 2; }
-.national-weekly-report [data-report-section="care"] { order: 3; }
-.national-report-split { order: 4; }
-.national-weekly-report [data-report-section="zammsa"] { order: 5; }
-.national-weekly-report [data-report-section="reporting"] { order: 6; }
-.national-weekly-report [data-report-section="stock"] { order: 7; }
-.national-weekly-report [data-report-section="commodities"] { order: 8; }
-.national-weekly-report [data-report-section="actions"] { order: 9; }
-.national-weekly-report [data-report-section="sources"] { order: 10; }
-.national-weekly-report > footer { order: 11; }
 .national-report-cover { position: relative; min-height: 900px; overflow: hidden; padding: 60px 24px 180px; background: #fff; color: #111; border: 0; gap: 18px; }
 .national-report-cover::after { content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 130px; background: linear-gradient(135deg,#808080 0 48%,#51b4bf 48% 56%,#08265c 56%); }
 .national-report-cover img { width: 125px; height: 125px; }
