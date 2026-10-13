@@ -1,4 +1,9 @@
 import {fitForecast} from './forecasting.js';
+export function provincialReporting(rows, province) {
+  const scoped=rows.filter(r=>r.province===province);
+  const expected=scoped.length,reported=scoped.filter(r=>r.submitted).length;
+  return {expected,reported,rate:expected?reported/expected:null,partial:scoped.filter(r=>r.partial).length};
+}
 export function reportSeries(periods,scope,name) {
   return [...periods].sort((a,b)=>a.reportDate.localeCompare(b.reportDate)).map(period=>{
     const row=(period[scope]||[]).find(r=>r.name===name);

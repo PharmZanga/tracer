@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import {ReportStockBars,ReportTrendSection} from './ReportAnalytics.jsx';
+import {ReportStockBars,ReportTrendSection,ReportGeography} from './ReportAnalytics.jsx';
 import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileText, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, Printer, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
 import { availableTracerMonths, availableTracerYears, loadHistoricalTracerYear, loadLiveTracerData, loadTracerMonth, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
@@ -702,6 +702,8 @@ function buildNationalReportSummary(selectedPeriods, previousPeriods, option, ty
   if (previous && previousRows.length) previous.mos = cappedAverageMos(previousRows);
   return {
     selectedPeriods, type, option,
+    districts: aggregateRollups(selectedPeriods.flatMap(p=>(p.districts||[]).map(r=>({...r,reportKey:JSON.stringify([r.province,r.name])}))), 'reportKey').map(r=>{const [province,name]=JSON.parse(r.name);return {...r,province,name};}),
+    reportingDistricts: selectedPeriods.flatMap(p=>primaryCareDistrictRows(p).map(r=>({...r,periodId:p.id}))),
     trendPeriods: tracerReportingPeriods.filter(p=>p.reportDate<=latest.reportDate&&p.month.slice(0,4)===latest.month.slice(0,4)).slice(-12),
     weekly: selectedPeriods.map((p) => ({ period: p, reporting: primaryCareDistrictSummary(p), mos: cappedAverageMos(rowsByPeriod.get(p.id)) ?? p.national.mos,
       levels: careLevelBuckets.map((b) => ({ label:b.label, availability:combineRollups((p.facilities?.length ? p.facilities : p.facilityLevels || []).filter((f) => careLevelBucket(f.facilityLevel || f.name) === b.id)).availability, mos:cappedAverageMos(rowsByPeriod.get(p.id).filter((r) => careLevelBucket(r.facilityLevel) === b.id)) })) })),
@@ -748,6 +750,7 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
     ["zammsa", "E. ZAMMSA Central Stock Status"], ["reporting", "F. Reporting Completeness"],
     ["stock", "National Stock Status"], ["commodities", "Commodity Priorities"],
     ["provincial-trends", "Provincial Trends"], ["commodity-trends", "Commodity Stock Status Trends"], ["predictive", "Predictive Analysis"],
+    ["profile", "Provincial Profile"], ["province-availability", "Provincial Drug Availability"], ["district-availability", "District Drug Availability"], ["imbalance", "Stock Imbalance"], ["reporting-rate", "Reporting Rate"],
     ["actions", "Recommended Actions"], ["sources", "Methodology and Sources"],
   ];
   const [includedSections, setIncludedSections] = useState(() => sectionOptions.map(([id]) => id));
@@ -826,6 +829,7 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
         <div className="national-report-section-head"><p>Provincial Trends</p><span>Up to 12 reporting weeks</span></div>
         <ReportTrendSection periods={summary.trendPeriods} scope="provinces"/>
       </section>
+      {[["profile","Provincial Profile"],["province-availability","Provincial Drug Availability"],["district-availability","District Drug Availability"],["imbalance","Stock Imbalance"],["reporting-rate","Reporting Rate"]].map(([id,title])=><section key={id} className="national-report-section" {...sectionProps(id)}><div className="national-report-section-head"><p>{title}</p><span>{period.label}</span></div><ReportGeography summary={summary} mode={id}/></section>)}
       <section className="national-report-section" {...sectionProps("commodity-trends")}>
         <div className="national-report-section-head"><p>Commodity Stock Status Trends</p><span>Weekly stock-band shares</span></div>
         <ReportTrendSection periods={summary.trendPeriods} scope="commodities"/>

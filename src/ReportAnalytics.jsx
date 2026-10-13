@@ -1,9 +1,28 @@
 import {useMemo,useState} from 'react';
 import './reportAnalytics.css';
-import {reportSeries,forecastAvailability,stockBands} from './reportAnalytics.js';
+import {reportSeries,forecastAvailability,stockBands,provincialReporting} from './reportAnalytics.js';
 const colours=['#d32620','#c86c00','#d6a126','#278150','#2365ad','#777'];
 const bands=['Zero / near-zero MOS','Emergency','Understocked','According to plan','Overstocked','MOS data gap'];
 const percent=value=>Number.isFinite(value)?`${(value*100).toFixed(1)}%`:'Not reported';
+function AvailabilityBars({rows}) {
+  return <div className="report-stock-bars" role="img" aria-label="Reported drug availability by geography">{rows.map(row=><div className="report-stock-bar" key={`${row.province||''}|${row.name}`}><strong>{row.name}</strong><div className="report-bar-track"><i style={{width:`${Math.max(0,Math.min(1,row.availability||0))*100}%`,background:'#2365ad'}}/></div><span>{percent(row.availability)}</span></div>)}</div>;
+}
+export function ReportGeography({summary,mode}) {
+  const [chosen,setChosen]=useState('');
+  const names=useMemo(()=>[...new Set([...summary.provinces.map(r=>r.name),...summary.reportingDistricts.map(r=>r.province)])].sort(),[summary]);
+  const province=names.includes(chosen)?chosen:names[0];
+  const districts=summary.districts.filter(r=>r.province===province).sort((a,b)=>a.availability-b.availability);
+  const row=summary.provinces.find(r=>r.name===province);
+  const coverage=provincialReporting(summary.reportingDistricts,province);
+  const last=summary.selectedPeriods.at(-1);
+  const latestCoverage=provincialReporting(summary.reportingDistricts.filter(r=>r.periodId===last.id),province);
+  const selector=<><label className="report-trend-selector">Province<select value={province} onChange={e=>setChosen(e.target.value)}>{names.map(n=><option key={n}>{n}</option>)}</select></label><h3>{province}</h3></>;
+  const imbalance=mode==='imbalance';
+  if(mode==='province-availability') return <><AvailabilityBars rows={summary.provinces}/><p>Availability uses submitted commodity observations, weighted by record count. Missing submissions are not zero availability.</p></>;
+  if(mode==='reporting-rate') return <><p>Reporting rate is complete district-week submissions divided by expected district-week submissions across the selected period. Both Health Centre and Health Post evidence are required; hospital-only and all-zero template blocks do not count.</p><table><thead><tr><th>Province</th><th>Complete / expected district-weeks</th><th>Rate</th><th>Partial district-weeks</th></tr></thead><tbody>{names.map(name=>{const r=provincialReporting(summary.reportingDistricts,name);return <tr key={name}><td>{name}</td><td>{r.reported}/{r.expected}</td><td>{percent(r.rate)}</td><td>{r.partial}</td></tr>;})}</tbody></table><p>Repeated weeks are reporting opportunities, not unique districts. A missing denominator is shown as not reported.</p></>;
+  if(imbalance) return <><p>Submitted MOS observations show shortage and excess pressure, not transferable quantities. Zero/near-zero MOS may include positive quantities. Validate physical stock, AMC, expiry, programme eligibility and facility-level evidence before redistribution.</p><table><thead><tr><th>Province</th><th>Zero/near-zero MOS</th><th>Emergency + understocked</th><th>According to plan</th><th>Above 4 MOS</th><th>MOS gaps</th></tr></thead><tbody>{summary.provinces.map(r=><tr key={r.name}><td>{r.name}</td><td>{r.stockout||0}</td><td>{(r.nearCritical||0)+(r.understocked||0)}</td><td>{r.accordingToPlan||0}</td><td>{(r.abovePlan||0)+(r.overstock||0)}</td><td>{r.dataGap||0}</td></tr>)}</tbody></table><p>Multi-week totals are repeated observations, not cumulative stock balances or unique commodities.</p></>;
+  return <>{selector}{mode==='profile'&&<><p>{row?`${row.rows.toLocaleString()} submitted commodity observations; availability ${percent(row.availability)}; average MOS ${Number.isFinite(row.mos)?row.mos.toFixed(1):'unavailable'}.`:'No stock observations were submitted for this province.'}</p><p>Complete district reports in the final week ({last.reportDate}): {latestCoverage.reported}/{latestCoverage.expected} ({percent(latestCoverage.rate)}). Across the selected period: {coverage.reported}/{coverage.expected} district-week submissions ({percent(coverage.rate)}).</p></>}<AvailabilityBars rows={districts}/><table><thead><tr><th>District</th><th>Observations</th><th>Availability</th><th>Average MOS</th><th>Final-week DHO reporting</th></tr></thead><tbody>{summary.reportingDistricts.filter(r=>r.province===province&&r.periodId===last.id).map(d=>{const r=districts.find(r=>r.name===d.name);return <tr key={d.name}><td>{d.name}</td><td>{r?.rows??'Not reported'}</td><td>{percent(r?.availability)}</td><td>{Number.isFinite(r?.mos)?r.mos.toFixed(1):'Unavailable'}</td><td>{d.detailStatus}</td></tr>;})}</tbody></table><p>District availability includes submitted facility levels within the district; DHO reporting measures primary-care submission completeness separately. No facility roster size is inferred from aggregate reporting units.</p></>;
+}
 export function ReportStockBars({rows}) {
   const maximum=Math.max(1,...rows.map(r=>r.count));
   return <div className="report-stock-bars" role="img" aria-label="National stock status: number and percentage of submitted observations">{rows.map((row,i)=><div className="report-stock-bar" key={row.label}><strong>{row.label}</strong><div className="report-bar-track"><i style={{width:`${row.count/maximum*100}%`,background:colours[i]}}/></div><span>{row.count.toLocaleString()} ({percent(row.rate)})</span><small>{row.action}</small></div>)}</div>;
