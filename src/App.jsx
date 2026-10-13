@@ -748,6 +748,7 @@ function OrderedReport({children}) {
   const titles=new Map(reportSections);
   const labelHeadings=(node,section)=>{
     if(!isValidElement(node)) return node;
+    if(node.props.hidden) return null;
     const id=node.props['data-report-section']||section;
     const title=titles.get(id);
     if(title&&node.props.className==='national-report-section-head') return cloneElement(node,{},Children.map(node.props.children,child=>isValidElement(child)&&child.type==='p'?cloneElement(child,{},title):child));

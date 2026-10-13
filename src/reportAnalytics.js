@@ -1,4 +1,12 @@
 import {fitForecast} from './forecasting.js';
+export function allReportDistricts(summary) {
+  const key=r=>JSON.stringify([r.province,r.name]);
+  const stock=new Map(summary.districts.map(r=>[key(r),r]));
+  const roster=new Map(summary.reportingDistricts.map(r=>[key(r),r]));
+  const latest=summary.selectedPeriods.at(-1)?.id;
+  const reporting=new Map(summary.reportingDistricts.filter(r=>r.periodId===latest).map(r=>[key(r),r]));
+  return [...roster.values()].map(r=>({province:r.province,name:r.name,...stock.get(key(r)),detailStatus:reporting.get(key(r))?.detailStatus||'Reporting evidence unavailable'})).sort((a,b)=>a.province.localeCompare(b.province)||a.name.localeCompare(b.name));
+}
 export function provincialReporting(rows, province) {
   const scoped=rows.filter(r=>r.province===province);
   const expected=scoped.length,reported=scoped.filter(r=>r.submitted).length;

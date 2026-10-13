@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {reportSeries,forecastAvailability,stockBands,provincialReporting} from '../src/reportAnalytics.js';
+import {reportSeries,forecastAvailability,stockBands,provincialReporting,allReportDistricts} from '../src/reportAnalytics.js';
+test('all district report retains missing districts and deduplicates weekly roster',()=>{
+  const result=allReportDistricts({selectedPeriods:[{id:'w2'}],districts:[{province:'A',name:'One',availability:.8,rows:10}],reportingDistricts:[{province:'A',name:'One',periodId:'w1'},{province:'A',name:'One',periodId:'w2',detailStatus:'Reported'},{province:'B',name:'Two',periodId:'w2',detailStatus:'Not Reported'}]});
+  assert.equal(result.length,2);assert.equal(result[0].availability,.8);assert.equal(result[1].availability,undefined);assert.equal(result[1].detailStatus,'Not Reported');
+});
 test('provincial reporting counts district-week opportunities and preserves unknown denominator',()=>{
   const rows=[{province:'A',submitted:true},{province:'A',submitted:false,partial:true},{province:'B',submitted:true}];
   assert.deepEqual(provincialReporting(rows,'A'),{expected:2,reported:1,rate:.5,partial:1});
