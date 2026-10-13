@@ -1,5 +1,8 @@
 import { Children, cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from "react";
 import { reportSections } from './reportSections.js';
+import {isAdministrator} from './dashboardAccess.js';
+import NavigationGuide from './NavigationGuide.jsx';
+import {ArrowUpRight, RotateCcw, SlidersHorizontal, Sparkles} from 'lucide-react';
 import {ReportStockBars,ReportTrendSection,ReportGeography} from './ReportAnalytics.jsx';
 import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileText, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, Printer, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
 import { availableTracerMonths, availableTracerYears, loadHistoricalTracerYear, loadLiveTracerData, loadTracerMonth, tracerReportingPeriods } from "./tracerFacilityData.js";
@@ -18,7 +21,7 @@ import { reportOptions, selectReportPeriods, matchingStockPeriods } from "./repo
 
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary", icon: LayoutDashboard },
-  { id: "reports", short: "RP", label: "Generate Report", icon: FileText },
+  { id: "reports", short: "RP", label: "Generate Report", icon: FileText, adminOnly: true },
   { id: "national", short: "NS", label: "National Stock Status", icon: Activity },
   { id: "stock", short: "ZS", label: "ZAMMSA Control Tower", icon: Warehouse },
   { id: "provincial", short: "PP", label: "Provincial Performance", icon: MapPinned },
@@ -935,6 +938,7 @@ function KpiCard({ label, value, sub, tone = "green", icon: Icon, onClick, activ
       <span>{Icon ? <Icon className="stat-icon" aria-hidden="true" /> : null}{label}</span>
       <strong>{value}</strong>
       <small>{sub}</small>
+      {onClick && <ArrowUpRight className="stat-drilldown-icon" size={16} aria-hidden="true"/>}
     </Tag>
   );
 }
@@ -2094,7 +2098,7 @@ function App() {
     return () => { cancelled = true; };
   }, [activePage, dashboardUser?.role]);
 
-  const isDashboardAdmin = ["admin", "super_admin"].includes(dashboardUser?.role);
+  const isDashboardAdmin = isAdministrator(dashboardUser?.role);
   const visibleDashboardPages = dashboardPages.filter((page) => !page.adminOnly || isDashboardAdmin);
 
   async function submitProvincialImport(action) {
@@ -4172,6 +4176,7 @@ function App() {
                 {districtOptions.map((district) => <option value={district} key={district}>{district}</option>)}
               </select>
             </label>
+            <details className="secondary-filters"><summary><SlidersHorizontal size={16} aria-hidden="true"/>More filters{selectedFacilityLevel !== 'all' || selectedFacility !== 'all' ? ' (active)' : ''}</summary><div>
             <label>
               <span>Facility level</span>
               <select value={selectedFacilityLevel} onChange={(event) => {
@@ -4194,20 +4199,21 @@ function App() {
                   return <option value={facility} key={facility}>{name === "ALL" ? `All ${level.toLowerCase()} facilities - ${district}` : `${name} - ${district}`}</option>;
                 })}
               </select>
-            </label><button type="button" onClick={resetFieldHierarchy}>Clear</button></>}
+            </label></div></details><button type="button" className="filter-reset" title="Reset geography and facility filters" aria-label="Reset geography and facility filters" onClick={resetFieldHierarchy}><RotateCcw size={17}/></button></>}
           </div>
+          <div className="filter-scope" aria-live="polite"><span>{fieldData.label} <b>·</b> {selectedProvince === 'all' ? 'All provinces' : selectedProvince} <b>·</b> {selectedDistrict === 'all' ? 'All districts' : selectedDistrict}</span><span role="status">{monthLoading || historicalYearLoading ? 'Loading selected data...' : `${fieldData.counts.rows.toLocaleString()} commodity observations`}</span></div>
         </header>}
 
         <section className="module-context" aria-label={`${activePageLabel} module`}>
           <span className="module-context-icon"><ActivePageIcon size={21} strokeWidth={2.15} aria-hidden="true" /></span>
-          <div><span>Control Tower module</span><strong>{activePageLabel}</strong><small>{moduleDescriptions[activePage] || "National tracer supply-chain intelligence."}</small></div>
+          <div><span>Supply chain intelligence</span><strong>{activePageLabel}</strong><small>{moduleDescriptions[activePage] || "National tracer supply-chain intelligence."}</small></div>
         </section>
 
         <section className="hero">
           <div>
             <p className="eyebrow">Weekly Tracer Submission</p>
-            <h1>Facility stock visibility from province submissions</h1>
-            <p className="lede">This dashboard uses only weekly tracer reports submitted by provinces. It highlights stockouts, low stock, reporting footprint, programme pressure, and commodity risk from facility level up to national level.</p>
+            <h1>National tracer overview</h1>
+            <p className="lede">Drug availability, stock pressure and reporting completeness.</p>
           </div>
           <div className="report-card">
             <span>Selected report</span>
@@ -5846,7 +5852,7 @@ function App() {
             </div>
           </div>
         </section>
-        <NationalWeeklyReport
+        {isDashboardAdmin && <NationalWeeklyReport
           summary={nationalReportSummary}
           periods={nationalReportOptions}
           selectedPeriodId={nationalReportOption?.id || ""}
@@ -5859,7 +5865,8 @@ function App() {
           error={nationalReportError}
           onRetry={() => setNationalReportRetry((value) => value + 1)}
           onPrint={() => window.print()}
-        />
+        />}
+        {!isDashboardAdmin && ['reports','imports'].includes(activePage) && <div role="alert">Administration is restricted to dashboard administrators. <button type="button" onClick={()=>setActivePage('executive')}>Return to dashboard</button></div>}
         <section className="submission-import-section">
           <div className="section-head">
             <div>
@@ -5881,8 +5888,9 @@ function App() {
         </section>
       </main>
       <button type="button" className={`copilot-launcher ${activePage === "predictive" ? "copilot-launcher-compact" : ""} ${copilotDragging ? "dragging" : ""}`} style={copilotPosition ? { left: `${copilotPosition.left}px`, top: `${copilotPosition.top}px`, right: "auto", bottom: "auto" } : undefined} onPointerDown={beginCopilotDrag} onPointerMove={moveCopilotDrag} onPointerUp={endCopilotDrag} onPointerCancel={endCopilotDrag} onClick={(event) => { if (copilotDidDragRef.current) { event.preventDefault(); copilotDidDragRef.current = false; return; } setCopilotOpen(true); }} aria-label="Open Tracer Copilot" title="Drag to reposition. Click to open Tracer Copilot.">
-        <span>AI</span> Ask Tracer Copilot
+        <Sparkles size={22} aria-hidden="true"/>
       </button>
+      <NavigationGuide role={dashboardUser?.role} onNavigate={topic=>{if(topic.stock)setStockWorkspace(topic.stock);setActivePage(topic.page);setOpenSidebarGroups(current=>new Set([...current,topic.page==='stock'?'zammsa':topic.page==='vaccines'?'programmes':['reports','imports'].includes(topic.page)?'administration':topic.page==='executive'?'overview':'tracer']));}}/>
       {copilotOpen && <div className="copilot-backdrop" role="presentation" onMouseDown={() => setCopilotOpen(false)}>
         <aside className="copilot-drawer" role="dialog" aria-modal="true" aria-label="Tracer Copilot" onMouseDown={(event) => event.stopPropagation()}>
           <div className="copilot-head">

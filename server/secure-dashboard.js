@@ -1,4 +1,5 @@
 import express from "express";
+import {canAccessDashboardPage} from '../src/dashboardAccess.js';
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import pg from "pg";
@@ -1001,7 +1002,10 @@ app.use("/api", requireSession, async (request, response, next) => {
 });
 
 app.use("/tracer-data", requireSession, express.static(path.join(rootDir, "src"), { index: false, fallthrough: false }));
-app.use(requireSession, express.static(distDir, { index: false, fallthrough: true }));
+app.use(requireSession, (request,response,next)=>{
+  if (!canAccessDashboardPage(request.session?.user?.role,request.query.page)) return requireAdmin(request,response,next);
+  next();
+}, express.static(distDir, { index: false, fallthrough: true }));
 app.get("/", requireSession, async (_request, response, next) => {
   try {
     const dashboard = await readFile(path.join(distDir, "index.html"), "utf8");
