@@ -4227,7 +4227,7 @@ function App() {
           <div className="report-card">
             <span>Selected report</span>
             <strong>{fieldData.reportDate}</strong>
-            <small>{fieldData.source}</small>
+            <details className="overview-source"><summary>Submission source</summary><small>{fieldData.source}</small></details>
             <small>{fieldData.counts.rows.toLocaleString()} commodity rows | {fieldData.counts.facilityUnits} reporting units</small>
             <button className="hero-export" type="button" onClick={exportCsv}>Export facility CSV</button>
           </div>
