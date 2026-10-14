@@ -1,8 +1,10 @@
 import { Children, cloneElement, isValidElement, lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 const FacilityAlertsMap=lazy(()=>import('./FacilityAlertsMap.jsx'));
 import { reportSections } from './reportSections.js';
-import {isAdministrator} from './dashboardAccess.js';
+import {isAdministrator,isAdministrationPage} from './dashboardAccess.js';
 import NavigationGuide from './NavigationGuide.jsx';
+import useViewerActivity from './useViewerActivity.js';
+import ViewerActivity from './ViewerActivity.jsx';
 import {filterComparisonRows,hasComparisonScope} from './comparisonScope.js';
 import {ArrowUpRight, RotateCcw, SlidersHorizontal, Sparkles} from 'lucide-react';
 import {ReportStockBars,ReportTrendSection,ReportGeography} from './ReportAnalytics.jsx';
@@ -39,6 +41,7 @@ const dashboardPages = [
   { id: "predictive", short: "PA", label: "Predictive Analysis", icon: ChartNoAxesCombined },
   { id: "actions", short: "AT", label: "Action Tracker", icon: Siren },
   { id: "imports", short: "IM", label: "Submission Import", icon: FileUp, adminOnly: true },
+  { id: "viewers", short: "VA", label: "Viewer Activity", icon: Users, adminOnly: true },
 ];
 
 const sidebarGroups = [
@@ -46,7 +49,7 @@ const sidebarGroups = [
   { id: "tracer", label: "Tracer Intelligence", pages: ["national", "provincial", "facilities", "commodities", "alerts", "reporting", "quality", "gate", "predictive", "actions"] },
   { id: "programmes", label: "Programme Intelligence", programmeViews: true, vaccineViews: true },
   { id: "zammsa", label: "ZAMMSA Intelligence", stockViews: true },
-  { id: "administration", label: "Administration", pages: ["reports", "imports"] },
+  { id: "administration", label: "Administration", pages: ["reports", "imports", "viewers"] },
 ];
 
 const programmeNavigationViews = [
@@ -79,6 +82,7 @@ const moduleDescriptions = {
   predictive: "Forecasted stockout risk and recommended action by province and commodity.",
   actions: "Redistribution actions, ownership, progress, and collaboration.",
   imports: "Validate and publish approved provincial tracer submissions.",
+  viewers: "Recent signed-in viewers and dashboard page usage.",
 };
 
 const statusLabels = {
@@ -2030,6 +2034,7 @@ function App() {
   const copilotDragRef = useRef(null);
   const copilotDidDragRef = useRef(false);
   const [dashboardUser, setDashboardUser] = useState(null);
+  useViewerActivity(dashboardUser,activePage);
   const [importFiles, setImportFiles] = useState([]);
   const [importPeriod, setImportPeriod] = useState("");
   const [importResult, setImportResult] = useState(null);
@@ -4129,6 +4134,7 @@ function App() {
             </div>;
           })}
         </nav>
+        <div className="viewer-activity-notice">Signed-in page activity is visible to administrators (30-day history).</div>
         <div className="sidebar-data">
           <span>Weekly submission</span>
           <strong>{fieldData.label}</strong>
@@ -4142,7 +4148,7 @@ function App() {
       </aside>
 
       <main className={`app-shell dashboard-page page-${activePage} stock-${stockWorkspace} vaccine-${vaccineWorkspaceView}`}>
-        {!['stock', 'comparison', 'reporting', 'vaccines', 'reports'].includes(activePage) && <header className="dashboard-topbar">
+        {!['stock', 'comparison', 'reporting', 'vaccines', 'reports', 'viewers'].includes(activePage) && <header className="dashboard-topbar">
           <div className="global-filter-bar">
             <label>
               <span>Year</span>
@@ -5869,7 +5875,8 @@ function App() {
           onRetry={() => setNationalReportRetry((value) => value + 1)}
           onPrint={() => window.print()}
         />}
-        {!isDashboardAdmin && ['reports','imports'].includes(activePage) && <div role="alert">Administration is restricted to dashboard administrators. <button type="button" onClick={()=>setActivePage('executive')}>Return to dashboard</button></div>}
+        {isDashboardAdmin && activePage==='viewers' && <ViewerActivity/>}
+        {!isDashboardAdmin && ['reports','imports','viewers'].includes(activePage) && <div role="alert">Administration is restricted to dashboard administrators. <button type="button" onClick={()=>setActivePage('executive')}>Return to dashboard</button></div>}
         <section className="submission-import-section">
           <div className="section-head">
             <div>
@@ -5893,7 +5900,7 @@ function App() {
       <button type="button" className={`copilot-launcher ${activePage === "predictive" ? "copilot-launcher-compact" : ""} ${copilotDragging ? "dragging" : ""}`} style={copilotPosition ? { left: `${copilotPosition.left}px`, top: `${copilotPosition.top}px`, right: "auto", bottom: "auto" } : undefined} onPointerDown={beginCopilotDrag} onPointerMove={moveCopilotDrag} onPointerUp={endCopilotDrag} onPointerCancel={endCopilotDrag} onClick={(event) => { if (copilotDidDragRef.current) { event.preventDefault(); copilotDidDragRef.current = false; return; } setCopilotOpen(true); }} aria-label="Open Tracer Copilot" title="Drag to reposition. Click to open Tracer Copilot.">
         <Sparkles size={22} aria-hidden="true"/>
       </button>
-      <NavigationGuide role={dashboardUser?.role} onNavigate={topic=>{if(topic.stock)setStockWorkspace(topic.stock);setActivePage(topic.page);setOpenSidebarGroups(current=>new Set([...current,topic.page==='stock'?'zammsa':topic.page==='vaccines'?'programmes':['reports','imports'].includes(topic.page)?'administration':topic.page==='executive'?'overview':'tracer']));}}/>
+      <NavigationGuide role={dashboardUser?.role} onNavigate={topic=>{if(topic.stock)setStockWorkspace(topic.stock);setActivePage(topic.page);setOpenSidebarGroups(current=>new Set([...current,topic.page==='stock'?'zammsa':topic.page==='vaccines'?'programmes':isAdministrationPage(topic.page)?'administration':topic.page==='executive'?'overview':'tracer']));}}/>
       {copilotOpen && <div className="copilot-backdrop" role="presentation" onMouseDown={() => setCopilotOpen(false)}>
         <aside className="copilot-drawer" role="dialog" aria-modal="true" aria-label="Tracer Copilot" onMouseDown={(event) => event.stopPropagation()}>
           <div className="copilot-head">

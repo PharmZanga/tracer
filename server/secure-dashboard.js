@@ -1,4 +1,5 @@
 import express from "express";
+import {viewerActivityRouter} from './viewer-activity.js';
 import {canAccessDashboardPage} from '../src/dashboardAccess.js';
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
@@ -162,6 +163,16 @@ async function initializeDatabase() {
       used_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
+    CREATE TABLE IF NOT EXISTS dashboard_viewer_activity (
+      email TEXT NOT NULL REFERENCES dashboard_users(email) ON DELETE CASCADE,
+      page TEXT NOT NULL,
+      activity_day DATE NOT NULL,
+      first_seen TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      last_seen TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      view_count INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY(email,page,activity_day)
+    );
+    CREATE INDEX IF NOT EXISTS dashboard_viewer_activity_recent_idx ON dashboard_viewer_activity(last_seen DESC);
     CREATE TABLE IF NOT EXISTS copilot_conversations (
       id BIGSERIAL PRIMARY KEY,
       email TEXT NOT NULL,
@@ -531,6 +542,7 @@ app.post("/auth/session", async (request, response, next) => {
 
 app.post("/logout", requireSession, (request, response) => request.session.destroy(() => response.redirect("/login?message=Signed out.")));
 
+app.use('/api/viewer-activity',requireSession,viewerActivityRouter(pool));
 app.get("/api/current-user", requireSession, (request, response) => {
   response.json({ email: request.session.user.email, name: request.session.user.name, role: request.session.user.role });
 });
