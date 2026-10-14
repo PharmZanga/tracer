@@ -1,7 +1,9 @@
-import { Children, cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from "react";
+import { Children, cloneElement, isValidElement, lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+const FacilityAlertsMap=lazy(()=>import('./FacilityAlertsMap.jsx'));
 import { reportSections } from './reportSections.js';
 import {isAdministrator} from './dashboardAccess.js';
 import NavigationGuide from './NavigationGuide.jsx';
+import {filterComparisonRows,hasComparisonScope} from './comparisonScope.js';
 import {ArrowUpRight, RotateCcw, SlidersHorizontal, Sparkles} from 'lucide-react';
 import {ReportStockBars,ReportTrendSection,ReportGeography} from './ReportAnalytics.jsx';
 import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileText, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, Printer, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
@@ -1142,12 +1144,7 @@ function comparisonPeriodInRange(period, periodType, year, start, end) {
 
 function commodityComparisonRowsForPeriod(period, filters) {
   const groups = new Map();
-  commodityRowsFromPeriod(period)
-    .filter((row) => row.item === filters.commodity)
-    .filter((row) => filters.province === "all" || row.province === filters.province)
-    .filter((row) => filters.district === "all" || row.district === filters.district)
-    .filter((row) => matchesFacilityCareLevel(row.facilityLevel, filters.facilityLevel))
-    .filter((row) => filters.program === "all" || row.programme === filters.program)
+  filterComparisonRows(commodityRowsFromPeriod(period),filters,matchesFacilityCareLevel)
     .forEach((row) => {
       let name = row.item;
       if (filters.compareBy === "province") name = row.province;
@@ -1163,11 +1160,12 @@ function commodityComparisonRowsForPeriod(period, filters) {
       current.understocked += status === "Understocked" ? 1 : 0;
       current.accordingToPlan += status === "According to plan" ? 1 : 0;
       current.abovePlan += ["Overstocked", "Excess stock"].includes(status) ? 1 : 0;
+      current.dataGap += row.mos === null ? 1 : 0;
       current.riskRows += ["Stocked out", "Emergency stock", "Understocked"].includes(status) ? 1 : 0;
       current.quantity += row.quantity || 0;
       current.amc += row.amc || 0;
       if (row.mos !== null) {
-        current.mosTotal += row.mos;
+        current.mosTotal += filters.commodity === 'all' ? Math.min(12,Math.max(0,row.mos)) : row.mos;
         current.mosRows += 1;
       }
       groups.set(name, current);
@@ -1175,7 +1173,7 @@ function commodityComparisonRowsForPeriod(period, filters) {
   return [...groups.values()].map((row) => ({
     ...row,
     availability: row.rows ? row.available / row.rows : 0,
-    mos: row.amc > 0 ? row.quantity / row.amc : (row.mosRows ? row.mosTotal / row.mosRows : null),
+    mos: filters.commodity !== 'all' && row.amc > 0 ? row.quantity / row.amc : (row.mosRows ? row.mosTotal / row.mosRows : null),
     stockoutRate: row.rows ? row.stockout / row.rows : 0,
   }));
 }
@@ -1187,7 +1185,12 @@ function comparisonRowsForPeriod(period, filters) {
   const programFilter = (row) => filters.program === "all" || row.name === filters.program || row.programme === filters.program || row.program === filters.program;
   const commodityFilter = (row) => filters.commodity === "all" || row.name === filters.commodity;
 
-  if (filters.commodity !== "all" && period.commodityFacilityData) return commodityComparisonRowsForPeriod(period, filters);
+  if (hasComparisonScope(filters) && period.commodityFacilityData) return commodityComparisonRowsForPeriod(period, filters);
+  // Historical national-only summaries cannot support a scoped commodity result.
+  if (hasComparisonScope(filters) && ['commodity','program'].includes(filters.compareBy)) {
+    if(filters.compareBy==='program'&&filters.district==='all'&&filters.commodity==='all')return (period.programmeScopes||[]).filter(provinceFilter).filter(facilityLevelFilter).filter(programFilter).map(row=>({...row,group:row.name}));
+    return [];
+  }
 
   if (filters.compareBy === "province") {
     return (period.provinces || [])
@@ -3287,9 +3290,6 @@ function App() {
     .filter(isCommodityName)
     .sort(compareText)
     .slice(0, 600);
-  const comparisonProgramOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.programmes || []).map((row) => row.name))]
-    .filter(Boolean)
-    .sort(compareText);
   const comparisonFilters = {
     province: comparisonProvince,
     district: comparisonDistrict,
@@ -3304,6 +3304,9 @@ function App() {
   const previousComparisonPeriods = tracerReportingPeriods
     .filter((period) => comparisonPeriodInRange(period, comparisonPeriodType, comparisonYear, comparisonBaselineStart, comparisonBaselineEnd))
     .sort((a, b) => compareText(a.reportDate, b.reportDate));
+  const comparisonProgramOptions = [...new Set([...comparisonPeriods,...previousComparisonPeriods].flatMap(period=>period.commodityFacilityData
+    ? filterComparisonRows(commodityRowsFromPeriod(period),{...comparisonFilters,program:'all',commodity:'all'},matchesFacilityCareLevel).map(row=>row.programme)
+    : (period.programmeScopes||[]).filter(row=>comparisonProvince==='all'||row.province===comparisonProvince).filter(row=>matchesFacilityCareLevel(row.facilityLevel,comparisonFacilityLevel)).map(row=>row.name)))].filter(Boolean).sort(compareText);
   const comparisonRows = aggregateComparisonRows(comparisonPeriods, comparisonFilters)
     .sort((a, b) => comparisonMetricValue(b, comparisonMetric) - comparisonMetricValue(a, comparisonMetric) || compareText(a.name, b.name));
   const previousComparisonRows = aggregateComparisonRows(previousComparisonPeriods, comparisonFilters);
@@ -3363,7 +3366,7 @@ function App() {
     .sort((a, b) => a.delta - b.delta)
     .slice(0, 3);
   const comparisonTrendGroups = comparisonRows.slice(0, 5).map((row) => row.name);
-  const comparisonCommodityRows = aggregateRollups(comparisonPeriods.flatMap((period) => period.commodities || []), "name")
+  const comparisonCommodityRows = aggregateComparisonRows(comparisonPeriods,{...comparisonFilters,compareBy:'commodity'})
     .filter((row) => comparisonCommodity === "all" || row.name === comparisonCommodity)
     .sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)
     .slice(0, 60);
@@ -4552,10 +4555,7 @@ function App() {
             {filteredFacilityAlerts.length > facilityAlertPageSize ? <div className="non-reporting-pagination"><button type="button" disabled={facilityAlertCurrentPage <= 1} onClick={() => setFacilityAlertPage((page) => page - 1)}>Previous</button><span>Page {facilityAlertCurrentPage} of {facilityAlertPageCount} · {filteredFacilityAlerts.length.toLocaleString()} facilities</span><button type="button" disabled={facilityAlertCurrentPage >= facilityAlertPageCount} onClick={() => setFacilityAlertPage((page) => page + 1)}>Next</button></div> : null}
           </> : <div className="facility-status-map" aria-label="Filtered facility status map">
             <div className="facility-map-legend">{facilityStatusOptions.map((option) => <span className={`tone-${option.tone}`} key={option.id}><i />{option.shortLabel}</span>)}</div>
-            <div className="facility-map-canvas">{filteredFacilityAlerts.map((facility) => {
-              const primary = facility.reportingStatus === "Facility did not report" ? facilityStatusOptions[2] : facility.stockoutItemCount > 0 ? facilityStatusOptions[0] : facility.criticalLowStockItemCount > 0 || facility.lowStockItemCount > 0 ? facilityStatusOptions[1] : facility.overstockItemCount > 0 ? facilityStatusOptions[4] : facilityStatusOptions[3];
-              return <button type="button" className={`facility-map-marker tone-${primary.tone}`} key={`map-${facilityIdentityKey(facility)}`} title={`${facility.name} · ${facility.district} · ${primary.shortLabel}`} onClick={() => facility.reportingStatus === "Facility did not report" ? openFacilityReportingFollowup(facility) : setOpenFacility(facility)}><i><primary.icon size={18} aria-hidden="true" /></i><span><b>{facility.isAggregate ? `All ${facility.facilityLevel.toLowerCase()} facilities` : facility.name}</b><small>{facility.district} · {facility.province}</small><small>{facility.reportingStatus === "Facility did not report" ? "Current stock status unknown" : `${facility.stockoutItemCount} stock-outs · ${facility.lowStockItemCount} low · ${facility.overstockItemCount} overstocked`}</small></span></button>;
-            })}</div>
+            <Suspense fallback={<p role="status">Loading geographic map...</p>}><FacilityAlertsMap facilities={filteredFacilityAlerts} onOpen={setOpenFacility} onReporting={openFacilityReportingFollowup}/></Suspense>
             {!filteredFacilityAlerts.length ? <div className="empty-state">No map markers match the selected filters.</div> : null}
           </div>}
         </section>
@@ -4796,6 +4796,9 @@ function App() {
               <select value={comparisonProvince} onChange={(event) => {
                 setComparisonProvince(event.target.value);
                 setComparisonDistrict("all");
+                setComparisonProgram("all");
+                setComparisonCommodity("all");
+                setComparisonFacilityLevel("all");
               }}>
                 <option value="all">All provinces</option>
                 {provinceOptions.map((province) => <option value={province} key={province}>{province}</option>)}
@@ -4803,7 +4806,7 @@ function App() {
             </label>
             <label>
               <span>District</span>
-              <select value={comparisonDistrict} onChange={(event) => setComparisonDistrict(event.target.value)}>
+              <select value={comparisonDistrict} onChange={(event) => {setComparisonDistrict(event.target.value);setComparisonProgram('all');setComparisonCommodity('all');setComparisonFacilityLevel('all');}}>
                 <option value="all">All districts</option>
                 {comparisonDistrictOptions.map((district) => <option value={district} key={district}>{district}</option>)}
               </select>
@@ -4871,7 +4874,7 @@ function App() {
 
           <div className="comparison-overview">
             <div className="comparison-story">
-              <p>National overview</p>
+              <p>{comparisonDistrict!=='all'?`${comparisonDistrict} district overview`:comparisonProvince!=='all'?`${shortProvinceName(comparisonProvince)} provincial overview`:'National overview'}</p>
               <h3>{comparisonPreviousLabel} vs {comparisonCurrentLabel}</h3>
               <strong>Drug availability and months of stock</strong>
               <div className={`comparison-story-callout ${comparisonAvailabilityDeltaPoints >= 0 ? "positive" : "negative"}`}>
