@@ -1,4 +1,5 @@
 import express from "express";
+import { accessStatusFilter } from './access-status-filter.js';
 import {viewerActivityRouter} from './viewer-activity.js';
 import {canAccessDashboardPage} from '../src/dashboardAccess.js';
 import session from "express-session";
@@ -734,14 +735,15 @@ app.post("/api/admin/submissions/publish", requireSession, requireAdmin, upload.
 
 app.get("/admin", requireSession, requireAdmin, async (request, response, next) => {
   try {
-    const users = (await pool.query("SELECT email, name, province, role, status, requested_at, approved_at, approved_by FROM dashboard_users ORDER BY CASE status WHEN 'pending' THEN 0 ELSE 1 END, requested_at DESC")).rows;
+    const statusFilter = accessStatusFilter(request.query.status);
+    const users = (await pool.query(statusFilter.query, statusFilter.params)).rows;
     const rows = users.map((user) => {
       const pendingActions = `<form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/approve"><button type="submit">Approve and email link</button></form><form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/reject"><button class="reject" type="submit">Reject</button></form>`;
       const approvedActions = `<div>${escapeHtml(user.approved_by || "-")}</div><form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/resend"><button type="submit">Resend access link</button></form><form class="row-actions" method="post" action="/admin/users/${encodeURIComponent(user.email)}/delete" onsubmit="return confirm('Delete this approved user and revoke dashboard access?')"><button class="reject" type="submit">Delete access</button></form>`;
       return `<tr><td>${escapeHtml(user.name)}</td><td>${escapeHtml(user.email)}</td><td>${escapeHtml(user.province)}</td><td>${escapeHtml(user.role)}</td><td>${escapeHtml(user.status)}</td><td>${new Date(user.requested_at).toLocaleString()}</td><td>${user.status === "pending" ? pendingActions : user.status === "approved" ? approvedActions : escapeHtml(user.approved_by || "-")}</td></tr>`;
     }).join("");
     const notice = request.query.message ? `<p class="success">${escapeHtml(request.query.message)}</p>` : "";
-    response.send(layout("Dashboard access approvals", `<main class="card admin"><div class="nav"><a href="/">Dashboard</a><form method="post" action="/logout"><button type="submit">Sign out</button></form></div><div class="header"><span>Administration</span><h1>Dashboard access approvals</h1><p>Approve a request only after confirming the user is authorised to access national tracer data. Approval sends the one-click access link by email.</p></div>${notice}<table><thead><tr><th>Name</th><th>Email</th><th>Province / organisation</th><th>Role</th><th>Status</th><th>Requested</th><th>Action</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No access requests.</td></tr>'}</tbody></table></main>`));
+    response.send(layout("Dashboard access approvals", `<main class="card admin"><div class="nav"><a href="/">Dashboard</a><form method="post" action="/logout"><button type="submit">Sign out</button></form></div><div class="header"><span>Administration</span><h1>Dashboard access approvals</h1><p>Approve a request only after confirming the user is authorised to access national tracer data. Approval sends the one-click access link by email.</p></div>${notice}${statusFilter.html}<table><thead><tr><th>Name</th><th>Email</th><th>Province / organisation</th><th>Role</th><th>Status</th><th>Requested</th><th>Action</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No access requests match the selected status.</td></tr>'}</tbody></table></main>`));
   } catch (error) { next(error); }
 });
 
