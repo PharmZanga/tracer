@@ -35,6 +35,7 @@ FILES = {
 WEEK2_PARAMETERS = {
     "quantityField": "QUANTITY",
     "dashStockOnHandIsZero": True,
+    "blankStockOnHandWithPositiveAMCIsZero": True,
     "negativeStockOnHandIsZero": True,
     "stockOnHandRounding": "floor",
     "mosDerivedFromNormalizedStockOnHand": True,
@@ -50,14 +51,16 @@ def normalize_week2_rows(generator, sources, report_date):
             raw_quantity = row.get("_RAW_QUANTITY_INPUT")
             row["_SOURCE_QUANTITY"] = quantity
             row["_SOURCE_MOS"] = generator.num(row.get("MOS"))
-            # A dash entered in SOH is an explicit zero. True blanks stay
-            # missing. Negative values and positive fractions become whole
-            # non-negative units; fractions are never rounded upward.
+            # A dash is zero. A blank SOH with a positive AMC is also treated
+            # as zero so it receives a calculated MOS and appears in stockout
+            # actions. A blank with no positive AMC remains uncomputable.
             if isinstance(raw_quantity, str) and raw_quantity.strip() in {"-", "–", "—"}:
+                quantity = 0
+            amc = generator.num(row.get("AMC"))
+            if quantity is None and amc is not None and amc > 0:
                 quantity = 0
             if quantity is not None:
                 quantity = max(0, int(quantity))
-            amc = generator.num(row.get("AMC"))
             row["QUANTITY"] = quantity
             row["MOS"] = quantity / amc if quantity is not None and amc is not None and amc > 0 else None
             # Keep missing SOH in the availability denominator as unavailable,
