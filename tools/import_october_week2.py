@@ -35,7 +35,7 @@ FILES = {
 WEEK2_PARAMETERS = {
     "quantityField": "QUANTITY",
     "dashStockOnHandIsZero": True,
-    "blankStockOnHandWithPositiveAMCIsZero": True,
+    "blankStockOnHandIsZero": True,
     "negativeStockOnHandIsZero": True,
     "stockOnHandRounding": "floor",
     "mosDerivedFromNormalizedStockOnHand": True,
@@ -51,13 +51,12 @@ def normalize_week2_rows(generator, sources, report_date):
             raw_quantity = row.get("_RAW_QUANTITY_INPUT")
             row["_SOURCE_QUANTITY"] = quantity
             row["_SOURCE_MOS"] = generator.num(row.get("MOS"))
-            # A dash is zero. A blank SOH with a positive AMC is also treated
-            # as zero so it receives a calculated MOS and appears in stockout
-            # actions. A blank with no positive AMC remains uncomputable.
+            # A dash or blank SOH is zero so it can be reflected in stockout
+            # actions. MOS is calculated when a positive AMC is available.
             if isinstance(raw_quantity, str) and raw_quantity.strip() in {"-", "–", "—"}:
                 quantity = 0
             amc = generator.num(row.get("AMC"))
-            if quantity is None and amc is not None and amc > 0:
+            if quantity is None:
                 quantity = 0
             if quantity is not None:
                 quantity = max(0, int(quantity))
