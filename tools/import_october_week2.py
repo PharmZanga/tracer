@@ -29,15 +29,32 @@ FILES = {
     "LUAPULA PROVINCE": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
 }
 
+# Week 2 source normalization parameters. Stock-on-hand values are whole units;
+# dash markers and negative quantities mean zero. Availability must be derived
+# from the Quantity field (never AMC/MOS) and use the commodity rows in scope.
+WEEK2_PARAMETERS = {
+    "quantityField": "QUANTITY",
+    "dashStockOnHandIsZero": True,
+    "negativeStockOnHandIsZero": True,
+    "stockOnHandRounding": "floor",
+    "mosDerivedFromNormalizedStockOnHand": True,
+    "availabilityCountsPositiveStockOnHand": True,
+    "availabilityDenominator": "commodity_rows_in_scope",
+}
+
 def normalize_week2_rows(generator, sources, report_date):
     """Apply the requested whole-unit SOH rule before any aggregate is built."""
     for source in sources:
         for row in generator.iter_raw_matrix_rows(source, report_date):
             quantity = generator.num(row.get("QUANTITY"))
+            raw_quantity = row.get("_RAW_QUANTITY_INPUT")
             row["_SOURCE_QUANTITY"] = quantity
             row["_SOURCE_MOS"] = generator.num(row.get("MOS"))
-            # Missing SOH stays missing. Negative values and positive fractions
-            # are clipped/truncated to whole units, never rounded upward.
+            # A dash entered in SOH is an explicit zero. True blanks stay
+            # missing. Negative values and positive fractions become whole
+            # non-negative units; fractions are never rounded upward.
+            if isinstance(raw_quantity, str) and raw_quantity.strip() in {"-", "–", "—"}:
+                quantity = 0
             if quantity is not None:
                 quantity = max(0, int(quantity))
             amc = generator.num(row.get("AMC"))

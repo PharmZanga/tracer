@@ -1024,6 +1024,22 @@ def raw_sheet_facility_blocks(ws):
         return [(4, 3, 4)]
     if sheet_name in {"PSYCH", "WNB", "W & NB"}:
         return [(4, 4, 5)]
+    # Provincial templates do not place the first facility at a consistent
+    # column (Western L-1 begins at J, while other sheets begin at E). Identify
+    # each SOH/AMC/MOS triplet from its header row, allowing common typos and a
+    # blank SOH label when AMC and MOS are present immediately to its right.
+    for header_row in range(1, min(7, (ws.max_row or 0) + 1)):
+        found = []
+        for quantity_col in range(1, (ws.max_column or 0) - 1):
+            quantity_header = str(ws.cell(header_row, quantity_col).value or "").strip().upper()
+            amc_header = str(ws.cell(header_row, quantity_col + 1).value or "").strip().upper()
+            mos_header = str(ws.cell(header_row, quantity_col + 2).value or "").strip().upper()
+            quantity_label = any(token in quantity_header for token in ("QUANTITY", "QUANTUTY", "STOCK ON HAND", "SOH"))
+            if (quantity_label or not quantity_header) and "AMC" in amc_header and "MOS" in mos_header:
+                found.append((quantity_col, quantity_col, quantity_col + 1))
+        if found:
+            return found
+    # Retain support for older layouts that do not label the metric columns.
     return [(start_col, start_col, start_col + 1) for start_col in range(5, (ws.max_column or 0) + 1, 4)]
 
 
@@ -1110,9 +1126,9 @@ def load_raw_availability_overrides():
                     break
             if not footer_row:
                 continue
-            for start_col in range(5, ws.max_column + 1, 4):
-                district = clean(ws.cell(2, start_col).value)
-                facility = clean(ws.cell(2, start_col + 1).value)
+            for start_col, district_col, facility_col in raw_sheet_facility_blocks(ws):
+                district = clean(ws.cell(2, district_col).value)
+                facility = clean(ws.cell(2, facility_col).value)
                 availability = availability_value(ws.cell(footer_row, start_col).value)
                 if not district or not facility or availability is None:
                     continue
@@ -1257,7 +1273,8 @@ def iter_raw_matrix_rows(source, report_date):
                 item_upper = str(item).upper()
                 if "PERCENTAGE AVAILABILITY" in item_upper or "AVERAGE MONTH OF STOCK" in item_upper:
                     continue
-                quantity = num(ws.cell(row_index, start_col).value)
+                raw_quantity = ws.cell(row_index, start_col).value
+                quantity = num(raw_quantity)
                 amc = num(ws.cell(row_index, start_col + 1).value)
                 mos = num(ws.cell(row_index, start_col + 2).value)
                 if quantity is None and amc is None and mos is None:
@@ -1277,6 +1294,7 @@ def iter_raw_matrix_rows(source, report_date):
                     "MOS": mos,
                     "AVAILABILITY": 1 if (quantity or 0) > 0 else 0,
                     "_RAW_AGGREGATE": is_aggregate,
+                    "_RAW_QUANTITY_INPUT": raw_quantity,
                 }
     wb.close()
     del wb
