@@ -53,7 +53,13 @@ for (const datasetName of DATASETS) {
 }
 
 const periods = [...periodMap.values()].sort((left, right) => left.id.localeCompare(right.id));
-if (periods.length !== 41) errors.push(`Expected 41 January-October periods, found ${periods.length}`);
+if (periods.length !== 42) errors.push(`Expected 42 January-October periods, found ${periods.length}`);
+const octoberWeek2 = periods.find((period) => period.id === "2026-10-18");
+if (!octoberWeek2) errors.push("October Week 2 submission is missing");
+else {
+  if (octoberWeek2.counts?.provinces !== 6) errors.push(`October Week 2 should contain six supplied provinces, found ${octoberWeek2.counts?.provinces}`);
+  if (octoberWeek2.source !== "October Week 2: six of ten provincial submissions received") errors.push("October Week 2 source label does not disclose incomplete provincial coverage");
+}
 
 const report = { reviewedAt: new Date().toISOString(), periods: [], errors, warnings };
 for (const period of periods) {
