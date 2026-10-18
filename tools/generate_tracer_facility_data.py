@@ -1455,9 +1455,9 @@ def reporting_block_identity(row, config):
 def exclude_zero_quantity_reporting_blocks(rows_iter, config):
     """Remove template-only blocks before they can become tracer submissions.
 
-    A reported facility block has at least one positive quantity. A sheet with
-    quantities of zero for every listed commodity is an unsubmitted template,
-    not evidence of a reported stock-out or of district reporting.
+    A block with no positive SOH is still submitted when AMC or MOS contains
+    reporting data (when enabled by the caller); blank/zero-only templates are
+    not evidence of stock-outs or district reporting.
     """
     rows = list(rows_iter)
     block_has_quantity = defaultdict(bool)
@@ -1465,7 +1465,13 @@ def exclude_zero_quantity_reporting_blocks(rows_iter, config):
     for row in rows:
         block = reporting_block_identity(row, config)
         row_blocks.append(block)
-        if block and (num(row.get("QUANTITY")) or 0) > 0:
+        if block and (
+            (num(row.get("_SOURCE_QUANTITY", row.get("QUANTITY"))) or 0) > 0
+            or (config.get("includeZeroQuantityWithData") and (
+                (num(row.get("AMC")) or 0) > 0
+                or (num(row.get("_SOURCE_MOS", row.get("MOS"))) or 0) > 0
+            ))
+        ):
             block_has_quantity[block] = True
 
     return (

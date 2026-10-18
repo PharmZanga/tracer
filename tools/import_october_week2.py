@@ -1,4 +1,4 @@
-"""Import the six supplied October Week 2 provincial tracer submissions."""
+"""Import and normalize the supplied October Week 2 provincial submissions."""
 
 from __future__ import annotations
 
@@ -26,7 +26,27 @@ FILES = {
     "EASTERN PROVINCE": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
     "NORTHERN PROVINCE": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
     "SOUTHERN PROVINCE": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+    "LUAPULA PROVINCE": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
 }
+
+def normalize_week2_rows(generator, sources, report_date):
+    """Apply the requested whole-unit SOH rule before any aggregate is built."""
+    for source in sources:
+        for row in generator.iter_raw_matrix_rows(source, report_date):
+            quantity = generator.num(row.get("QUANTITY"))
+            row["_SOURCE_QUANTITY"] = quantity
+            row["_SOURCE_MOS"] = generator.num(row.get("MOS"))
+            # Missing SOH stays missing. Negative values and positive fractions
+            # are clipped/truncated to whole units, never rounded upward.
+            if quantity is not None:
+                quantity = max(0, int(quantity))
+            amc = generator.num(row.get("AMC"))
+            row["QUANTITY"] = quantity
+            row["MOS"] = quantity / amc if quantity is not None and amc is not None and amc > 0 else None
+            # Keep missing SOH in the availability denominator as unavailable,
+            # matching the dashboard's established reporting convention.
+            row["AVAILABILITY"] = 1 if quantity is not None and quantity > 0 else 0
+            yield row
 
 def load_generator():
     spec = importlib.util.spec_from_file_location("tracer_generator", GENERATOR)
@@ -63,8 +83,9 @@ def main():
         for province, filename in FILES.items()
     ]
     period = generator.summarize({
-        "rawSources": sources,
-        "source": "October Week 2: six of ten provincial submissions received",
+        "rows": normalize_week2_rows(generator, sources, "2026-10-18"),
+        "includeZeroQuantityWithData": True,
+        "source": "October Week 2: seven of ten provincial submissions received; SOH normalized to whole units",
         "reportDate": "2026-10-18",
         "label": "Week 2 - 18 October 2026",
         "month": "2026-10",
@@ -74,7 +95,7 @@ def main():
     actual_provinces = {row["name"] for row in period["provinces"]}
     if actual_provinces != expected_provinces:
         raise ValueError(f"Province attribution mismatch: expected {sorted(expected_provinces)}, got {sorted(actual_provinces)}")
-    if period["counts"]["provinces"] != 6 or period["counts"]["rows"] <= 0:
+    if period["counts"]["provinces"] != 7 or period["counts"]["rows"] <= 0:
         raise ValueError(f"Week 2 submission audit failed: {period['counts']}")
 
     historical = [p for path in DATA_MODULES for p in load_periods(path) if p["id"] not in {"2026-10-11", "2026-10-18"}]
