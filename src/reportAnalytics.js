@@ -7,10 +7,16 @@ export function allReportDistricts(summary) {
   const reporting=new Map(summary.reportingDistricts.filter(r=>r.periodId===latest).map(r=>[key(r),r]));
   return [...roster.values()].map(r=>({province:r.province,name:r.name,...stock.get(key(r)),detailStatus:reporting.get(key(r))?.detailStatus||'Reporting evidence unavailable'})).sort((a,b)=>a.province.localeCompare(b.province)||a.name.localeCompare(b.name));
 }
-export function provincialReporting(rows, province) {
+export function provincialReporting(rows, province, expectedDistrictNames = []) {
   const scoped=rows.filter(r=>r.province===province);
-  const expected=scoped.length,reported=scoped.filter(r=>r.submitted).length;
-  return {expected,reported,rate:expected?reported/expected:null,partial:scoped.filter(r=>r.partial).length};
+  const districts=new Set([...expectedDistrictNames,...scoped.map(r=>r.name)]);
+  const periods=new Set(scoped.map(r=>r.periodId).filter(Boolean));
+  const weekRows=new Map(scoped.map(r=>[`${r.periodId}|${r.name}`,r]));
+  const expected=districts.size*(periods.size||1);
+  const complete=[...periods].flatMap(periodId=>[...districts].map(name=>weekRows.get(`${periodId}|${name}`))).filter(r=>r?.submitted).length;
+  const partial=[...periods].flatMap(periodId=>[...districts].map(name=>weekRows.get(`${periodId}|${name}`))).filter(r=>r?.partial).length;
+  const reported=periods.size?complete:scoped.filter(r=>r.submitted).length;
+  return {expected,reported,rate:expected?reported/expected:null,partial};
 }
 export function reportSeries(periods,scope,name) {
   return [...periods].sort((a,b)=>a.reportDate.localeCompare(b.reportDate)).map(period=>{

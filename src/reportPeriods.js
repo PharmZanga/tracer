@@ -4,6 +4,19 @@ export function reportPeriodKey(period, type) {
   return period.id;
 }
 
+export function mergeReportCatalogue(catalogue, loadedPeriods) {
+  const periodsById = new Map((catalogue || []).map((period) => [period.id, period]));
+  (loadedPeriods || []).forEach((period) => {
+    if (period?.id && period?.reportDate && period?.month) {
+      periodsById.set(period.id, {
+        ...periodsById.get(period.id),
+        ...period,
+      });
+    }
+  });
+  return [...periodsById.values()].sort((a, b) => a.reportDate.localeCompare(b.reportDate) || a.id.localeCompare(b.id));
+}
+
 export function reportOptions(catalogue, type, year) {
   const groups = new Map();
   for (const period of catalogue.filter((p) => p.month.startsWith(`${year}-`))) {

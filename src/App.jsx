@@ -22,7 +22,7 @@ import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTrace
 import { vaccineStockData } from "./vaccineData.js";
 import { buildVaccineReportingUnits, cleanVaccineReportingRows } from "./vaccineReportingUnits.js";
 import { reportCatalogue } from "./reportCatalogue.js";
-import { reportOptions, selectReportPeriods, matchingStockPeriods } from "./reportPeriods.js";
+import { reportOptions, selectReportPeriods, matchingStockPeriods, mergeReportCatalogue } from "./reportPeriods.js";
 
 const dashboardPages = [
   { id: "executive", short: "EX", label: "Executive Summary", icon: LayoutDashboard },
@@ -714,6 +714,11 @@ function buildNationalReportSummary(selectedPeriods, previousPeriods, option, ty
   if (previous && previousRows.length) previous.mos = cappedAverageMos(previousRows);
   return {
     selectedPeriods, type, option,
+    expectedDistrictRoster: [...new Set(tracerReportingPeriods
+      .filter(p=>p.reportDate<=latest.reportDate)
+      .flatMap(p=>(p.dataQuality?.districts||[]).map(r=>JSON.stringify([r.province,r.name]))))]
+      .map(key=>JSON.parse(key))
+      .reduce((roster,[province,name])=>{(roster[province] ||= []).push(name);return roster;},{}),
     districts: aggregateRollups(selectedPeriods.flatMap(p=>(p.districts||[]).map(r=>({...r,reportKey:JSON.stringify([r.province,r.name])}))), 'reportKey').map(r=>{const [province,name]=JSON.parse(r.name);return {...r,province,name};}),
     reportingDistricts: selectedPeriods.flatMap(p=>primaryCareDistrictRows(p).map(r=>({...r,periodId:p.id}))),
     trendPeriods: tracerReportingPeriods.filter(p=>p.reportDate<=latest.reportDate&&p.month.slice(0,4)===latest.month.slice(0,4)).slice(-12),
@@ -3232,7 +3237,8 @@ function App() {
   const productCategoryRows = aggregateRollups(scopedProgrammeRows, "name")
     .sort((a, b) => a.availability - b.availability || (a.mos || 0) - (b.mos || 0))
     .slice(0, 36);
-  const nationalReportOptions = useMemo(() => reportOptions(reportCatalogue, nationalReportType, nationalReportYear), [nationalReportType, nationalReportYear]);
+  const currentReportCatalogue = useMemo(() => mergeReportCatalogue(reportCatalogue, tracerReportingPeriods), [historicalDataVersion]);
+  const nationalReportOptions = useMemo(() => reportOptions(currentReportCatalogue, nationalReportType, nationalReportYear), [currentReportCatalogue, nationalReportType, nationalReportYear]);
   const nationalReportOption = nationalReportOptions.find((o) => o.id === nationalReportPeriodId) || nationalReportOptions.at(-1);
   const nationalReportPreviousOption = nationalReportOptions[nationalReportOptions.findIndex((o) => o.id === nationalReportOption?.id) - 1];
   useEffect(() => {
@@ -3243,7 +3249,7 @@ function App() {
     const load = async () => {
       const months = new Set([...nationalReportOption.months, ...(nationalReportPreviousOption?.months || [])]);
       const end=nationalReportOption.periods.at(-1)?.reportDate;
-      reportCatalogue.filter(p=>p.reportDate<=end&&p.month.startsWith(nationalReportYear)).slice(-12).forEach(p=>months.add(p.month));
+      currentReportCatalogue.filter(p=>p.reportDate<=end&&p.month.startsWith(nationalReportYear)).slice(-12).forEach(p=>months.add(p.month));
       for (const month of months) await loadTracerMonth(month);
       if (!cancelled) setHistoricalDataVersion((version) => version + 1);
     };
