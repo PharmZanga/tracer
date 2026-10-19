@@ -38,6 +38,7 @@ FILES = {
 WEEK2_PARAMETERS = {
     "quantityField": "QUANTITY",
     "unreportedCommodityRowWhenSOHAmcMosAllBlank": True,
+    "unreportedStockBlockWhenEntireSOHColumnBlank": True,
     "facilityReportRequiresAnyMetricEntryInBlock": True,
     "unnamedBlankFacilityBlockIsTemplateNotExpected": True,
     "namedBlankFacilityBlockRequiresHistoricalSameProvinceDistrictServiceEvidence": True,
@@ -57,7 +58,7 @@ WEEK2_PARAMETERS = {
 }
 
 def normalize_week2_rows(generator, sources, report_date, invalid_source_blocks=None):
-    """Exclude wholly blank metric rows/blocks, then normalize reported rows."""
+    """Exclude wholly blank metrics and SOH-unreported blocks, then normalize."""
     blank_markers = {"-", "–", "—"}
 
     def has_entry(value):
@@ -76,9 +77,10 @@ def normalize_week2_rows(generator, sources, report_date, invalid_source_blocks=
     invalid_source_blocks = invalid_source_blocks or set()
 
     stats = {"sourceBlocks": len(source_groups), "allMetricBlankBlocks": 0, "allMetricBlankBlockRowsExcluded": 0,
+             "allSOHBlankBlocks": 0, "allSOHBlankBlockRowsExcluded": 0,
              "allMetricBlankRowsExcluded": 0, "provinceMismatchRowsExcluded": 0,
              "blankSOHRowsSetToZero": 0, "dashSOHRowsSetToZero": 0,
-             "allMetricBlankBlockDetails": []}
+             "allMetricBlankBlockDetails": [], "allSOHBlankBlockDetails": []}
 
     def province_calculation_stats(province):
         defaults = {
@@ -120,6 +122,25 @@ def normalize_week2_rows(generator, sources, report_date, invalid_source_blocks=
                 "sheet": first.get("_RAW_SOURCE_SHEET"),
                 "column": first.get("_RAW_SOH_COLUMN"),
                 "rows": len(rows),
+            })
+            continue
+        # User rule: if the entire SOH column for a facility/service block is
+        # blank, SOH was not reported. AMC-only blocks are incomplete reports,
+        # not zero-stock rows. Dashes count as entered SOH and remain zero.
+        soh_reported = any(has_entry(row.get("_RAW_QUANTITY_INPUT")) for row in rows)
+        if not soh_reported:
+            stats["allSOHBlankBlocks"] += 1
+            stats["allSOHBlankBlockRowsExcluded"] += len(rows)
+            stats["allSOHBlankBlockDetails"].append({
+                "province": first.get("PROVINCE"),
+                "district": first.get("DISTRICT"),
+                "facility": first.get("FACILITY NAME"),
+                "facilityLevel": first.get("FACILITY LEVEL"),
+                "sheet": first.get("_RAW_SOURCE_SHEET"),
+                "column": first.get("_RAW_SOH_COLUMN"),
+                "rows": len(rows),
+                "amcRowsEntered": sum(has_entry(row.get("AMC")) for row in rows),
+                "mosRowsEntered": sum(has_entry(row.get("MOS")) for row in rows),
             })
             continue
         for row in rows:
@@ -344,12 +365,31 @@ def main():
             "lastPriorReportDate": prior_dates[-1] if prior_dates else None,
             "status": "historically_expected_nonreport" if prior_dates else "not_expected_by_history",
         })
+    soh_blank_block_review = []
+    for block in normalize_week2_rows.last_stats["allSOHBlankBlockDetails"]:
+        identity = (
+            generator.normalize_province(block.get("province")),
+            generator.normalize_district(block.get("district")),
+            generator.canonical_facility_level(block.get("facilityLevel")),
+            generator.facility_match_key(block.get("facility")),
+        )
+        prior_dates = historical_reporting.get(identity, [])
+        soh_blank_block_review.append({
+            **block,
+            "priorReportingPeriods": len(prior_dates),
+            "lastPriorReportDate": prior_dates[-1] if prior_dates else None,
+            "status": "historically_expected_SOH_nonreport" if prior_dates else "SOH_blank_local_history_unconfirmed",
+        })
     period["dataQuality"]["facilityBlockReportingReview"] = {
-        "rule": "Ignore blank-name template blocks. Treat a named block with SOH, AMC and MOS all blank as nonreporting only when the same province, district and service unit has prior reporting evidence. Specialty services such as MDR-TB are expected only where local history supports them.",
+        "rule": "Ignore blank-name template blocks. A facility/service block with its entire SOH column blank is not counted as a stock report, even when AMC is entered; do not infer zero stock from such a block. When at least one SOH cell is entered (including a dash), blank/dash SOH rows within that block are zero. A named block with SOH, AMC and MOS all blank is treated as nonreporting only when the same province, district and service unit has prior reporting evidence. Specialty services such as MDR-TB are expected only where local history supports them.",
         "unnamedBlankBlocks": "ignored by source parser",
         "namedBlankBlocks": blank_block_review,
+        "allSOHBlankBlocks": soh_blank_block_review,
+        "allSOHBlankBlockCount": len(soh_blank_block_review),
+        "allSOHBlankBlocksExcludedFromStockMetrics": True,
         "historicallyExpectedNonreports": sum(item["status"] == "historically_expected_nonreport" for item in blank_block_review),
         "notExpectedByHistory": sum(item["status"] == "not_expected_by_history" for item in blank_block_review),
+        "historicallyExpectedSOHNonreports": sum(item["status"] == "historically_expected_SOH_nonreport" for item in soh_blank_block_review),
     }
     period["dataQuality"]["facilityProvinceValidation"] = {
         "rule": "A named facility or district must match the submitting province. Known facility identities and the national district roster are used to detect template names copied from another province.",
@@ -358,7 +398,7 @@ def main():
         "excludedFromMetrics": True,
     }
     period["dataQuality"]["stockCalculationAudit"] = {
-        "rule": "SOH is floored to whole units; blank/dash/negative SOH is zero; MOS is recalculated as normalized SOH / positive AMC.",
+        "rule": "SOH is floored to whole units. A wholly blank SOH block is unreported and excluded even if AMC exists. In a block with at least one SOH entry, blanks, dashes and negative SOH are zero; MOS is recalculated as normalized SOH / positive AMC.",
         "sourceMOSMismatchMeaning": "Submitted MOS differs from recalculation; dashboard uses recalculated MOS.",
         "provinces": normalize_week2_rows.last_stats["calculationByProvince"],
     }

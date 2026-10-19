@@ -876,7 +876,7 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
         <div className="national-report-section-head"><p>F. Reporting Completeness</p><span>Weekly reporting evidence</span></div>
         {analyticalText('reporting')}
         <table><thead><tr><th>Week</th><th>Expected</th><th>Complete DHO reports</th><th>Missing / incomplete districts</th></tr></thead><tbody>{summary.weekly.map(({period:p,reporting:r}) => <tr key={p.id}><td>{p.label}</td><td>{r.expected}</td><td>{r.reported}</td><td>{primaryCareDistrictRows(p).filter((d) => !(d.healthCentreSubmissionReceived && d.healthPostSubmissionReceived)).map((d) => `${d.name} (${d.province})`).join("; ") || "None"}</td></tr>)}</tbody></table>
-        <p>DHO reporting requires Health Centre and Health Post submissions, or valid combined primary-care evidence. Hospital-only submissions do not satisfy this requirement. All-zero quantity blocks are non-submissions, not evidence of stock-outs.</p>
+        <p>DHO reporting requires Health Centre and Health Post SOH reports, or valid combined primary-care SOH evidence. Hospital-only submissions do not satisfy this requirement. A block with its entire SOH column blank is not a stock report, even when AMC is entered. In a block with at least one SOH entry, blank or dash cells are zero.</p>
       </section>
       <section className="national-report-section national-report-actions" {...sectionProps("actions")}>
         <div className="national-report-section-head"><p>Recommended Actions</p><span>Management follow-up</span></div>
@@ -2833,7 +2833,7 @@ function App() {
     { label: "Reporting units", value: filteredFacilities.length, sub: `${fieldData.counts.facilityUnits} in full report`, icon: ClipboardCheck, tone: "teal" },
     { label: "Stockout facilities", value: stockoutFacilityCount, sub: "At least one stockout item", icon: Siren, tone: "red" },
     { label: "Low-stock facilities", value: lowStockFacilityCount, sub: "Below 2 MOS", icon: BellRing, tone: "amber" },
-    { label: "DHO districts reporting", value: fieldDistrictsReportedInScope, sub: "Health Centre + Health Post required", icon: MapPinned, tone: "violet" },
+    { label: "DHO districts reporting", value: fieldDistrictsReportedInScope, sub: "Both levels must submit SOH", icon: MapPinned, tone: "violet" },
   ];
   const highRiskCommodityCount = new Set(commodityScopeRows
     .filter((row) => row.mos !== null && row.mos < 2)
