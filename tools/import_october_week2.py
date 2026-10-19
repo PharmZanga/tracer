@@ -34,9 +34,10 @@ FILES = {
 # from the Quantity field (never AMC/MOS) and use the commodity rows in scope.
 WEEK2_PARAMETERS = {
     "quantityField": "QUANTITY",
+    "unreportedCommodityRowWhenSOHAmcMosAllBlank": True,
+    "facilityReportRequiresAnyMetricEntryInBlock": True,
     "dashStockOnHandIsZero": True,
     "blankStockOnHandIsZero": True,
-    "entirelyBlankStockOnHandColumnMeansNotReported": True,
     "blankStockOnHandWithinReportedColumnIsZero": True,
     "negativeStockOnHandIsZero": True,
     "stockOnHandRounding": "floor",
@@ -46,8 +47,12 @@ WEEK2_PARAMETERS = {
 }
 
 def normalize_week2_rows(generator, sources, report_date):
-    """Classify each SOH source column, then normalize its reported rows."""
+    """Exclude wholly blank metric rows/blocks, then normalize reported rows."""
     blank_markers = {"-", "–", "—"}
+
+    def has_entry(value):
+        return value is not None and (not isinstance(value, str) or bool(value.strip()))
+
     source_groups = {}
     for source in sources:
         for row in generator.iter_raw_matrix_rows(source, report_date):
@@ -59,14 +64,15 @@ def normalize_week2_rows(generator, sources, report_date):
             source_groups.setdefault(key, []).append(row)
 
     stats = {"sourceColumns": len(source_groups), "notReportedColumns": 0, "notReportedRowsExcluded": 0,
+             "allMetricBlankRowsExcluded": 0,
              "blankSOHRowsSetToZero": 0, "dashSOHRowsSetToZero": 0,
              "notReportedColumnDetails": []}
     normalized = []
     for rows in source_groups.values():
         reported_column = any(
-            generator.num(row.get("_RAW_QUANTITY_INPUT")) is not None
-            or (isinstance(row.get("_RAW_QUANTITY_INPUT"), str)
-                and row["_RAW_QUANTITY_INPUT"].strip() in blank_markers)
+            has_entry(row.get("_RAW_QUANTITY_INPUT"))
+            or has_entry(row.get("AMC"))
+            or has_entry(row.get("MOS"))
             for row in rows
         )
         if not reported_column:
@@ -84,8 +90,13 @@ def normalize_week2_rows(generator, sources, report_date):
             })
             continue
         for row in rows:
-            quantity = generator.num(row.get("QUANTITY"))
             raw_quantity = row.get("_RAW_QUANTITY_INPUT")
+            raw_amc = row.get("AMC")
+            raw_mos = row.get("MOS")
+            if not any(has_entry(value) for value in (raw_quantity, raw_amc, raw_mos)):
+                stats["allMetricBlankRowsExcluded"] += 1
+                continue
+            quantity = generator.num(row.get("QUANTITY"))
             row["_SOURCE_QUANTITY"] = quantity
             row["_SOURCE_MOS"] = generator.num(row.get("MOS"))
             if isinstance(raw_quantity, str) and raw_quantity.strip() in blank_markers:
