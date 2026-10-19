@@ -323,6 +323,7 @@ function collapseCommodityFacilityRows(rows, commodity) {
 function matchesCommodityStatus(row, filter) {
   if (filter === "all") return true;
   if (filter === "Available") return row.quantity > 0;
+  if (filter === "Below 2 MOS") return ["Emergency stock", "Understocked"].includes(commodityStockStatus(row.mos));
   if (filter === "Overstocked / excess") return ["Overstocked", "Excess stock"].includes(commodityStockStatus(row.mos));
   return commodityStockStatus(row.mos) === filter;
 }
@@ -2828,12 +2829,13 @@ function App() {
   const facilityAvailabilityTargetCount = filteredFacilities.filter((facility) => facility.availability >= 0.8).length;
   const facilityAvailabilityTargetRate = filteredFacilities.length ? facilityAvailabilityTargetCount / filteredFacilities.length : 0;
   const executiveIndicatorCards = [
-    { label: "National availability", value: formatPercent(fieldKpis.availability), sub: "Facility tracer submissions", icon: PackageSearch, tone: "green" },
-    { label: "Average MOS", value: formatMos(fieldAverageMos), sub: "Submitted stock position (12-month cap)", icon: ChartNoAxesCombined, tone: "blue" },
-    { label: "Reporting units", value: filteredFacilities.length, sub: `${fieldData.counts.facilityUnits} in full report`, icon: ClipboardCheck, tone: "teal" },
-    { label: "Stockout facilities", value: stockoutFacilityCount, sub: "At least one stockout item", icon: Siren, tone: "red" },
-    { label: "Low-stock facilities", value: lowStockFacilityCount, sub: "Below 2 MOS", icon: BellRing, tone: "amber" },
-    { label: "DHO districts reporting", value: fieldDistrictsReportedInScope, sub: "Both levels must submit SOH", icon: MapPinned, tone: "violet" },
+    { label: "National availability", value: formatPercent(fieldKpis.availability), sub: "Click to review commodity availability", icon: PackageSearch, tone: "green", onClick: () => openExecutiveCommodityDetail("Available") },
+    { label: "Average MOS", value: formatMos(fieldAverageMos), sub: "Click to review stock position", icon: ChartNoAxesCombined, tone: "blue", onClick: () => openExecutiveCommodityDetail("all", "mos") },
+    { label: "Reporting units", value: filteredFacilities.length, sub: `${fieldData.counts.facilityUnits} in full report · click for reports`, icon: ClipboardCheck, tone: "teal", onClick: () => openExecutiveReportingDetail("facility-reported") },
+    { label: "Stockout facilities", value: stockoutFacilityCount, sub: "Click to review stockout commodities", icon: Siren, tone: "red", onClick: () => openExecutiveCommodityDetail("Stocked out") },
+    { label: "Low-stock facilities", value: lowStockFacilityCount, sub: "Click to review commodities below 2 MOS", icon: BellRing, tone: "amber", onClick: () => openExecutiveCommodityDetail("Below 2 MOS") },
+    { label: "DHO districts reporting", value: fieldDistrictsReportedInScope, sub: "Both levels must submit SOH · click for details", icon: MapPinned, tone: "violet", onClick: () => openExecutiveReportingDetail("district-reported") },
+    { label: "Districts not complete", value: missingDistricts, sub: "Partial or no primary-care submission · click for follow-up", icon: CircleAlert, tone: "red", onClick: () => openExecutiveReportingDetail("district-missing") },
   ];
   const highRiskCommodityCount = new Set(commodityScopeRows
     .filter((row) => row.mos !== null && row.mos < 2)
@@ -3583,6 +3585,33 @@ function App() {
     setReportFacilityName("all");
   }
 
+  function openExecutiveReportingDetail(filter) {
+    setReportPeriodId(fieldData.id);
+    setReportProvince(selectedProvince);
+    setReportDistrict("all");
+    setReportFacilityType("all");
+    setReportFacilityName("all");
+    setReportStatus("all");
+    setReportKpiFilter(filter);
+    setReportDrillProvince(selectedProvince === "all" ? "" : selectedProvince);
+    setReportDrillDistrict("");
+    setActivePage("reporting");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function openExecutiveCommodityDetail(status, sort = "") {
+    setSelectedCommodity("");
+    setQuery("");
+    setCommodityTableProvince(selectedProvince);
+    setCommodityTableDistrict(selectedDistrict);
+    setCommodityTableLevel("all");
+    setCommodityStatusFilter(status);
+    setCommodityPage(1);
+    if (sort) setCommoditySort(sort);
+    setActivePage("commodities");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   function applyReportingKpiFilter(filter, _status, targetId) {
     setReportKpiFilter(filter);
     setReportStatus("all");
@@ -4251,7 +4280,7 @@ function App() {
           <div className="executive-kpis">
             {executiveIndicatorCards.map((card) => {
               const IndicatorIcon = card.icon;
-              return <div className={`tone-${card.tone}`} key={card.label}><span className="executive-kpi-icon"><IndicatorIcon size={22} strokeWidth={2.2} aria-hidden="true" /></span><div><span>{card.label}</span><strong>{card.value}</strong><small>{card.sub}</small></div></div>;
+              return <button type="button" className={`tone-${card.tone}`} key={card.label} onClick={card.onClick} title={card.sub} aria-label={`${card.label}: ${card.value}. ${card.sub}`}><span className="executive-kpi-icon"><IndicatorIcon size={22} strokeWidth={2.2} aria-hidden="true" /></span><div><span>{card.label}</span><strong>{card.value}</strong><small>{card.sub}</small></div><ArrowUpRight className="executive-kpi-drilldown" size={16} aria-hidden="true"/></button>;
             })}
           </div>
         </section>
@@ -4679,7 +4708,7 @@ function App() {
               <select aria-label="Filter commodity table by province" value={commodityTableProvince} onChange={(event) => { setCommodityTableProvince(event.target.value); setCommodityTableDistrict("all"); setCommodityTableLevel("all"); setCommodityPage(1); }}><option value="all">All provinces</option>{commodityTableProvinceOptions.map((province) => <option key={province} value={province}>{province}</option>)}</select>
               <select aria-label="Filter commodity table by district" value={commodityTableDistrict} onChange={(event) => { setCommodityTableDistrict(event.target.value); setCommodityTableLevel("all"); setCommodityPage(1); }}><option value="all">All districts</option>{commodityTableDistrictOptions.map((district) => <option key={district} value={district}>{district}</option>)}</select>
               <select aria-label="Filter commodity table by facility level" value={commodityTableLevel} onChange={(event) => { setCommodityTableLevel(event.target.value); setCommodityPage(1); }}><option value="all">All facility levels</option>{commodityTableLevelOptions.map((level) => <option key={level} value={level}>{level}</option>)}</select>
-              <select aria-label="Filter commodity table by stock status" value={commodityStatusFilter} onChange={(event) => { setCommodityStatusFilter(event.target.value); setCommodityPage(1); }}><option value="all">All stock statuses</option><option value="Available">Available ({commodityKpiScopeRows.filter((row) => row.quantity > 0).length})</option>{["Stocked out", "Emergency stock", "Understocked", "According to plan", "Overstocked", "Excess stock"].map((status) => <option key={status} value={status}>{status} ({commodityStatusCounts[status] || 0})</option>)}<option value="Overstocked / excess">Overstocked / excess ({(commodityStatusCounts.Overstocked || 0) + (commodityStatusCounts["Excess stock"] || 0)})</option></select>
+              <select aria-label="Filter commodity table by stock status" value={commodityStatusFilter} onChange={(event) => { setCommodityStatusFilter(event.target.value); setCommodityPage(1); }}><option value="all">All stock statuses</option><option value="Available">Available ({commodityKpiScopeRows.filter((row) => row.quantity > 0).length})</option><option value="Below 2 MOS">Below 2 MOS ({(commodityStatusCounts["Emergency stock"] || 0) + (commodityStatusCounts.Understocked || 0)})</option>{["Stocked out", "Emergency stock", "Understocked", "According to plan", "Overstocked", "Excess stock"].map((status) => <option key={status} value={status}>{status} ({commodityStatusCounts[status] || 0})</option>)}<option value="Overstocked / excess">Overstocked / excess ({(commodityStatusCounts.Overstocked || 0) + (commodityStatusCounts["Excess stock"] || 0)})</option></select>
               <select aria-label="Filter commodity table by reporting status" value={commodityTableReportingStatus} onChange={(event) => { setCommodityTableReportingStatus(event.target.value); setCommodityPage(1); }}><option value="all">All reporting statuses</option><option value="Reported">Reported</option></select>
               <select value={commoditySort} onChange={(event) => setCommoditySort(event.target.value)}><option value="mos">Sort by MOS</option><option value="stock">Sort by stock on hand</option><option value="province">Sort by geography</option><option value="facility">Sort by facility</option><option value="status">Sort by stock status</option></select>
               <select value={commodityPageSize} onChange={(event) => { setCommodityPageSize(Number(event.target.value)); setCommodityPage(1); }}><option value={25}>25 rows</option><option value={50}>50 rows</option><option value={100}>100 rows</option></select>
