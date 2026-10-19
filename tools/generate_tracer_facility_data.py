@@ -540,6 +540,14 @@ VERIFIED_FACILITY_IDENTITIES = {
         "LEVEL 1 HOSPITAL",
         "Kafue Gorge Hospital",
     ),
+    # This facility's district cell is often replaced with its own name in
+    # copied provincial templates; prior submissions consistently place it in Zambezi.
+    "chitokoloki mh": (
+        "NORTH-WESTERN PROVINCE",
+        "ZAMBEZI",
+        "LEVEL 2/GENERAL HOSPITAL",
+        "Chitokoloki MH",
+    ),
 }
 
 
@@ -650,6 +658,8 @@ def normalize_district(value):
         "SINZONGWE": "SINAZONGWE",
         "CHKANKATA": "CHIKANKATA",
         "NAWMALA": "NAMWALA",
+        "KITWE DISTTRICT": "KITWE",
+        "KITWE DISTRICTT": "KITWE",
         "MWENSE D HOSP": "MWENSE",
         "0": "UNKNOWN",
         "0.0": "UNKNOWN",
@@ -1248,7 +1258,13 @@ def iter_raw_matrix_rows(source, report_date):
                 district = verified[1]
             if not isinstance(district, str) or not isinstance(facility, str) or not district or not facility:
                 continue
-            district = canonical_district(province, district)
+            canonical_input_district = canonical_district(province, district)
+            if canonical_input_district is None and verified and verified[0] == province:
+                # A known local facility can repair a misaligned district header
+                # using its historical province/district identity.
+                district = verified[1]
+                canonical_input_district = canonical_district(province, district)
+            district = canonical_input_district
             if district is None:
                 continue
             facility_level = canonical_facility_level_for_facility(source_facility_level, facility)

@@ -39,6 +39,8 @@ WEEK2_PARAMETERS = {
     "unnamedBlankFacilityBlockIsTemplateNotExpected": True,
     "namedBlankFacilityBlockRequiresHistoricalSameProvinceDistrictServiceEvidence": True,
     "specialtyServiceExpectedOnlyWithLocalHistoricalEvidence": True,
+    "facilityNameAndDistrictMustMatchSubmissionProvince": True,
+    "knownFacilityIdentityMustMatchLocalProvince": True,
     "dashStockOnHandIsZero": True,
     "blankStockOnHandIsZero": True,
     "blankStockOnHandWithinReportedColumnIsZero": True,
@@ -49,7 +51,7 @@ WEEK2_PARAMETERS = {
     "availabilityDenominator": "commodity_rows_in_scope",
 }
 
-def normalize_week2_rows(generator, sources, report_date):
+def normalize_week2_rows(generator, sources, report_date, invalid_source_blocks=None):
     """Exclude wholly blank metric rows/blocks, then normalize reported rows."""
     blank_markers = {"-", "–", "—"}
 
@@ -66,12 +68,23 @@ def normalize_week2_rows(generator, sources, report_date):
             )
             source_groups.setdefault(key, []).append(row)
 
+    invalid_source_blocks = invalid_source_blocks or set()
+
     stats = {"sourceBlocks": len(source_groups), "allMetricBlankBlocks": 0, "allMetricBlankBlockRowsExcluded": 0,
-             "allMetricBlankRowsExcluded": 0,
+             "allMetricBlankRowsExcluded": 0, "provinceMismatchRowsExcluded": 0,
              "blankSOHRowsSetToZero": 0, "dashSOHRowsSetToZero": 0,
              "allMetricBlankBlockDetails": []}
     normalized = []
     for rows in source_groups.values():
+        first = rows[0]
+        source_block_key = (
+            first.get("_RAW_SOURCE_WORKBOOK"),
+            first.get("_RAW_SOURCE_SHEET"),
+            first.get("_RAW_SOH_COLUMN"),
+        )
+        if source_block_key in invalid_source_blocks:
+            stats["provinceMismatchRowsExcluded"] += len(rows)
+            continue
         reported_column = any(
             has_entry(row.get("_RAW_QUANTITY_INPUT"))
             or has_entry(row.get("AMC"))
@@ -121,6 +134,89 @@ def normalize_week2_rows(generator, sources, report_date):
     normalize_week2_rows.last_stats = stats
     yield from normalized
 
+
+def audit_province_facility_blocks(generator, sources):
+    """Flag specialty-unit template names that conflict with their province."""
+    from collections import defaultdict
+
+    district_owners = defaultdict(set)
+    for province, districts in generator.VALID_DISTRICTS_BY_PROVINCE.items():
+        for district in districts:
+            canonical = generator.canonical_district(province, district)
+            if canonical:
+                district_owners[canonical].add(province)
+
+    invalid_blocks = set()
+    findings = []
+    skip = {"SITUATION BOARD", "SUMMARY", "SUMMARY SHEET", "COMMENTS", "COMMENT", "RECOMMENDATIONS", "RECOMEDATIONS", "PROGRAM"}
+    for source in sources:
+        source_province = generator.normalize_province(source["province"])
+        workbook = generator.openpyxl.load_workbook(source["path"], read_only=False, data_only=True)
+        for ws in workbook.worksheets:
+            if ws.title.strip().upper() in skip or ws.max_row < 4 or ws.max_column < 7:
+                continue
+            level = generator.raw_facility_level(ws.title.strip(), ws.cell(1, 1).value)
+            if level in {"HEALTH POST", "HEALTH CENTRE", "PRIMARY CARE - NOT SPECIFIED"}:
+                continue
+            for quantity_col, district_col, facility_col in generator.raw_sheet_facility_blocks(ws):
+                district_text = generator.clean(ws.cell(2, district_col).value)
+                facility_text = generator.clean(ws.cell(2, facility_col).value)
+                if not facility_text or not isinstance(facility_text, str):
+                    continue
+                district = generator.normalize_district(district_text) if district_text else None
+                owner = next((
+                    province for province in generator.VALID_DISTRICTS_BY_PROVINCE
+                    if district_text and generator.canonical_district(province, district_text)
+                ), None)
+                facility_key = generator.facility_match_key(facility_text)
+                known_identity = (
+                    generator.VERIFIED_FACILITY_IDENTITIES.get(facility_key)
+                    or generator.RAW_FACILITY_IDENTITIES.get(facility_key)
+                )
+                expected_province = known_identity[0] if known_identity else owner
+                reasons = []
+                correctable_local_district = bool(
+                    known_identity and known_identity[0] == source_province
+                    and not generator.canonical_district(source_province, district_text)
+                )
+                placeholder_label = (
+                    "name of district" in facility_key
+                    or facility_key in {"facility name", "hospital name", "name of facility"}
+                    or (district and "name of district" in district)
+                )
+                if placeholder_label:
+                    reasons.append("template_placeholder_name")
+                elif owner and owner != source_province:
+                    reasons.append("district_belongs_to_another_province")
+                elif district and not owner and correctable_local_district:
+                    reasons.append("district_header_misaligned_corrected_from_local_history")
+                elif district and not owner:
+                    reasons.append("district_not_in_national_roster")
+                if known_identity and known_identity[0] != source_province and not placeholder_label:
+                    reasons.append("facility_name_is_verified_in_another_province")
+                if not reasons:
+                    continue
+                excluded = any(reason in reasons for reason in (
+                    "template_placeholder_name", "district_belongs_to_another_province",
+                    "district_not_in_national_roster", "facility_name_is_verified_in_another_province",
+                ))
+                if excluded:
+                    invalid_blocks.add((str(source["path"]), ws.title.strip(), quantity_col))
+                findings.append({
+                    "submissionProvince": source_province,
+                    "sheet": ws.title.strip(),
+                    "districtAsEntered": str(district_text or ""),
+                    "facilityAsEntered": facility_text,
+                    "verifiedProvince": expected_province,
+                    "reasons": reasons,
+                    "correctedDistrict": known_identity[1] if correctable_local_district else None,
+                    "excludedFromMetrics": excluded,
+                    "sourceWorkbook": source["path"].name,
+                })
+        workbook.close()
+    findings.sort(key=lambda item: (item["submissionProvince"], item["sheet"], item["districtAsEntered"], item["facilityAsEntered"]))
+    return findings, invalid_blocks
+
 def load_generator():
     spec = importlib.util.spec_from_file_location("tracer_generator", GENERATOR)
     module = importlib.util.module_from_spec(spec)
@@ -157,8 +253,10 @@ def main():
         {"province": province, "path": DIRECTORY / filename, "primaryCareSummaryLayout": True}
         for province, filename in FILES.items()
     ]
+    province_facility_findings, invalid_source_blocks = audit_province_facility_blocks(generator, sources)
+    normalized_rows = list(normalize_week2_rows(generator, sources, "2026-10-18", invalid_source_blocks))
     period = generator.summarize({
-        "rows": normalize_week2_rows(generator, sources, "2026-10-18"),
+        "rows": normalized_rows,
         "includeZeroQuantityWithData": True,
         "source": "October Week 2: seven of ten provincial submissions received; SOH normalized to whole units",
         "reportDate": "2026-10-18",
@@ -223,6 +321,12 @@ def main():
         "namedBlankBlocks": blank_block_review,
         "historicallyExpectedNonreports": sum(item["status"] == "historically_expected_nonreport" for item in blank_block_review),
         "notExpectedByHistory": sum(item["status"] == "not_expected_by_history" for item in blank_block_review),
+    }
+    period["dataQuality"]["facilityProvinceValidation"] = {
+        "rule": "A named facility or district must match the submitting province. Known facility identities and the national district roster are used to detect template names copied from another province.",
+        "flaggedBlocks": province_facility_findings,
+        "excludedBlockCount": len(invalid_source_blocks),
+        "excludedFromMetrics": True,
     }
     october_periods = [p for p in periods if p["month"] == "2026-10"]
     OUTPUT.write_text(json.dumps({"tracerReportingPeriods": october_periods}, separators=(",", ":")), encoding="utf-8")

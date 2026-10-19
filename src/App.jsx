@@ -2855,6 +2855,11 @@ function App() {
   const qualityRangeLower = qualityRangeStart <= qualityRangeEnd ? qualityRangeStart : qualityRangeEnd;
   const qualityRangeUpper = qualityRangeStart <= qualityRangeEnd ? qualityRangeEnd : qualityRangeStart;
   const qualityRangePeriods = needsQualityHistory ? tracerReportingPeriods.filter((period) => period.month >= qualityRangeLower && period.month <= qualityRangeUpper) : [];
+  const facilityProvinceValidationRows = qualityRangePeriods.flatMap((period) =>
+    (period.dataQuality?.facilityProvinceValidation?.flaggedBlocks || [])
+      .filter((finding) => !finding.reasons?.includes("template_placeholder_name"))
+      .map((finding, index) => ({ ...finding, reportDate: period.reportDate, key: `${period.reportDate}-${finding.sourceWorkbook}-${finding.sheet}-${finding.facilityAsEntered}-${index}` }))
+  );
   // Data Quality must use the complete expected reporting universe, not the
   // named facilities that happened to appear in the first selected period.
   // The facilityTypes roster retains districts and levels with no submission,
@@ -5266,6 +5271,10 @@ function App() {
             <div className="weekly-library-preview">
               <div className="quality-panel-head"><div><h3>Weekly report library</h3><p>Latest submitted tracer reporting periods. National report files will open here once they are loaded.</p></div><button type="button" onClick={() => setQualityDetailDialog("library")}>View all reports</button></div>
               <div className="table-scroll"><table><thead><tr><th>Reporting period</th><th>Provinces</th><th>DHO districts</th><th>Facility reporting units</th><th>Rate</th><th /></tr></thead><tbody>{weeklyReportLibraryRows.slice(0, 6).map((row) => <tr key={row.id}><td>{row.label}</td><td>{row.provinces}</td><td title={`${row.partialDistricts} partial primary-care; ${row.hospitalOnlyDistricts} hospital-only`}>{row.districts}/{row.expectedDistricts}</td><td>{row.reportedFacilities}/{row.expectedFacilities}</td><td><span className={`comparison-signal ${reportingTone(row.rate)}`}>{formatPercent(row.rate)}</span></td><td><button type="button" className="ghost-button" onClick={() => { setSelectedLibraryPeriodId(row.id); setQualityDetailDialog("pending-report"); }}>Open</button></td></tr>)}</tbody></table></div>
+            </div>
+            <div className="quality-panel facility-province-validation-panel">
+              <div className="quality-panel-head"><div><h3>Facility and province name validation</h3><p>Specialty facility names are checked against the district roster and prior local facility records. Cross-province template blocks are excluded from stock metrics.</p></div><span>{facilityProvinceValidationRows.filter((row) => row.excludedFromMetrics).length} excluded</span></div>
+              {facilityProvinceValidationRows.length ? <div className="table-scroll"><table><thead><tr><th>Submitted province</th><th>Sheet</th><th>District entered</th><th>Facility entered</th><th>Verified province</th><th>Review result</th></tr></thead><tbody>{facilityProvinceValidationRows.map((row) => <tr key={row.key}><td>{row.submissionProvince}</td><td>{row.sheet}</td><td>{row.districtAsEntered || "—"}</td><td>{row.facilityAsEntered || "—"}</td><td>{row.verifiedProvince || row.correctedDistrict || "Unverified"}</td><td>{row.excludedFromMetrics ? "Excluded from metrics" : `District corrected to ${row.correctedDistrict || "historical match"}`}</td></tr>)}</tbody></table></div> : <div className="empty-state">No facility-to-province mismatches were found for the selected reporting period.</div>}
             </div>
           </div>
           <div className="dq-detail-source">
