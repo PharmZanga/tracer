@@ -36,6 +36,8 @@ WEEK2_PARAMETERS = {
     "quantityField": "QUANTITY",
     "dashStockOnHandIsZero": True,
     "blankStockOnHandIsZero": True,
+    "entirelyBlankStockOnHandColumnMeansNotReported": True,
+    "blankStockOnHandWithinReportedColumnIsZero": True,
     "negativeStockOnHandIsZero": True,
     "stockOnHandRounding": "floor",
     "mosDerivedFromNormalizedStockOnHand": True,
@@ -44,20 +46,56 @@ WEEK2_PARAMETERS = {
 }
 
 def normalize_week2_rows(generator, sources, report_date):
-    """Apply the requested whole-unit SOH rule before any aggregate is built."""
+    """Classify each SOH source column, then normalize its reported rows."""
+    blank_markers = {"-", "–", "—"}
+    source_groups = {}
     for source in sources:
         for row in generator.iter_raw_matrix_rows(source, report_date):
+            key = (
+                row.get("_RAW_SOURCE_WORKBOOK"),
+                row.get("_RAW_SOURCE_SHEET"),
+                row.get("_RAW_SOH_COLUMN"),
+            )
+            source_groups.setdefault(key, []).append(row)
+
+    stats = {"sourceColumns": len(source_groups), "notReportedColumns": 0, "notReportedRowsExcluded": 0,
+             "blankSOHRowsSetToZero": 0, "dashSOHRowsSetToZero": 0,
+             "notReportedColumnDetails": []}
+    normalized = []
+    for rows in source_groups.values():
+        reported_column = any(
+            generator.num(row.get("_RAW_QUANTITY_INPUT")) is not None
+            or (isinstance(row.get("_RAW_QUANTITY_INPUT"), str)
+                and row["_RAW_QUANTITY_INPUT"].strip() in blank_markers)
+            for row in rows
+        )
+        if not reported_column:
+            stats["notReportedColumns"] += 1
+            stats["notReportedRowsExcluded"] += len(rows)
+            first = rows[0]
+            stats["notReportedColumnDetails"].append({
+                "province": first.get("PROVINCE"),
+                "district": first.get("DISTRICT"),
+                "facility": first.get("FACILITY NAME"),
+                "facilityLevel": first.get("FACILITY LEVEL"),
+                "sheet": first.get("_RAW_SOURCE_SHEET"),
+                "column": first.get("_RAW_SOH_COLUMN"),
+                "rows": len(rows),
+            })
+            continue
+        for row in rows:
             quantity = generator.num(row.get("QUANTITY"))
             raw_quantity = row.get("_RAW_QUANTITY_INPUT")
             row["_SOURCE_QUANTITY"] = quantity
             row["_SOURCE_MOS"] = generator.num(row.get("MOS"))
-            # A dash or blank SOH is zero so it can be reflected in stockout
-            # actions. MOS is calculated when a positive AMC is available.
-            if isinstance(raw_quantity, str) and raw_quantity.strip() in {"-", "–", "—"}:
+            if isinstance(raw_quantity, str) and raw_quantity.strip() in blank_markers:
                 quantity = 0
+                row["_SOURCE_QUANTITY"] = 0
+                stats["dashSOHRowsSetToZero"] += 1
+            elif raw_quantity is None or (isinstance(raw_quantity, str) and not raw_quantity.strip()):
+                quantity = 0
+                stats["blankSOHRowsSetToZero"] += 1
             amc = generator.num(row.get("AMC"))
-            if quantity is None:
-                quantity = 0
             if quantity is not None:
                 quantity = max(0, int(quantity))
             row["QUANTITY"] = quantity
@@ -65,7 +103,9 @@ def normalize_week2_rows(generator, sources, report_date):
             # Keep missing SOH in the availability denominator as unavailable,
             # matching the dashboard's established reporting convention.
             row["AVAILABILITY"] = 1 if quantity is not None and quantity > 0 else 0
-            yield row
+            normalized.append(row)
+    normalize_week2_rows.last_stats = stats
+    yield from normalized
 
 def load_generator():
     spec = importlib.util.spec_from_file_location("tracer_generator", GENERATOR)
@@ -110,6 +150,7 @@ def main():
         "month": "2026-10",
         "week": "Week 2",
     })
+    print("SOH column classification: " + json.dumps(normalize_week2_rows.last_stats, sort_keys=True))
     expected_provinces = set(FILES)
     actual_provinces = {row["name"] for row in period["provinces"]}
     if actual_provinces != expected_provinces:

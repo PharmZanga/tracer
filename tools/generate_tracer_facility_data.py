@@ -1277,8 +1277,6 @@ def iter_raw_matrix_rows(source, report_date):
                 quantity = num(raw_quantity)
                 amc = num(ws.cell(row_index, start_col + 1).value)
                 mos = num(ws.cell(row_index, start_col + 2).value)
-                if quantity is None and amc is None and mos is None:
-                    continue
                 yield {
                     "DATE": report_date,
                     "NATION": "ZAMBIA",
@@ -1295,6 +1293,9 @@ def iter_raw_matrix_rows(source, report_date):
                     "AVAILABILITY": 1 if (quantity or 0) > 0 else 0,
                     "_RAW_AGGREGATE": is_aggregate,
                     "_RAW_QUANTITY_INPUT": raw_quantity,
+                    "_RAW_SOURCE_WORKBOOK": str(workbook_path),
+                    "_RAW_SOURCE_SHEET": sheet_name,
+                    "_RAW_SOH_COLUMN": start_col,
                 }
     wb.close()
     del wb
