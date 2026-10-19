@@ -27,6 +27,7 @@ FILES = {
     "NORTHERN PROVINCE": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
     "SOUTHERN PROVINCE": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
     "LUAPULA PROVINCE": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+    "CENTRAL PROVINCE": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
 }
 
 # Week 2 source normalization parameters. Stock-on-hand values are whole units;
@@ -258,7 +259,7 @@ def main():
     period = generator.summarize({
         "rows": normalized_rows,
         "includeZeroQuantityWithData": True,
-        "source": "October Week 2: seven of ten provincial submissions received; SOH normalized to whole units",
+        "source": "October Week 2: eight of ten provincial submissions received; SOH normalized to whole units",
         "reportDate": "2026-10-18",
         "label": "Week 2 - 18 October 2026",
         "month": "2026-10",
@@ -269,7 +270,7 @@ def main():
     actual_provinces = {row["name"] for row in period["provinces"]}
     if actual_provinces != expected_provinces:
         raise ValueError(f"Province attribution mismatch: expected {sorted(expected_provinces)}, got {sorted(actual_provinces)}")
-    if period["counts"]["provinces"] != 7 or period["counts"]["rows"] <= 0:
+    if period["counts"]["provinces"] != 8 or period["counts"]["rows"] <= 0:
         raise ValueError(f"Week 2 submission audit failed: {period['counts']}")
 
     historical = [p for path in DATA_MODULES for p in load_periods(path) if p["id"] not in {"2026-10-11", "2026-10-18"}]
