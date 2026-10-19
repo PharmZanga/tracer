@@ -57,8 +57,8 @@ if (periods.length !== 42) errors.push(`Expected 42 January-October periods, fou
 const octoberWeek2 = periods.find((period) => period.id === "2026-10-18");
 if (!octoberWeek2) errors.push("October Week 2 submission is missing");
 else {
-  if (octoberWeek2.counts?.provinces !== 8) errors.push(`October Week 2 should contain eight supplied provinces, found ${octoberWeek2.counts?.provinces}`);
-  if (octoberWeek2.source !== "October Week 2: eight of ten provincial submissions received; SOH normalized to whole units") errors.push("October Week 2 source label does not disclose submission coverage and whole-unit normalization");
+  if (octoberWeek2.counts?.provinces !== 10) errors.push(`October Week 2 should contain all ten provincial submissions, found ${octoberWeek2.counts?.provinces}`);
+  if (octoberWeek2.source !== "October Week 2: all ten provincial submissions received; SOH normalized to whole units") errors.push("October Week 2 source label does not disclose submission coverage and whole-unit normalization");
 }
 
 const report = { reviewedAt: new Date().toISOString(), periods: [], errors, warnings };

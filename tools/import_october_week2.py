@@ -28,6 +28,8 @@ FILES = {
     "SOUTHERN PROVINCE": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
     "LUAPULA PROVINCE": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
     "CENTRAL PROVINCE": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+    "LUSAKA PROVINCE": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+    "MUCHINGA PROVINCE": "MUCHINGA 25. 19.10.26.xlsx",
 }
 
 # Week 2 source normalization parameters. Stock-on-hand values are whole units;
@@ -48,6 +50,8 @@ WEEK2_PARAMETERS = {
     "negativeStockOnHandIsZero": True,
     "stockOnHandRounding": "floor",
     "mosDerivedFromNormalizedStockOnHand": True,
+    "reportedMOSRecalculatedFromNormalizedSOHAndAMC": True,
+    "mosValidationFormula": "normalized whole-unit SOH / positive AMC",
     "availabilityCountsPositiveStockOnHand": True,
     "availabilityDenominator": "commodity_rows_in_scope",
 }
@@ -75,6 +79,18 @@ def normalize_week2_rows(generator, sources, report_date, invalid_source_blocks=
              "allMetricBlankRowsExcluded": 0, "provinceMismatchRowsExcluded": 0,
              "blankSOHRowsSetToZero": 0, "dashSOHRowsSetToZero": 0,
              "allMetricBlankBlockDetails": []}
+
+    def province_calculation_stats(province):
+        defaults = {
+            "rowsAudited": 0,
+            "fractionalSOHFloored": 0,
+            "negativeSOHClipped": 0,
+            "dashSOHSetToZero": 0,
+            "blankSOHSetToZero": 0,
+            "sourceMOSMismatchRows": 0,
+        }
+        return stats.setdefault("calculationByProvince", {}).setdefault(province or "UNKNOWN", defaults)
+
     normalized = []
     for rows in source_groups.values():
         first = rows[0]
@@ -113,6 +129,8 @@ def normalize_week2_rows(generator, sources, report_date, invalid_source_blocks=
             if not any(has_entry(value) for value in (raw_quantity, raw_amc, raw_mos)):
                 stats["allMetricBlankRowsExcluded"] += 1
                 continue
+            province_stats = province_calculation_stats(row.get("PROVINCE"))
+            province_stats["rowsAudited"] += 1
             quantity = generator.num(row.get("QUANTITY"))
             row["_SOURCE_QUANTITY"] = quantity
             row["_SOURCE_MOS"] = generator.num(row.get("MOS"))
@@ -120,14 +138,24 @@ def normalize_week2_rows(generator, sources, report_date, invalid_source_blocks=
                 quantity = 0
                 row["_SOURCE_QUANTITY"] = 0
                 stats["dashSOHRowsSetToZero"] += 1
+                province_stats["dashSOHSetToZero"] += 1
             elif raw_quantity is None or (isinstance(raw_quantity, str) and not raw_quantity.strip()):
                 quantity = 0
                 stats["blankSOHRowsSetToZero"] += 1
+                province_stats["blankSOHSetToZero"] += 1
             amc = generator.num(row.get("AMC"))
             if quantity is not None:
+                province_stats["fractionalSOHFloored"] += int(not float(quantity).is_integer())
+                province_stats["negativeSOHClipped"] += int(quantity < 0)
                 quantity = max(0, int(quantity))
+            expected_mos = quantity / amc if quantity is not None and amc is not None and amc > 0 else None
+            source_mos = generator.num(raw_mos)
+            if (expected_mos is None) != (source_mos is None) or (
+                expected_mos is not None and abs(expected_mos - source_mos) > 1e-9
+            ):
+                province_stats["sourceMOSMismatchRows"] += 1
             row["QUANTITY"] = quantity
-            row["MOS"] = quantity / amc if quantity is not None and amc is not None and amc > 0 else None
+            row["MOS"] = expected_mos
             # Keep missing SOH in the availability denominator as unavailable,
             # matching the dashboard's established reporting convention.
             row["AVAILABILITY"] = 1 if quantity is not None and quantity > 0 else 0
@@ -259,7 +287,7 @@ def main():
     period = generator.summarize({
         "rows": normalized_rows,
         "includeZeroQuantityWithData": True,
-        "source": "October Week 2: eight of ten provincial submissions received; SOH normalized to whole units",
+        "source": "October Week 2: all ten provincial submissions received; SOH normalized to whole units",
         "reportDate": "2026-10-18",
         "label": "Week 2 - 18 October 2026",
         "month": "2026-10",
@@ -270,7 +298,7 @@ def main():
     actual_provinces = {row["name"] for row in period["provinces"]}
     if actual_provinces != expected_provinces:
         raise ValueError(f"Province attribution mismatch: expected {sorted(expected_provinces)}, got {sorted(actual_provinces)}")
-    if period["counts"]["provinces"] != 8 or period["counts"]["rows"] <= 0:
+    if period["counts"]["provinces"] != 10 or period["counts"]["rows"] <= 0:
         raise ValueError(f"Week 2 submission audit failed: {period['counts']}")
 
     historical = [p for path in DATA_MODULES for p in load_periods(path) if p["id"] not in {"2026-10-11", "2026-10-18"}]
@@ -329,6 +357,11 @@ def main():
         "excludedBlockCount": len(invalid_source_blocks),
         "excludedFromMetrics": True,
     }
+    period["dataQuality"]["stockCalculationAudit"] = {
+        "rule": "SOH is floored to whole units; blank/dash/negative SOH is zero; MOS is recalculated as normalized SOH / positive AMC.",
+        "sourceMOSMismatchMeaning": "Submitted MOS differs from recalculation; dashboard uses recalculated MOS.",
+        "provinces": normalize_week2_rows.last_stats["calculationByProvince"],
+    }
     october_periods = [p for p in periods if p["month"] == "2026-10"]
     OUTPUT.write_text(json.dumps({"tracerReportingPeriods": october_periods}, separators=(",", ":")), encoding="utf-8")
     BOOTSTRAP.write_text(
@@ -343,6 +376,11 @@ def main():
         "provinces": sorted(actual_provinces),
         "missingProvinces": sorted(set(generator.VALID_DISTRICTS_BY_PROVINCE) - actual_provinces),
         "dataQualityDistrictRows": len(period["dataQuality"]["districts"]),
+        "stockCalculationAudit": period["dataQuality"]["stockCalculationAudit"],
+        "facilityProvinceValidation": {
+            "flaggedBlocks": len(province_facility_findings),
+            "excludedBlocks": len(invalid_source_blocks),
+        },
         "national": period["national"],
     }, indent=2))
 
