@@ -1801,16 +1801,18 @@ def reporting_facility_type(facility_level):
 
 
 def build_reporting_quality(periods, expected_districts, expected_facilities, expected_named_facilities=None):
+    """Measure reporting against province- and service-specific prior history.
+
+    A facility/service enters its expected roster when it first appears. This
+    avoids treating unnamed template columns or services never reported in a
+    province as missed submissions, while still surfacing later gaps.
+    """
     primary_care_types = {"Health Centres", "Health Posts"}
     combined_primary_care_type = "Health Centres and Posts (combined)"
     province_names = sorted({province for province, _district in expected_districts})
     district_names = sorted(expected_districts)
-    expected_level_reports = {
-        (province, district, reporting_facility_type(facility_level))
-        for province, district, facility_level, _facility in expected_facilities
-    }
     explicit_named_reports = set(expected_named_facilities or EXPECTED_NAMED_REPORTING_UNITS)
-    expected_named_reports = {
+    eligible_named_reports = {
         (province, district, facility_level, facility)
         for province, district, facility_level, facility in expected_facilities
         if district != "UNKNOWN" and (
@@ -1819,6 +1821,8 @@ def build_reporting_quality(periods, expected_districts, expected_facilities, ex
             or (province, district, facility_level, facility) in explicit_named_reports
         )
     }
+    seen_level_reports = set()
+    seen_named_reports = set()
 
     for period in periods:
         present_districts = {(district["province"], district["name"]) for district in period["districts"]}
@@ -1835,6 +1839,15 @@ def build_reporting_quality(periods, expected_districts, expected_facilities, ex
             for province, district, facility_level, _facility in present_facilities
             if district != "UNKNOWN"
         }
+        expected_level_reports = seen_level_reports | present_level_reports
+        present_named_reports = {
+            (province, district, facility_level, facility)
+            for province, district, facility_level, facility in present_facilities
+            if (province, district, facility_level, facility) in eligible_named_reports
+        }
+        # Explicit roster entries only establish that a name is valid; they do
+        # not make it an expected report before local history shows it reporting.
+        expected_named_reports = seen_named_reports | present_named_reports
         submitted_dho_districts = set()
         partial_dho_districts = set()
         hospital_only_districts = set()
@@ -1951,13 +1964,22 @@ def build_reporting_quality(periods, expected_districts, expected_facilities, ex
             {"province": province, "district": district, "facilityLevel": facility_type, "name": facility_type}
             for province, district, facility_type in missing_level_reports[:100]
         ]
+        prior_data_quality = period.get("dataQuality", {})
+        preserved_data_quality = {
+            key: value for key, value in prior_data_quality.items()
+            if key not in {"districtSubmissionRule", "facilityRosterRule", "provinces", "districts", "facilityTypes", "facilities"}
+        }
         period["dataQuality"] = {
+            **preserved_data_quality,
             "districtSubmissionRule": "Both Health Centre and Health Post reporting are required; a combined primary-care source counts for both. Hospital submissions do not count.",
+            "facilityRosterRule": "Facility and service-unit expectations are province- and district-specific and enter the roster from observed reporting history; a service with no local reporting history is not counted as a missed report.",
             "provinces": province_rows,
             "districts": district_rows,
             "facilityTypes": type_rows,
             "facilities": facility_rows,
         }
+        seen_level_reports.update(present_level_reports)
+        seen_named_reports.update(present_named_reports)
 
 
 def main():

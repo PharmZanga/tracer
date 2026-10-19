@@ -36,6 +36,9 @@ WEEK2_PARAMETERS = {
     "quantityField": "QUANTITY",
     "unreportedCommodityRowWhenSOHAmcMosAllBlank": True,
     "facilityReportRequiresAnyMetricEntryInBlock": True,
+    "unnamedBlankFacilityBlockIsTemplateNotExpected": True,
+    "namedBlankFacilityBlockRequiresHistoricalSameProvinceDistrictServiceEvidence": True,
+    "specialtyServiceExpectedOnlyWithLocalHistoricalEvidence": True,
     "dashStockOnHandIsZero": True,
     "blankStockOnHandIsZero": True,
     "blankStockOnHandWithinReportedColumnIsZero": True,
@@ -63,10 +66,10 @@ def normalize_week2_rows(generator, sources, report_date):
             )
             source_groups.setdefault(key, []).append(row)
 
-    stats = {"sourceColumns": len(source_groups), "notReportedColumns": 0, "notReportedRowsExcluded": 0,
+    stats = {"sourceBlocks": len(source_groups), "allMetricBlankBlocks": 0, "allMetricBlankBlockRowsExcluded": 0,
              "allMetricBlankRowsExcluded": 0,
              "blankSOHRowsSetToZero": 0, "dashSOHRowsSetToZero": 0,
-             "notReportedColumnDetails": []}
+             "allMetricBlankBlockDetails": []}
     normalized = []
     for rows in source_groups.values():
         reported_column = any(
@@ -76,10 +79,10 @@ def normalize_week2_rows(generator, sources, report_date):
             for row in rows
         )
         if not reported_column:
-            stats["notReportedColumns"] += 1
-            stats["notReportedRowsExcluded"] += len(rows)
+            stats["allMetricBlankBlocks"] += 1
+            stats["allMetricBlankBlockRowsExcluded"] += len(rows)
             first = rows[0]
-            stats["notReportedColumnDetails"].append({
+            stats["allMetricBlankBlockDetails"].append({
                 "province": first.get("PROVINCE"),
                 "district": first.get("DISTRICT"),
                 "facility": first.get("FACILITY NAME"),
@@ -145,6 +148,8 @@ def main():
         raise FileNotFoundError("Missing expected Week 2 submission(s): " + ", ".join(missing))
 
     generator = load_generator()
+    generator.RAW_FACILITY_IDENTITIES.clear()
+    generator.RAW_FACILITY_IDENTITIES.update(generator.load_raw_facility_identities())
     # Provincial templates may embed malformed font metadata in decorative
     # drawings. The facility matrix parser does not use charts or images.
     generator.openpyxl.reader.excel.find_images = lambda archive, target: ([], [])
@@ -161,7 +166,7 @@ def main():
         "month": "2026-10",
         "week": "Week 2",
     })
-    print("SOH column classification: " + json.dumps(normalize_week2_rows.last_stats, sort_keys=True))
+    print("Facility-block reporting classification: " + json.dumps(normalize_week2_rows.last_stats, sort_keys=True))
     expected_provinces = set(FILES)
     actual_provinces = {row["name"] for row in period["provinces"]}
     if actual_provinces != expected_provinces:
@@ -185,6 +190,40 @@ def main():
         )
     }
     generator.build_reporting_quality(periods, expected_districts, expected_facilities)
+    historical_reporting = {}
+    for previous in periods:
+        if previous["reportDate"] >= period["reportDate"]:
+            continue
+        for facility in previous.get("facilities", []):
+            identity = (
+                generator.normalize_province(facility.get("province")),
+                generator.normalize_district(facility.get("district")),
+                generator.canonical_facility_level(facility.get("facilityLevel")),
+                generator.facility_match_key(facility.get("name")),
+            )
+            historical_reporting.setdefault(identity, []).append(previous["reportDate"])
+    blank_block_review = []
+    for block in normalize_week2_rows.last_stats["allMetricBlankBlockDetails"]:
+        identity = (
+            generator.normalize_province(block.get("province")),
+            generator.normalize_district(block.get("district")),
+            generator.canonical_facility_level(block.get("facilityLevel")),
+            generator.facility_match_key(block.get("facility")),
+        )
+        prior_dates = historical_reporting.get(identity, [])
+        blank_block_review.append({
+            **block,
+            "priorReportingPeriods": len(prior_dates),
+            "lastPriorReportDate": prior_dates[-1] if prior_dates else None,
+            "status": "historically_expected_nonreport" if prior_dates else "not_expected_by_history",
+        })
+    period["dataQuality"]["facilityBlockReportingReview"] = {
+        "rule": "Ignore blank-name template blocks. Treat a named block with SOH, AMC and MOS all blank as nonreporting only when the same province, district and service unit has prior reporting evidence. Specialty services such as MDR-TB are expected only where local history supports them.",
+        "unnamedBlankBlocks": "ignored by source parser",
+        "namedBlankBlocks": blank_block_review,
+        "historicallyExpectedNonreports": sum(item["status"] == "historically_expected_nonreport" for item in blank_block_review),
+        "notExpectedByHistory": sum(item["status"] == "not_expected_by_history" for item in blank_block_review),
+    }
     october_periods = [p for p in periods if p["month"] == "2026-10"]
     OUTPUT.write_text(json.dumps({"tracerReportingPeriods": october_periods}, separators=(",", ":")), encoding="utf-8")
     BOOTSTRAP.write_text(

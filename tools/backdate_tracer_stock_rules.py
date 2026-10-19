@@ -129,6 +129,8 @@ def recalculate_period(generator, period, availability_overrides):
 
 def main():
     generator = load_generator()
+    generator.RAW_FACILITY_IDENTITIES.clear()
+    generator.RAW_FACILITY_IDENTITIES.update(generator.load_raw_facility_identities())
     # The already-published rows retain the approved SOH and AMC values. Any
     # historical MOS override is superseded by the current universal formula.
     generator.AUTHORITATIVE_COMMODITY_OVERRIDES = {}
@@ -149,6 +151,33 @@ def main():
         pending_writes.append((path, revised))
         report["files"].append({"file": path.name, "periods": len(revised)})
 
+    # Rebuild reporting expectations chronologically for every historical
+    # period. A facility/service is expected only after local reporting history
+    # establishes it; blank template blocks and services never reported locally
+    # must not inflate missing-report counts.
+    all_periods = sorted(
+        (period for _path, revised in pending_writes for period in revised),
+        key=lambda period: period["reportDate"],
+    )
+    expected_districts = {
+        (province, district)
+        for province, districts in generator.VALID_DISTRICTS_BY_PROVINCE.items()
+        for district in districts
+    }
+    expected_facilities = {
+        (facility["province"], facility["district"], facility["facilityLevel"], facility["name"])
+        for period in all_periods
+        for facility in period.get("facilities", [])
+        if facility["district"] != "UNKNOWN" and (
+            facility["facilityLevel"] in {"HEALTH CENTRE", "HEALTH POST", "PRIMARY CARE - NOT SPECIFIED"}
+            or generator.facility_belongs_to_reporting_district(
+                facility["province"], facility["district"], facility["name"]
+            )
+        )
+    }
+    expected_facilities.update(generator.EXPECTED_NAMED_REPORTING_UNITS)
+    generator.build_reporting_quality(all_periods, expected_districts, expected_facilities)
+
     total = {
         key: sum(period[key] for period in report["periods"])
         for key in (
@@ -157,6 +186,11 @@ def main():
         )
     }
     report["totals"] = total
+    report["reportingRosterRule"] = (
+        "Facility/service expectations are province-, district- and service-specific; "
+        "they begin with first observed local reporting. Blank-name template blocks "
+        "and services without local history are not counted as missing reports."
+    )
     # Validate every target period before replacing any dataset file.
     for path, revised in pending_writes:
         path.write_text(
