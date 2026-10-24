@@ -2,6 +2,7 @@ import { Children, cloneElement, isValidElement, lazy, Suspense, useEffect, useM
 const FacilityAlertsMap=lazy(()=>import('./FacilityAlertsMap.jsx'));
 import { reportSections } from './reportSections.js';
 import { buildReportNarrative } from './reportNarrative.js';
+import { commodityRowsFromPeriod } from './tracerRows.js';
 import {isAdministrator,isAdministrationPage} from './dashboardAccess.js';
 import NavigationGuide from './NavigationGuide.jsx';
 import useViewerActivity from './useViewerActivity.js';
@@ -140,23 +141,6 @@ function commodityStatusTone(status) {
   if (status === "According to plan") return "green";
   if (status === "Overstocked" || status === "Excess stock") return "blue";
   return "muted";
-}
-
-function commodityRowsFromPeriod(period) {
-  const data = period?.commodityFacilityData;
-  if (!data?.dictionaries || !data?.rows) return [];
-  const { provinces = [], districts = [], levels = [], facilities = [], items = [], programmes = [] } = data.dictionaries;
-  return data.rows.map(([province, district, level, facility, item, programme, quantity, amc, mos]) => ({
-    province: provinces[province],
-    district: districts[district],
-    facilityLevel: levels[level],
-    facility: facilities[facility],
-    item: canonicalCommodityName(items[item]),
-    programme: programmes[programme],
-    quantity: quantity === null || quantity === undefined || quantity === "" ? null : Number(quantity),
-    amc: amc === null || amc === undefined || amc === "" ? null : Number(amc),
-    mos: mos === null || mos === undefined || mos === "" || !Number.isFinite(Number(mos)) ? null : Number(mos),
-  })).filter((row) => isCommodityName(row.item));
 }
 
 const vaccineRowsByPeriod = new Map(vaccineStockData.periods.map((period) => {
@@ -2183,9 +2167,9 @@ function App() {
     .filter((row) => centralStockCategory === "all" || row.category === centralStockCategory)
     .filter((row) => !centralStockQuery.trim() || `${row.code} ${row.item}`.toLowerCase().includes(centralStockQuery.trim().toLowerCase()))
     .sort((a, b) => (a.mos ?? Number.POSITIVE_INFINITY) - (b.mos ?? Number.POSITIVE_INFINITY) || a.item.localeCompare(b.item));
-  const stockTrendRows = weeklyStockPeriods
+  const stockTrendRows = useMemo(() => weeklyStockPeriods
     .filter((period) => period.stream === stockStream)
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .sort((a, b) => a.date.localeCompare(b.date)), [stockStream]);
   const stockAvailabilityForecast = useMemo(() => {
     const history = stockTrendRows.map((period) => Math.round((period.overallAvailability || 0) * 1000) / 10);
     const result = fitForecast(history, { horizon: 4, seasonalPeriod: 6 });
@@ -2219,7 +2203,7 @@ function App() {
       .sort((a, b) => a.availability - b.availability || a.name.localeCompare(b.name))
     : [];
   const reportData = tracerReportingPeriods.find((period) => period.id === reportPeriodId) || tracerReportingPeriods.at(-1);
-  const reportBaseRows = primaryCareDistrictRows(reportData)
+  const reportBaseRows = useMemo(() => primaryCareDistrictRows(reportData)
     .map((row) => {
       const reported = row.submitted ? 1 : 0;
       return {
@@ -2239,14 +2223,21 @@ function App() {
         rate: reported,
         lastReportingPeriod: reported ? reportData.label : "-",
       };
-    });
-  const reportSubmittedFacilityRows = facilityReportingRows(reportData)
+    }), [reportData]);
+  const needsReporting = activePage === "reporting";
+  const lastFacilityReport = useMemo(() => {
+    const latest = new Map();
+    if (!needsReporting) return latest;
+    tracerReportingPeriods.filter((period) => period.reportDate < reportData.reportDate)
+      .sort((a, b) => a.reportDate.localeCompare(b.reportDate)).forEach((period) => {
+        [...(period.facilities || []), ...(period.dataQuality?.facilities || []).filter((facility) => facility.reported)]
+          .forEach((facility) => latest.set(facilityIdentityKey(facility), period));
+      });
+    return latest;
+  }, [needsReporting, reportData, historicalDataVersion]);
+  const reportSubmittedFacilityRows = useMemo(() => (needsReporting ? facilityReportingRows(reportData) : [])
     .map((facility) => {
-      const previous = tracerReportingPeriods
-        .filter((period) => period.reportDate < reportData.reportDate)
-        .sort((a, b) => b.reportDate.localeCompare(a.reportDate))
-        .find((period) => (period.facilities || []).some((candidate) => facilityIdentityKey(candidate) === facilityIdentityKey(facility))
-          || (period.dataQuality?.facilities || []).some((candidate) => candidate.reported && facilityIdentityKey(candidate) === facilityIdentityKey(facility)));
+      const previous = lastFacilityReport.get(facilityIdentityKey(facility));
       return {
         province: facility.province,
         district: facility.district,
@@ -2257,7 +2248,7 @@ function App() {
         lastReportingPeriod: facility.reported ? reportData.label : previous?.label || "No previous report available",
         sourceFacility: facility,
       };
-    });
+    }), [needsReporting, reportData, lastFacilityReport]);
   const reportFacilityTypeOptions = [...new Set(reportSubmittedFacilityRows.map((row) => row.facilityType))].sort();
   const reportProvinceOptions = [...new Set(reportBaseRows.map((row) => row.province))].sort();
   const reportDistrictOptions = [...new Set(reportBaseRows
@@ -2330,11 +2321,11 @@ function App() {
     .map((facility) => `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}`)
     .sort();
 
-  const filteredFacilities = fieldData.facilities
+  const filteredFacilities = useMemo(() => fieldData.facilities
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
     .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict)
     .filter((facility) => matchesFacilityCareLevel(facility.facilityLevel, selectedFacilityLevel))
-    .filter((facility) => selectedFacility === "all" || `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}` === selectedFacility);
+    .filter((facility) => selectedFacility === "all" || `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}` === selectedFacility), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const periodCommodityRows = useMemo(() => commodityRowsFromPeriod(fieldData), [fieldData]);
   const filteredCommodityRows = useMemo(() => periodCommodityRows
     .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
@@ -2344,12 +2335,12 @@ function App() {
   const dataQualityGate = useMemo(() => buildDataQualityGate(filteredCommodityRows), [filteredCommodityRows]);
 
   const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
-  const fieldAverageMos = cappedAverageMos(filteredCommodityRows);
+  const fieldAverageMos = useMemo(() => cappedAverageMos(filteredCommodityRows), [filteredCommodityRows]);
   const isNationalUnfilteredScope = selectedProvince === "all"
     && selectedDistrict === "all"
     && selectedFacilityLevel === "all"
     && selectedFacility === "all";
-  const scopedProvinceRows = aggregateRollups(filteredFacilities, "province")
+  const scopedProvinceRows = useMemo(() => aggregateRollups(filteredFacilities, "province")
     .map((row) => {
       const displayOverride = isNationalUnfilteredScope ? approvedProvincePerformanceOverrides[fieldData.id]?.[row.name] : null;
       return displayOverride ? {
@@ -2361,10 +2352,10 @@ function App() {
         displayOverride,
       } : row;
     })
-    .sort((a, b) => b.availability - a.availability || b.rows - a.rows);
-  const scopedDistrictRows = aggregateRollups(filteredFacilities, "district")
-    .sort((a, b) => b.riskRows - a.riskRows || a.availability - b.availability);
-  const levelOfCareRows = careLevelBuckets.map((bucket) => {
+    .sort((a, b) => b.availability - a.availability || b.rows - a.rows), [filteredFacilities, isNationalUnfilteredScope, fieldData]);
+  const scopedDistrictRows = useMemo(() => aggregateRollups(filteredFacilities, "district")
+    .sort((a, b) => b.riskRows - a.riskRows || a.availability - b.availability), [filteredFacilities]);
+  const levelOfCareRows = useMemo(() => careLevelBuckets.map((bucket) => {
     const facilities = filteredFacilities.filter((facility) => careLevelBucket(facility.facilityLevel) === bucket.id);
     const commodityRows = filteredCommodityRows.filter((row) => careLevelBucket(row.facilityLevel) === bucket.id);
     const calculatedRollup = combineRollups(facilities, makeEmptyRollup(bucket.label));
@@ -2386,7 +2377,7 @@ function App() {
         .filter((facility) => !facility.isAggregate)
         .map((facility) => facility.name))].sort(),
     };
-  }).filter((row) => selectedProvince === "all" || row.rows > 0);
+  }).filter((row) => selectedProvince === "all" || row.rows > 0), [filteredFacilities, filteredCommodityRows, isNationalUnfilteredScope, fieldData, selectedProvince]);
   const bestProvince = scopedProvinceRows[0];
   const worstProvince = [...scopedProvinceRows].sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)[0];
   const facilityCommodityRows = useMemo(() => groupCommodityRowsByFacility(filteredCommodityRows), [filteredCommodityRows]);
@@ -2483,7 +2474,7 @@ function App() {
   const districtsInScope = scopedDistrictRows;
   const predictiveHistoryPeriods = useMemo(() => needsForecasting ? tracerReportingPeriods
     .filter((period) => period.reportDate <= fieldData.reportDate)
-    .sort((a, b) => a.reportDate.localeCompare(b.reportDate)) : [], [needsForecasting, fieldData.reportDate]);
+    .sort((a, b) => a.reportDate.localeCompare(b.reportDate)) : [], [needsForecasting, fieldData.reportDate, historicalDataVersion]);
   const predictiveProvinceRows = useMemo(() => needsForecasting ? buildProvinceForecast(predictiveHistoryPeriods, {
     province: selectedProvince,
     district: selectedDistrict,
@@ -2580,15 +2571,10 @@ function App() {
     };
   });
 
-  const commodityScopeRows = useMemo(() => {
-    const scoped = commodityRowsFromPeriod(fieldData)
-      .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
-      .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
-      .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
-      .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility);
-    return buildDataQualityGate(scoped).passedRows;
-  }, [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  const commodityScopeRows = dataQualityGate.passedRows;
+  const needsCommodityHistory = activePage === "commodities";
   const commodityPreviousScopeRows = useMemo(() => {
+    if (!needsCommodityHistory) return [];
     const periodIndex = tracerReportingPeriods.findIndex((period) => period.id === fieldPeriodId);
     const previousPeriod = periodIndex > 0 ? tracerReportingPeriods[periodIndex - 1] : null;
     if (!previousPeriod) return [];
@@ -2598,7 +2584,7 @@ function App() {
       .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
       .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility);
     return buildDataQualityGate(scoped).passedRows;
-  }, [fieldPeriodId, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+  }, [needsCommodityHistory, historicalDataVersion, fieldPeriodId, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const commodityTriageRows = useMemo(() => {
     const summarise = (rows) => {
       const groups = new Map();
@@ -2711,7 +2697,7 @@ function App() {
     }), [commodityFilteredSummaryRows, commodityFacilityQuery, commoditySort]);
   const commodityPageCount = Math.max(1, Math.ceil(commodityFacilityRows.length / commodityPageSize));
   const commodityVisibleRows = commodityFacilityRows.slice((Math.min(commodityPage, commodityPageCount) - 1) * commodityPageSize, Math.min(commodityPage, commodityPageCount) * commodityPageSize);
-  const commodityTrendRows = useMemo(() => !selectedCommodity ? [] : tracerReportingPeriods.map((period) => {
+  const commodityTrendRows = useMemo(() => !needsCommodityHistory || !selectedCommodity ? [] : tracerReportingPeriods.map((period) => {
     const rows = commodityRowsFromPeriod(period)
       .filter((row) => row.item === selectedCommodity)
       .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
@@ -2720,7 +2706,7 @@ function App() {
     const quantity = rows.reduce((sum, row) => sum + row.quantity, 0);
     const amc = rows.reduce((sum, row) => sum + row.amc, 0);
     return { periodId: period.id, label: period.label, reportDate: period.reportDate, availability: rows.length ? rows.filter((row) => row.quantity > 0).length / rows.length : 0, nationalAvailability: normalizeRate(period.national?.availability), mos: amc > 0 ? quantity / amc : 0, rows: rows.length };
-  }).filter((row) => row.rows > 0), [selectedCommodity, selectedProvince, selectedDistrict, selectedFacilityLevel]);
+  }).filter((row) => row.rows > 0), [needsCommodityHistory, historicalDataVersion, selectedCommodity, selectedProvince, selectedDistrict, selectedFacilityLevel]);
   const commodityTrendVisibleRows = commodityTrendRows.slice(-commodityTrendWindow);
   const commodityTrendMosScale = Math.max(4, Math.ceil(Math.max(0, ...commodityTrendVisibleRows.map((row) => row.mos || 0))));
   const commodityTrendMosPoints = commodityTrendVisibleRows.map((row, index) => {
@@ -2765,9 +2751,9 @@ function App() {
         isAggregateHistory: true,
       } : null;
     })
-    .filter(Boolean), [openCommodityFacility, selectedCommodity]);
+    .filter(Boolean), [openCommodityFacility, selectedCommodity, historicalDataVersion]);
   const commodityFacilityTrendMap = useMemo(() => {
-    if (!selectedCommodity) return new Map();
+    if (!needsCommodityHistory || !selectedCommodity) return new Map();
     const periodIndex = tracerReportingPeriods.findIndex((period) => period.id === fieldPeriodId);
     const periods = tracerReportingPeriods.slice(Math.max(0, periodIndex - 7), periodIndex + 1);
     const trendMap = new Map(selectedCommodityRows.map((row) => {
@@ -2791,7 +2777,7 @@ function App() {
       });
     });
     return trendMap;
-  }, [selectedCommodityRows, selectedCommodity, fieldPeriodId]);
+  }, [needsCommodityHistory, historicalDataVersion, selectedCommodityRows, selectedCommodity, fieldPeriodId]);
   const commodityFacilityBasket = useMemo(() => {
     if (!openCommodityFacility) return [];
     const grouped = new Map();
@@ -2861,7 +2847,7 @@ function App() {
   const qualityMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))].sort();
   const qualityRangeLower = qualityRangeStart <= qualityRangeEnd ? qualityRangeStart : qualityRangeEnd;
   const qualityRangeUpper = qualityRangeStart <= qualityRangeEnd ? qualityRangeEnd : qualityRangeStart;
-  const qualityRangePeriods = needsQualityHistory ? tracerReportingPeriods.filter((period) => period.month >= qualityRangeLower && period.month <= qualityRangeUpper) : [];
+  const qualityRangePeriods = useMemo(() => needsQualityHistory ? tracerReportingPeriods.filter((period) => period.month >= qualityRangeLower && period.month <= qualityRangeUpper) : [], [needsQualityHistory, qualityRangeLower, qualityRangeUpper, historicalDataVersion]);
   const facilityProvinceValidationRows = qualityRangePeriods.flatMap((period) =>
     (period.dataQuality?.facilityProvinceValidation?.flaggedBlocks || [])
       .filter((finding) => !finding.reasons?.includes("template_placeholder_name"))
@@ -2913,8 +2899,8 @@ function App() {
       });
     });
     return [...rows.values()];
-  }, [needsQualityHistory, qualityDistrictNames]);
-  const qualityRoster = [
+  }, [needsQualityHistory, qualityDistrictNames, historicalDataVersion]);
+  const qualityRoster = useMemo(() => [
     ...qualityDistrictDirectory.flatMap((row) => ["Health Centres", "Health Posts"].map((type) => ({
       province: row.province,
       district: row.name,
@@ -2924,7 +2910,7 @@ function App() {
       isAggregate: true,
     }))),
     ...qualityHospitalRoster,
-  ];
+  ], [qualityDistrictDirectory, qualityHospitalRoster]);
   const qualityProvinceOptions = [...new Set(qualityDistrictDirectory.map((row) => row.province))].sort();
   const qualityDistrictOptions = [...new Set(qualityDistrictDirectory
     .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
@@ -2943,6 +2929,9 @@ function App() {
       .filter((facility) => sourceSupportedHospitalFacility(facility, qualityDistrictNames))
       .map((facility) => facilityReportingKey(facility))),
   ])), [qualityRangePeriods, qualityDistrictNames]);
+  const qualityPrimaryCareByPeriod = useMemo(() => new Map(qualityRangePeriods.map((period) => [
+    period.id, new Map(primaryCareDistrictRows(period).map((district) => [`${district.province}|${district.name}`, district])),
+  ])), [qualityRangePeriods]);
   const qualityFacilityHistories = useMemo(() => qualityRoster
     .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
     .filter((row) => qualityDistrictFilter === "all" || row.district === qualityDistrictFilter)
@@ -2950,7 +2939,7 @@ function App() {
     .map((facility) => {
       const key = `${facility.province}|${facility.district}|${facility.facilityLevel}`;
       const history = qualityRangePeriods.map((period) => {
-        const primaryCare = primaryCareDistrictRows(period).find((district) => district.province === facility.province && district.name === facility.district);
+        const primaryCare = qualityPrimaryCareByPeriod.get(period.id)?.get(`${facility.province}|${facility.district}`);
         const reported = facility.facilityLevel === "Health Centres" || facility.facilityLevel === "Health Posts"
           ? primaryCareLevelReported(primaryCare, facility.facilityLevel === "Health Centres" ? "HEALTH CENTRE" : "HEALTH POST")
             : facility.reportingKey
@@ -2974,7 +2963,7 @@ function App() {
         consecutiveMissed: longestMissedRun(history),
         latestReport: [...history].reverse().find((row) => row.reported)?.label || "No successful report",
       };
-    }), [qualityRoster, qualityRangePeriods, qualityPeriodHospitalKeys, qualityProvinceFilter, qualityDistrictFilter, qualityFacilityLevelFilter]);
+    }), [qualityRoster, qualityRangePeriods, qualityPeriodHospitalKeys, qualityPrimaryCareByPeriod, qualityProvinceFilter, qualityDistrictFilter, qualityFacilityLevelFilter]);
   const qualityTrendRows = useMemo(() => {
     const groups = new Map();
     qualityRangePeriods.forEach((period) => {
@@ -3120,10 +3109,10 @@ function App() {
     { label: "According to plan", count: fieldKpis.accordingToPlan, rate: fieldKpis.accordingToPlan / stockStatusTotal, sub: "2 to 4 MOS", tone: "green", icon: CircleCheck },
     { label: "Overstocked", count: fieldKpis.abovePlan + fieldKpis.overstock, rate: (fieldKpis.abovePlan + fieldKpis.overstock) / stockStatusTotal, sub: "Above 4 MOS", tone: "blue", icon: Boxes },
   ];
-  const scopedProgrammeRows = (fieldData.programmeScopes || fieldData.programmes || [])
+  const scopedProgrammeRows = useMemo(() => (fieldData.programmeScopes || fieldData.programmes || [])
     .filter((row) => !row.province || selectedProvince === "all" || row.province === selectedProvince)
     .filter((row) => !row.district || selectedDistrict === "all" || row.district === selectedDistrict)
-    .filter((row) => !row.facilityLevel || matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel));
+    .filter((row) => !row.facilityLevel || matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel)), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel]);
   const activeProgrammeNavigationView = programmeNavigationViews.find((view) => view.id === programmeNavigationFocus) || programmeNavigationViews[0];
   const vaccineWorkspace = useMemo(() => {
     const selectedVaccinePeriod = vaccineStockData.periods.find((period) => period.id === vaccinePeriodId) || vaccineStockData.periods.at(-1);
@@ -3199,9 +3188,10 @@ function App() {
   }, [activePage, vaccinePeriodId, vaccineProvince, vaccineDistrict, vaccineName, districtDirectory]);
   const { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows, vaccineSummary, vaccineTrendRows, vaccineProductRows, vaccineExpiryRows, vaccineStockoutRows, vaccineNonReportingDistricts } = vaccineWorkspace;
   const programmeRowsForPage = (fieldData.programmes || []).filter((program) => programmeMatchesView(program.name, activeProgrammeNavigationView));
-  const programmeTracerRows = commodityRowsFromPeriod(fieldData)
-    .filter((row) => programmeMatchesView(row.programme, activeProgrammeNavigationView));
-  const programmeFacilityRows = Object.values(programmeTracerRows.reduce((groups, row) => {
+  const needsProgrammeAnalysis = activePage === "programmes";
+  const programmeTracerRows = useMemo(() => needsProgrammeAnalysis ? periodCommodityRows
+    .filter((row) => programmeMatchesView(row.programme, activeProgrammeNavigationView)) : [], [needsProgrammeAnalysis, periodCommodityRows, activeProgrammeNavigationView]);
+  const programmeFacilityRows = useMemo(() => Object.values(programmeTracerRows.reduce((groups, row) => {
     const key = [row.province, row.district, row.facilityLevel, row.facility].join("|");
     const group = groups[key] || {
       province: row.province,
@@ -3225,7 +3215,7 @@ function App() {
       stockout,
       lowStock,
     };
-  }).sort((a, b) => a.availability - b.availability || (a.mos ?? Infinity) - (b.mos ?? Infinity) || compareText(a.facility, b.facility));
+  }).sort((a, b) => a.availability - b.availability || (a.mos ?? Infinity) - (b.mos ?? Infinity) || compareText(a.facility, b.facility)), [programmeTracerRows]);
   const programmeFacilityMosRows = programmeFacilityRows.filter((row) => Number.isFinite(row.mos));
   const programmeTracerSummary = {
     facilities: programmeFacilityRows.length,
@@ -3258,8 +3248,8 @@ function App() {
     return () => { cancelled = true; };
   }, [activePage, nationalReportOption?.id, nationalReportType, nationalReportYear, nationalReportRetry]);
   const nationalReportSummary = useMemo(
-    () => buildNationalReportSummary(selectReportPeriods(tracerReportingPeriods, nationalReportOption), selectReportPeriods(tracerReportingPeriods, nationalReportPreviousOption), nationalReportOption, nationalReportType),
-    [nationalReportOption, nationalReportPreviousOption, nationalReportType, historicalDataVersion],
+    () => activePage === "reports" ? buildNationalReportSummary(selectReportPeriods(tracerReportingPeriods, nationalReportOption), selectReportPeriods(tracerReportingPeriods, nationalReportPreviousOption), nationalReportOption, nationalReportType) : null,
+    [activePage, nationalReportOption, nationalReportPreviousOption, nationalReportType, historicalDataVersion],
   );
   const programmePressureRows = aggregateRollups(scopedProgrammeRows, "name")
     .sort((a, b) => b.riskRows - a.riskRows || a.availability - b.availability)
@@ -3298,40 +3288,41 @@ function App() {
       : comparisonPeriodType === "quarterly"
         ? ["Q1", "Q2", "Q3", "Q4"].map((quarter) => ({ value: quarter, label: quarter }))
         : comparisonYears.map((year) => ({ value: year, label: year }));
-  const comparisonDistrictOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.districts || [])
+  const comparisonDistrictOptions = useMemo(() => [...new Set(tracerReportingPeriods.flatMap((period) => period.districts || [])
     .filter((row) => comparisonProvince === "all" || row.province === comparisonProvince)
-    .map((row) => row.name))].sort();
-  const comparisonFacilityLevelRows = tracerReportingPeriods.flatMap((period) => period.facilities || [])
+    .map((row) => row.name))].sort(), [comparisonProvince, historicalDataVersion]);
+  const comparisonFacilityLevelRows = useMemo(() => tracerReportingPeriods.flatMap((period) => period.facilities || [])
     .filter((facility) => comparisonProvince === "all" || facility.province === comparisonProvince)
-    .filter((facility) => comparisonDistrict === "all" || facility.district === comparisonDistrict);
+    .filter((facility) => comparisonDistrict === "all" || facility.district === comparisonDistrict), [comparisonProvince, comparisonDistrict, historicalDataVersion]);
   const comparisonOptionIsAvailable = (option) => comparisonFacilityLevelRows.some((facility) => matchesFacilityCareLevel(facility.facilityLevel, option.value));
   const comparisonFacilityLevelOptions = facilityCareLevelOptions.filter(comparisonOptionIsAvailable);
   const comparisonSpecialisedFacilityLevelOptions = specialisedCareLevelOptions.filter(comparisonOptionIsAvailable);
-  const comparisonCommodityOptions = [...new Set(tracerReportingPeriods.flatMap((period) => period.commodityFacilityData?.dictionaries?.items || []).map(canonicalCommodityName))]
+  const comparisonCommodityOptions = useMemo(() => [...new Set(tracerReportingPeriods.flatMap((period) => period.commodityFacilityData?.dictionaries?.items || []).map(canonicalCommodityName))]
     .filter(Boolean)
     .filter(isCommodityName)
     .sort(compareText)
-    .slice(0, 600);
-  const comparisonFilters = {
+    .slice(0, 600), [historicalDataVersion]);
+  const comparisonFilters = useMemo(() => ({
     province: comparisonProvince,
     district: comparisonDistrict,
     facilityLevel: comparisonFacilityLevel,
     commodity: comparisonCommodity,
     program: comparisonProgram,
     compareBy: comparisonCompareBy,
-  };
-  const comparisonPeriods = tracerReportingPeriods
+  }), [comparisonProvince, comparisonDistrict, comparisonFacilityLevel, comparisonCommodity, comparisonProgram, comparisonCompareBy]);
+  const needsComparison = activePage === "comparison";
+  const comparisonPeriods = useMemo(() => needsComparison ? tracerReportingPeriods
     .filter((period) => comparisonPeriodInRange(period, comparisonPeriodType, comparisonYear, comparisonRangeStart, comparisonRangeEnd))
-    .sort((a, b) => compareText(a.reportDate, b.reportDate));
-  const previousComparisonPeriods = tracerReportingPeriods
+    .sort((a, b) => compareText(a.reportDate, b.reportDate)) : [], [needsComparison, historicalDataVersion, comparisonPeriodType, comparisonYear, comparisonRangeStart, comparisonRangeEnd]);
+  const previousComparisonPeriods = useMemo(() => needsComparison ? tracerReportingPeriods
     .filter((period) => comparisonPeriodInRange(period, comparisonPeriodType, comparisonYear, comparisonBaselineStart, comparisonBaselineEnd))
-    .sort((a, b) => compareText(a.reportDate, b.reportDate));
-  const comparisonProgramOptions = [...new Set([...comparisonPeriods,...previousComparisonPeriods].flatMap(period=>period.commodityFacilityData
+    .sort((a, b) => compareText(a.reportDate, b.reportDate)) : [], [needsComparison, historicalDataVersion, comparisonPeriodType, comparisonYear, comparisonBaselineStart, comparisonBaselineEnd]);
+  const comparisonProgramOptions = useMemo(() => [...new Set([...comparisonPeriods,...previousComparisonPeriods].flatMap(period=>period.commodityFacilityData
     ? filterComparisonRows(commodityRowsFromPeriod(period),{...comparisonFilters,program:'all',commodity:'all'},matchesFacilityCareLevel).map(row=>row.programme)
-    : (period.programmeScopes||[]).filter(row=>comparisonProvince==='all'||row.province===comparisonProvince).filter(row=>matchesFacilityCareLevel(row.facilityLevel,comparisonFacilityLevel)).map(row=>row.name)))].filter(Boolean).sort(compareText);
-  const comparisonRows = aggregateComparisonRows(comparisonPeriods, comparisonFilters)
-    .sort((a, b) => comparisonMetricValue(b, comparisonMetric) - comparisonMetricValue(a, comparisonMetric) || compareText(a.name, b.name));
-  const previousComparisonRows = aggregateComparisonRows(previousComparisonPeriods, comparisonFilters);
+    : (period.programmeScopes||[]).filter(row=>comparisonProvince==='all'||row.province===comparisonProvince).filter(row=>matchesFacilityCareLevel(row.facilityLevel,comparisonFacilityLevel)).map(row=>row.name)))].filter(Boolean).sort(compareText), [comparisonPeriods, previousComparisonPeriods, comparisonProvince, comparisonDistrict, comparisonFacilityLevel]);
+  const comparisonRows = useMemo(() => aggregateComparisonRows(comparisonPeriods, comparisonFilters)
+    .sort((a, b) => comparisonMetricValue(b, comparisonMetric) - comparisonMetricValue(a, comparisonMetric) || compareText(a.name, b.name)), [comparisonPeriods, comparisonFilters, comparisonMetric]);
+  const previousComparisonRows = useMemo(() => aggregateComparisonRows(previousComparisonPeriods, comparisonFilters), [previousComparisonPeriods, comparisonFilters]);
   const comparisonCurrent = combineRollups(comparisonRows, makeEmptyRollup("Current comparison"));
   const comparisonPrevious = combineRollups(previousComparisonRows, makeEmptyRollup("Previous comparison"));
   const comparisonDelta = comparisonMetricValue(comparisonCurrent, comparisonMetric) - comparisonMetricValue(comparisonPrevious, comparisonMetric);
@@ -3388,10 +3379,10 @@ function App() {
     .sort((a, b) => a.delta - b.delta)
     .slice(0, 3);
   const comparisonTrendGroups = comparisonRows.slice(0, 5).map((row) => row.name);
-  const comparisonCommodityRows = aggregateComparisonRows(comparisonPeriods,{...comparisonFilters,compareBy:'commodity'})
+  const comparisonCommodityRows = useMemo(() => aggregateComparisonRows(comparisonPeriods,{...comparisonFilters,compareBy:'commodity'})
     .filter((row) => comparisonCommodity === "all" || row.name === comparisonCommodity)
     .sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)
-    .slice(0, 60);
+    .slice(0, 60), [comparisonPeriods, comparisonFilters, comparisonCommodity]);
   const comparisonInsights = [
     `${comparisonBest.name} has the highest ${comparisonMetricLabel(comparisonMetric).toLowerCase()} at ${formatComparisonMetric(comparisonMetricValue(comparisonBest, comparisonMetric), comparisonMetric)}.`,
     `${comparisonWorst.name} is the lowest performer at ${formatComparisonMetric(comparisonMetricValue(comparisonWorst, comparisonMetric), comparisonMetric)}.`,
@@ -4262,7 +4253,7 @@ function App() {
           <div><span>Supply chain intelligence</span><strong>{activePageLabel}</strong><small>{moduleDescriptions[activePage] || "National tracer supply-chain intelligence."}</small></div>
         </section>
 
-        <section className="hero">
+        {activePage === "executive" && <section className="hero">
           <div>
             <p className="eyebrow">Weekly Tracer Submission</p>
             <h1>National tracer overview</h1>
@@ -4275,9 +4266,9 @@ function App() {
             <small>{fieldData.counts.rows.toLocaleString()} commodity rows | {fieldData.counts.facilityUnits} reporting units</small>
             <button className="hero-export" type="button" onClick={exportCsv}>Export facility CSV</button>
           </div>
-        </section>
+        </section>}
 
-        <section className="executive-brief">
+        {activePage === "executive" && <section className="executive-brief">
           <div className="executive-statement">
             <p className="eyebrow dark">Leadership Brief</p>
             <h2>National tracer availability is {formatPercent(fieldKpis.availability)}, with {fieldKpis.riskRows.toLocaleString()} submitted rows requiring attention.</h2>
@@ -4289,9 +4280,9 @@ function App() {
               return <button type="button" className={`tone-${card.tone}`} key={card.label} onClick={card.onClick} title={card.sub} aria-label={`${card.label}: ${card.value}. ${card.sub}`}><span className="executive-kpi-icon"><IndicatorIcon size={22} strokeWidth={2.2} aria-hidden="true" /></span><div><span>{card.label}</span><strong>{card.value}</strong><small>{card.sub}</small></div><ArrowUpRight className="executive-kpi-drilldown" size={16} aria-hidden="true"/></button>;
             })}
           </div>
-        </section>
+        </section>}
 
-        <section className="management-kpi-summary">
+        {activePage === "executive" && <section className="management-kpi-summary">
           <div className="management-kpi-head">
             <div>
               <p className="eyebrow dark">KPI Summary</p>
@@ -4309,11 +4300,11 @@ function App() {
           <div className="management-kpi-note">
             <b>External feeds pending:</b> eLMIS variance, data timeliness, delivery adherence, central-edition coverage, connectivity, and pipeline milestones.
           </div>
-        </section>
+        </section>}
 
-        <LevelOfCarePerformance rows={levelOfCareRows} />
+        {activePage === "executive" && <LevelOfCarePerformance rows={levelOfCareRows} />}
 
-        <section className="tracer-overview">
+        {activePage === "national" && <section className="tracer-overview">
           <div className="tracer-lead">
             <p className="eyebrow dark">National Stock Status</p>
             <h2>Tracer commodities by submitted months of stock</h2>
@@ -4376,9 +4367,9 @@ function App() {
               </table>
             </div>
           </div>
-        </section>
+        </section>}
 
-        <section className="weekly-stock-section">
+        {activePage === "stock" && <section className="weekly-stock-section">
           <div className="weekly-hero">
             <div>
               <p>National Supply Chain Visibility</p>
@@ -4548,9 +4539,9 @@ function App() {
               </div>
             </>
           ) : <div className="empty-state">No weekly stock data is available.</div>}
-        </section>
+        </section>}
 
-        <section className="field-visibility">
+        {activePage === "provincial" && <section className="field-visibility">
           <div className="field-head">
             <div>
               <p className="eyebrow dark">Facility To National Drilldown</p>
@@ -4578,9 +4569,9 @@ function App() {
             <button type="button" disabled={selectedDistrict === "all"}>{selectedDistrict === "all" ? "Select a district" : selectedDistrict}</button>
             <b>{filteredFacilities.length} reporting units in current selection</b>
           </div>
-        </section>
+        </section>}
 
-        <section className="facility-alerts">
+        {activePage === "facilities" && <section className="facility-alerts">
           <div className="facility-alert-summary">
             <div>
               <p className="eyebrow dark">Facility Alerts</p>
@@ -4608,9 +4599,9 @@ function App() {
             <Suspense fallback={<p role="status">Loading geographic map...</p>}><FacilityAlertsMap facilities={filteredFacilityAlerts} onOpen={setOpenFacility} onReporting={openFacilityReportingFollowup}/></Suspense>
             {!filteredFacilityAlerts.length ? <div className="empty-state">No map markers match the selected filters.</div> : null}
           </div>}
-        </section>
+        </section>}
 
-        <section className="table-panel">
+        {activePage === "commodities" && <section className="table-panel">
           <div className="table-headline">
             <div>
               <p className="eyebrow dark">Commodity Intelligence</p>
@@ -4732,9 +4723,9 @@ function App() {
             </div>
             <div className="commodity-pagination"><button type="button" disabled={commodityPage <= 1} onClick={() => setCommodityPage((page) => page - 1)}>Previous</button><span>Page {Math.min(commodityPage, commodityPageCount)} of {commodityPageCount} | {commodityFacilityRows.length} reporting facilities</span><button type="button" disabled={commodityPage >= commodityPageCount} onClick={() => setCommodityPage((page) => page + 1)}>Next</button></div>
           </>}
-        </section>
+        </section>}
 
-        <section className="comparison-section" aria-busy={comparisonHistoryLoading || Boolean(comparisonLoadError)}>
+        {activePage === "comparison" && <section className="comparison-section" aria-busy={comparisonHistoryLoading || Boolean(comparisonLoadError)}>
           <div className="section-head">
             <div>
               <p className="eyebrow dark">Comparison</p>
@@ -5127,9 +5118,9 @@ function App() {
               </table>
             </div>
           </div>
-        </section>
+        </section>}
 
-        <section className="vaccine-stock-section">
+        {activePage === "vaccines" && <section className="vaccine-stock-section">
           <div className="weekly-head">
             <div>
               <p className="eyebrow dark">Vaccine Programme</p>
@@ -5208,9 +5199,9 @@ function App() {
             <div className="table-panel"><div className="table-headline"><div><h2>Stock-out trend</h2><p>Monthly count of reported district-vaccine records with zero stock.</p></div></div><div className="table-scroll"><table><thead><tr><th>Month</th><th>Stock-outs</th><th>Availability</th><th>Records</th></tr></thead><tbody>{vaccineTrendRows.map((row) => <tr key={row.id} className={row.id === selectedVaccinePeriod?.id ? "selected-row" : ""}><td><button type="button" className="table-link-button" onClick={() => setVaccinePeriodId(row.id)}>{row.label}</button></td><td>{row.stockouts.toLocaleString()}</td><td>{formatPercent(row.availability)}</td><td>{row.rows.toLocaleString()}</td></tr>)}</tbody></table></div></div>
             <div className="table-panel"><div className="table-headline"><div><h2>Current stock-out register</h2><p>First 120 zero-stock records for focused follow-up.</p></div><span>{vaccineStockoutRows.length.toLocaleString()} current records</span></div><div className="table-scroll"><table><thead><tr><th>Vaccine</th><th>Province</th><th>Reporting unit</th><th>Metric</th><th>AMC / AMI</th><th>MOS</th><th>Expiry date</th></tr></thead><tbody>{vaccineStockoutRows.slice(0, 120).map((row, index) => <tr key={`${row.vaccine}-${row.province}-${row.district}-${index}`}><td><strong>{row.vaccine}</strong></td><td>{row.province}</td><td>{row.district}</td><td>{row.reportingUnitType === "provincial_office" ? "AMI" : "AMC"}</td><td>{Math.round(row.amc || 0).toLocaleString()}</td><td>{formatMos(row.mos)}</td><td>{row.expiryDate || "-"}</td></tr>)}{!vaccineStockoutRows.length && <tr><td colSpan="7">No stock-outs are recorded in the selected filter.</td></tr>}</tbody></table></div></div>
           </div>
-        </section>
+        </section>}
 
-        <section className="weekly-section">
+        {activePage === "programmes" && <section className="weekly-section">
           <div className="weekly-head">
             <div>
               <p className="eyebrow dark">Programme Performance</p>
@@ -5259,9 +5250,9 @@ function App() {
             <div className="table-headline"><div><h2>Facility evidence from the Tracer submission</h2><p>Use this as the baseline when the separate programme submission is connected for a source-by-source comparison.</p></div><span>{programmeFacilityRows.length} facilities</span></div>
             <div className="table-scroll"><table><thead><tr><th>Province</th><th>District</th><th>Facility</th><th>Level of care</th><th>Rows</th><th>Availability</th><th>Average MOS</th><th>Stock-outs</th><th>Low stock</th></tr></thead><tbody>{programmeFacilityRows.map((row) => <tr key={`${row.province}-${row.district}-${row.facilityLevel}-${row.facility}`}><td>{row.province}</td><td>{row.district}</td><td><strong>{row.facility}</strong></td><td>{row.facilityLevel}</td><td>{row.rows.length}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.stockout}</td><td>{row.lowStock}</td></tr>)}</tbody></table></div>
           </div>}
-        </section>
+        </section>}
 
-        <section className="concerns-section">
+        {activePage === "quality" && <section className="concerns-section">
           <div className="section-head">
             <div>
               <p className="eyebrow dark">Data Quality</p>
@@ -5402,9 +5393,9 @@ function App() {
             </div>
           ) : <div className="empty-state">No submission comments were captured for this selected week.</div>}
           </div>
-        </section>
+        </section>}
 
-        <section className="reporting-rate-section">
+        {activePage === "reporting" && <section className="reporting-rate-section">
           <div className="section-head">
             <div>
               <p className="eyebrow dark">Reporting Rate</p>
@@ -5589,9 +5580,9 @@ function App() {
               </table>
             </div>
           </div>
-        </section>
+        </section>}
 
-        <section className="data-quality-gate">
+        {activePage === "gate" && <section className="data-quality-gate">
           <div className="section-head">
             <div>
               <p className="eyebrow dark">Quality Control</p>
@@ -5623,9 +5614,9 @@ function App() {
             <div className="table-headline"><div><h2>Correction register</h2><p>Review these records against the submitted workbook; correcting the source and reloading the period will release valid records.</p></div><span>{dataQualityGate.blockedRows.length} records</span></div>
             <div className="table-scroll"><table><thead><tr><th>Province</th><th>District / reporting unit</th><th>Commodity</th><th>SOH</th><th>AMC</th><th>Submitted MOS</th><th>Calculated MOS</th><th>Blocking reason</th></tr></thead><tbody>{dataQualityGate.blockedRows.slice(0, 250).map((row, index) => <tr key={`${qualityGateKey(row)}-${index}`}><td>{row.province}</td><td><strong>{row.district}</strong><small>{row.facility}</small></td><td>{row.item}<small>{row.programme}</small></td><td>{row.quantity?.toLocaleString?.() ?? "-"}</td><td>{row.amc?.toLocaleString?.() ?? "-"}</td><td>{formatMos(row.mos)}</td><td>{formatCalculatedMos(row.calculatedMos)}</td><td>{row.qualityGateReasons.map((reason) => <span className="data-quality-flag" key={reason}>{reason}</span>)}</td></tr>)}{!dataQualityGate.blockedRows.length && <tr><td colSpan="8">No records are blocked in the current reporting period and filters.</td></tr>}</tbody></table></div>
           </div>
-        </section>
+        </section>}
 
-        <section className="predictive-analysis">
+        {activePage === "predictive" && <section className="predictive-analysis">
           <div className="section-head predictive-head">
             <div>
               <p className="eyebrow dark">Predictive analysis</p>
@@ -5777,9 +5768,9 @@ function App() {
             <div className="predictive-action-card expanded"><p className="eyebrow dark">Immediate redistribution opportunity</p>{predictiveTopTransfer ? <><h3>{predictiveTopTransfer.commodity}</h3><p>Validate movement from <b>{predictiveTopTransfer.sourceFacility}</b> in {predictiveTopTransfer.sourceDistrict} to <b>{predictiveTopTransfer.destinationFacility}</b> in {predictiveTopTransfer.destinationDistrict}.</p><dl><div><dt>Source SOH</dt><dd>{Math.round(predictiveTopTransfer.sourceQty || 0).toLocaleString()}</dd></div><div><dt>Destination MOS</dt><dd>{formatMos(predictiveTopTransfer.destinationMos)}</dd></div><div><dt>Responsible</dt><dd>Provincial pharmacist</dd></div><div><dt>Status</dt><dd>{predictiveTopTransferStatus}</dd></div></dl></> : <div className="empty-state">No same-province redistribution opportunity is available.</div>}<button type="button" onClick={() => setActivePage("actions")}>Open action tracker</button></div>
             <div className="quality-panel predictive-recommendation-panel"><div className="quality-panel-head"><div><h3>Province recommendations</h3><p>Next actions based on current priority score and available redistribution options.</p></div></div><div className="predictive-recommendation-list">{predictiveRecommendations.map((row, index) => <div key={row.province} className={`risk-${row.tone}`}><b>{index + 1}</b><span><strong>{shortProvinceName(row.province)}</strong><small>{formatPercent(row.likelihood)} priority score · {row.label}</small>{row.transfer ? <em>Validate {row.transfer.commodity} from {row.transfer.sourceFacility} to {row.transfer.destinationFacility}. Status: {row.actionStatus}.</em> : <em>Validate physical counts and prepare replenishment; no same-province transfer is identified.</em>}</span></div>)}{!predictiveRecommendations.length && <div className="empty-state">No recommendation is available for the selected scope.</div>}</div></div>
           </div>}
-        </section>
+        </section>}
 
-        <section className="commodity-alert-centre">
+        {activePage === "alerts" && <section className="commodity-alert-centre">
           <div className="section-head">
             <div><p className="eyebrow dark">Commodity alert centre</p><h2 className="title-with-icon"><BellRing aria-hidden="true" />Warnings from current facility reports and forecast risk</h2><p>Critical alerts are current stockouts or a projected zero MOS. Warning and watch alerts identify commodities to validate before a stockout occurs.</p></div>
             <button type="button" className="table-link" onClick={() => { setPredictiveTab("commodities"); setActivePage("predictive"); }}>Open forecast evidence</button>
@@ -5798,9 +5789,9 @@ function App() {
           {alertDispatchMessage && <p className="submission-import-message">{alertDispatchMessage}</p>}
           <div className="table-panel alert-register"><div className="table-headline"><div><h2>Current commodity alert register</h2><p>Every alert shows its current evidence and the forecast signal behind it.</p></div><span>{filteredCommodityAlertRows.length} alerts</span></div><div className="table-scroll"><table><thead><tr><th>Severity</th><th>Commodity</th><th>Programme</th><th>Current MOS</th><th>Projected MOS</th><th>Risk likelihood</th><th>Evidence</th><th>Forecast confidence</th><th>Suggested action</th><th></th></tr></thead><tbody>{filteredCommodityAlertRows.map((row) => <tr key={row.name}><td><span className={`priority-pill ${row.severity}`}>{row.severity}</span></td><td><strong>{row.name}</strong><small>{row.affectedFacilities} facilities · {row.affectedProvinces} provinces</small></td><td>{row.programme}</td><td>{formatMos(row.mos)}</td><td>{formatMos(row.projectedMos)}</td><td><span className={`comparison-signal ${row.tone}`}>{formatPercent(row.likelihood)}<small>{row.label}</small></span></td><td>{row.triggers.join("; ")}</td><td>{row.confidence}</td><td>{row.severity === "critical" ? "Validate stock and initiate emergency redistribution or replenishment." : "Validate stock, AMC and supply action before the risk worsens."}</td><td><button type="button" className="table-link" onClick={() => { setSelectedCommodity(row.name); setQuery(row.name); setActivePage("commodities"); }}>Facility evidence</button></td></tr>)}{!filteredCommodityAlertRows.length && <tr><td colSpan="10">No commodity alerts match the current filters.</td></tr>}</tbody></table></div></div>
           {["admin", "super_admin"].includes(dashboardUser?.role) && <div className="quality-panel alert-recipients"><div className="quality-panel-head"><div><h3>Email recipients</h3><p>Recipients can be limited to a province and the minimum severity they should receive.</p></div></div><div className="alert-recipient-form"><input value={alertRecipientDraft.name} onChange={(event) => setAlertRecipientDraft((draft) => ({ ...draft, name: event.target.value }))} placeholder="Name (optional)" /><input value={alertRecipientDraft.email} onChange={(event) => setAlertRecipientDraft((draft) => ({ ...draft, email: event.target.value }))} placeholder="Email address" /><select value={alertRecipientDraft.province} onChange={(event) => setAlertRecipientDraft((draft) => ({ ...draft, province: event.target.value }))}><option value="ALL">All provinces</option>{provinceOptions.filter((province) => province !== "all").map((province) => <option key={province} value={province}>{province}</option>)}</select><select value={alertRecipientDraft.minimumSeverity} onChange={(event) => setAlertRecipientDraft((draft) => ({ ...draft, minimumSeverity: event.target.value }))}><option value="watch">Watch and above</option><option value="warning">Warning and critical</option><option value="critical">Critical only</option></select><button type="button" onClick={async () => { try { const response = await fetch(`${actionApiUrl}/api/commodity-alerts/recipients`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(alertRecipientDraft) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "Could not add recipient"); setAlertRecipients(data.recipients); setAlertRecipientDraft({ email: "", name: "", province: "ALL", minimumSeverity: "warning" }); } catch (error) { setAlertDispatchMessage(error.message); } }}>Add recipient</button></div><div className="alert-recipient-list">{alertRecipients.map((recipient) => <div key={recipient.email}><span><strong>{recipient.name || recipient.email}</strong><small>{recipient.email} · {recipient.province === "ALL" ? "All provinces" : recipient.province} · {recipient.minimum_severity} and above</small></span><button type="button" onClick={async () => { const response = await fetch(`${actionApiUrl}/api/commodity-alerts/recipients/${encodeURIComponent(recipient.email)}`, { method: "DELETE" }); const data = await response.json(); if (response.ok) setAlertRecipients(data.recipients); else setAlertDispatchMessage(data.error || "Could not remove recipient"); }}>Remove</button></div>)}{!alertRecipients.length && <p>No recipients configured. Add the supervisor and selected provincial pharmacists.</p>}</div></div>}
-        </section>
+        </section>}
 
-        <section className="action-tracker">
+        {activePage === "actions" && <section className="action-tracker">
           <div className="action-tracker-head">
             <div>
               <p className="eyebrow dark">Control Tower Action Tracker</p>
@@ -5908,8 +5899,8 @@ function App() {
               <button type="button" disabled={actionCurrentPage >= actionPageCount} onClick={() => setActionPage((page) => Math.min(actionPageCount, page + 1))}>Next</button>
             </div>
           </div>
-        </section>
-        {isDashboardAdmin && <NationalWeeklyReport
+        </section>}
+        {isDashboardAdmin && activePage === "reports" && <NationalWeeklyReport
           summary={nationalReportSummary}
           periods={nationalReportOptions}
           selectedPeriodId={nationalReportOption?.id || ""}
@@ -5925,7 +5916,7 @@ function App() {
         />}
         {isDashboardAdmin && activePage==='viewers' && <ViewerActivity/>}
         {!isDashboardAdmin && ['reports','imports','viewers'].includes(activePage) && <div role="alert">Administration is restricted to dashboard administrators. <button type="button" onClick={()=>setActivePage('executive')}>Return to dashboard</button></div>}
-        <section className="submission-import-section">
+        {isDashboardAdmin && activePage === "imports" && <section className="submission-import-section">
           <div className="section-head">
             <div>
               <p className="eyebrow dark">Administrator workspace</p>
@@ -5943,7 +5934,7 @@ function App() {
             {importError && <div className="submission-import-message error">{importError}</div>}
             {importResult && <div className="submission-import-result"><div className="submission-import-summary"><strong>{importResult.totalRecords?.toLocaleString() || 0}</strong><span>recognised tracer rows</span><strong>{importResult.recognisedSheets || 0}</strong><span>recognised worksheets</span></div>{importResult.message && <p className="success">{importResult.message}</p>}{!importResult.githubConfigured && <p className="submission-import-warning">GitHub publishing is not configured yet. The administrator can still validate submissions and download the consolidated master workbook. Add `GITHUB_TOKEN` in Render to enable repository commits.</p>}{importResult.warnings?.map((warning) => <p className="submission-import-warning" key={warning}>{warning}</p>)}<div className="table-scroll compact-table"><table><thead><tr><th>Provincial workbook</th><th>Tracer rows</th><th>Recognised sheets</th></tr></thead><tbody>{importResult.files?.map((file) => <tr key={file.name}><td>{file.name}</td><td>{file.records.toLocaleString()}</td><td>{file.sheets.map((sheet) => `${sheet.sheetName} (${sheet.rows})`).join(", ") || "No recognised tracer table"}</td></tr>)}</tbody></table></div></div>}
           </> : <div className="empty-state">Only a signed-in dashboard administrator can upload or publish provincial tracer submissions.</div>}
-        </section>
+        </section>}
       </main>
       <button type="button" className={`copilot-launcher ${activePage === "predictive" ? "copilot-launcher-compact" : ""} ${copilotDragging ? "dragging" : ""}`} style={copilotPosition ? { left: `${copilotPosition.left}px`, top: `${copilotPosition.top}px`, right: "auto", bottom: "auto" } : undefined} onPointerDown={beginCopilotDrag} onPointerMove={moveCopilotDrag} onPointerUp={endCopilotDrag} onPointerCancel={endCopilotDrag} onClick={(event) => { if (copilotDidDragRef.current) { event.preventDefault(); copilotDidDragRef.current = false; return; } setCopilotOpen(true); }} aria-label="Open Tracer Copilot" title="Drag to reposition. Click to open Tracer Copilot.">
         <Sparkles size={22} aria-hidden="true"/>
