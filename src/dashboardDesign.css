@@ -14,6 +14,16 @@
   .dashboard-sidebar .sidebar-group-toggle { min-height:42px;padding:10px 12px;border:1px solid #557268;border-radius:5px;background:transparent;color:#dce8e2;font-size:11px;line-height:1.4; }
   .dashboard-sidebar .sidebar-group-toggle:hover { background:#284d3e;border-color:#a1b7ac; }
   .dashboard-sidebar .sidebar-group-toggle.contains-active { background:#294d3e;border-color:#81a18e;color:#fff; }
+  .dashboard-sidebar .sidebar-group-toggle { display:grid;grid-template-columns:30px minmax(0,1fr) 15px;align-items:center;gap:9px;min-height:54px;padding:9px 10px;text-align:left; }
+  .sidebar-group-label { min-width:0;line-height:1.4;overflow-wrap:break-word; }
+  .sidebar-group-icon { display:grid;place-items:center;width:30px;height:32px;border-radius:5px;border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 2px 3px rgba(0,0,0,.15); }
+  .sidebar-group-icon svg { filter:drop-shadow(0 1px 1px rgba(0,0,0,.3)); }
+  .group-icon-overview { color:#b5f1d2;background:#1e7053; }
+  .group-icon-tracer { color:#bceef1;background:#226a73; }
+  .group-icon-programmes { color:#d7e6ff;background:#385e8e; }
+  .group-icon-zammsa { color:#ffe2ab;background:#84632e; }
+  .group-icon-administration { color:#d9f4c0;background:#4a6a38; }
+  .sidebar-group-chevron { justify-self:end;flex-shrink:0; }
   .dashboard-sidebar nav button:not(.sidebar-group-toggle) { min-height:42px;padding:9px 10px;font-size:12px;border-radius:5px;gap:10px; }
   .dashboard-sidebar nav button.active:not(.sidebar-group-toggle) { background:#edf5f0;color:#164d35;box-shadow:inset 3px 0 #35b96f; }
   .sidebar-nav-icon { flex-basis:28px;width:28px;height:28px;border-radius:4px; }

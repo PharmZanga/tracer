@@ -47,11 +47,11 @@ const dashboardPages = [
 ];
 
 const sidebarGroups = [
-  { id: "overview", label: "Overview", pages: ["executive"] },
-  { id: "tracer", label: "Tracer Intelligence", pages: ["national", "provincial", "facilities", "commodities", "alerts", "reporting", "quality", "gate", "predictive", "actions"] },
-  { id: "programmes", label: "Programme Intelligence", programmeViews: true, vaccineViews: true },
-  { id: "zammsa", label: "ZAMMSA Intelligence", stockViews: true },
-  { id: "administration", label: "Administration", pages: ["reports", "imports", "viewers"] },
+  { id: "overview", label: "Overview", icon: ChartNoAxesCombined, pages: ["executive"] },
+  { id: "tracer", label: "Tracer Intelligence", icon: Syringe, pages: ["national", "provincial", "facilities", "commodities", "alerts", "reporting", "quality", "gate", "predictive", "actions"] },
+  { id: "programmes", label: "Programme Intelligence", icon: Boxes, programmeViews: true, vaccineViews: true },
+  { id: "zammsa", label: "ZAMMSA Intelligence", icon: Warehouse, stockViews: true },
+  { id: "administration", label: "Administration", icon: ShieldCheck, pages: ["reports", "imports", "viewers"] },
 ];
 
 const programmeNavigationViews = [
@@ -4107,6 +4107,7 @@ function App() {
             const pages = (group.pages || []).map((id) => visibleDashboardPages.find((page) => page.id === id)).filter(Boolean);
             if (!group.programmeViews && !group.stockViews && !pages.length) return null;
             const isOpen = openSidebarGroups.has(group.id);
+            const GroupIcon = group.icon;
             const hasActiveChild = group.programmeViews ? ["programmes", "vaccines"].includes(activePage)
               : group.stockViews ? activePage === "stock"
                 : pages.some((page) => page.id === activePage);
@@ -4116,7 +4117,7 @@ function App() {
                 if (next.has(group.id)) next.delete(group.id); else next.add(group.id);
                 return next;
               })} aria-expanded={isOpen}>
-                <span>{group.label}</span>{isOpen ? <ChevronDown size={15} aria-hidden="true" /> : <ChevronRight size={15} aria-hidden="true" />}
+                <span className={`sidebar-group-icon group-icon-${group.id}`}><GroupIcon size={21} strokeWidth={2.1} aria-hidden="true" /></span><span className="sidebar-group-label">{group.label}</span>{isOpen ? <ChevronDown className="sidebar-group-chevron" size={15} aria-hidden="true" /> : <ChevronRight className="sidebar-group-chevron" size={15} aria-hidden="true" />}
               </button>
               {isOpen && <div className="sidebar-nav-children">
                 {group.id === "tracer" && <>
