@@ -6,7 +6,7 @@ const appSource = fs.readFileSync(new URL("../src/App.jsx", import.meta.url), "u
 
 test("national weekly report workspace is available from the sidebar and uses its selected period", () => {
   assert.match(appSource, /id: "reports", short: "RP", label: "Generate Report"/);
-  assert.match(appSource, /id: "administration", label: "Administration", pages: \["reports", "imports", "viewers"\]/);
+  assert.match(appSource, /id: "administration", label: "Administration", (?:icon: \w+, )?pages: \["reports", "imports", "viewers"\]/);
   assert.match(appSource, /function NationalWeeklyReport/);
   assert.match(appSource, /nationalReportPeriodId/);
   assert.match(appSource, /buildNationalReportSummary\(selectReportPeriods/);

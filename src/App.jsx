@@ -4,11 +4,12 @@ import { reportSections } from './reportSections.js';
 import { buildReportNarrative } from './reportNarrative.js';
 import { commodityRowsFromPeriod } from './tracerRows.js';
 import {isAdministrator,isAdministrationPage} from './dashboardAccess.js';
-import NavigationGuide from './NavigationGuide.jsx';
+import TracerAssistant from './NavigationGuide.jsx';
+import { emptyAssistantFocus, planAssistantRequest, assistantScopeLabel, validAssistantView, assistantSnapshot, assistantReporting, assistantComparison, assistantRecurring, assistantEvidence, previousAssistantWeek, assistantProgrammeMatches } from './tracerAssistant.js';
 import useViewerActivity from './useViewerActivity.js';
 import ViewerActivity from './ViewerActivity.jsx';
 import {filterComparisonRows,hasComparisonScope} from './comparisonScope.js';
-import {ArrowUpRight, RotateCcw, SlidersHorizontal, Sparkles} from 'lucide-react';
+import {ArrowUpRight, RotateCcw, SlidersHorizontal} from 'lucide-react';
 import {ReportStockBars,ReportTrendSection,ReportGeography} from './ReportAnalytics.jsx';
 import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileText, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, Printer, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
 import { availableTracerMonths, availableTracerYears, loadHistoricalTracerYear, loadLiveTracerData, loadTracerMonth, tracerReportingPeriods } from "./tracerFacilityData.js";
@@ -107,14 +108,6 @@ const actionApiUrl = window.__TRACER_SECURE_DASHBOARD__
   : import.meta.env.VITE_ACTION_API_URL || "https://tracer-comments-api.onrender.com";
 const copilotApiUrl = window.__TRACER_SECURE_DASHBOARD__ ? window.location.origin : "";
 
-const copilotSuggestions = [
-  "What are the priority stockout risks in the current filters?",
-  "Which facilities are most likely to stock out in the next four weeks?",
-  "How has availability changed over the available reporting history?",
-  "Which provinces need the most urgent follow-up?",
-  "Summarise reporting coverage for this reporting week.",
-  "What should a provincial pharmacist act on first?",
-];
 
 function normalizeRate(value) {
   const number = Number(value || 0);
@@ -2018,15 +2011,7 @@ function App() {
   const [actionUserEmail, setActionUserEmail] = useState("");
   const [actionSyncState, setActionSyncState] = useState("loading");
   const [actionCommentError, setActionCommentError] = useState("");
-  const [copilotOpen, setCopilotOpen] = useState(false);
-  const [copilotQuestion, setCopilotQuestion] = useState("");
-  const [copilotMessages, setCopilotMessages] = useState([]);
-  const [copilotLoading, setCopilotLoading] = useState(false);
-  const [copilotFeedback, setCopilotFeedback] = useState({});
-  const [copilotPosition, setCopilotPosition] = useState(null);
-  const [copilotDragging, setCopilotDragging] = useState(false);
-  const copilotDragRef = useRef(null);
-  const copilotDidDragRef = useRef(false);
+  const [assistantFocus, setAssistantFocus] = useState(emptyAssistantFocus);
   const [dashboardUser, setDashboardUser] = useState(null);
   useViewerActivity(dashboardUser,activePage);
   const [importFiles, setImportFiles] = useState([]);
@@ -2571,7 +2556,7 @@ function App() {
     };
   });
 
-  const commodityScopeRows = dataQualityGate.passedRows;
+  const commodityScopeRows = useMemo(() => dataQualityGate.passedRows.filter(row => assistantProgrammeMatches(row.programme, assistantFocus.programme)), [dataQualityGate, assistantFocus.programme]);
   const needsCommodityHistory = activePage === "commodities";
   const commodityPreviousScopeRows = useMemo(() => {
     if (!needsCommodityHistory) return [];
@@ -2583,8 +2568,8 @@ function App() {
       .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
       .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
       .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility);
-    return buildDataQualityGate(scoped).passedRows;
-  }, [needsCommodityHistory, historicalDataVersion, fieldPeriodId, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+    return buildDataQualityGate(scoped).passedRows.filter(row => assistantProgrammeMatches(row.programme, assistantFocus.programme));
+  }, [needsCommodityHistory, historicalDataVersion, fieldPeriodId, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility, assistantFocus.programme]);
   const commodityTriageRows = useMemo(() => {
     const summarise = (rows) => {
       const groups = new Map();
@@ -3265,7 +3250,10 @@ function App() {
     setComparisonHistoryLoading(true);
     setComparisonLoadError("");
     const load = async () => {
-      if (comparisonPeriodType === "monthly") {
+      if (comparisonPeriodType === "weekly") {
+        const metadata = currentReportCatalogue.filter(period => comparisonPeriodInRange(period, 'weekly', comparisonYear, comparisonBaselineStart, comparisonBaselineEnd) || comparisonPeriodInRange(period, 'weekly', comparisonYear, comparisonRangeStart, comparisonRangeEnd));
+        for (const month of new Set(metadata.map(period => period.month))) await loadTracerMonth(month);
+      } else if (comparisonPeriodType === "monthly") {
         for (const month of new Set([comparisonBaselineStart, comparisonRangeStart])) {
           if (month) await loadTracerMonth(month);
         }
@@ -3280,9 +3268,9 @@ function App() {
       if (!cancelled) setComparisonLoadError("Could not load the selected comparison periods. Please select the periods again.");
     }).finally(() => { if (!cancelled) setComparisonHistoryLoading(false); });
     return () => { cancelled = true; };
-  }, [activePage, comparisonPeriodType, comparisonYear, comparisonBaselineStart, comparisonRangeStart]);
+  }, [activePage, comparisonPeriodType, comparisonYear, comparisonBaselineStart, comparisonBaselineEnd, comparisonRangeStart, comparisonRangeEnd]);
   const comparisonRangeOptions = comparisonPeriodType === "weekly"
-    ? tracerReportingPeriods.filter((period) => String(period.month).startsWith(comparisonYear)).map((period) => ({ value: period.id, label: period.label }))
+    ? currentReportCatalogue.filter((period) => String(period.month).startsWith(comparisonYear)).map((period) => ({ value: period.id, label: period.label }))
     : comparisonPeriodType === "monthly"
       ? comparisonMonths.map((month) => ({ value: month, label: monthLabel(month) }))
       : comparisonPeriodType === "quarterly"
@@ -3759,206 +3747,156 @@ function App() {
     }
   }
 
-  function currentCopilotContext() {
-    const historicalTrend = tracerReportingPeriods
-      .filter((period) => period.reportDate <= fieldData.reportDate)
-      .slice(-16)
-      .map((period) => {
-        const scoped = selectedProvince === "all" ? period.national : period.provinces.find((row) => row.name === selectedProvince);
-        return scoped ? { reportingDate: period.reportDate, availability: formatPercent(scoped.availability), averageMos: formatMos(scoped.mos), stockoutRows: scoped.stockout || 0 } : null;
-      })
-      .filter(Boolean);
-    const priorityFacilities = [...facilityAlerts]
-      .slice(0, 12)
-      .map((facility) => ({
-        facility: facility.name,
-        district: facility.district,
-        province: facility.province,
-        levelOfCare: facility.facilityLevel,
-        availability: formatPercent(facility.availability),
-        averageMos: formatMos(facility.mos),
-        stockoutItems: facility.stockoutItemCount || 0,
-        lowStockItems: facility.lowStockItemCount || 0,
-      }));
-    const lowestProvinces = [...scopedProvinceRows]
-      .sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)
-      .slice(0, 10)
-      .map((province) => ({ name: province.name, availability: formatPercent(province.availability), averageMos: formatMos(province.mos), stockoutRows: province.stockout || 0, riskRows: province.riskRows || 0 }));
-    const highRiskCommodities = commodityGroupRows(commodityScopeRows, "item")
-      .filter((commodity) => commodity.rows > 0)
-      .slice(0, 15)
-      .map((commodity) => ({ commodity: commodity.name, availability: formatPercent(commodity.availability), averageMos: formatMos(commodity.mos), reportingRows: commodity.rows }));
-    return {
-      reportingPeriod: fieldData.label,
-      reportingDate: fieldData.reportDate,
-      source: fieldData.source,
-      activeDashboardPage: activePageLabel,
-      filters: {
-        province: selectedProvince === "all" ? "All provinces" : selectedProvince,
-        district: selectedDistrict === "all" ? "All districts" : selectedDistrict,
-        levelOfCare: facilityCareLevelLabel(selectedFacilityLevel),
-        reportingUnit: selectedFacility === "all" ? "All reporting units" : selectedFacility,
-      },
-      nationalSummary: {
-        availability: formatPercent(fieldKpis.availability),
-        averageMos: formatMos(fieldAverageMos),
-        commodityRows: fieldKpis.rows || 0,
-        stockoutRows: fieldKpis.stockout || 0,
-        lowStockRows: (fieldKpis.nearCritical || 0) + (fieldKpis.understocked || 0),
-        reportingUnits: filteredFacilities.length,
-        reportingCoverage: formatPercent(expectedFacilityUnits ? (expectedFacilityUnits - missingFacilityUnits) / expectedFacilityUnits : 0),
-      },
-      lowestAvailabilityProvinces: lowestProvinces,
-      priorityFacilities,
-      highRiskCommodities,
-      historicalTrend,
-      reportingCompleteness: { expectedDistricts: fieldDistrictReporting.expected, reportedDistricts: fieldDistrictReporting.reported, missingDistricts: fieldDistrictReporting.missing, expectedFacilityUnits, missingFacilityUnits },
-      dataDefinition: "Availability is submitted tracer rows with stock on hand above zero. MOS is stock on hand divided by average monthly consumption. Missing submissions are not stockouts.",
-    };
+  const assistantScope = {
+    periodId: fieldData.id, province: selectedProvince, district: selectedDistrict,
+    facilityLevel: selectedFacilityLevel, facility: selectedFacility, ...assistantFocus,
+    ...(activePage === 'commodities' ? { commodity: selectedCommodity || 'all' } : {}),
+    ...(activePage === 'facilities' ? { status: facilityStatusFilters.length === 1 ? facilityStatusFilters[0] : 'all' } : {}),
+    ...(activePage === 'comparison' ? { periodId: comparisonPeriods.at(-1)?.id || fieldData.id, province: comparisonProvince, district: comparisonDistrict, facilityLevel: comparisonFacilityLevel, facility: 'all', commodity: comparisonCommodity, programme: comparisonProgram, status: 'all' } : {}),
+    ...(activePage === 'reporting' ? { periodId: reportData.id, province: reportProvince, district: reportDistrict, facility: 'all', programme: 'all', commodity: 'all', status: effectiveFacilityReportStatus === 'Not Reported' ? 'missing' : 'all' } : {}),
+  };
+
+  async function loadAssistantPeriods(metadata) {
+    const before = tracerReportingPeriods;
+    for (const month of new Set(metadata.map(period => period.month))) await loadTracerMonth(month);
+    if (before !== tracerReportingPeriods) setHistoricalDataVersion(version => version + 1);
+    return metadata.map(meta => tracerReportingPeriods.find(period => period.id === meta.id)).filter(Boolean);
   }
 
-  function localCopilotReply(question) {
-    const text = question.toLowerCase().trim();
-    const context = currentCopilotContext();
-    const scope = `${context.reportingPeriod} | ${context.filters.province} | ${context.filters.district}`;
-    if (/^(hi|hello|hey|good morning|good afternoon|good evening)[!. ]*$/.test(text)) {
-      return {
-        text: `Hello. I can help analyse ${context.reportingPeriod} tracer data for ${context.filters.province}. Ask about stockouts, availability, MOS, reporting coverage, commodities, facilities, or priority follow-up actions.`,
-        evidence: scope,
-      };
+  function commitAssistantScope(scope) {
+    setFieldPeriodId(scope.periodId); setSelectedProvince(scope.province); setSelectedDistrict(scope.district);
+    setSelectedFacilityLevel(scope.facilityLevel); setSelectedFacility(scope.facility);
+    setAssistantFocus({ programme: scope.programme, commodity: scope.commodity, status: scope.status });
+    setSelectedCommodity(scope.commodity === 'all' ? '' : scope.commodity);
+    setQuery(scope.commodity === 'all' ? '' : scope.commodity);
+    setFacilityStatusFilters(scope.status === 'all' ? [] : [scope.status]);
+  }
+
+  async function applyAssistantView(command) {
+    if (!validAssistantView(command, dashboardUser?.role, districtDirectory, currentReportCatalogue)) return { text: 'That dashboard view is not available for your account or the selected scope. No filters were changed.' };
+    const { scope } = command;
+    const meta = currentReportCatalogue.find(period => period.id === scope.periodId);
+    await loadAssistantPeriods([meta]);
+    let page = command.page;
+    if (page === 'facilities' && (scope.programme !== 'all' || scope.commodity !== 'all')) page = 'commodities';
+    if (page === 'comparison') {
+      if (scope.facility !== 'all') return { text: 'This comparison is restricted to your selected reporting unit. Use the verified table in the conversation; the comparison workspace cannot represent that unit filter.' };
+      const previous = currentReportCatalogue.find(period => period.id === command.previousPeriodId) || previousAssistantWeek(meta, currentReportCatalogue);
+      if (!previous) return { text: 'There is no catalogued previous calendar week for this comparison.' };
+      const [current] = await loadAssistantPeriods([meta, previous]);
+      const programmeNames = (current.programmes || []).filter(row => assistantProgrammeMatches(row.name, scope.programme)).map(row => row.name);
+      if (scope.programme !== 'all' && programmeNames.length !== 1) return { text: 'The assistant comparison retains your programme filter, but it cannot map this to a single programme label in the comparison workspace. Use the verified comparison table in this conversation.' };
+      setComparisonPeriodType('weekly'); setComparisonYear(meta.month.slice(0, 4));
+      setComparisonBaselineStart(previous.id); setComparisonBaselineEnd(previous.id);
+      setComparisonRangeStart(meta.id); setComparisonRangeEnd(meta.id);
+      setComparisonProvince(scope.province); setComparisonDistrict(scope.district);
+      setComparisonFacilityLevel(scope.facilityLevel); setComparisonCommodity(scope.commodity);
+      setComparisonProgram(scope.programme === 'all' ? 'all' : programmeNames[0]);
+      setComparisonCompareBy(scope.commodity === 'all' ? 'program' : 'commodity');
     }
-    if (/report|submission|compliance|missing/.test(text)) {
-      return {
-        text: `Reporting coverage in the active scope is ${context.nationalSummary.reportingCoverage}, based on ${context.nationalSummary.reportingUnits} submitted reporting units. Missing submissions are tracked separately and are not treated as stockouts.`,
-        evidence: scope,
-      };
+    commitAssistantScope(scope);
+    if (page === 'commodities') {
+      setSelectedCommodity(scope.commodity === 'all' ? '' : scope.commodity); setQuery(scope.commodity === 'all' ? '' : scope.commodity);
+      setCommodityTableProvince('all'); setCommodityTableDistrict('all'); setCommodityTableLevel('all'); setCommodityTableReportingStatus('all');
+      setCommodityStatusFilter(({ stockout: 'Stocked out', low: 'Below 2 MOS', overstock: 'Overstocked / excess', plan: 'According to plan' })[scope.status] || 'all');
+      setCommodityPage(1); setCommodityOptionPage(1);
     }
-    if (/stockout|stock out|risk|urgent|priority|act/.test(text)) {
-      const facilities = context.priorityFacilities.slice(0, 3)
-        .map((facility) => `${facility.facility} (${facility.province}: ${facility.stockoutItems} stockout, ${facility.lowStockItems} low-stock items)`)
-        .join("; ");
-      return {
-        text: facilities
-          ? `Start with the highest-risk reporting facilities: ${facilities}. Validate physical stock, check the submitted AMC, then consider redistribution from facilities with excess stock for the same commodity.`
-          : "No priority facility alerts are available in the active scope. Try widening the filters or select another reporting period.",
-        evidence: scope,
-      };
+    if (page === 'facilities') {
+      setFacilityStatusFilters(scope.status === 'all' ? [] : [scope.status]); setFacilityAlertPage(1);
     }
-    if (/province|availability|mos|month.?s? of stock/.test(text)) {
-      const provinces = context.lowestAvailabilityProvinces.slice(0, 3)
-        .map((province) => `${province.name}: ${province.availability} availability, ${province.averageMos} MOS`)
-        .join("; ");
-      return {
-        text: provinces
-          ? `The lowest availability in the active scope is: ${provinces}. The selected scope overall is ${context.nationalSummary.availability} availability with ${context.nationalSummary.averageMos} average MOS.`
-          : "No provincial performance rows are available for the active filters.",
-        evidence: scope,
-      };
+    if (page === 'reporting') {
+      setReportPeriodId(scope.periodId); setReportProvince(scope.province); setReportDistrict(scope.district);
+      setReportFacilityType('all'); setReportFacilityName('all'); setReportDrillProvince(''); setReportDrillDistrict('');
+      setReportKpiFilter(scope.status === 'missing' ? 'facility-missing' : 'all'); setReportStatus('all');
     }
+    if (command.stock) setStockWorkspace(command.stock);
+    setActivePage(page);
+    setOpenSidebarGroups(current => new Set([...current, page === 'stock' ? 'zammsa' : ['vaccines', 'programmes'].includes(page) ? 'programmes' : isAdministrationPage(page) ? 'administration' : page === 'executive' ? 'overview' : 'tracer']));
+    return { text: 'Opened ' + (dashboardPages.find(row => row.id === page)?.label || page) + '. ' + (page === 'commodities' && scope.commodity === 'all' ? 'Select a commodity to inspect its facility records. ' : '') + (page === 'stock' || page === 'vaccines' ? 'This workspace has its own source and date filters.' : assistantScopeLabel(scope)) };
+  }
+
+  function explainAssistantPage() {
+    if (activePage === 'comparison') return { text: comparisonPreviousLabel + ': ' + formatPercent(comparisonPrevious.availability) + ' availability and ' + formatMos(comparisonPrevious.mos) + ' MOS. ' + comparisonCurrentLabel + ': ' + formatPercent(comparisonCurrent.availability) + ' availability and ' + formatMos(comparisonCurrent.mos) + ' MOS. The availability movement is ' + comparisonAvailabilityDeltaPoints.toFixed(1) + ' percentage points. The bars represent reported availability and the lines represent MOS. Coverage and commodity mix may affect the result; no cause is established.', evidence: [comparisonProvince, comparisonDistrict, comparisonProgram, comparisonCommodity, 'Source: selected provincial tracer submissions'].join(' | '), actions: [] };
+    if (activePage === 'vaccines') return { text: 'The selected vaccine source shows ' + vaccineSummary.districts + ' reporting units, ' + vaccineSummary.stockouts + ' submitted records with zero stock and ' + vaccineSummary.nonReporting + ' non-reporting units. District AMC is ' + vaccineSummary.districtAmc.toLocaleString() + '; provincial AMI is ' + vaccineSummary.provincialAmi.toLocaleString() + '. These measures are not added together as consumption. Missing reports are not stock-outs.', evidence: [selectedVaccinePeriod?.label, vaccineProvince, vaccineDistrict, vaccineName, selectedVaccinePeriod?.sourceSheet || 'Vaccine stock workbook'].join(' | '), actions: [] };
+    if (activePage === 'stock') return { text: 'You are viewing ZAMMSA central inventory, not facility tracer stock. ' + (['control', 'navigator'].includes(stockWorkspace) ? centralStock.summary.belowTwoMos + ' listed items have reported MOS below two, and ' + centralStock.summary.confirmedStockouts + ' have both zero SOH and zero MOS.' : (stockData?.label || 'Selected weekly report') + ' has ' + formatPercent(stockData?.overallAvailability) + ' reported availability.') + ' Central and facility sources are not pooled. Check the inventory report date before comparing stock positions.', evidence: centralStock.source || stockData?.source || 'Selected ZAMMSA central inventory report', actions: [] };
+    if (activePage === 'facilities') return { text: filteredFacilityAlerts.length + ' of ' + assessedFacilities.length + ' assessed reporting units match the visible alert filters. Stock-out counts use explicitly reported zero quantities; low-stock counts use positive SOH / AMC below two months. A unit can have both shortages and overstocked items. Non-reporting is separate, and aggregate Health Centre/Health Post rows are reporting groups, not named individual facilities.', evidence: assistantEvidence([fieldData], { ...assistantScope, ...emptyAssistantFocus }), actions: [] };
+    if (activePage === 'commodities') return { text: selectedCommodity ? selectedCommodity + ': ' + commodityFilteredSummaryRows.length + ' matching facility records, ' + commodityAvailableCount + ' with positive stock. The displayed stock bands use submitted MOS; the assistant stock summary and Facility Alerts use calculated SOH / AMC. Differences require source validation, not assumed consumption or deliveries.' : commodityMatches.length + ' commodities match the current search and programme filters. Select a commodity to inspect its submitted facility stock position. Missing rows are not evidence of zero stock.', evidence: assistantEvidence([fieldData], assistantScope), actions: [] };
+    if (activePage === 'reporting') return { text: reportingKpis.reported + ' of ' + reportingKpis.expected + ' scoped districts have complete primary-care submissions (' + formatPercent(reportingKpis.rate) + '). Health Centre and Health Post SOH streams are both required unless valid combined evidence exists. Hospital-only submissions do not make a district complete. The facility list is a separate reporting-unit measure.', evidence: reportData.label + ' | ' + reportProvince + ' | ' + reportDistrict + ' | Source: ' + reportData.source, actions: [] };
+    if (['executive', 'national', 'provincial'].includes(activePage)) return { text: 'The displayed scope has ' + formatPercent(fieldKpis.availability) + ' reported availability across ' + fieldKpis.rows.toLocaleString() + ' commodity observations. Average submitted MOS is ' + formatMos(fieldAverageMos) + ' with a 12-month cap. Availability and average MOS describe different aspects of the stock position: an adequate average can coexist with shortages of particular items. Missing reports are not stock-outs; no delivery or consumption cause is assumed.', evidence: assistantEvidence([fieldData], { ...assistantScope, ...emptyAssistantFocus }), actions: [] };
     return null;
   }
 
-  async function askCopilot(question = copilotQuestion) {
-    const message = question.trim();
-    if (!message || copilotLoading) return;
-    const requestMessage = { id: `question-${Date.now()}`, role: "user", text: message };
-    const conversation = copilotMessages
-      .filter((entry) => entry.role === "user" || (entry.role === "assistant" && Number.isInteger(Number(entry.id))))
-      .slice(-6)
-      .map((entry) => ({ role: entry.role, text: entry.text }));
-    setCopilotMessages((current) => [...current, requestMessage]);
-    setCopilotQuestion("");
-    if (!copilotApiUrl) {
-      setCopilotMessages((current) => [...current, { id: `error-${Date.now()}`, role: "assistant", text: "Tracer Copilot is available from the secure dashboard. Sign in at the Render dashboard to use it." }]);
-      return;
+  async function queryAssistant(question, conversation, overrideScope) {
+    const scope = overrideScope || assistantScope;
+    const plan = planAssistantRequest(question, {
+      scope, directory: districtDirectory, catalogue: currentReportCatalogue,
+      commodities: [...new Set((fieldData.commodities || []).map(row => row.name))], role: dashboardUser?.role, activePage,
+    });
+    if (plan.kind === 'notice' || plan.kind === 'clarify') return plan;
+    if (plan.kind === 'explain') {
+      const explanation = explainAssistantPage();
+      if (explanation) return explanation;
     }
-    setCopilotLoading(true);
+    if (plan.kind === 'navigate') {
+      if (!validAssistantView(plan, dashboardUser?.role, districtDirectory, currentReportCatalogue)) return { text: 'This destination is restricted or its scope could not be verified.' };
+      return { text: plan.text, actions: [{ label: 'Open ' + (dashboardPages.find(row => row.id === plan.page)?.label || plan.page), ...plan }] };
+    }
+    if (!validAssistantView({ page: 'facilities', scope: plan.scope }, dashboardUser?.role, districtDirectory, currentReportCatalogue)) return { text: 'I could not verify this reporting period or geography. No filters were changed.' };
+    await new Promise(resolve => window.requestAnimationFrame(resolve));
+    const meta = currentReportCatalogue.find(period => period.id === plan.scope.periodId);
+    const previous = previousAssistantWeek(meta, currentReportCatalogue);
+    const metadata = plan.kind === 'trend' || plan.kind === 'unchanged'
+      ? currentReportCatalogue.filter(period => period.reportDate <= meta.reportDate).slice(-8)
+      : plan.kind === 'compare' && previous ? [previous, meta] : [meta];
+    const periods = await loadAssistantPeriods(metadata);
+    const selected = periods.find(period => period.id === meta.id);
+    if (!selected) return { text: 'The requested reporting period could not be loaded. No missing value has been substituted.' };
+    let answer;
+    if (plan.kind === 'compare') answer = previous
+      ? assistantComparison(selected, periods.find(period => period.id === previous.id), plan.scope, matchesFacilityCareLevel)
+      : { text: 'No report exists exactly one week before this reporting period. Missing weeks are not zero stock.' };
+    else if (plan.kind === 'trend' || plan.kind === 'unchanged') answer = assistantRecurring(periods, plan.scope, matchesFacilityCareLevel, plan.kind === 'unchanged');
+    else if (plan.kind === 'reporting') answer = assistantReporting(selected, plan.scope, matchesFacilityCareLevel);
+    else answer = assistantSnapshot(selected, plan.scope, matchesFacilityCareLevel);
+    answer.evidence = assistantEvidence(periods, plan.scope);
+    if (answer.requiresScopeReset || answer.noDetails) return answer;
+    if (plan.kind === 'analysis') return requestAssistantAnalysis(question, conversation, selected, plan.scope, answer);
+    if (plan.kind === 'query' || plan.kind === 'reporting') await applyAssistantView({ page: plan.page, scope: plan.scope });
+    else commitAssistantScope(plan.scope);
+    return answer;
+  }
+
+  async function requestAssistantAnalysis(question, conversation, period, scope, snapshot) {
+    if (!copilotApiUrl) return { ...snapshot, text: snapshot.text + '\n\nAI explanations require sign-in on the secure dashboard. Conversational filters and verified stock queries remain available here.' };
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 45000);
     try {
-      if (/\b(history|historical|trend|changed|since 2024|since 2025)\b/i.test(message)) {
-        await Promise.all([loadHistoricalTracerYear("2024"), loadHistoricalTracerYear("2025")]);
-      }
-      const response = await fetch(`${copilotApiUrl}/api/copilot/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        signal: controller.signal,
-        body: JSON.stringify({ question: message, context: { ...currentCopilotContext(), conversation } }),
+      const response = await fetch(copilotApiUrl + '/api/copilot/chat', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: controller.signal,
+        body: JSON.stringify({ question, context: {
+          reportingPeriod: period.label, reportingDate: period.reportDate, source: period.source,
+          activeDashboardPage: activePageLabel,
+          filters: { province: scope.province === 'all' ? 'All provinces' : scope.province, district: scope.district, levelOfCare: scope.facilityLevel, programme: scope.programme, commodity: scope.commodity, status: scope.status },
+          verifiedSnapshot: { text: snapshot.text, facts: snapshot.facts, columns: snapshot.columns, rows: snapshot.rows },
+          conversation: conversation.slice(-6).map(entry => ({ role: entry.role, text: entry.text.slice(0, 600) })),
+          limitations: 'Missing reports are not stock-outs. Low stock uses positive SOH / AMC below two months. Aggregate MOS uses submitted values with a 12-month cap. No transfers, approvals, publication or messages are executed.',
+        } }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Tracer Copilot could not answer right now.");
-      setCopilotMessages((current) => [...current, { id: data.id, role: "assistant", text: data.answer, evidence: `${fieldData.label} | ${fieldData.source} | ${selectedProvince === "all" ? "All provinces" : selectedProvince} | ${selectedDistrict === "all" ? "All districts" : selectedDistrict}`, modelEvidence: data.modelEvidence }]);
+      if (!response.ok) throw new Error(data.error || 'AI explanation is unavailable.');
+      return { id: Number(data.id), text: data.answer, evidence: snapshot.evidence, actions: snapshot.actions, modelEvidence: data.modelEvidence };
     } catch (error) {
-      const fallback = localCopilotReply(message);
-      const text = error.name === "AbortError"
-        ? "Tracer Copilot took too long to respond. Try again in a moment."
-        : error.message || "Tracer Copilot could not answer right now.";
-      setCopilotMessages((current) => [...current, fallback
-        ? { id: `fallback-${Date.now()}`, role: "assistant", text: fallback.text, evidence: fallback.evidence, retryQuestion: message }
-        : { id: `error-${Date.now()}`, role: "assistant", text, retryQuestion: message }]);
-    } finally {
-      window.clearTimeout(timeout);
-      setCopilotLoading(false);
-    }
+      return { ...snapshot, text: snapshot.text + '\n\n' + (error.name === 'AbortError' ? 'The AI explanation timed out.' : 'The AI explanation is currently unavailable.') + ' The results above are fixed-rule calculations from the submitted data, not a model-generated answer.', retry: question };
+    } finally { window.clearTimeout(timeout); }
   }
 
   async function rateCopilotAnswer(messageId, rating) {
-    if (!Number.isInteger(Number(messageId)) || !copilotApiUrl) return;
-    setCopilotFeedback((current) => ({ ...current, [messageId]: rating }));
-    try {
-      const response = await fetch(`${copilotApiUrl}/api/copilot/feedback`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversationId: Number(messageId), rating }),
-      });
-      if (!response.ok) throw new Error("Unable to save feedback");
-    } catch {
-      setCopilotFeedback((current) => {
-        const next = { ...current };
-        delete next[messageId];
-        return next;
-      });
-    }
-  }
-
-  function beginCopilotDrag(event) {
-    if (event.button !== 0) return;
-    const rect = event.currentTarget.getBoundingClientRect();
-    copilotDidDragRef.current = false;
-    copilotDragRef.current = {
-      pointerId: event.pointerId,
-      offsetX: event.clientX - rect.left,
-      offsetY: event.clientY - rect.top,
-      width: rect.width,
-      height: rect.height,
-      startX: event.clientX,
-      startY: event.clientY,
-    };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  }
-
-  function moveCopilotDrag(event) {
-    const drag = copilotDragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) return;
-    const hasMoved = Math.abs(event.clientX - drag.startX) > 4 || Math.abs(event.clientY - drag.startY) > 4;
-    if (hasMoved) {
-      copilotDidDragRef.current = true;
-      setCopilotDragging(true);
-    }
-    if (!copilotDidDragRef.current) return;
-    const margin = 12;
-    setCopilotPosition({
-      left: Math.min(Math.max(margin, event.clientX - drag.offsetX), Math.max(margin, window.innerWidth - drag.width - margin)),
-      top: Math.min(Math.max(margin, event.clientY - drag.offsetY), Math.max(margin, window.innerHeight - drag.height - margin)),
+    if (!Number.isInteger(messageId) || !copilotApiUrl) return;
+    const response = await fetch(copilotApiUrl + '/api/copilot/feedback', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ conversationId: messageId, rating }),
     });
-  }
-
-  function endCopilotDrag(event) {
-    const drag = copilotDragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) return;
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-    copilotDragRef.current = null;
-    setCopilotDragging(false);
+    if (!response.ok) throw new Error('Unable to save feedback');
   }
 
   function exportStockCategoryExcel() {
@@ -4603,6 +4541,7 @@ function App() {
         </section>}
 
         {activePage === "commodities" && <section className="table-panel">
+          {assistantFocus.programme !== 'all' && <div className="assistant-programme-scope"><span>Programme: <strong>{assistantFocus.programme}</strong></span><button type="button" onClick={() => setAssistantFocus(current => ({ ...current, programme: 'all' }))}>All programmes</button></div>}
           <div className="table-headline">
             <div>
               <p className="eyebrow dark">Commodity Intelligence</p>
@@ -5937,37 +5876,9 @@ function App() {
           </> : <div className="empty-state">Only a signed-in dashboard administrator can upload or publish provincial tracer submissions.</div>}
         </section>}
       </main>
-      <button type="button" className={`copilot-launcher ${activePage === "predictive" ? "copilot-launcher-compact" : ""} ${copilotDragging ? "dragging" : ""}`} style={copilotPosition ? { left: `${copilotPosition.left}px`, top: `${copilotPosition.top}px`, right: "auto", bottom: "auto" } : undefined} onPointerDown={beginCopilotDrag} onPointerMove={moveCopilotDrag} onPointerUp={endCopilotDrag} onPointerCancel={endCopilotDrag} onClick={(event) => { if (copilotDidDragRef.current) { event.preventDefault(); copilotDidDragRef.current = false; return; } setCopilotOpen(true); }} aria-label="Open Tracer Copilot" title="Drag to reposition. Click to open Tracer Copilot.">
-        <Sparkles size={22} aria-hidden="true"/>
-      </button>
-      <NavigationGuide role={dashboardUser?.role} onNavigate={topic=>{if(topic.stock)setStockWorkspace(topic.stock);setActivePage(topic.page);setOpenSidebarGroups(current=>new Set([...current,topic.page==='stock'?'zammsa':topic.page==='vaccines'?'programmes':isAdministrationPage(topic.page)?'administration':topic.page==='executive'?'overview':'tracer']));}}/>
-      {copilotOpen && <div className="copilot-backdrop" role="presentation" onMouseDown={() => setCopilotOpen(false)}>
-        <aside className="copilot-drawer" role="dialog" aria-modal="true" aria-label="Tracer Copilot" onMouseDown={(event) => event.stopPropagation()}>
-          <div className="copilot-head">
-            <div><p className="eyebrow dark">Tracer Copilot</p><h2>Ask the selected tracer data</h2><span>{fieldData.label} | {selectedProvince === "all" ? "Zambia" : selectedProvince}</span></div>
-            <button type="button" className="ghost-button" onClick={() => setCopilotOpen(false)}>Close</button>
-          </div>
-          <p className="copilot-guidance">Answers use verified read-only data tools. Observed facts, fixed-rule calculations, predictions, and suggested actions are kept separate.</p>
-          <div className="copilot-suggestions">
-            {copilotSuggestions.map((suggestion) => <button type="button" key={suggestion} onClick={() => askCopilot(suggestion)} disabled={copilotLoading}>{suggestion}</button>)}
-          </div>
-          <div className="copilot-messages" aria-live="polite">
-            {copilotMessages.length ? copilotMessages.map((message) => <article className={`copilot-message ${message.role}`} key={message.id}>
-              <strong>{message.role === "user" ? "You" : "Tracer Copilot"}</strong>
-              <p>{message.text}</p>
-              {message.evidence && <small>Evidence: {message.evidence}</small>}
-              {message.modelEvidence && <small className={`copilot-model-status ${message.modelEvidence.predictionStatus}`}>Stock-out model: {message.modelEvidence.predictionStatus === "validated" ? "validated" : "predictions unavailable"}{message.modelEvidence.limitation ? ` - ${message.modelEvidence.limitation}` : ""}</small>}
-              {message.retryQuestion && <button type="button" className="copilot-retry" onClick={() => askCopilot(message.retryQuestion)}>Try again</button>}
-              {message.role === "assistant" && Number.isInteger(Number(message.id)) && <div className="copilot-feedback"><span>Was this useful?</span><button type="button" className={copilotFeedback[message.id] === 1 ? "active" : ""} onClick={() => rateCopilotAnswer(message.id, 1)}>Helpful</button><button type="button" className={copilotFeedback[message.id] === -1 ? "active" : ""} onClick={() => rateCopilotAnswer(message.id, -1)}>Needs correction</button></div>}
-            </article>) : <div className="copilot-empty">Ask about availability, stockouts, reporting, commodities, provinces, districts, or immediate follow-up actions.</div>}
-            {copilotLoading && <div className="copilot-loading">Analysing the selected tracer data...</div>}
-          </div>
-          <form className="copilot-form" onSubmit={(event) => { event.preventDefault(); askCopilot(); }}>
-            <textarea value={copilotQuestion} onChange={(event) => setCopilotQuestion(event.target.value)} placeholder="Ask a question about the selected tracer data" maxLength="1200" />
-            <button type="submit" disabled={!copilotQuestion.trim() || copilotLoading}>Send</button>
-          </form>
-        </aside>
-      </div>}
+      <TracerAssistant onQuery={queryAssistant} onApply={applyAssistantView} onFeedback={rateCopilotAnswer}
+        periodLabel={activePage === 'comparison' ? comparisonPreviousLabel + ' vs ' + comparisonCurrentLabel : activePage === 'vaccines' ? selectedVaccinePeriod?.label : activePage === 'stock' ? ['control', 'navigator'].includes(stockWorkspace) ? centralStock.label : stockData?.label : activePage === 'reporting' ? reportData.label : fieldData.label}
+        scopeLabel={activePage === 'vaccines' ? [vaccineProvince, vaccineDistrict, vaccineName].join(' | ') : activePage === 'stock' ? 'ZAMMSA central inventory | ' + stockStream : assistantScopeLabel(assistantScope)} />
       <FacilityTracerModal
         key={openFacility ? `${openFacility.province}-${openFacility.district}-${openFacility.facilityLevel}-${openFacility.name}` : "closed"}
         facility={openFacility}
