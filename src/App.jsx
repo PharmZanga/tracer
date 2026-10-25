@@ -3,6 +3,7 @@ const FacilityAlertsMap=lazy(()=>import('./FacilityAlertsMap.jsx'));
 import { reportSections } from './reportSections.js';
 import { buildReportNarrative } from './reportNarrative.js';
 import { commodityRowsFromPeriod } from './tracerRows.js';
+import NationalStockDetail from './NationalStockDetail.jsx';
 import {isAdministrator,isAdministrationPage} from './dashboardAccess.js';
 import TracerAssistant from './NavigationGuide.jsx';
 import { emptyAssistantFocus, planAssistantRequest, assistantScopeLabel, validAssistantView, assistantSnapshot, assistantReporting, assistantComparison, assistantRecurring, assistantEvidence, previousAssistantWeek, assistantProgrammeMatches } from './tracerAssistant.js';
@@ -2012,6 +2013,14 @@ function App() {
   const [actionSyncState, setActionSyncState] = useState("loading");
   const [actionCommentError, setActionCommentError] = useState("");
   const [assistantFocus, setAssistantFocus] = useState(emptyAssistantFocus);
+  const [nationalStockBand, setNationalStockBand] = useState('');
+  const nationalStockReturnFocus = useRef('');
+  useEffect(() => {
+    if (activePage === 'national' && !nationalStockBand && nationalStockReturnFocus.current) {
+      document.getElementById(`national-stock-${nationalStockReturnFocus.current}`)?.focus();
+      nationalStockReturnFocus.current = '';
+    }
+  }, [activePage, nationalStockBand]);
   const [dashboardUser, setDashboardUser] = useState(null);
   useViewerActivity(dashboardUser,activePage);
   const [importFiles, setImportFiles] = useState([]);
@@ -3088,11 +3097,11 @@ function App() {
   const topDistrictRows = [...districtQualityRows].sort((a, b) => (b.rate || qualityRate(b)) - (a.rate || qualityRate(a)) || a.missing - b.missing).slice(0, 10);
   const stockStatusTotal = fieldKpis.rows || 1;
   const stockStatusRows = [
-    { label: "Stocked out", count: fieldKpis.stockout, rate: fieldKpis.stockout / stockStatusTotal, sub: "MOS at or near zero", tone: "red", icon: CircleX },
-    { label: "Emergency", count: fieldKpis.nearCritical, rate: fieldKpis.nearCritical / stockStatusTotal, sub: "Below 1 MOS", tone: "amber", icon: CircleAlert },
-    { label: "Understocked", count: fieldKpis.understocked, rate: fieldKpis.understocked / stockStatusTotal, sub: "1 to below 2 MOS", tone: "amber", icon: Gauge },
-    { label: "According to plan", count: fieldKpis.accordingToPlan, rate: fieldKpis.accordingToPlan / stockStatusTotal, sub: "2 to 4 MOS", tone: "green", icon: CircleCheck },
-    { label: "Overstocked", count: fieldKpis.abovePlan + fieldKpis.overstock, rate: (fieldKpis.abovePlan + fieldKpis.overstock) / stockStatusTotal, sub: "Above 4 MOS", tone: "blue", icon: Boxes },
+    { id: "stockout", label: "Stocked out", count: fieldKpis.stockout, rate: fieldKpis.stockout / stockStatusTotal, sub: "MOS at or near zero", tone: "red", icon: CircleX },
+    { id: "nearCritical", label: "Emergency", count: fieldKpis.nearCritical, rate: fieldKpis.nearCritical / stockStatusTotal, sub: "Below 1 MOS", tone: "amber", icon: CircleAlert },
+    { id: "understocked", label: "Understocked", count: fieldKpis.understocked, rate: fieldKpis.understocked / stockStatusTotal, sub: "1 to below 2 MOS", tone: "amber", icon: Gauge },
+    { id: "accordingToPlan", label: "According to plan", count: fieldKpis.accordingToPlan, rate: fieldKpis.accordingToPlan / stockStatusTotal, sub: "2 to 4 MOS", tone: "green", icon: CircleCheck },
+    { id: "overstock", label: "Overstocked", count: fieldKpis.abovePlan + fieldKpis.overstock, rate: (fieldKpis.abovePlan + fieldKpis.overstock) / stockStatusTotal, sub: "Above 4 MOS", tone: "blue", icon: Boxes },
   ];
   const scopedProgrammeRows = useMemo(() => (fieldData.programmeScopes || fieldData.programmes || [])
     .filter((row) => !row.province || selectedProvince === "all" || row.province === selectedProvince)
@@ -4243,7 +4252,14 @@ function App() {
 
         {activePage === "executive" && <LevelOfCarePerformance rows={levelOfCareRows} />}
 
-        {activePage === "national" && <section className="tracer-overview">
+        {activePage === "national" && nationalStockBand && <NationalStockDetail
+          key={JSON.stringify([fieldData.id, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility, nationalStockBand])}
+          band={nationalStockBand} rows={filteredCommodityRows} period={fieldData}
+          expectedCount={stockStatusRows.find(row => row.id === nationalStockBand)?.count || 0}
+          scopeLabel={[selectedProvince === 'all' ? 'All provinces' : selectedProvince, selectedDistrict === 'all' ? 'All districts' : selectedDistrict, facilityCareLevelLabel(selectedFacilityLevel), selectedFacility === 'all' ? 'All reporting units' : selectedFacility.split('|').at(-1)].join(' | ')}
+          onBack={() => { nationalStockReturnFocus.current = nationalStockBand; setNationalStockBand(''); }}
+        />}
+        {activePage === "national" && !nationalStockBand && <section className="tracer-overview">
           <div className="tracer-lead">
             <p className="eyebrow dark">National Stock Status</p>
             <h2>Tracer commodities by submitted months of stock</h2>
@@ -4251,12 +4267,12 @@ function App() {
           </div>
           <div className="tracer-metrics">
             {stockStatusRows.map((row) => (
-              <div className={`stock-percent-card stat-${row.tone}`} key={row.label}>
-                <span><row.icon className="metric-icon" aria-hidden="true" />{row.label}</span>
+              <button type="button" id={`national-stock-${row.id}`} className={`stock-percent-card stat-${row.tone}`} key={row.id} onClick={() => { setNationalStockBand(row.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} aria-label={`View ${row.label.toLowerCase()} commodities: ${row.count.toLocaleString()} submitted records`} title={`View ${row.label.toLowerCase()} commodities and export`}>
+                <span className="stock-card-heading"><row.icon className="metric-icon" aria-hidden="true" />{row.label}<ArrowUpRight size={16} aria-hidden="true" /></span>
                 <strong>{formatPercent(row.rate)}</strong>
                 <small>{row.count.toLocaleString()} of {fieldKpis.rows.toLocaleString()} rows</small>
                 <em>{row.sub}</em>
-              </div>
+              </button>
             ))}
           </div>
           <div className="product-performance">
