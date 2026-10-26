@@ -13,6 +13,7 @@ const {NationalWeeklyReport, buildNationalReportSummary} = await server.ssrLoadM
 const data = await server.ssrLoadModule('/src/tracerFacilityData.js');
 const {reportCatalogue} = await server.ssrLoadModule('/src/reportCatalogue.js');
 const {reportOptions, selectReportPeriods} = await server.ssrLoadModule('/src/reportPeriods.js');
+const {ReportPerformanceChart, ReportProvincialStockChart} = await server.ssrLoadModule('/src/ReportCharts.jsx');
 await data.loadLiveTracerData();
 
 function summaryFor(type, id) {
@@ -33,12 +34,16 @@ test('weekly report renders actual labels, Ministry branding, charts and ordered
   assert.match(html, /1 reporting week</);
   assert.doesNotMatch(html, /Current selection|1 reporting weeks|control-tower-logo/);
   assert.match(html, /Weekly availability and average months of stock/);
-  assert.match(html, /Provincial reported availability from 0 to 100 percent/);
-  assert.match(html, /Programme reported availability from 0 to 100 percent/);
-  assert.match(html, /Provincial stock-band distribution/);
-  assert.match(html, /Complete primary-care reporting by province/);
-  assert.ok(html.indexOf('data-report-section="overview"') < html.indexOf('data-report-section="provincial-trends"'));
-  assert.ok(html.indexOf('data-report-section="reporting"') < html.indexOf('data-report-section="stock"'));
+  assert.match(html, /Commodity Availability by Level of Care/);
+  assert.match(html, /Commodity Availability and Months of Stock by Province/);
+  assert.match(html, /Commodity Availability and Months of Stock by Programme\/Facility Type/);
+  assert.match(html, /Provincial Stock Imbalance/);
+  assert.match(html, /COMPLETE \/ EXPECTED DISTRICT-WEEKS|Complete \/ expected district-weeks/);
+  assert.ok(!html.includes('data-report-section="provincial-trends"'));
+  assert.ok(html.indexOf('data-report-section="stock"') < html.indexOf('data-report-section="imbalance"'));
+  assert.ok(html.indexOf('data-report-section="imbalance"') < html.indexOf('data-report-section="reporting-rate"'));
+  assert.match(html, /E\. National Stock Imbalance/);
+  assert.match(html, /G\. Reporting Rate/);
 });
 
 test('care narrative names agree with care table and previous single-week label is not repeated', () => {
@@ -59,4 +64,22 @@ test('monthly and partial-quarter reports use selected observations rather than 
     assert.match(html, type === 'monthly' ? /MONTHLY|Monthly/ : /QUARTERLY|Quarterly/);
     if (type === 'quarterly') assert.match(html, /Partial quarter/);
   }
+});
+
+test('dual-axis graphs preserve a missing MOS gap while drawing an explicit zero observation', () => {
+  const rows=[{name:'A',availability:.9,mos:3},{name:'B',availability:.8,mos:null},{name:'C',availability:.7,mos:0}];
+  const html=renderToStaticMarkup(React.createElement(ReportPerformanceChart,{rows,subject:'Provincial'}));
+  assert.equal((html.match(/<polyline /g)||[]).length,2);
+  assert.equal((html.match(/class="chart-mos-label"/g)||[]).length,2);
+  assert.match(html, />0.0<\/text>/);
+  assert.doesNotMatch(html,/NaN|Infinity|height="-/);
+});
+
+test('provincial stack SVG includes grey MOS gaps without converting the other bands to 100 percent', () => {
+  const rows=[{name:'CENTRAL PROVINCE',rows:100,availability:.8,stockout:10,nearCritical:20,understocked:10,accordingToPlan:20,abovePlan:30,dataGap:10}];
+  const html=renderToStaticMarkup(React.createElement(ReportProvincialStockChart,{rows}));
+  assert.match(html,/Grey caps show missing MOS/);
+  assert.match(html,/Submitted observations/);
+  assert.match(html,/10.0%/);
+  assert.doesNotMatch(html,/NaN|Infinity|height="-/);
 });

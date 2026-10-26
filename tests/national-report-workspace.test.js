@@ -12,7 +12,7 @@ test("national weekly report workspace is available from the sidebar and uses it
   assert.match(appSource, /buildNationalReportSummary\(selectReportPeriods/);
   assert.match(appSource, /Generate PDF report/);
   const narrativeSource = fs.readFileSync(new URL('../src/reportNarrative.js', import.meta.url), 'utf8');
-  assert.match(narrativeSource, /DHO reporting completeness stood at/);
+  assert.match(narrativeSource, /\(DHO\) reporting completeness stood at/);
   assert.match(appSource, /missing reports are not treated as stock data/);
 });
 
@@ -22,11 +22,13 @@ test("report template supports independently selected sections and Ministry-only
   for (const id of ["overview","care","provinces","programmes","zammsa","reporting","stock","commodities","actions","sources"]) {
     assert.ok(appSource.includes(`sectionProps("${id}")`));
   }
-  assert.match(appSource, /sectionOptions.filter\(\(\[id\]\) => includedSections.includes\(id\)\)/);
+  assert.match(appSource, /selectedReportSections\(includedSections\)/);
+  assert.match(appSource, /selectedSections.map\(\(\[id,label\]\)/);
   assert.match(appSource, /activePage !== "reports" && <div className="national-brand control-tower-brand"/);
   assert.match(appSource, /ReportAvailabilityChart weekly=\{summary.weekly\}/);
   assert.match(appSource, /ReportPerformanceBars rows=\{provinces\}/);
   assert.match(appSource, /ReportPerformanceBars rows=\{programmes\}/);
+  assert.match(appSource, /ReportCareChart rows=\{levelRows\}/);
   const css = fs.readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
   assert.match(css, /\.national-weekly-report \[hidden\] \{ display: none !important/);
   assert.match(css, /body:has\(\.page-reports\) \.national-header \{ display: none !important/);

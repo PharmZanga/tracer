@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildReportNarrative, describeChange, performanceNarrative, formatReportPercent, reportingWeeks, reportAverageMos, imbalanceNarrative, reportingRateNarrative } from '../src/reportNarrative.js';
+import { buildReportNarrative, describeChange, performanceNarrative, formatReportPercent, reportingWeeks, reportAverageMos, imbalanceNarrative, reportingRateNarrative, reportPeriodRange } from '../src/reportNarrative.js';
 
 const summary = () => ({
   period: { label: 'Selected week', national: { availability: .87, mos: 3.2, rows: 100 } },
@@ -18,13 +18,13 @@ test('change wording distinguishes unchanged, missing and directional movements'
 });
 test('report analysis explains imbalance and keeps missing MOS separate from zero stock', () => {
   const result = buildReportNarrative(summary());
-  assert.match(result.stock.join(' '), /35.0% in emergency or understocked/);
+  assert.match(result.stock.join(' '), /Emergency and understocked bands together accounted for 35.0%/);
   assert.match(result.stock.join(' '), /5.0% of observations/);
   assert.match(result.stock.join(' '), /not proof of transferable stock/);
   assert.match(result.reporting[0], /114 of 116.*98.3%/);
   assert.match(result.overview.join(' '), /declined by 2.0 percentage points/);
   assert.match(result.overview.join(' '), /MOS change could not be verified/);
-  assert.match(result.overview.join(' '), /trend cannot be established/);
+  assert.equal(result.overview.length, 2);
   assert.doesNotMatch(result.overview.join(' '), /MOS remained unchanged/);
 });
 test('group comparisons use actual ranks and explain masked shortages without assigning causes', () => {
@@ -77,12 +77,20 @@ test('missing MOS is excluded from report averages rather than coerced to zero',
   assert.equal(reportAverageMos([{mos: 24}, {mos: 4}]), 8);
 });
 
+test('report cover shows the reporting-week span including month and year boundaries',()=>{
+  assert.equal(reportPeriodRange([{reportDate:'2026-10-18'}]),'12-18 October 2026');
+  assert.equal(reportPeriodRange([{reportDate:'2026-10-04'}]),'28 September 2026 to 4 October 2026');
+  assert.equal(reportPeriodRange([{reportDate:'2026-01-04'}]),'29 December 2025 to 4 January 2026');
+  assert.equal(reportPeriodRange([]),'Reporting dates unavailable');
+});
+
 test('imbalance analysis uses provincial observation shares and does not recommend assumed transfers', () => {
   const text = imbalanceNarrative([
     {name: 'A', rows: 100, stockout: 10, nearCritical: 20, understocked: 30, abovePlan: 10},
     {name: 'B', rows: 200, stockout: 20, nearCritical: 20, understocked: 20, abovePlan: 100},
   ]).join(' ');
-  assert.match(text, /A \(60.0%\).*B.*50.0%/);
+  assert.match(text, /A had the largest share below two MOS \(60.0%\)/);
+  assert.match(text, /B \(50.0%\)/);
   assert.match(text, /not quantities available for transfer/);
   assert.match(imbalanceNarrative([])[0], /No submitted/);
 });

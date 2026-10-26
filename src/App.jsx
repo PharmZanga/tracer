@@ -1,7 +1,8 @@
 import { Children, cloneElement, isValidElement, lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 const FacilityAlertsMap=lazy(()=>import('./FacilityAlertsMap.jsx'));
-import { reportSections } from './reportSections.js';
-import { buildReportNarrative, formatReportPercent, reportingWeeks, reportAverageMos } from './reportNarrative.js';
+import { reportSections, reportSectionDefinitions, defaultReportSectionIds, selectedReportSections } from './reportSections.js';
+import {ReportCareChart} from './ReportCharts.jsx';
+import { buildReportNarrative, formatReportPercent, reportingWeeks, reportAverageMos, reportPeriodRange } from './reportNarrative.js';
 import { commodityRowsFromPeriod } from './tracerRows.js';
 import NationalStockDetail from './NationalStockDetail.jsx';
 import {isAdministrator,isAdministrationPage} from './dashboardAccess.js';
@@ -671,7 +672,7 @@ export function buildNationalReportSummary(selectedPeriods, previousPeriods, opt
     const rows = commodityRows.filter((row) => careLevelBucket(row.facilityLevel) === bucket.id);
     const fallbackRows = selectedPeriods.flatMap((p) => p.facilityLevels || []).filter((r) => careLevelBucket(r.name) === bucket.id);
     const rollup = combineRollups(groupedFacilities.length ? groupedFacilities : fallbackRows, makeEmptyRollup(bucket.label));
-    return { ...rollup, name: bucket.label, label: bucket.label, mos: rows.length ? reportAverageMos(rows) : rollup.mos };
+    return { ...rollup, id: bucket.id, name: bucket.label, label: bucket.label, mos: rows.length ? reportAverageMos(rows) : rollup.mos };
   }).filter((row) => row.rows > 0);
   const provinces = (facilities.length ? aggregateRollups(facilities, "province") : aggregateRollups(selectedPeriods.flatMap((p) => p.provinces || []), "name"))
     .sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows);
@@ -746,8 +747,8 @@ function ReportAvailabilityChart({ weekly, care = false }) {
   </svg></div>;
 }
 
-function OrderedReport({children}) {
-  const titles=new Map(reportSections);
+function OrderedReport({children,sections=reportSections}) {
+  const titles=new Map(sections);
   const labelHeadings=(node,section)=>{
     if(!isValidElement(node)) return node;
     if(node.props.hidden) return null;
@@ -763,38 +764,37 @@ function OrderedReport({children}) {
 
 export function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChange, onPrint, type, year, onTypeChange, onYearChange, loading, error, onRetry }) {
   const formatPercent = formatReportPercent;
-  const sectionOptions = reportSections;
-  const [includedSections, setIncludedSections] = useState(() => sectionOptions.map(([id]) => id));
+  const sectionOptions = reportSectionDefinitions;
+  const [includedSections, setIncludedSections] = useState(() => [...defaultReportSectionIds]);
+  const selectedSections = selectedReportSections(includedSections);
+  const sectionLabels = new Map(selectedSections);
   const sectionProps = (id) => ({ hidden: !includedSections.includes(id), "data-report-section": id });
   const tools = <div className="national-report-tools">
     <label><span>Report frequency</span><select value={type} onChange={(e) => onTypeChange(e.target.value)}><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option></select></label>
     <label><span>Year</span><select value={year} onChange={(e) => onYearChange(e.target.value)}>{availableTracerYears.map((y) => <option key={y}>{y}</option>)}</select></label>
     <label><span>Report period</span><select value={selectedPeriodId} onChange={(event) => onPeriodChange(event.target.value)}>{periods.map((item) => <option value={item.id} key={item.id}>{item.label}</option>)}</select></label>
     <div className="national-report-tool-actions"><button type="button" disabled={loading || Boolean(error) || !summary || !includedSections.length} onClick={onPrint}><Printer size={16} aria-hidden="true" />Generate PDF report</button></div>
-    <fieldset className="national-report-section-picker"><legend>Report sections</legend>{sectionOptions.map(([id,label]) => <label key={id}><input type="checkbox" checked={includedSections.includes(id)} onChange={(e) => setIncludedSections((current) => e.target.checked ? [...current,id] : current.filter((key) => key !== id))}/><span>{label}</span></label>)}</fieldset>
+    <fieldset className="national-report-section-picker"><legend>Report sections</legend>{sectionOptions.map(([id,label]) => <label key={id}><input type="checkbox" checked={includedSections.includes(id)} onChange={(e) => setIncludedSections((current) => e.target.checked ? [...current,id] : current.filter((key) => key !== id))}/><span>{sectionLabels.get(id) || label}</span></label>)}</fieldset>
   </div>;
   if (loading || error || !summary || summary.selectedPeriods.length !== summary.option.periods.length) return <section className="national-report-workspace">{tools}<div role={error ? "alert" : "status"}>{error || "Loading selected reporting periods..."}{error && <button type="button" onClick={onRetry}>Try again</button>}</div></section>;
   const { period, levelRows, provinces, programmes, districtReporting, stockStatus } = summary;
   const narrative = buildReportNarrative(summary);
   const analyticalText = (section) => narrative[section].map((text) => <p className="national-report-narrative" key={text}>{text}</p>);
-  const lowestLevel = [...levelRows].sort((a, b) => a.availability - b.availability).at(0);
-  const strongestProvince = [...provinces].sort((a, b) => b.availability - a.availability).at(0);
-  const weakestProvince = provinces[0];
   return <section className="national-report-workspace">
     {tools}
 
-    <OrderedReport>
+    <OrderedReport sections={selectedSections}>
       <header className="national-report-cover">
         <img src="/zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms" width="80" height="80" />
         <p>MINISTRY OF HEALTH</p>
         <h1>{type === "monthly" ? "Monthly" : type === "quarterly" ? "Quarterly" : "Weekly"} Tracer Availability Report</h1>
         <p className="national-report-cover-description">The report summarises national tracer availability, stock status and service-level performance for the selected reporting period. It identifies priority replenishment and redistribution needs using submitted dashboard data.</p>
         <span>Report period: {period.label}</span>
-        <small>{summary.selectedPeriods[0].reportDate} to {period.reportDate} | {reportingWeeks(summary.selectedPeriods.length)}</small>
+        <small>{reportPeriodRange(summary.selectedPeriods)} | {reportingWeeks(summary.selectedPeriods.length)}</small>
         <strong>Prepared by: Zanga Musakuzi</strong><small>Principal Pharmacist - Data Analytics</small><b className="national-report-cover-year">{year}</b>
       </header>
 
-      <section className="national-report-section national-report-contents"><h2>Contents</h2>{sectionOptions.filter(([id]) => includedSections.includes(id)).map(([id,label]) => <p key={id}>{label}</p>)}</section>
+      <section className="national-report-section national-report-contents"><h2>Contents</h2>{selectedSections.map(([id,label]) => <p key={id}>{label}</p>)}</section>
       <section className="national-report-section" {...sectionProps("overview")}>
         <div className="national-report-section-head"><p>A. National Overview</p><span>{period.label}</span></div>
         {analyticalText('overview')}
@@ -805,30 +805,29 @@ export function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPer
           <div><span>DHO reporting, final week</span><strong>{districtReporting.reported}/{districtReporting.expected}</strong><small>Health Centre + Health Post required</small></div>
           <div><span>Records analysed</span><strong>{period.national.rows.toLocaleString()}</strong><small>Valid facility-commodity records</small></div>
         </div>
-        <p className="national-report-callout">{strongestProvince?.name || "-"} recorded the strongest availability at {formatPercent(strongestProvince?.availability)}, while {weakestProvince?.name || "-"} was lowest at {formatPercent(weakestProvince?.availability)}. {lowestLevel ? `${lowestLevel.label} had the lowest level-of-care performance at ${formatPercent(lowestLevel.availability)} availability and ${formatMos(lowestLevel.mos)} MOS.` : ""}</p>
-        <table><thead><tr><th>Reporting week</th><th>Availability</th><th>MOS</th><th>Records</th><th>DHO reporting</th></tr></thead><tbody>{summary.weekly.map(({period:p,reporting:r,mos}) => <tr key={p.id}><td>{p.label}</td><td>{formatPercent(p.national.availability)}</td><td>{formatMos(mos)}</td><td>{p.national.rows.toLocaleString()}</td><td>{r.reported}/{r.expected}</td></tr>)}</tbody></table>
+        <table><thead><tr><th>Reporting week</th><th>Availability</th><th>MOS</th><th>DHO reporting</th></tr></thead><tbody>{summary.weekly.map(({period:p,reporting:r,mos}) => <tr key={p.id}><td>{p.label}</td><td>{formatPercent(p.national.availability)}</td><td>{formatMos(mos)}</td><td>{r.reported}/{r.expected}</td></tr>)}</tbody></table>
         <h3>Weekly availability and average MOS - {period.label}</h3><ReportAvailabilityChart weekly={summary.weekly}/>
       </section>
 
       <section className="national-report-section" {...sectionProps("care")}>
         <div className="national-report-section-head"><p>B. Availability by Level of Care</p><span>Availability and MOS</span></div>
         {analyticalText('care')}
-        <h3>Weekly availability by level of care</h3><ReportAvailabilityChart weekly={summary.weekly} care/>
+        <h3>Availability by level of care</h3><ReportCareChart rows={levelRows}/>
         <table><thead><tr><th>Level of care</th><th>Observations</th><th>Availability</th><th>Average MOS</th></tr></thead><tbody>{levelRows.map((r) => <tr key={r.label}><td>{r.label}</td><td>{r.rows.toLocaleString()}</td><td>{formatPercent(r.availability)}</td><td>{formatMos(r.mos)}</td></tr>)}</tbody></table>
-        <table><thead><tr><th>Week</th>{careLevelBuckets.map((b) => <th key={b.id}>{b.label}</th>)}</tr></thead><tbody>{summary.weekly.map(({period:p,levels}) => <tr key={p.id}><td>{p.label}</td>{levels.map((r) => <td key={r.label}>{formatPercent(r.availability)}<br/>{formatMos(r.mos)} MOS</td>)}</tr>)}</tbody></table>
+        {summary.weekly.length > 1 && <table><thead><tr><th>Week</th>{careLevelBuckets.map((b) => <th key={b.id}>{b.label}</th>)}</tr></thead><tbody>{summary.weekly.map(({period:p,levels}) => <tr key={p.id}><td>{p.label}</td>{levels.map((r) => <td key={r.label}>{formatPercent(r.availability)}<br/>{formatMos(r.mos)} MOS</td>)}</tr>)}</tbody></table>}
         <p className="national-report-narrative">Primary care and hospital levels are analysed separately. Renal and TB reporting remains in dedicated programme analysis rather than automatically entering the Level 3/specialised group. Availability changes must be interpreted with the reporting coverage and commodity mix.</p>
       </section>
 
       <section className="national-report-section" {...sectionProps("stock")}>
         <div className="national-report-section-head"><p>National Stock Status</p><span>Submitted records only</span></div>
-        <ReportStockBars rows={stockStatus}/>
         {analyticalText('stock')}
+        <ReportStockBars rows={stockStatus}/>
         <p className="national-report-narrative">Stock bands are based on submitted MOS. Zero or near-zero MOS can include positive quantities. {summary.hasCommodityEvidence ? `${summary.confirmedZero.toLocaleString()} observations have an explicitly reported zero quantity.` : "Detailed quantities are unavailable in this historical dataset; confirmed zero-stock counts cannot be verified."} Multi-week totals are repeated observations, not unique commodities or cumulative stock balances.</p>
       </section>
 
       <section className="national-report-section national-report-split" data-report-section="provinces" hidden={!includedSections.includes("provinces") && !includedSections.includes("programmes")}>
-        <div {...sectionProps("provinces")}><div className="national-report-section-head"><p>C. Provincial Performance</p><span>Lowest availability first</span></div>{analyticalText('provinces')}<ReportPerformanceBars rows={provinces} subject="Provincial"/><table><thead><tr><th>Province</th><th>Availability</th><th>MOS</th><th>Zero/near-zero MOS</th><th>Low stock</th></tr></thead><tbody>{provinces.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.stockout.toLocaleString()}</td><td>{(row.nearCritical + row.understocked).toLocaleString()}</td></tr>)}</tbody></table></div>
-        <div {...sectionProps("programmes")}><div className="national-report-section-head"><p>D. Programme Performance</p><span>Priority review</span></div>{analyticalText('programmes')}<ReportPerformanceBars rows={programmes} subject="Programme"/><table><thead><tr><th>Programme</th><th>Availability</th><th>MOS</th><th>Risk rows</th></tr></thead><tbody>{programmes.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.riskRows.toLocaleString()}</td></tr>)}</tbody></table></div>
+        <div {...sectionProps("provinces")}><div className="national-report-section-head"><p>C. Provincial Performance</p><span>Availability and MOS</span></div>{analyticalText('provinces')}<ReportPerformanceBars rows={provinces} subject="Provincial"/></div>
+        <div {...sectionProps("programmes")}><div className="national-report-section-head"><p>D. Programme Performance</p><span>Priority review</span></div>{analyticalText('programmes')}<ReportPerformanceBars rows={programmes} subject="Programme"/></div>
       </section>
 
       <section className="national-report-section" {...sectionProps("commodities")}>
