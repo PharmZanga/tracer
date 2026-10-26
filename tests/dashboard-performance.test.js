@@ -56,7 +56,7 @@ test('missing data is empty and numeric zero remains distinct from missing quant
 test('closed dashboard pages are not mounted merely to be hidden with CSS', () => {
   const source = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
   const sections = { national: 'tracer-overview', stock: 'weekly-stock-section', provincial: 'field-visibility', facilities: 'facility-alerts', commodities: 'table-panel', comparison: 'comparison-section', vaccines: 'vaccine-stock-section', programmes: 'weekly-section', quality: 'concerns-section', reporting: 'reporting-rate-section', gate: 'data-quality-gate', predictive: 'predictive-analysis', alerts: 'commodity-alert-centre', actions: 'action-tracker' };
-  for (const [page, section] of Object.entries(sections)) assert.ok(source.includes(`{activePage === "${page}" && <section className="${section}"`), page);
+  for (const [page, section] of Object.entries(sections)) assert.ok(source.includes(`{activePage === "${page}"${page === 'national' ? ' && !nationalStockBand' : ''} && <section className="${section}"`), page);
   assert.ok(source.includes('isDashboardAdmin && activePage === "reports" && <NationalWeeklyReport'));
   assert.ok(source.includes('activePage === "reports" ? buildNationalReportSummary'));
   assert.ok(source.includes('const needsComparison = activePage === "comparison"'));

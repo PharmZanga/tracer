@@ -4,10 +4,10 @@ import { reportCatalogue } from "../src/reportCatalogue.js";
 import { reportOptions, selectReportPeriods, matchingStockPeriods } from "../src/reportPeriods.js";
 import { loadTracerMonth, tracerReportingPeriods } from "../src/tracerFacilityData.js";
 
-test("all January to September months and their 40 reporting weeks are selectable before loading", () => {
+test("all January to October months and their 43 reporting weeks are selectable before loading", () => {
   const monthly = reportOptions(reportCatalogue,"monthly","2026");
   assert.equal(monthly.length,10);
-  assert.equal(reportOptions(reportCatalogue,"weekly","2026").length,41);
+  assert.equal(reportOptions(reportCatalogue,"weekly","2026").length,43);
   const sep = monthly.find(p=>p.periods[0].month==='2026-09');
   assert.equal(sep.periods.at(-1).id,"2026-10-04");
   assert.equal(reportOptions(reportCatalogue,"quarterly","2026").length,4);

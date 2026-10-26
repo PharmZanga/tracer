@@ -647,7 +647,7 @@ def normalize_province(value):
 def normalize_district(value):
     text = str(clean(value) or "Unknown district").upper()
     text = text.replace("`", "'")
-    text = re.sub(r"\s+DISTRICT$", "", text).strip()
+    text = re.sub(r"\s+(?:DISTRICT|DHO)$", "", text).strip()
     if text in {
         "CENTRAL PROVINCE", "COPPERBELT PROVINCE", "EASTERN PROVINCE", "LUAPULA PROVINCE",
         "LUSAKA PROVINCE", "MUCHINGA PROVINCE", "NORTH-WESTERN PROVINCE", "NORTHERN PROVINCE",
@@ -1179,10 +1179,18 @@ def iter_raw_matrix_rows(source, report_date):
             ),
             None,
         )
+        if is_primary_care_summary:
+            # HC/HP templates can omit the description label or place it above
+            # the metric headers. Prefer the full row of AMC/MOS triplets.
+            metric_rows = {index: sum(
+                    "AMC" in str(ws.cell(index, column + 1).value or "").upper()
+                    and "MOS" in str(ws.cell(index, column + 2).value or "").upper()
+                    for column in range(4, (ws.max_column or 0) - 1)
+                ) for index in range(1, 7)}
+            metric_header = max(metric_rows, key=lambda index: (metric_rows[index], index == header_row))
+            if metric_rows[metric_header]:
+                header_row = metric_header
         if header_row is None:
-            continue
-        item_header = str(ws.cell(header_row, 2).value or "").upper()
-        if "DESCRIPTION" not in item_header and "PRODUCT" not in item_header:
             continue
         source_facility_level = raw_facility_level(sheet_name, ws.cell(1, 1).value)
         if is_primary_care_summary:

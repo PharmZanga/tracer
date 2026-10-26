@@ -53,12 +53,19 @@ for (const datasetName of DATASETS) {
 }
 
 const periods = [...periodMap.values()].sort((left, right) => left.id.localeCompare(right.id));
-if (periods.length !== 42) errors.push(`Expected 42 January-October periods, found ${periods.length}`);
+if (periods.length !== 43) errors.push(`Expected 43 January-October periods, found ${periods.length}`);
 const octoberWeek2 = periods.find((period) => period.id === "2026-10-18");
 if (!octoberWeek2) errors.push("October Week 2 submission is missing");
 else {
   if (octoberWeek2.counts?.provinces !== 10) errors.push(`October Week 2 should contain all ten provincial submissions, found ${octoberWeek2.counts?.provinces}`);
   if (octoberWeek2.source !== "October Week 2: all ten provincial submissions received; SOH normalized to whole units") errors.push("October Week 2 source label does not disclose submission coverage and whole-unit normalization");
+}
+const octoberWeek3 = periods.find((period) => period.id === "2026-10-25");
+if (!octoberWeek3) errors.push("October Week 3 submission is missing");
+else {
+  if (octoberWeek3.counts?.provinces !== 10) errors.push("October Week 3 must contain all ten provincial submissions");
+  if (octoberWeek3.sourceWorkbooks?.length !== 10 || octoberWeek3.sourceWorkbooks.some(source => !/^[a-f0-9]{64}$/.test(source.sha256))) errors.push("October Week 3 source workbook manifest is incomplete");
+  if (!octoberWeek3.dataQuality?.facilityBlockReportingReview?.allZeroSOHBlocksExcludedFromStockMetrics) errors.push("October Week 3 must exclude all-zero SOH blocks");
 }
 
 const report = { reviewedAt: new Date().toISOString(), periods: [], errors, warnings };
