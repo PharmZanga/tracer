@@ -122,6 +122,13 @@ export function planAssistantRequest(question, { scope: current, directory, cata
     if (!previous) return { kind: 'notice', text: 'There is no catalogued report exactly one week before the selected period. I will not treat the gap as zero stock or substitute an older week.' };
     scope.periodId = previous.id;
   }
+  if (/\b(same report|same figures|unchanged figures|unchanged soh|repeated soh|repeating soh)\b/.test(text)
+    || /\b(repeat\w*|unchanged|identical|same)\b/.test(text) && /\b(soh|stock on hand|quantities|figures|reports?)\b/.test(text)) {
+    const requestedWeeks = Number(text.match(/\b([1-8]) weeks?\b/)?.[1] || 3);
+    return { kind: 'navigate', scope: { ...scope, status: 'all' }, page: 'quality', qualityCheck: 'repeated-soh',
+      lookback: [1, 2, 3, 4, 6, 8].includes(requestedWeeks) ? requestedWeeks : 3,
+      text: 'Repeated SOH under Data Quality lists named facilities and district aggregate reporting streams with identical stock-on-hand figures. Choose the ending week and look-back window, then review the commodity-level weekly evidence or export it. Positive SOH and repeated zeros are separate. This flags records for verification; it does not prove that a report was copied.' };
+  }
   if (/\bcompare|comparison|versus|vs\b/.test(text)) return { kind: 'compare', scope, page: 'comparison' };
   if (/\brepeat|recurr|keep appearing|same figures|unchanged figures|trend\b/.test(text)) {
     const unchanged = /same figures|unchanged figures/.test(text);

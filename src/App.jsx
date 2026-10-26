@@ -5,6 +5,7 @@ import {ReportCareChart} from './ReportCharts.jsx';
 import { buildReportNarrative, formatReportPercent, reportingWeeks, reportAverageMos, reportPeriodRange } from './reportNarrative.js';
 import { commodityRowsFromPeriod } from './tracerRows.js';
 import NationalStockDetail from './NationalStockDetail.jsx';
+import RepeatedSohPanel from './RepeatedSohPanel.jsx';
 import {isAdministrator,isAdministrationPage} from './dashboardAccess.js';
 import TracerAssistant from './NavigationGuide.jsx';
 import { emptyAssistantFocus, planAssistantRequest, assistantScopeLabel, validAssistantView, assistantSnapshot, assistantReporting, assistantComparison, assistantRecurring, assistantEvidence, previousAssistantWeek, assistantProgrammeMatches } from './tracerAssistant.js';
@@ -20,7 +21,7 @@ import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
 import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName } from "./commodityNormalization.js";
 import { reportingFacilityType, sourceSupportedHospitalFacility } from "./dataQualityEvidence.js";
-import { facilityReportingRows, facilityReportingSummary, primaryCareDistrictRows, primaryCareDistrictSummary, primaryCareLevelReported } from "./reportingQuality.js";
+import { facilityReportingKey, facilityReportingRows, facilityReportingSummary, primaryCareDistrictRows, primaryCareDistrictSummary, primaryCareLevelReported } from "./reportingQuality.js";
 import { buildRedistributionCandidates } from "./redistribution.js";
 import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTracerAnalysis.js";
 import { vaccineStockData } from "./vaccineData.js";
@@ -1979,6 +1980,8 @@ function App() {
   const [commodityMissingOpen, setCommodityMissingOpen] = useState(false);
   const commodityTableRef = useRef(null);
   const [qualityRangeStart, setQualityRangeStart] = useState("2026-01");
+  const [qualityWorkspace, setQualityWorkspace] = useState('reporting');
+  const [qualityRepeatWeeks, setQualityRepeatWeeks] = useState(3);
   const [qualityRangeEnd, setQualityRangeEnd] = useState(tracerReportingPeriods.at(-1)?.month || "2026-06");
   const [qualityGranularity, setQualityGranularity] = useState("month");
   const [qualityProvinceFilter, setQualityProvinceFilter] = useState("all");
@@ -2849,7 +2852,7 @@ function App() {
     { label: "Actions closed", value: actionTotal ? formatPercent(actionSummary.Completed / actionTotal) : "-", sub: actionTotal ? `${actionSummary.Completed} of ${actionTotal} redistribution actions` : "No active redistribution actions", tone: actionSummary.Completed ? "green" : "neutral" },
   ];
   const dataQuality = fieldData.dataQuality || { provinces: [], districts: [], facilityTypes: [] };
-  const needsQualityHistory = activePage === "quality";
+  const needsQualityHistory = activePage === "quality" && qualityWorkspace === 'reporting';
   const qualityMonths = [...new Set(tracerReportingPeriods.map((period) => period.month))].sort();
   const qualityRangeLower = qualityRangeStart <= qualityRangeEnd ? qualityRangeStart : qualityRangeEnd;
   const qualityRangeUpper = qualityRangeStart <= qualityRangeEnd ? qualityRangeEnd : qualityRangeStart;
@@ -3830,6 +3833,10 @@ function App() {
       setReportPeriodId(scope.periodId); setReportProvince(scope.province); setReportDistrict(scope.district);
       setReportFacilityType('all'); setReportFacilityName('all'); setReportDrillProvince(''); setReportDrillDistrict('');
       setReportKpiFilter(scope.status === 'missing' ? 'facility-missing' : 'all'); setReportStatus('all');
+    }
+    if (page === 'quality' && command.qualityCheck === 'repeated-soh') {
+      setQualityWorkspace('repeated');
+      setQualityRepeatWeeks([1, 2, 3, 4, 6, 8].includes(command.lookback) ? command.lookback : 3);
     }
     if (command.stock) setStockWorkspace(command.stock);
     setActivePage(page);
@@ -5225,10 +5232,14 @@ function App() {
           <div className="section-head">
             <div>
               <p className="eyebrow dark">Data Quality</p>
-              <h2>Reporting follow-up, trends, and weekly report library</h2>
-              <p>Use this workspace to identify persistent reporting gaps, inspect patterns over time, and review the weekly tracer submissions. Live compliance monitoring remains under Reporting Rate.</p>
+              <h2>Reporting completeness and stock consistency</h2>
             </div>
           </div>
+          <div className="quality-workspace-switch" role="group" aria-label="Data quality checks">
+            <button type="button" aria-pressed={qualityWorkspace === 'reporting'} onClick={() => setQualityWorkspace('reporting')}>Reporting follow-up</button>
+            <button type="button" aria-pressed={qualityWorkspace === 'repeated'} onClick={() => setQualityWorkspace('repeated')}>Repeated SOH</button>
+          </div>
+          {qualityWorkspace === 'repeated' ? <RepeatedSohPanel catalogue={currentReportCatalogue} periodId={fieldData.id} scope={{ province: selectedProvince, district: selectedDistrict, facilityLevel: selectedFacilityLevel, facility: selectedFacility, ...assistantFocus }} matchesLevel={matchesFacilityCareLevel} lookback={qualityRepeatWeeks} onLookbackChange={setQualityRepeatWeeks} /> : <>
           <div className="reporting-filter-bar quality-primary-filters">
             <label><span>Start month</span><select value={qualityRangeStart} onChange={(event) => setQualityRangeStart(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
             <label><span>End month</span><select value={qualityRangeEnd} onChange={(event) => setQualityRangeEnd(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
@@ -5362,6 +5373,7 @@ function App() {
             </div>
           ) : <div className="empty-state">No submission comments were captured for this selected week.</div>}
           </div>
+          </>}
         </section>}
 
         {activePage === "reporting" && <section className="reporting-rate-section">
