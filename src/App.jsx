@@ -1,7 +1,7 @@
 import { Children, cloneElement, isValidElement, lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 const FacilityAlertsMap=lazy(()=>import('./FacilityAlertsMap.jsx'));
 import { reportSections } from './reportSections.js';
-import { buildReportNarrative } from './reportNarrative.js';
+import { buildReportNarrative, formatReportPercent, reportingWeeks, reportAverageMos } from './reportNarrative.js';
 import { commodityRowsFromPeriod } from './tracerRows.js';
 import NationalStockDetail from './NationalStockDetail.jsx';
 import {isAdministrator,isAdministrationPage} from './dashboardAccess.js';
@@ -11,7 +11,7 @@ import useViewerActivity from './useViewerActivity.js';
 import ViewerActivity from './ViewerActivity.jsx';
 import {filterComparisonRows,hasComparisonScope} from './comparisonScope.js';
 import {ArrowUpRight, RotateCcw, SlidersHorizontal} from 'lucide-react';
-import {ReportStockBars,ReportTrendSection,ReportGeography} from './ReportAnalytics.jsx';
+import {ReportStockBars,ReportTrendSection,ReportGeography,ReportPerformanceBars} from './ReportAnalytics.jsx';
 import { Activity, BellRing, Boxes, CalendarDays, ChartNoAxesCombined, ChevronDown, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, CircleX, ClipboardCheck, Database, FileCheck, FileQuestion, FileText, FileUp, FileX, Gauge, GitCompareArrows, LayoutDashboard, MapPinned, PackageSearch, Printer, ScanSearch, ShieldCheck, Siren, Stethoscope, Syringe, Users, Warehouse } from "lucide-react";
 import { availableTracerMonths, availableTracerYears, loadHistoricalTracerYear, loadLiveTracerData, loadTracerMonth, tracerReportingPeriods } from "./tracerFacilityData.js";
 import { weeklyStockPeriods } from "./weeklyStockData.js";
@@ -104,10 +104,10 @@ const stockStreamLabels = {
   LAB: "Laboratory commodities (LAB)",
 };
 
-const actionApiUrl = window.__TRACER_SECURE_DASHBOARD__
+const actionApiUrl = typeof window !== 'undefined' && window.__TRACER_SECURE_DASHBOARD__
   ? window.location.origin
   : import.meta.env.VITE_ACTION_API_URL || "https://tracer-comments-api.onrender.com";
-const copilotApiUrl = window.__TRACER_SECURE_DASHBOARD__ ? window.location.origin : "";
+const copilotApiUrl = typeof window !== 'undefined' && window.__TRACER_SECURE_DASHBOARD__ ? window.location.origin : "";
 
 
 function normalizeRate(value) {
@@ -491,7 +491,7 @@ const careLevelBuckets = [
   { id: "level3", label: "Level 3/Specialised Hospital" },
 ];
 
-const initialDashboardParams = new URLSearchParams(window.location.search);
+const initialDashboardParams = new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search);
 const initialDashboardParam = (name, fallback = "") => initialDashboardParams.get(name) || fallback;
 
 const approvedLevelOfCareDisplayOverrides = {
@@ -656,14 +656,14 @@ function LevelOfCarePerformance({ rows }) {
   );
 }
 
-function buildNationalReportSummary(selectedPeriods, previousPeriods, option, type) {
+export function buildNationalReportSummary(selectedPeriods, previousPeriods, option, type) {
   if (!selectedPeriods.length) return null;
   const latest = selectedPeriods.at(-1);
   const rowsByPeriod = new Map(selectedPeriods.map((p) => [p.id, commodityRowsFromPeriod(p)]));
   const commodityRows = selectedPeriods.flatMap((p) => rowsByPeriod.get(p.id));
   const facilities = selectedPeriods.flatMap((p) => p.facilities || []);
   const national = combineRollups(selectedPeriods.map((p) => p.national), makeEmptyRollup("Zambia"));
-  national.mos = commodityRows.length ? cappedAverageMos(commodityRows) : national.mos;
+  national.mos = commodityRows.length ? reportAverageMos(commodityRows) : national.mos;
   const period = { ...latest, label: option.label, source: [...new Set(selectedPeriods.map((p) => p.source))].join("; "), national,
     counts: { ...latest.counts, provinces: new Set(selectedPeriods.flatMap((p) => (p.provinces || []).map((r) => r.name))).size } };
   const levelRows = careLevelBuckets.map((bucket) => {
@@ -671,7 +671,7 @@ function buildNationalReportSummary(selectedPeriods, previousPeriods, option, ty
     const rows = commodityRows.filter((row) => careLevelBucket(row.facilityLevel) === bucket.id);
     const fallbackRows = selectedPeriods.flatMap((p) => p.facilityLevels || []).filter((r) => careLevelBucket(r.name) === bucket.id);
     const rollup = combineRollups(groupedFacilities.length ? groupedFacilities : fallbackRows, makeEmptyRollup(bucket.label));
-    return { ...rollup, label: bucket.label, mos: rows.length ? cappedAverageMos(rows) : rollup.mos };
+    return { ...rollup, name: bucket.label, label: bucket.label, mos: rows.length ? reportAverageMos(rows) : rollup.mos };
   }).filter((row) => row.rows > 0);
   const provinces = (facilities.length ? aggregateRollups(facilities, "province") : aggregateRollups(selectedPeriods.flatMap((p) => p.provinces || []), "name"))
     .sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows);
@@ -689,7 +689,7 @@ function buildNationalReportSummary(selectedPeriods, previousPeriods, option, ty
   ].map((row) => ({ ...row, rate: row.count / stockStatusTotal }));
   const previous = previousPeriods.length ? combineRollups(previousPeriods.map((p) => p.national)) : null;
   const previousRows = previousPeriods.flatMap(commodityRowsFromPeriod);
-  if (previous && previousRows.length) previous.mos = cappedAverageMos(previousRows);
+  if (previous && previousRows.length) previous.mos = reportAverageMos(previousRows);
   return {
     selectedPeriods, type, option,
     expectedDistrictRoster: [...new Set(tracerReportingPeriods
@@ -700,13 +700,17 @@ function buildNationalReportSummary(selectedPeriods, previousPeriods, option, ty
     districts: aggregateRollups(selectedPeriods.flatMap(p=>(p.districts||[]).map(r=>({...r,reportKey:JSON.stringify([r.province,r.name])}))), 'reportKey').map(r=>{const [province,name]=JSON.parse(r.name);return {...r,province,name};}),
     reportingDistricts: selectedPeriods.flatMap(p=>primaryCareDistrictRows(p).map(r=>({...r,periodId:p.id}))),
     trendPeriods: tracerReportingPeriods.filter(p=>p.reportDate<=latest.reportDate&&p.month.slice(0,4)===latest.month.slice(0,4)).slice(-12),
-    weekly: selectedPeriods.map((p) => ({ period: p, reporting: primaryCareDistrictSummary(p), mos: cappedAverageMos(rowsByPeriod.get(p.id)) ?? p.national.mos,
-      levels: careLevelBuckets.map((b) => ({ label:b.label, availability:combineRollups((p.facilities?.length ? p.facilities : p.facilityLevels || []).filter((f) => careLevelBucket(f.facilityLevel || f.name) === b.id)).availability, mos:cappedAverageMos(rowsByPeriod.get(p.id).filter((r) => careLevelBucket(r.facilityLevel) === b.id)) })) })),
+    weekly: selectedPeriods.map((p) => ({ period: p, reporting: primaryCareDistrictSummary(p), mos: rowsByPeriod.get(p.id).length ? reportAverageMos(rowsByPeriod.get(p.id)) : p.national.mos,
+      levels: careLevelBuckets.map((b) => {
+        const rollup = combineRollups((p.facilities?.length ? p.facilities : p.facilityLevels || []).filter((f) => careLevelBucket(f.facilityLevel || f.name) === b.id));
+        const rows = rowsByPeriod.get(p.id).filter((r) => careLevelBucket(r.facilityLevel) === b.id);
+        return { label:b.label, availability:rollup.rows ? rollup.availability : null, mos:rows.length ? reportAverageMos(rows) : rollup.mos };
+      }) })),
     priorityCommodities: aggregateRollups(selectedPeriods.flatMap((p) => p.commodities || []), "name").sort((a,b) => a.availability-b.availability || b.riskRows-a.riskRows).slice(0,20),
     stockPeriods: matchingStockPeriods(weeklyStockPeriods, option, type),
     confirmedZero: commodityRows.filter((r) => r.quantity === 0).length,
     hasCommodityEvidence: commodityRows.length > 0,
-    previousLabel: previousPeriods.length ? `${previousPeriods[0].label} to ${previousPeriods.at(-1).label}` : null,
+    previousLabel: previousPeriods.length === 1 ? previousPeriods[0].label : previousPeriods.length ? `${previousPeriods[0].label} to ${previousPeriods.at(-1).label}` : null,
     period,
     levelRows,
     provinces,
@@ -719,21 +723,25 @@ function buildNationalReportSummary(selectedPeriods, previousPeriods, option, ty
 }
 
 function ReportAvailabilityChart({ weekly, care = false }) {
+  const formatPercent = formatReportPercent;
   const width = Math.max(680, weekly.length * (care ? 115 : 80));
   const left = 48, top = 42, height = 210, step = (width - 100) / weekly.length;
   const colors = ["#ed7d31", "#4472c4", "#70ad47", "#a5a5a5"];
   const mosMaximum = Math.max(4, ...weekly.map((w) => w.mos || 0));
-  const mosPoints = weekly.filter((w) => Number.isFinite(w.mos)).map((w) => {
-    const index = weekly.indexOf(w);
-    return `${left+step*(index+.5)},${top+height-(w.mos/mosMaximum)*height}`;
-  }).join(" ");
+  const mosSegments = [];
+  weekly.forEach((w, index) => {
+    if (!Number.isFinite(w.mos)) return;
+    if (!index || !Number.isFinite(weekly[index - 1].mos)) mosSegments.push([]);
+    mosSegments.at(-1).push(`${left+step*(index+.5)},${top+height-(w.mos/mosMaximum)*height}`);
+  });
   return <div className="national-report-chart"><svg viewBox={`0 0 ${width} 340`} role="img" aria-label={care ? "Weekly availability by level of care" : "Weekly availability and average months of stock"}>
+    <text x={left} y="20">Availability (%)</text>{!care && <text x={width-50} y="20" textAnchor="end">Average MOS</text>}
     {[0,20,40,60,80,100].map((value) => <g key={value}><line x1={left} x2={width-50} y1={top+height-value*height/100} y2={top+height-value*height/100} stroke="#d4d4d4" strokeDasharray="3 3"/><text x={left-8} y={top+height-value*height/100+4} textAnchor="end">{value}%</text></g>)}
     {weekly.map((w,index) => <g key={w.period.id}>{(care ? w.levels : [{availability:w.period.national.availability}]).map((r,j,rows) => {
       const barWidth=step*.7/rows.length, x=left+step*index+step*.15+j*barWidth, barHeight=(r.availability || 0)*height;
-      return <g key={j}><rect x={x} y={top+height-barHeight} width={barWidth-2} height={barHeight} fill={colors[j]}/><text x={x+barWidth/2} y={top+height-barHeight-6} textAnchor="middle" fontSize={care ? "8" : "11"}>{formatPercent(r.availability)}</text></g>;
+      return <g key={j}>{Number.isFinite(r.availability) ? <><rect x={x} y={top+height-barHeight} width={barWidth-2} height={barHeight} fill={colors[j]}/><text x={x+barWidth/2} y={top+height-barHeight-6} textAnchor="middle" fontSize={care ? "8" : "11"}>{formatPercent(r.availability)}</text></> : <text x={x+barWidth/2} y={top+height/2} textAnchor="middle">N/R</text>}</g>;
     })}<text x={left+step*(index+.5)} y={top+height+22} textAnchor="middle">{w.period.reportDate.slice(5)}</text></g>)}
-    {!care && <><polyline points={mosPoints} fill="none" stroke="#4472c4" strokeWidth="2"/>{weekly.map((w,i) => Number.isFinite(w.mos) && <g key={w.period.id}><rect x={left+step*(i+.5)-4} y={top+height-w.mos/mosMaximum*height-4} width="8" height="8" fill="#4472c4"/><text x={left+step*(i+.5)} y={top+height-w.mos/mosMaximum*height-12} textAnchor="middle">{formatMos(w.mos)}</text></g>)}{[0,1,2,3,4].map((i) => <text key={i} x={width-42} y={top+height-i*height/4+4}>{(i*mosMaximum/4).toFixed(1)}</text>)}</>}
+    {!care && <>{mosSegments.map((points,i)=><polyline key={i} points={points.join(' ')} fill="none" stroke="#4472c4" strokeWidth="2"/>)}{weekly.map((w,i) => Number.isFinite(w.mos) && <g key={w.period.id}><rect x={left+step*(i+.5)-4} y={top+height-w.mos/mosMaximum*height-4} width="8" height="8" fill="#4472c4"/><text x={left+step*(i+.5)} y={top+height-w.mos/mosMaximum*height-12} textAnchor="middle">{formatMos(w.mos)}</text></g>)}{[0,1,2,3,4].map((i) => <text key={i} x={width-42} y={top+height-i*height/4+4}>{(i*mosMaximum/4).toFixed(1)}</text>)}</>}
     {(care ? careLevelBuckets.map((b) => b.label) : ["Availability", "Average MOS"]).map((label,i) => <g key={label}><rect x={left} y={294+i*11} width="12" height="7" fill={colors[i]}/><text x={left+18} y={301+i*11}>{label}</text></g>)}
   </svg></div>;
 }
@@ -753,7 +761,8 @@ function OrderedReport({children}) {
   return <article className="national-weekly-report" id="national-weekly-report">{Children.toArray(children).sort((a,b)=>rank(a)-rank(b)).map(node=>labelHeadings(node))}</article>;
 }
 
-function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChange, onPrint, type, year, onTypeChange, onYearChange, loading, error, onRetry }) {
+export function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChange, onPrint, type, year, onTypeChange, onYearChange, loading, error, onRetry }) {
+  const formatPercent = formatReportPercent;
   const sectionOptions = reportSections;
   const [includedSections, setIncludedSections] = useState(() => sectionOptions.map(([id]) => id));
   const sectionProps = (id) => ({ hidden: !includedSections.includes(id), "data-report-section": id });
@@ -771,7 +780,6 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
   const lowestLevel = [...levelRows].sort((a, b) => a.availability - b.availability).at(0);
   const strongestProvince = [...provinces].sort((a, b) => b.availability - a.availability).at(0);
   const weakestProvince = provinces[0];
-  const reportDate = new Date(`${period.reportDate}T00:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
   return <section className="national-report-workspace">
     {tools}
 
@@ -782,14 +790,13 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
         <h1>{type === "monthly" ? "Monthly" : type === "quarterly" ? "Quarterly" : "Weekly"} Tracer Availability Report</h1>
         <p className="national-report-cover-description">The report summarises national tracer availability, stock status and service-level performance for the selected reporting period. It identifies priority replenishment and redistribution needs using submitted dashboard data.</p>
         <span>Report period: {period.label}</span>
-        <small>{summary.selectedPeriods[0].reportDate} to {period.reportDate} | {summary.selectedPeriods.length} reporting weeks</small>
+        <small>{summary.selectedPeriods[0].reportDate} to {period.reportDate} | {reportingWeeks(summary.selectedPeriods.length)}</small>
         <strong>Prepared by: Zanga Musakuzi</strong><small>Principal Pharmacist - Data Analytics</small><b className="national-report-cover-year">{year}</b>
       </header>
 
       <section className="national-report-section national-report-contents"><h2>Contents</h2>{sectionOptions.filter(([id]) => includedSections.includes(id)).map(([id,label]) => <p key={id}>{label}</p>)}</section>
       <section className="national-report-section" {...sectionProps("overview")}>
         <div className="national-report-section-head"><p>A. National Overview</p><span>{period.label}</span></div>
-        <p className="national-report-narrative">For {period.label}, tracer commodity data from {period.counts.provinces} provinces was analysed, covering {period.national.rows.toLocaleString()} submitted commodity observations across {summary.selectedPeriods.length} reporting weeks. National reported availability was {formatPercent(period.national.availability)}, with an average Months of Stock (MOS) of {formatMos(period.national.mos)}. At the final reporting week ending {reportDate}, DHO reporting completeness stood at {districtReporting.reported} of {districtReporting.expected} districts.</p>
         {analyticalText('overview')}
         {type === "quarterly" && <p className="national-report-callout">Quarter coverage: {summary.option.months.map(monthLabel).join(", ")}. {summary.option.months.length < 3 ? "Partial quarter: only the listed submitted months are included." : "Three submitted months are included; individual weekly gaps remain visible below."}</p>}
         <div className="national-report-kpis">
@@ -820,8 +827,8 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
       </section>
 
       <section className="national-report-section national-report-split" data-report-section="provinces" hidden={!includedSections.includes("provinces") && !includedSections.includes("programmes")}>
-        <div {...sectionProps("provinces")}><div className="national-report-section-head"><p>C. Provincial Performance</p><span>Lowest availability first</span></div>{analyticalText('provinces')}<table><thead><tr><th>Province</th><th>Availability</th><th>MOS</th><th>Zero/near-zero MOS</th><th>Low stock</th></tr></thead><tbody>{provinces.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.stockout.toLocaleString()}</td><td>{(row.nearCritical + row.understocked).toLocaleString()}</td></tr>)}</tbody></table></div>
-        <div {...sectionProps("programmes")}><div className="national-report-section-head"><p>D. Programme Performance</p><span>Priority review</span></div>{analyticalText('programmes')}<table><thead><tr><th>Programme</th><th>Availability</th><th>MOS</th><th>Risk rows</th></tr></thead><tbody>{programmes.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.riskRows.toLocaleString()}</td></tr>)}</tbody></table></div>
+        <div {...sectionProps("provinces")}><div className="national-report-section-head"><p>C. Provincial Performance</p><span>Lowest availability first</span></div>{analyticalText('provinces')}<ReportPerformanceBars rows={provinces} subject="Provincial"/><table><thead><tr><th>Province</th><th>Availability</th><th>MOS</th><th>Zero/near-zero MOS</th><th>Low stock</th></tr></thead><tbody>{provinces.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.stockout.toLocaleString()}</td><td>{(row.nearCritical + row.understocked).toLocaleString()}</td></tr>)}</tbody></table></div>
+        <div {...sectionProps("programmes")}><div className="national-report-section-head"><p>D. Programme Performance</p><span>Priority review</span></div>{analyticalText('programmes')}<ReportPerformanceBars rows={programmes} subject="Programme"/><table><thead><tr><th>Programme</th><th>Availability</th><th>MOS</th><th>Risk rows</th></tr></thead><tbody>{programmes.map((row) => <tr key={row.name}><td>{row.name}</td><td>{formatPercent(row.availability)}</td><td>{formatMos(row.mos)}</td><td>{row.riskRows.toLocaleString()}</td></tr>)}</tbody></table></div>
       </section>
 
       <section className="national-report-section" {...sectionProps("commodities")}>
@@ -859,8 +866,8 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
       <section className="national-report-section" {...sectionProps("reporting")}>
         <div className="national-report-section-head"><p>F. Reporting Completeness</p><span>Weekly reporting evidence</span></div>
         {analyticalText('reporting')}
-        <table><thead><tr><th>Week</th><th>Expected</th><th>Complete DHO reports</th><th>Missing / incomplete districts</th></tr></thead><tbody>{summary.weekly.map(({period:p,reporting:r}) => <tr key={p.id}><td>{p.label}</td><td>{r.expected}</td><td>{r.reported}</td><td>{primaryCareDistrictRows(p).filter((d) => !(d.healthCentreSubmissionReceived && d.healthPostSubmissionReceived)).map((d) => `${d.name} (${d.province})`).join("; ") || "None"}</td></tr>)}</tbody></table>
-        <p>DHO reporting requires Health Centre and Health Post SOH reports, or valid combined primary-care SOH evidence. Hospital-only submissions do not satisfy this requirement. A block with its entire SOH column blank is not a stock report, even when AMC is entered. In a block with at least one SOH entry, blank or dash cells are zero.</p>
+        <table><thead><tr><th>Week</th><th>Expected</th><th>Complete DHO reports</th><th>Missing / incomplete districts</th></tr></thead><tbody>{summary.weekly.map(({period:p,reporting:r}) => <tr key={p.id}><td>{p.label}</td><td>{r.expected}</td><td>{r.reported}</td><td>{primaryCareDistrictRows(p).filter((d) => !d.submitted).map((d) => `${d.name} (${d.province})`).join("; ") || "None"}</td></tr>)}</tbody></table>
+        <p>DHO reporting requires Health Centre and Health Post SOH reports, or valid combined primary-care SOH evidence. Hospital-only submissions do not satisfy this requirement. Blank and all-zero SOH blocks are not submitted reports, even when AMC is entered. Within a submitted block containing positive SOH, blank or dash quantities are zero; unreadable nonblank values remain missing.</p>
       </section>
       <section className="national-report-section national-report-actions" {...sectionProps("actions")}>
         <div className="national-report-section-head"><p>Recommended Actions</p><span>Management follow-up</span></div>
@@ -872,7 +879,7 @@ function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChan
         </ol>
         <table><thead><tr><th>Action</th><th>Responsible team</th><th>Timing</th></tr></thead><tbody><tr><td>Validate quantities, expiry and replenishment for critical commodities</td><td>Provincial and district pharmacists</td><td>Immediate</td></tr><tr><td>Review programme shortages and order fulfilment</td><td>Programme managers and Control Tower</td><td>Within one week</td></tr><tr><td>Close incomplete primary-care and hospital reporting</td><td>Provincial health offices</td><td>Before next submission</td></tr><tr><td>Review constrained central inventory categories</td><td>ZAMMSA and Ministry of Health</td><td>Weekly</td></tr></tbody></table>
       </section>
-      <section className="national-report-section" {...sectionProps("sources")}><h2>Methodology and Sources</h2><p>Availability is the commodity-row-weighted reported availability used by the dashboard. MOS is the arithmetic mean of submitted commodity MOS, capped at 12 months where detailed rows exist; historical summary-only periods use row-weighted source MOS. Stock status is reported separately from non-reporting. Multi-week totals are observations, not unique facilities, cumulative SOH or total consumption. Latest-week DHO coverage is distinct from the weekly reporting history.</p><p>Reporting periods follow the dashboard submission month, not the calendar month of the week-ending date. Partial quarters include only available submissions. Earlier period comparisons use the preceding available period of the same frequency. The attached August reports supply the structure; their older figures are not reused.</p><details open><summary>Provincial tracer sources</summary><ul>{[...new Set(summary.selectedPeriods.map((p) => p.source))].map((source) => <li key={source}>{source}</li>)}</ul></details></section>
+      <section className="national-report-section" {...sectionProps("sources")}><h2>Methodology and Sources</h2><p>Availability is the commodity-row-weighted reported availability used by the dashboard. MOS is the arithmetic mean of available numeric commodity MOS, capped at 12 months where detailed rows exist; historical summary-only periods use row-weighted source MOS. Missing MOS is excluded from the average, not replaced with zero. Stock status is reported separately from non-reporting. Multi-week totals are observations, not unique facilities, cumulative SOH or total consumption. Latest-week DHO coverage is distinct from the weekly reporting history.</p><p>Reporting periods follow the dashboard submission month, not the calendar month of the week-ending date. Partial quarters include only available submissions. Earlier period comparisons use the preceding available period of the same frequency. The Ministry of Health reference report supplies the presentation style only; every figure, chart and analytical statement is derived from the selected dashboard data. Comparisons are descriptive and do not establish the causes of changes in availability.</p><details open><summary>Provincial tracer sources</summary><ul>{[...new Set(summary.selectedPeriods.map((p) => p.source))].map((source) => <li key={source}>{source}</li>)}</ul></details></section>
       <footer>National Supply Chain Tracer Report | Generated {new Date().toLocaleDateString("en-GB",{timeZone:"Africa/Lusaka"})}</footer>
     </OrderedReport>
   </section>;

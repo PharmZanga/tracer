@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildReportNarrative, describeChange, performanceNarrative } from '../src/reportNarrative.js';
+import { buildReportNarrative, describeChange, performanceNarrative, formatReportPercent, reportingWeeks, reportAverageMos, imbalanceNarrative, reportingRateNarrative } from '../src/reportNarrative.js';
 
 const summary = () => ({
   period: { label: 'Selected week', national: { availability: .87, mos: 3.2, rows: 100 } },
@@ -49,4 +49,48 @@ test('multiple observations describe endpoints without claiming sustained improv
   input.weekly.unshift({ period: { national: { availability: .8 } } });
   assert.match(buildReportNarrative(input).overview.join(' '), /increased by 7.0 percentage points/);
   assert.match(buildReportNarrative(input).overview.join(' '), /not evidence of a sustained trend/);
+});
+
+test('report prose uses actual care-level labels and limits long lists of names', () => {
+  const result = performanceNarrative(Array.from({length: 10}, (_, i) => ({
+    name: 'Current selection', label: `Care level ${i + 1}`, rows: 10, availability: .6 + i / 100, mos: 3,
+  })), 'Level-of-care').join(' ');
+  assert.doesNotMatch(result, /Current selection/);
+  assert.match(result, /Care level 1/);
+  assert.match(result, /10 reported groups, including Care level 1, Care level 2, Care level 3/);
+});
+
+test('reports use singular weeks and identical percentage rounding in prose and charts', () => {
+  assert.equal(reportingWeeks(1), '1 reporting week');
+  assert.equal(reportingWeeks(4), '4 reporting weeks');
+  assert.equal(formatReportPercent(.4145), '41.5%');
+  assert.equal(formatReportPercent(null), 'not available');
+  const input = summary(); input.period.counts = {provinces: 10};
+  const text = buildReportNarrative(input).overview.join(' ');
+  assert.match(text, /100 submitted commodity observations from 10 provinces were analysed across 1 reporting week\./);
+  assert.doesNotMatch(text, /1 reporting weeks/);
+});
+
+test('missing MOS is excluded from report averages rather than coerced to zero', () => {
+  assert.equal(reportAverageMos([{mos: null}, {mos: undefined}, {mos: 4}, {mos: 0}]), 2);
+  assert.equal(reportAverageMos([{mos: null}, {mos: NaN}]), null);
+  assert.equal(reportAverageMos([{mos: 24}, {mos: 4}]), 8);
+});
+
+test('imbalance analysis uses provincial observation shares and does not recommend assumed transfers', () => {
+  const text = imbalanceNarrative([
+    {name: 'A', rows: 100, stockout: 10, nearCritical: 20, understocked: 30, abovePlan: 10},
+    {name: 'B', rows: 200, stockout: 20, nearCritical: 20, understocked: 20, abovePlan: 100},
+  ]).join(' ');
+  assert.match(text, /A \(60.0%\).*B.*50.0%/);
+  assert.match(text, /not quantities available for transfer/);
+  assert.match(imbalanceNarrative([])[0], /No submitted/);
+});
+
+test('reporting analysis separates coverage from availability and retains missing denominators', () => {
+  const text = reportingRateNarrative([{name: 'A', expected: 10, reported: 8, rate: .8}, {name: 'B', expected: 20, reported: 20, rate: 1}]).join(' ');
+  assert.match(text, /28 of 30.*93.3%/);
+  assert.match(text, /A \(80.0%\)/);
+  assert.match(text, /not drug availability/);
+  assert.match(reportingRateNarrative([{expected: 0}])[0], /denominator is unavailable/);
 });
