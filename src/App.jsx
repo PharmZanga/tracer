@@ -20,7 +20,7 @@ import { latestZammsaCentralReport } from "./zammsaCentralStockData.js";
 import { fitForecast, reorderRecommendation } from "./forecasting.js";
 import { canonicalCommodityName, commodityRiskTone, commodityTrendDirection, findLongestZeroAvailabilityRun, isCommodityName } from "./commodityNormalization.js";
 import { reportingFacilityType, sourceSupportedHospitalFacility } from "./dataQualityEvidence.js";
-import { facilityReportingRows, primaryCareDistrictRows, primaryCareDistrictSummary, primaryCareLevelReported } from "./reportingQuality.js";
+import { facilityReportingRows, facilityReportingSummary, primaryCareDistrictRows, primaryCareDistrictSummary, primaryCareLevelReported } from "./reportingQuality.js";
 import { buildRedistributionCandidates } from "./redistribution.js";
 import { analyseFacilityTracer, facilityTracerExportRows } from "./facilityTracerAnalysis.js";
 import { vaccineStockData } from "./vaccineData.js";
@@ -2287,7 +2287,7 @@ function App() {
     .filter((row) => reportDistrict === "all" || row.district === reportDistrict)
     .filter((row) => !reportDrillProvince || row.province === reportDrillProvince)
     .filter((row) => !reportDrillDistrict || row.district === reportDrillDistrict)
-    .filter((row) => reportFacilityType === "all" || row.facilityType === reportFacilityType)
+    .filter((row) => reportFacilityType === "all" || row.facilityType === reportFacilityType || matchesFacilityCareLevel(row.facilityType, reportFacilityType))
     .filter((row) => reportFacilityName === "all" || row.facilityName === reportFacilityName)
     .sort((a, b) => a.province.localeCompare(b.province) || a.district.localeCompare(b.district) || a.facilityType.localeCompare(b.facilityType));
   const reportingFacilityRows = reportingFacilityScopeRows.filter((row) => effectiveFacilityReportStatus === "all" || row.status === effectiveFacilityReportStatus);
@@ -2308,18 +2308,24 @@ function App() {
   const districtOptions = [...new Set(districtDirectory
     .filter((district) => selectedProvince === "all" || district.province === selectedProvince)
     .map((district) => district.name))].sort();
-  const scopedFacilityLevelRows = fieldData.facilities
+  const facilityReportingUniverse = useMemo(() => facilityReportingRows(fieldData), [fieldData]);
+  const scopedFacilityLevelRows = facilityReportingUniverse
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
     .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict);
   const optionIsAvailableInScope = (option) => scopedFacilityLevelRows.some((facility) => matchesFacilityCareLevel(facility.facilityLevel, option.value));
   const facilityLevelOptions = facilityCareLevelOptions.filter(optionIsAvailableInScope);
   const specialisedFacilityLevelOptions = specialisedCareLevelOptions.filter(optionIsAvailableInScope);
-  const facilityOptions = selectedDistrict === "all" ? [] : fieldData.facilities
+  const facilityOptions = selectedDistrict === "all" ? [] : facilityReportingUniverse
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
     .filter((facility) => facility.district === selectedDistrict)
     .filter((facility) => matchesFacilityCareLevel(facility.facilityLevel, selectedFacilityLevel))
     .map((facility) => `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}`)
     .sort();
+
+  const fieldFacilityReporting = useMemo(() => facilityReportingSummary(fieldData, {
+    province: selectedProvince, district: selectedDistrict, facility: selectedFacility,
+    matchesFacility: facility => matchesFacilityCareLevel(facility.facilityLevel, selectedFacilityLevel),
+  }), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
 
   const filteredFacilities = useMemo(() => fieldData.facilities
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
@@ -2334,12 +2340,13 @@ function App() {
     .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility), [periodCommodityRows, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const dataQualityGate = useMemo(() => buildDataQualityGate(filteredCommodityRows), [filteredCommodityRows]);
 
-  const fieldKpis = combineRollups(filteredFacilities, fieldData.national);
   const fieldAverageMos = useMemo(() => cappedAverageMos(filteredCommodityRows), [filteredCommodityRows]);
   const isNationalUnfilteredScope = selectedProvince === "all"
     && selectedDistrict === "all"
     && selectedFacilityLevel === "all"
     && selectedFacility === "all";
+  const fieldKpis = combineRollups(filteredFacilities, isNationalUnfilteredScope ? fieldData.national : makeEmptyRollup());
+  const fieldAvailabilityLabel = fieldKpis.rows ? formatPercent(fieldKpis.availability) : 'Not reported';
   const scopedProvinceRows = useMemo(() => aggregateRollups(filteredFacilities, "province")
     .map((row) => {
       const displayOverride = isNationalUnfilteredScope ? approvedProvincePerformanceOverrides[fieldData.id]?.[row.name] : null;
@@ -2807,26 +2814,25 @@ function App() {
   };
 
   const comments = fieldData.comments || [];
-  const fieldDistrictReporting = primaryCareDistrictSummary(fieldData);
-  const fieldDistrictsReportedInScope = fieldDistrictReporting.rows
-    .filter((row) => row.submitted)
-    .filter((row) => selectedProvince === "all" || row.province === selectedProvince).length;
-  const expectedProvinces = 10;
-  const reportingRate = expectedProvinces ? fieldData.counts.provinces / expectedProvinces : 0;
-  const expectedDistricts = fieldDistrictReporting.expected;
-  const expectedFacilityUnits = fieldData.counts.expectedLevelReports || fieldData.counts.expectedFacilityUnits || fieldData.counts.facilityUnits;
+  const fieldDistrictReporting = useMemo(() => primaryCareDistrictSummary(fieldData, {
+    province: selectedProvince, district: selectedDistrict,
+  }), [fieldData, selectedProvince, selectedDistrict]);
+  const fieldDistrictsReportedInScope = fieldDistrictReporting.reported;
+  const expectedFacilityUnits = fieldFacilityReporting.expected;
   const missingDistricts = fieldDistrictReporting.missing;
-  const missingFacilityUnits = fieldData.counts.missingFacilityUnits || 0;
+  const missingFacilityUnits = fieldFacilityReporting.missing;
+  const executiveGeography = selectedDistrict !== 'all' ? selectedDistrict : selectedProvince !== 'all' ? selectedProvince : 'National';
   const facilityAvailabilityTargetCount = filteredFacilities.filter((facility) => facility.availability >= 0.8).length;
   const facilityAvailabilityTargetRate = filteredFacilities.length ? facilityAvailabilityTargetCount / filteredFacilities.length : 0;
   const executiveIndicatorCards = [
-    { label: "National availability", value: formatPercent(fieldKpis.availability), sub: "Click to review commodity availability", icon: PackageSearch, tone: "green", onClick: () => openExecutiveCommodityDetail("Available") },
+    { label: executiveGeography === 'National' ? "National availability" : "Medicine availability", value: fieldAvailabilityLabel, sub: "Click to review commodity availability", icon: PackageSearch, tone: "green", onClick: () => openExecutiveCommodityDetail("Available") },
     { label: "Average MOS", value: formatMos(fieldAverageMos), sub: "Click to review stock position", icon: ChartNoAxesCombined, tone: "blue", onClick: () => openExecutiveCommodityDetail("all", "mos") },
-    { label: "Reporting units", value: filteredFacilities.length, sub: `${fieldData.counts.facilityUnits} in full report · click for reports`, icon: ClipboardCheck, tone: "teal", onClick: () => openExecutiveReportingDetail("facility-reported") },
+    { label: "Reporting units", value: fieldFacilityReporting.reported, sub: fieldFacilityReporting.reported > fieldFacilityReporting.detailedReported ? `${fieldFacilityReporting.detailedReported} with stock details; ${fieldFacilityReporting.reported - fieldFacilityReporting.detailedReported} roster-only reported units` : `${fieldFacilityReporting.reported} of ${expectedFacilityUnits} known units in this filter · click for reports`, icon: ClipboardCheck, tone: "teal", onClick: () => openExecutiveReportingDetail("facility-reported") },
     { label: "Stockout facilities", value: stockoutFacilityCount, sub: "Click to review stockout commodities", icon: Siren, tone: "red", onClick: () => openExecutiveCommodityDetail("Stocked out") },
     { label: "Low-stock facilities", value: lowStockFacilityCount, sub: "Click to review commodities below 2 MOS", icon: BellRing, tone: "amber", onClick: () => openExecutiveCommodityDetail("Below 2 MOS") },
-    { label: "DHO districts reporting", value: fieldDistrictsReportedInScope, sub: "Both levels must submit SOH · click for details", icon: MapPinned, tone: "violet", onClick: () => openExecutiveReportingDetail("district-reported") },
+    { label: "DHO districts reporting", value: fieldDistrictsReportedInScope, sub: `${fieldDistrictsReportedInScope} of ${fieldDistrictReporting.expected} districts · HC + HP required · click for details`, icon: MapPinned, tone: "violet", onClick: () => openExecutiveReportingDetail("district-reported") },
     { label: "Districts not complete", value: missingDistricts, sub: "Partial or no primary-care submission · click for follow-up", icon: CircleAlert, tone: "red", onClick: () => openExecutiveReportingDetail("district-missing") },
+    { label: "Facilities not reported", value: missingFacilityUnits, sub: "Known expected reporting units in the current filter · click for list", icon: FileX, tone: "red", onClick: () => openExecutiveReportingDetail("facility-missing") },
   ];
   const highRiskCommodityCount = new Set(commodityScopeRows
     .filter((row) => row.mos !== null && row.mos < 2)
@@ -2834,12 +2840,12 @@ function App() {
     .filter(Boolean)).size;
   const actionTotal = actionSummary.Open + actionSummary["In progress"] + actionSummary.Completed;
   const managementKpis = [
-    { label: "Medicine availability", value: formatPercent(fieldKpis.availability), sub: "Submitted tracer commodity rows", tone: "green" },
-    { label: "National stockout rate", value: formatPercent(fieldKpis.rows ? fieldKpis.stockout / fieldKpis.rows : 0), sub: `${fieldKpis.stockout.toLocaleString()} stockout rows`, tone: "red" },
+    { label: "Medicine availability", value: fieldAvailabilityLabel, sub: "Submitted tracer commodity rows", tone: "green" },
+    { label: "Stockout rate", value: fieldKpis.rows ? formatPercent(fieldKpis.stockout / fieldKpis.rows) : "-", sub: `${fieldKpis.stockout.toLocaleString()} stockout rows`, tone: "red" },
     { label: "High-risk commodities", value: highRiskCommodityCount.toLocaleString(), sub: "At least one row below 2 MOS", tone: "amber" },
     { label: "Facilities at 80%+", value: formatPercent(facilityAvailabilityTargetRate), sub: `${facilityAvailabilityTargetCount} of ${filteredFacilities.length} reporting units`, tone: "green" },
-    { label: "Reporting coverage", value: formatPercent(expectedFacilityUnits ? (expectedFacilityUnits - missingFacilityUnits) / expectedFacilityUnits : 0), sub: `${expectedFacilityUnits - missingFacilityUnits} of ${expectedFacilityUnits} expected level reports`, tone: "blue" },
-    { label: "Missing reports", value: missingFacilityUnits.toLocaleString(), sub: `${missingDistricts} districts without a submission`, tone: missingFacilityUnits ? "red" : "green" },
+    { label: "Reporting coverage", value: expectedFacilityUnits ? formatPercent(fieldFacilityReporting.rate) : "-", sub: `${fieldFacilityReporting.reported} of ${expectedFacilityUnits} known reporting units in this filter`, tone: "blue" },
+    { label: "Missing reports", value: missingFacilityUnits.toLocaleString(), sub: `${missingDistricts} districts not complete; facility reporting units counted separately`, tone: missingFacilityUnits ? "red" : "green" },
     { label: "Actions closed", value: actionTotal ? formatPercent(actionSummary.Completed / actionTotal) : "-", sub: actionTotal ? `${actionSummary.Completed} of ${actionTotal} redistribution actions` : "No active redistribution actions", tone: actionSummary.Completed ? "green" : "neutral" },
   ];
   const dataQuality = fieldData.dataQuality || { provinces: [], districts: [], facilityTypes: [] };
@@ -3586,15 +3592,16 @@ function App() {
   }
 
   function openExecutiveReportingDetail(filter) {
+    const facilityDetail = filter.startsWith('facility-');
     setReportPeriodId(fieldData.id);
     setReportProvince(selectedProvince);
-    setReportDistrict("all");
-    setReportFacilityType("all");
-    setReportFacilityName("all");
+    setReportDistrict(selectedDistrict);
+    setReportFacilityType(facilityDetail ? selectedFacilityLevel : "all");
+    setReportFacilityName(facilityDetail && selectedFacility !== 'all' ? selectedFacility.split('|').at(-1) : "all");
     setReportStatus("all");
     setReportKpiFilter(filter);
     setReportDrillProvince(selectedProvince === "all" ? "" : selectedProvince);
-    setReportDrillDistrict("");
+    setReportDrillDistrict(selectedDistrict === 'all' ? '' : selectedDistrict);
     setActivePage("reporting");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -4199,7 +4206,7 @@ function App() {
               </select>
             </label></div></details><button type="button" className="filter-reset" title="Reset geography and facility filters" aria-label="Reset geography and facility filters" onClick={resetFieldHierarchy}><RotateCcw size={17}/></button></>}
           </div>
-          <div className="filter-scope" aria-live="polite"><span>{fieldData.label} <b>·</b> {selectedProvince === 'all' ? 'All provinces' : selectedProvince} <b>·</b> {selectedDistrict === 'all' ? 'All districts' : selectedDistrict}</span><span role="status">{monthLoading || historicalYearLoading ? 'Loading selected data...' : `${fieldData.counts.rows.toLocaleString()} commodity observations`}</span></div>
+          <div className="filter-scope" aria-live="polite"><span>{fieldData.label} <b>·</b> {selectedProvince === 'all' ? 'All provinces' : selectedProvince} <b>·</b> {selectedDistrict === 'all' ? 'All districts' : selectedDistrict}</span><span role="status">{monthLoading || historicalYearLoading ? 'Loading selected data...' : `${fieldKpis.rows.toLocaleString()} commodity observations in this filter`}</span></div>
         </header>}
 
         <section className="module-context" aria-label={`${activePageLabel} module`}>
@@ -4210,14 +4217,14 @@ function App() {
         {activePage === "executive" && <section className="hero">
           <div>
             <p className="eyebrow">Weekly Tracer Submission</p>
-            <h1>National tracer overview</h1>
+            <h1>{executiveGeography} tracer overview</h1>
             <p className="lede">Drug availability, stock pressure and reporting completeness.</p>
           </div>
           <div className="report-card">
             <span>Selected report</span>
             <strong>{fieldData.reportDate}</strong>
             <details className="overview-source"><summary>Submission source</summary><small>{fieldData.source}</small></details>
-            <small>{fieldData.counts.rows.toLocaleString()} commodity rows | {fieldData.counts.facilityUnits} reporting units</small>
+            <small>{fieldKpis.rows.toLocaleString()} commodity rows | {uniqueFilteredFacilities.length} units with stock details in this filter</small>
             <button className="hero-export" type="button" onClick={exportCsv}>Export facility CSV</button>
           </div>
         </section>}
@@ -4225,8 +4232,8 @@ function App() {
         {activePage === "executive" && <section className="executive-brief">
           <div className="executive-statement">
             <p className="eyebrow dark">Leadership Brief</p>
-            <h2>National tracer availability is {formatPercent(fieldKpis.availability)}, with {fieldKpis.riskRows.toLocaleString()} submitted rows requiring attention.</h2>
-            <p>{bestProvince?.name} has the strongest reported availability at {formatPercent(bestProvince?.availability)}, while {worstProvince?.name} is lowest at {formatPercent(worstProvince?.availability)}. In the current filter, {stockoutFacilityCount} reporting units have stockouts and {lowStockFacilityCount} have low-stock commodities.</p>
+            <h2>{fieldKpis.rows ? `${executiveGeography === 'National' ? 'National tracer availability' : `Tracer availability in ${executiveGeography}`} is ${fieldAvailabilityLabel}, with ${fieldKpis.riskRows.toLocaleString()} submitted rows requiring attention.` : 'No submitted tracer stock data match the current filters.'}</h2>
+            <p>{executiveGeography === 'National' && bestProvince && worstProvince ? `${bestProvince.name} has the strongest reported availability at ${formatPercent(bestProvince.availability)}, while ${worstProvince.name} is lowest at ${formatPercent(worstProvince.availability)}. ` : `${fieldFacilityReporting.reported} reporting units submitted, with ${missingFacilityUnits} known reporting units missing in this filter. `}In the current filter, {stockoutFacilityCount} reporting units have stockouts and {lowStockFacilityCount} have low-stock commodities.</p>
           </div>
           <div className="executive-kpis">
             {executiveIndicatorCards.map((card) => {
@@ -4240,7 +4247,7 @@ function App() {
           <div className="management-kpi-head">
             <div>
               <p className="eyebrow dark">KPI Summary</p>
-              <h2>National supply chain management snapshot</h2>
+              <h2>{executiveGeography} supply chain management snapshot</h2>
             </div>
             <span>Selected reporting period: {fieldData.label}</span>
           </div>
@@ -5364,7 +5371,9 @@ function App() {
               <h2>{effectiveFacilityReportStatus === "Not Reported" ? `Facilities that did not report — ${reportData.label}` : "District and facility reporting performance"}</h2>
               <p>A district counts as reported only when its DHO submission includes both Health Centre and Health Post reporting. Combined primary-care source sheets count for both; Level 1, 2, or 3 hospital submissions never make the district count as reported.</p>
               {reportFacilityName !== "all" ? <p className="active-reporting-context">Reporting unit: <b>{reportFacilityName}</b> <button type="button" onClick={() => setReportFacilityName("all")}>Clear</button></p> : null}
+              <p>Facility counts use known reporting units. Grouped Health Centre and Health Post submissions do not identify individual clinics.</p>
             </div>
+            <div className="export-actions"><button type="button" onClick={() => { setActivePage('executive'); window.scrollTo({top:0,behavior:'smooth'}); }}><ChevronLeft size={16} aria-hidden="true"/>Back to overview</button></div>
           </div>
           <div className="reporting-filter-bar">
             <label>
@@ -5396,6 +5405,7 @@ function App() {
                 setReportDrillDistrict("");
               }}>
                 <option value="all">All submitted facility levels</option>
+                {reportFacilityType !== 'all' && !reportFacilityTypeOptions.includes(reportFacilityType) && <option value={reportFacilityType}>{facilityCareLevelLabel(reportFacilityType)}</option>}
                 {reportFacilityTypeOptions.map((type) => <option value={type} key={type}>{type}</option>)}
               </select>
             </label>

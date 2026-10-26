@@ -140,8 +140,26 @@ export function primaryCareLevelReported(districtRow, facilityLevel) {
   return false;
 }
 
-export function primaryCareDistrictSummary(period) {
-  const rows = primaryCareDistrictRows(period);
+function inReportingGeography(row, scope, districtKey = 'district') {
+  return (!scope.province || scope.province === 'all' || row.province === scope.province)
+    && (!scope.district || scope.district === 'all' || row[districtKey] === scope.district);
+}
+
+export function facilityReportingSummary(period, scope = {}) {
+  const rows = facilityReportingRows(period)
+    .filter(row => inReportingGeography(row, scope))
+    .filter(row => !scope.matchesFacility || scope.matchesFacility(row))
+    .filter(row => !scope.facility || scope.facility === 'all'
+      || [row.province, row.district, row.facilityLevel, row.name].join('|') === scope.facility);
+  const reportedRows = rows.filter(row => row.reported);
+  const missingRows = rows.filter(row => !row.reported);
+  return {rows, reportedRows, missingRows, expected: rows.length, reported: reportedRows.length,
+    detailedReported: reportedRows.filter(row => row.hasTracerSubmission).length,
+    missing: missingRows.length, rate: rows.length ? reportedRows.length / rows.length : null};
+}
+
+export function primaryCareDistrictSummary(period, scope = {}) {
+  const rows = primaryCareDistrictRows(period).filter(row => inReportingGeography(row, scope, 'name'));
   const reported = rows.filter((row) => row.submitted).length;
   const partial = rows.filter((row) => row.partial).length;
   const hospitalOnly = rows.filter((row) => row.hospitalOnly).length;
