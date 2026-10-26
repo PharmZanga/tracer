@@ -7436,6 +7436,9 @@ td.neutral {
 .national-report-category-bar { position: relative; min-width: 90px; padding: 4px; background: #eef6f1; isolation: isolate; }
 .national-report-category-bar i { position: absolute; inset: 0 auto 0 0; background: #b7dfca; z-index: -1; }
 .national-report-tools { flex-wrap: wrap; }
+.national-report-tool-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.national-report-export-status { flex-basis: 100%; margin: 4px 0; font-size: 13px; }
+.national-report-export-status[role="alert"] { color: #a62319; }
 .national-report-section-picker { flex-basis: 100%; min-width: 0; margin: 8px 0 0; border: 1px solid #c9d4dd; padding: 12px; display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 10px; }
 .national-report-section-picker legend { font-weight: 700; }
 .national-report-section-picker label { display: flex; align-items: center; gap: 8px; font-size: 13px; }

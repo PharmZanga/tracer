@@ -10,7 +10,8 @@ test("national weekly report workspace is available from the sidebar and uses it
   assert.match(appSource, /function NationalWeeklyReport/);
   assert.match(appSource, /nationalReportPeriodId/);
   assert.match(appSource, /buildNationalReportSummary\(selectReportPeriods/);
-  assert.match(appSource, /Generate PDF report/);
+  assert.match(appSource, /Download PDF/);
+  assert.match(appSource, /Download Word \(\.docx\)/);
   const narrativeSource = fs.readFileSync(new URL('../src/reportNarrative.js', import.meta.url), 'utf8');
   assert.match(narrativeSource, /\(DHO\) reporting completeness stood at/);
   assert.match(appSource, /missing reports are not treated as stock data/);

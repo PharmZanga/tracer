@@ -748,7 +748,7 @@ function ReportAvailabilityChart({ weekly, care = false }) {
   </svg></div>;
 }
 
-function OrderedReport({children,sections=reportSections}) {
+function OrderedReport({children,sections=reportSections,exporting=false}) {
   const titles=new Map(sections);
   const labelHeadings=(node,section)=>{
     if(!isValidElement(node)) return node;
@@ -760,22 +760,40 @@ function OrderedReport({children,sections=reportSections}) {
     return node.props.children?cloneElement(node,{},Children.map(node.props.children,child=>labelHeadings(child,id))):node;
   };
   const rank=node=>node.type==='header'?-2:node.type==='footer'?reportSections.length:node.props['data-report-section']?reportSections.findIndex(([id])=>id===node.props['data-report-section']):-1;
-  return <article className="national-weekly-report" id="national-weekly-report">{Children.toArray(children).sort((a,b)=>rank(a)-rank(b)).map(node=>labelHeadings(node))}</article>;
+  return <article className="national-weekly-report" id="national-weekly-report" inert={exporting || undefined} aria-busy={exporting || undefined}>{Children.toArray(children).sort((a,b)=>rank(a)-rank(b)).map(node=>labelHeadings(node))}</article>;
 }
 
-export function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChange, onPrint, type, year, onTypeChange, onYearChange, loading, error, onRetry }) {
+export function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPeriodChange, type, year, onTypeChange, onYearChange, loading, error, onRetry }) {
   const formatPercent = formatReportPercent;
   const sectionOptions = reportSectionDefinitions;
   const [includedSections, setIncludedSections] = useState(() => [...defaultReportSectionIds]);
+  const [exporting, setExporting] = useState('');
+  const [exportError, setExportError] = useState('');
+  const reportReady = !loading && !error && summary && summary.selectedPeriods.length === summary.option.periods.length && includedSections.length > 0;
+  async function downloadReport(format) {
+    if (!reportReady || exporting) return;
+    setExporting(format); setExportError('');
+    try {
+      const { exportNationalReport } = await import('./reportExport.js');
+      await exportNationalReport(format, document.getElementById('national-weekly-report'), { periodId: selectedPeriodId });
+    } catch (failure) {
+      setExportError(failure.message || 'The report could not be downloaded. Please try again.');
+    } finally { setExporting(''); }
+  }
   const selectedSections = selectedReportSections(includedSections);
   const sectionLabels = new Map(selectedSections);
   const sectionProps = (id) => ({ hidden: !includedSections.includes(id), "data-report-section": id });
   const tools = <div className="national-report-tools">
-    <label><span>Report frequency</span><select value={type} onChange={(e) => onTypeChange(e.target.value)}><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option></select></label>
-    <label><span>Year</span><select value={year} onChange={(e) => onYearChange(e.target.value)}>{availableTracerYears.map((y) => <option key={y}>{y}</option>)}</select></label>
-    <label><span>Report period</span><select value={selectedPeriodId} onChange={(event) => onPeriodChange(event.target.value)}>{periods.map((item) => <option value={item.id} key={item.id}>{item.label}</option>)}</select></label>
-    <div className="national-report-tool-actions"><button type="button" disabled={loading || Boolean(error) || !summary || !includedSections.length} onClick={onPrint}><Printer size={16} aria-hidden="true" />Generate PDF report</button></div>
-    <fieldset className="national-report-section-picker"><legend>Report sections</legend>{sectionOptions.map(([id,label]) => <label key={id}><input type="checkbox" checked={includedSections.includes(id)} onChange={(e) => setIncludedSections((current) => e.target.checked ? [...current,id] : current.filter((key) => key !== id))}/><span>{sectionLabels.get(id) || label}</span></label>)}</fieldset>
+    <label><span>Report frequency</span><select disabled={Boolean(exporting)} value={type} onChange={(e) => onTypeChange(e.target.value)}><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option></select></label>
+    <label><span>Year</span><select disabled={Boolean(exporting)} value={year} onChange={(e) => onYearChange(e.target.value)}>{availableTracerYears.map((y) => <option key={y}>{y}</option>)}</select></label>
+    <label><span>Report period</span><select disabled={Boolean(exporting)} value={selectedPeriodId} onChange={(event) => onPeriodChange(event.target.value)}>{periods.map((item) => <option value={item.id} key={item.id}>{item.label}</option>)}</select></label>
+    <div className="national-report-tool-actions">
+      <button type="button" disabled={!reportReady || Boolean(exporting)} onClick={() => downloadReport('docx')}><FileText size={16} aria-hidden="true" />{exporting === 'docx' ? 'Preparing Word...' : 'Download Word (.docx)'}</button>
+      <button type="button" disabled={!reportReady || Boolean(exporting)} onClick={() => downloadReport('pdf')}><FileText size={16} aria-hidden="true" />{exporting === 'pdf' ? 'Preparing PDF...' : 'Download PDF'}</button>
+    </div>
+    {exporting && <p role="status" className="national-report-export-status">Preparing the selected report and graphs...</p>}
+    {exportError && <p role="alert" className="national-report-export-status">{exportError}</p>}
+    <fieldset className="national-report-section-picker" disabled={Boolean(exporting)}><legend>Report sections</legend>{sectionOptions.map(([id,label]) => <label key={id}><input type="checkbox" checked={includedSections.includes(id)} onChange={(e) => setIncludedSections((current) => e.target.checked ? [...current,id] : current.filter((key) => key !== id))}/><span>{sectionLabels.get(id) || label}</span></label>)}</fieldset>
   </div>;
   if (loading || error || !summary || summary.selectedPeriods.length !== summary.option.periods.length) return <section className="national-report-workspace">{tools}<div role={error ? "alert" : "status"}>{error || "Loading selected reporting periods..."}{error && <button type="button" onClick={onRetry}>Try again</button>}</div></section>;
   const { period, levelRows, provinces, programmes, districtReporting, stockStatus } = summary;
@@ -784,7 +802,7 @@ export function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPer
   return <section className="national-report-workspace">
     {tools}
 
-    <OrderedReport sections={selectedSections}>
+    <OrderedReport sections={selectedSections} exporting={Boolean(exporting)}>
       <header className="national-report-cover">
         <img src="/zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms" width="80" height="80" />
         <p>MINISTRY OF HEALTH</p>
@@ -5896,7 +5914,6 @@ function App() {
           loading={nationalReportLoading}
           error={nationalReportError}
           onRetry={() => setNationalReportRetry((value) => value + 1)}
-          onPrint={() => window.print()}
         />}
         {isDashboardAdmin && activePage==='viewers' && <ViewerActivity/>}
         {!isDashboardAdmin && ['reports','imports','viewers'].includes(activePage) && <div role="alert">Administration is restricted to dashboard administrators. <button type="button" onClick={()=>setActivePage('executive')}>Return to dashboard</button></div>}
