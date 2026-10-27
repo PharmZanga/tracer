@@ -127,7 +127,7 @@ export function planAssistantRequest(question, { scope: current, directory, cata
     const requestedWeeks = Number(text.match(/\b([1-8]) weeks?\b/)?.[1] || 3);
     return { kind: 'navigate', scope: { ...scope, status: 'all' }, page: 'quality', qualityCheck: 'repeated-soh',
       lookback: [1, 2, 3, 4, 6, 8].includes(requestedWeeks) ? requestedWeeks : 3,
-      text: 'Repeated SOH under Data Quality lists named facilities and district aggregate reporting streams with identical stock-on-hand figures. Choose the ending week and look-back window, then review the commodity-level weekly evidence or export it. Positive SOH and repeated zeros are separate. This flags records for verification; it does not prove that a report was copied.' };
+      text: 'Repeated SOH under Data Quality flags a facility or district reporting stream as a repeated report only when strictly more than 50% of its valid current-report SOH entries match the selected earlier weeks. Exactly 50% is not flagged. Missing earlier observations do not reduce the denominator. Positive and zero repeats are shown separately, with commodity-level weekly evidence and CSV exports. This is a verification flag, not proof that a report was copied.' };
   }
   if (/\bcompare|comparison|versus|vs\b/.test(text)) return { kind: 'compare', scope, page: 'comparison' };
   if (/\brepeat|recurr|keep appearing|same figures|unchanged figures|trend\b/.test(text)) {
