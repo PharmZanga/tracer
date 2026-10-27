@@ -16,6 +16,17 @@ export function classifyRepeatedSohReport(unit) {
   };
 }
 
+export function summariseRepeatedSohScope(analysis, scope = {}, matchesLevel = (level, selected) => selected === 'all' || level === selected) {
+  const { province = 'all', district = 'all', facilityLevel = 'all', facility = 'all' } = scope;
+  const units = analysis.units.filter(unit => unit.reportRows > 0
+    && (province === 'all' || unit.province === province)
+    && (district === 'all' || unit.district === district)
+    && matchesLevel(unit.facilityLevel, facilityLevel)
+    && (facility === 'all' || `${unit.province}|${unit.district}|${unit.facilityLevel}|${unit.facility}` === facility));
+  const repeatedUnits = units.filter(unit => unit.isRepeatedReport);
+  return { units, repeatedUnits, assessed: units.length, count: analysis.unavailableDates.length ? null : repeatedUnits.length };
+}
+
 export function repeatedSohWindow(catalogue, endId, lookback = 3) {
   const end = catalogue.find(period => period.id === endId);
   if (!end || !Number.isInteger(lookback) || lookback < 1 || lookback > 8) return [];

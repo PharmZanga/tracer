@@ -6,6 +6,7 @@ import { buildReportNarrative, formatReportPercent, reportingWeeks, reportAverag
 import { commodityRowsFromPeriod } from './tracerRows.js';
 import NationalStockDetail from './NationalStockDetail.jsx';
 import RepeatedSohPanel from './RepeatedSohPanel.jsx';
+import ExecutiveRepeatedReportsCard from './ExecutiveRepeatedReportsCard.jsx';
 import {isAdministrator,isAdministrationPage} from './dashboardAccess.js';
 import TracerAssistant from './NavigationGuide.jsx';
 import { emptyAssistantFocus, planAssistantRequest, assistantScopeLabel, validAssistantView, assistantSnapshot, assistantReporting, assistantComparison, assistantRecurring, assistantEvidence, previousAssistantWeek, assistantProgrammeMatches } from './tracerAssistant.js';
@@ -3627,6 +3628,14 @@ function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function openExecutiveRepeatedReports() {
+    setAssistantFocus({ ...emptyAssistantFocus });
+    setQualityWorkspace('repeated');
+    setActivePage('quality');
+    setOpenSidebarGroups(current => new Set([...current, 'tracer']));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function openExecutiveCommodityDetail(status, sort = "") {
     setSelectedCommodity("");
     setQuery("");
@@ -4265,6 +4274,9 @@ function App() {
               const IndicatorIcon = card.icon;
               return <button type="button" className={`tone-${card.tone}`} key={card.label} onClick={card.onClick} title={card.sub} aria-label={`${card.label}: ${card.value}. ${card.sub}`}><span className="executive-kpi-icon"><IndicatorIcon size={22} strokeWidth={2.2} aria-hidden="true" /></span><div><span>{card.label}</span><strong>{card.value}</strong><small>{card.sub}</small></div><ArrowUpRight className="executive-kpi-drilldown" size={16} aria-hidden="true"/></button>;
             })}
+            <ExecutiveRepeatedReportsCard catalogue={currentReportCatalogue} periodId={fieldData.id} lookback={qualityRepeatWeeks}
+              province={selectedProvince} district={selectedDistrict} facilityLevel={selectedFacilityLevel} facility={selectedFacility}
+              matchesLevel={matchesFacilityCareLevel} onOpen={openExecutiveRepeatedReports} />
           </div>
         </section>}
 
