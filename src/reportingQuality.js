@@ -1,3 +1,6 @@
+import {fixedReportingEvidence, fixedDistrictDirectory} from './fixedReportingRoster.js';
+import {matchesReportingSelection} from './reportingIdentity.js';
+
 export const DISTRICT_PRIMARY_CARE_LEVELS = Object.freeze({
   healthCentre: "HEALTH CENTRE",
   healthPost: "HEALTH POST",
@@ -22,6 +25,8 @@ export function facilityReportingKey(facility) {
 // One unique reporting unit is returned for each identity, and an actual
 // tracer submission always takes precedence over a stale missing flag.
 export function reconciledExpectedFacilityRows(period) {
+  const fixed = fixedReportingEvidence(period);
+  if (fixed) return fixed.rows;
   const submittedKeys = new Set((period?.facilities || []).map(facilityReportingKey));
   const rowsByFacility = new Map();
 
@@ -52,6 +57,8 @@ export function reconciledExpectedFacilityRows(period) {
 // submitted, while submitted tracer rows are added (or replace their matching
 // roster row). This also removes duplicate submissions by facility identity.
 export function facilityReportingRows(period) {
+  const fixed = fixedReportingEvidence(period);
+  if (fixed) return fixed.rows;
   const rowsByFacility = new Map(
     reconciledExpectedFacilityRows(period).map((facility) => [
       facilityReportingKey(facility),
@@ -82,7 +89,7 @@ export function facilityReportingRows(period) {
 // district. A combined primary-care row is accepted because several source
 // workbooks submit Health Centre and Health Post data on one combined sheet.
 export function primaryCareDistrictRows(period) {
-  const expectedDistricts = period?.dataQuality?.districts || [];
+  const expectedDistricts = fixedDistrictDirectory(period);
   const rowsByDistrict = new Map(expectedDistricts.map((row) => [
     `${row.province}|${row.name}`,
     {
@@ -95,9 +102,11 @@ export function primaryCareDistrictRows(period) {
     },
   ]));
 
-  (period?.facilities || []).forEach((facility) => {
+  const fixed = fixedReportingEvidence(period);
+  (fixed ? fixed.rows.filter(row => row.reported) : period?.facilities || []).forEach((facility) => {
     const row = rowsByDistrict.get(`${facility.province}|${facility.district}`);
     if (!row) return;
+    if (facility.combinedPrimaryCareReported) row.combinedPrimaryCareReported = true;
     if (facility.facilityLevel === DISTRICT_PRIMARY_CARE_LEVELS.healthCentre) row.healthCentreReported = true;
     else if (facility.facilityLevel === DISTRICT_PRIMARY_CARE_LEVELS.healthPost) row.healthPostReported = true;
     else if (facility.facilityLevel === DISTRICT_PRIMARY_CARE_LEVELS.combined) row.combinedPrimaryCareReported = true;
@@ -149,8 +158,7 @@ export function facilityReportingSummary(period, scope = {}) {
   const rows = facilityReportingRows(period)
     .filter(row => inReportingGeography(row, scope))
     .filter(row => !scope.matchesFacility || scope.matchesFacility(row))
-    .filter(row => !scope.facility || scope.facility === 'all'
-      || [row.province, row.district, row.facilityLevel, row.name].join('|') === scope.facility);
+    .filter(row => matchesReportingSelection(row, scope.facility));
   const reportedRows = rows.filter(row => row.reported);
   const missingRows = rows.filter(row => !row.reported);
   return {rows, reportedRows, missingRows, expected: rows.length, reported: reportedRows.length,

@@ -3,6 +3,16 @@ import test from "node:test";
 
 import { loadHistoricalTracerYear, tracerReportingPeriods } from "../src/tracerFacilityData.js";
 import { facilityReportingKey, facilityReportingRows, primaryCareDistrictRows, primaryCareDistrictSummary, reconciledExpectedFacilityRows } from "../src/reportingQuality.js";
+import register from '../src/reportingRoster2026.js';
+import {reportingUnitKey} from '../src/reportingIdentity.js';
+
+const registeredKeys = new Set(register.units.map(row => row.id));
+function qualifyingSubmittedKeys(period) {
+  return new Set((period.facilities || []).filter(row => row.quantity > 0).flatMap(row =>
+    row.facilityLevel === 'PRIMARY CARE - NOT SPECIFIED'
+      ? ['HEALTH CENTRE', 'HEALTH POST'].map(facilityLevel => reportingUnitKey({...row, facilityLevel}))
+      : [reportingUnitKey(row)]).filter(key => registeredKeys.has(key)));
+}
 
 await loadHistoricalTracerYear("2026");
 
@@ -10,23 +20,21 @@ test("every reporting week deduplicates expected facilities and honours actual t
   tracerReportingPeriods.forEach((period) => {
     const reconciled = reconciledExpectedFacilityRows(period);
     const keys = reconciled.map(facilityReportingKey);
-    const submittedKeys = new Set((period.facilities || []).map(facilityReportingKey));
+    const submittedKeys = qualifyingSubmittedKeys(period);
 
     assert.equal(new Set(keys).size, keys.length, `${period.label} contains duplicate reconciled reporting units`);
     reconciled.forEach((facility) => {
-      if (submittedKeys.has(facilityReportingKey(facility))) {
-        assert.equal(facility.reported, true, `${period.label}: submitted tracer remained classified as missing for ${facility.name}`);
-      }
+      assert.equal(facility.reported, submittedKeys.has(facility.reportingKey), `${period.label}: incorrect receipt status for ${facility.name}`);
     });
   });
 });
 
 test("Week 4 reconciles the expected-facility roster without duplicate reporting units", () => {
   const week4 = tracerReportingPeriods.find((period) => period.id === "2026-07-26");
-  const rawMissing = week4.dataQuality.facilities.filter((facility) => !facility.reported);
   const reconciledMissing = reconciledExpectedFacilityRows(week4).filter((facility) => !facility.reported);
 
-  assert.ok(rawMissing.length >= reconciledMissing.length);
+  assert.equal(reconciledExpectedFacilityRows(week4).length, 403);
+  assert.ok(reconciledMissing.length > 0);
   assert.equal(new Set(reconciledMissing.map(facilityReportingKey)).size, reconciledMissing.length);
 });
 
@@ -68,13 +76,14 @@ test("the complete facility mapping reconciles every loaded reporting week", () 
   tracerReportingPeriods.forEach((period) => {
     const rows = facilityReportingRows(period);
     const keys = rows.map(facilityReportingKey);
-    const submittedKeys = new Set((period.facilities || []).map(facilityReportingKey));
+    const submittedKeys = qualifyingSubmittedKeys(period);
     const received = rows.filter((facility) => facility.reported);
     const missing = rows.filter((facility) => !facility.reported);
     const districtSummary = primaryCareDistrictSummary(period);
 
     assert.equal(new Set(keys).size, keys.length, `${period.label}: duplicate facility mapping`);
-    assert.equal(received.length, submittedKeys.size, `${period.label}: received total does not match unique submitted tracers`);
+    assert.equal(rows.length, 403, `${period.label}: fixed register changed`);
+    assert.equal(received.length, submittedKeys.size, `${period.label}: received total does not match unique qualifying registered tracers`);
     assert.equal(rows.length, received.length + missing.length, `${period.label}: expected total does not reconcile`);
     assert.equal(districtSummary.expected, 116, `${period.label}: district universe is not 116`);
     rows.forEach((facility) => {

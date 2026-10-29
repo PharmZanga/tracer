@@ -17,13 +17,14 @@ test('executive district counts use the selected province and district rather th
 });
 
 test('missing facility reporting units are counted separately from incomplete DHO districts',()=>{
-  assert.equal(facilityReportingSummary(period).missing,6);
-  assert.equal(facilityReportingSummary(period,{province:'CENTRAL PROVINCE'}).missing,1);
+  assert.equal(facilityReportingSummary(period).missing,17);
+  assert.equal(facilityReportingSummary(period,{province:'CENTRAL PROVINCE'}).missing,0);
   const lusaka=facilityReportingSummary(period,{province:'LUSAKA PROVINCE'});
-  assert.equal(lusaka.expected,32); assert.equal(lusaka.reported,30); assert.equal(lusaka.missing,2);
-  assert.ok(lusaka.missingRows.every(row=>row.province==='LUSAKA PROVINCE'&&row.district==='LUSAKA'));
+  assert.equal(lusaka.expected,35); assert.equal(lusaka.reported,30); assert.equal(lusaka.missing,5);
+  assert.ok(lusaka.missingRows.every(row=>row.province==='LUSAKA PROVINCE'));
+  assert.ok(lusaka.missingRows.some(row=>row.district==='RUFUNSA'));
   assert.equal(primaryCareDistrictSummary(period,{province:'MUCHINGA PROVINCE'}).missing,1);
-  assert.equal(facilityReportingSummary(period,{province:'MUCHINGA PROVINCE'}).missing,0);
+  assert.equal(facilityReportingSummary(period,{province:'MUCHINGA PROVINCE'}).missing,2);
 });
 
 test('facility card and detail rows intersect geography, care level and exact reporting unit',()=>{
@@ -40,7 +41,8 @@ test('facility card and detail rows intersect geography, care level and exact re
 
 test('province totals reconcile to national counts without counting duplicate reporting units',()=>{
   const total=facilityReportingSummary(period);
-  assert.equal(total.detailedReported,388);
+  assert.equal(total.expected,403);
+  assert.equal(total.detailedReported,386);
   assert.ok(total.reported>=total.detailedReported);
   const provinces=[...new Set(total.rows.map(row=>row.province))];
   const scopes=provinces.map(province=>facilityReportingSummary(period,{province}));

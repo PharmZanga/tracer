@@ -1,6 +1,7 @@
 import { commodityRowsFromPeriod } from './tracerRows.js';
 import { analyseTracerCommodity } from './facilityTracerAnalysis.js';
 import { facilityReportingRows, primaryCareDistrictRows } from './reportingQuality.js';
+import {matchesReportingSelection} from './reportingIdentity.js';
 import { canAccessDashboardPage } from './dashboardAccess.js';
 import { guideAnswer } from './navigationGuide.js';
 
@@ -195,7 +196,7 @@ export function assistantReporting(period, scope, matchesLevel) {
   if (scope.programme !== 'all' || scope.commodity !== 'all') return { requiresScopeReset: true, text: 'Programme-specific or commodity-specific reporting obligations cannot be established from missing stock rows. Clear those filters to inspect verified district and facility reporting.', actions: [{ label: 'All programme reporting', question: 'Check who reported for all programmes and all commodities' }] };
   const inScope = row => (scope.province === 'all' || row.province === scope.province) && (scope.district === 'all' || (row.district || row.name) === scope.district);
   const districts = primaryCareDistrictRows(period).filter(inScope);
-  const units = facilityReportingRows(period).filter(inScope).filter(row => matchesLevel(row.facilityLevel, scope.facilityLevel)).filter(row => scope.facility === 'all' || `${row.province}|${row.district}|${row.facilityLevel}|${row.name}` === scope.facility);
+  const units = facilityReportingRows(period).filter(inScope).filter(row => matchesLevel(row.facilityLevel, scope.facilityLevel)).filter(row => matchesReportingSelection(row, scope.facility));
   const missing = units.filter(row => !row.reported);
   const listed = scope.status === 'missing' ? missing : units;
   return { text: `${districts.filter(row => row.submitted).length} of ${districts.length} districts have complete primary-care submissions. A district needs both Health Centre and Health Post SOH reports, or valid combined evidence; a hospital-only report does not qualify. In the selected facility-level scope, ${units.length - missing.length} of ${units.length} expected/reporting units submitted; ${missing.length} did not report. Missing reports are not zero stock.`, columns: ['Reporting unit', 'District', 'Level', 'Status'], rows: listed.slice(0, 10).map(row => [row.name, row.district, row.facilityLevel, row.reported ? 'Reported' : 'Did not report']), total: listed.length, actions: [{ label: 'Open reporting rate', page: 'reporting', scope }, { label: 'Show non-reporting', question: 'Show missing reports' }] };

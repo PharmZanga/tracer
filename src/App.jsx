@@ -7,6 +7,9 @@ import { commodityRowsFromPeriod } from './tracerRows.js';
 import NationalStockDetail from './NationalStockDetail.jsx';
 import RepeatedSohPanel from './RepeatedSohPanel.jsx';
 import ExecutiveRepeatedReportsCard from './ExecutiveRepeatedReportsCard.jsx';
+import ReportingRegisterNotice from './ReportingRegisterNotice.jsx';
+import {fixedDistrictDirectory, fixedReportingEvidence, usesFixedReportingRegister} from './fixedReportingRoster.js';
+import {matchesReportingSelection, reportingUnitKey} from './reportingIdentity.js';
 import {isAdministrator,isAdministrationPage} from './dashboardAccess.js';
 import TracerAssistant from './NavigationGuide.jsx';
 import { emptyAssistantFocus, planAssistantRequest, assistantScopeLabel, validAssistantView, assistantSnapshot, assistantReporting, assistantComparison, assistantRecurring, assistantEvidence, previousAssistantWeek, assistantProgrammeMatches } from './tracerAssistant.js';
@@ -2252,14 +2255,14 @@ function App() {
     if (!needsReporting) return latest;
     tracerReportingPeriods.filter((period) => period.reportDate < reportData.reportDate)
       .sort((a, b) => a.reportDate.localeCompare(b.reportDate)).forEach((period) => {
-        [...(period.facilities || []), ...(period.dataQuality?.facilities || []).filter((facility) => facility.reported)]
-          .forEach((facility) => latest.set(facilityIdentityKey(facility), period));
+        facilityReportingRows(period).filter(facility => facility.reported)
+          .forEach((facility) => latest.set(reportingUnitKey(facility), period));
       });
     return latest;
   }, [needsReporting, reportData, historicalDataVersion]);
   const reportSubmittedFacilityRows = useMemo(() => (needsReporting ? facilityReportingRows(reportData) : [])
     .map((facility) => {
-      const previous = lastFacilityReport.get(facilityIdentityKey(facility));
+      const previous = lastFacilityReport.get(reportingUnitKey(facility));
       return {
         province: facility.province,
         district: facility.district,
@@ -2353,13 +2356,13 @@ function App() {
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
     .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict)
     .filter((facility) => matchesFacilityCareLevel(facility.facilityLevel, selectedFacilityLevel))
-    .filter((facility) => selectedFacility === "all" || `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}` === selectedFacility), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+    .filter((facility) => matchesReportingSelection(facility, selectedFacility)), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const periodCommodityRows = useMemo(() => commodityRowsFromPeriod(fieldData), [fieldData]);
   const filteredCommodityRows = useMemo(() => periodCommodityRows
     .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
     .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
     .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
-    .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility), [periodCommodityRows, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
+    .filter((row) => matchesReportingSelection(row, selectedFacility)), [periodCommodityRows, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const dataQualityGate = useMemo(() => buildDataQualityGate(filteredCommodityRows), [filteredCommodityRows]);
 
   const fieldAverageMos = useMemo(() => cappedAverageMos(filteredCommodityRows), [filteredCommodityRows]);
@@ -2415,7 +2418,9 @@ function App() {
     filteredFacilities.forEach((facility) => facilitiesByIdentity.set(facilityIdentityKey(facility), facility));
     return [...facilitiesByIdentity.values()];
   }, [filteredFacilities]);
-  const correctedReportingFacilities = useMemo(() => uniqueFilteredFacilities.map((facility) => {
+  const correctedReportingFacilities = useMemo(() => uniqueFilteredFacilities
+    .filter(facility => !usesFixedReportingRegister(fieldData) || facility.quantity > 0)
+    .map((facility) => {
     const analysis = analyseFacilityTracer(facilityCommodityRows.get(facilityIdentityKey(facility)) || []);
     const incomplete = analysis.items.some((item) => item.quantity === null || (item.quantity > 0 && (item.amc === null || item.amc <= 0)));
     const stockoutItems = analysis.byStatus["Confirmed stock-out"];
@@ -2431,7 +2436,7 @@ function App() {
       accordingToPlanItemCount: analysis.byStatus["Stocked according to plan"].length,
       overstockItemCount: analysis.byStatus.Overstocked.length,
     };
-  }), [uniqueFilteredFacilities, facilityCommodityRows]);
+  }), [uniqueFilteredFacilities, facilityCommodityRows, fieldData]);
   const missingExpectedFacilities = useMemo(() => facilityReportingRows(fieldData)
     .filter((facility) => !facility.reported)
     .filter((facility) => !correctedReportingFacilities.some((submitted) => facilityIdentityKey(submitted) === facilityIdentityKey(facility)))
@@ -2442,7 +2447,7 @@ function App() {
       const previous = tracerReportingPeriods
         .filter((period) => period.reportDate < fieldData.reportDate)
         .sort((a, b) => b.reportDate.localeCompare(a.reportDate))
-        .find((period) => (period.dataQuality?.facilities || []).some((candidate) => candidate.reported && facilityIdentityKey(candidate) === facilityIdentityKey(facility)));
+        .find((period) => facilityReportingRows(period).some((candidate) => candidate.reported && reportingUnitKey(candidate) === reportingUnitKey(facility)));
       return {
         ...facility,
         rows: 0,
@@ -2458,7 +2463,7 @@ function App() {
         overstockItemCount: 0,
       };
     })
-    .filter((facility) => selectedFacility === "all" || `${facility.province}|${facility.district}|${facility.facilityLevel}|${facility.name}` === selectedFacility), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility, correctedReportingFacilities]);
+    .filter((facility) => matchesReportingSelection(facility, selectedFacility)), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility, correctedReportingFacilities]);
   const assessedFacilities = useMemo(() => {
     const unique = new Map();
     [...missingExpectedFacilities, ...correctedReportingFacilities].forEach((facility) => unique.set(facilityIdentityKey(facility), facility));
@@ -2611,7 +2616,7 @@ function App() {
       .filter((row) => selectedProvince === "all" || row.province === selectedProvince)
       .filter((row) => selectedDistrict === "all" || row.district === selectedDistrict)
       .filter((row) => matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
-      .filter((row) => selectedFacility === "all" || `${row.province}|${row.district}|${row.facilityLevel}|${row.facility}` === selectedFacility);
+      .filter((row) => matchesReportingSelection(row, selectedFacility));
     return buildDataQualityGate(scoped).passedRows.filter(row => assistantProgrammeMatches(row.programme, assistantFocus.programme));
   }, [needsCommodityHistory, historicalDataVersion, fieldPeriodId, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility, assistantFocus.programme]);
   const commodityTriageRows = useMemo(() => {
@@ -2886,10 +2891,10 @@ function App() {
   // The facilityTypes roster retains districts and levels with no submission,
   // including Level 2 and non-reporting Muchinga districts.
   const qualityDirectoryPeriod = needsQualityHistory ? qualityRangePeriods[0] || tracerReportingPeriods[0] : null;
-  const qualityDistrictDirectory = qualityDirectoryPeriod?.dataQuality?.districts || [];
+  const qualityDistrictDirectory = fixedDistrictDirectory(qualityDirectoryPeriod);
   const qualityDistrictNames = useMemo(() => [...new Set(qualityDistrictDirectory.map((row) => row.name))], [qualityDistrictDirectory]);
   const qualityHospitalRoster = useMemo(() => {
-    if (!needsQualityHistory) return [];
+    if (!needsQualityHistory || usesFixedReportingRegister(qualityDirectoryPeriod)) return [];
     const rows = new Map();
     const namedTypes = new Set();
 
@@ -2927,8 +2932,10 @@ function App() {
       });
     });
     return [...rows.values()];
-  }, [needsQualityHistory, qualityDistrictNames, historicalDataVersion]);
-  const qualityRoster = useMemo(() => [
+  }, [needsQualityHistory, qualityDirectoryPeriod, qualityDistrictNames, historicalDataVersion]);
+  const qualityRoster = useMemo(() => usesFixedReportingRegister(qualityDirectoryPeriod)
+    ? facilityReportingRows(qualityDirectoryPeriod).map(row => ({...row,
+      facilityLevel: reportingFacilityType(row.facilityLevel), facilityType: reportingFacilityType(row.facilityLevel)})) : [
     ...qualityDistrictDirectory.flatMap((row) => ["Health Centres", "Health Posts"].map((type) => ({
       province: row.province,
       district: row.name,
@@ -2938,7 +2945,7 @@ function App() {
       isAggregate: true,
     }))),
     ...qualityHospitalRoster,
-  ], [qualityDistrictDirectory, qualityHospitalRoster]);
+  ], [qualityDirectoryPeriod, qualityDistrictDirectory, qualityHospitalRoster]);
   const qualityProvinceOptions = [...new Set(qualityDistrictDirectory.map((row) => row.province))].sort();
   const qualityDistrictOptions = [...new Set(qualityDistrictDirectory
     .filter((row) => qualityProvinceFilter === "all" || row.province === qualityProvinceFilter)
@@ -2953,7 +2960,7 @@ function App() {
   // a submitted record into a false non-report because it is stale or broad.
   const qualityPeriodHospitalKeys = useMemo(() => new Map(qualityRangePeriods.map((period) => [
     period.id,
-    new Set((period.facilities || [])
+    new Set(fixedReportingEvidence(period)?.rows.filter(row => row.reported).map(row => row.reportingKey) || (period.facilities || [])
       .filter((facility) => sourceSupportedHospitalFacility(facility, qualityDistrictNames))
       .map((facility) => facilityReportingKey(facility))),
   ])), [qualityRangePeriods, qualityDistrictNames]);
@@ -3115,7 +3122,7 @@ function App() {
       reportedFacilities: reported,
       rate: facilities.length ? reported / facilities.length : 0,
     };
-  }).sort((a, b) => b.reportDate.localeCompare(a.reportDate)) : [], [needsQualityHistory]);
+  }).sort((a, b) => b.reportDate.localeCompare(a.reportDate)) : [], [needsQualityHistory, historicalDataVersion]);
   const selectedLibraryPeriod = weeklyReportLibraryRows.find((row) => row.id === selectedLibraryPeriodId) || weeklyReportLibraryRows[0];
   const provinceQualityRows = dataQuality.provinces || [];
   const selectedProvinceQuality = selectedProvince === "all"
@@ -5270,6 +5277,7 @@ function App() {
             <button type="button" aria-pressed={qualityWorkspace === 'repeated'} onClick={() => setQualityWorkspace('repeated')}>Repeated SOH</button>
           </div>
           {qualityWorkspace === 'repeated' ? <RepeatedSohPanel catalogue={currentReportCatalogue} periodId={fieldData.id} scope={{ province: selectedProvince, district: selectedDistrict, facilityLevel: selectedFacilityLevel, facility: selectedFacility, ...assistantFocus }} matchesLevel={matchesFacilityCareLevel} lookback={qualityRepeatWeeks} onLookbackChange={setQualityRepeatWeeks} /> : <>
+          <ReportingRegisterNotice period={fieldData} scope={{province: qualityProvinceFilter, district: qualityDistrictFilter}} />
           <div className="reporting-filter-bar quality-primary-filters">
             <label><span>Start month</span><select value={qualityRangeStart} onChange={(event) => setQualityRangeStart(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
             <label><span>End month</span><select value={qualityRangeEnd} onChange={(event) => setQualityRangeEnd(event.target.value)}>{qualityMonths.map((month) => <option value={month} key={month}>{monthLabel(month)}</option>)}</select></label>
@@ -5413,10 +5421,12 @@ function App() {
               <h2>{effectiveFacilityReportStatus === "Not Reported" ? `Facilities that did not report — ${reportData.label}` : "District and facility reporting performance"}</h2>
               <p>A district counts as reported only when its DHO submission includes both Health Centre and Health Post reporting. Combined primary-care source sheets count for both; Level 1, 2, or 3 hospital submissions never make the district count as reported.</p>
               {reportFacilityName !== "all" ? <p className="active-reporting-context">Reporting unit: <b>{reportFacilityName}</b> <button type="button" onClick={() => setReportFacilityName("all")}>Clear</button></p> : null}
-              <p>Facility counts use known reporting units. Grouped Health Centre and Health Post submissions do not identify individual clinics.</p>
+              <p>Facility counts use registered reporting units. Grouped Health Centre and Health Post submissions do not identify individual clinics.</p>
             </div>
             <div className="export-actions"><button type="button" onClick={() => { setActivePage('executive'); window.scrollTo({top:0,behavior:'smooth'}); }}><ChevronLeft size={16} aria-hidden="true"/>Back to overview</button></div>
           </div>
+          <ReportingRegisterNotice period={reportData} scope={{province: reportProvince, district: reportDistrict,
+            matchesFacility: row => reportFacilityType === 'all' || row.facilityLevel === reportFacilityType || matchesFacilityCareLevel(row.facilityLevel, reportFacilityType)}} />
           <div className="reporting-filter-bar">
             <label>
               <span>Reporting period</span>
@@ -6026,7 +6036,7 @@ function App() {
       </div>}
       {qualityDetailDialog && <div className="commodity-detail-backdrop" role="presentation" onMouseDown={() => setQualityDetailDialog("")}>
         <section className="commodity-detail-panel quality-detail-dialog" role="dialog" aria-modal="true" aria-label="Data quality details" onMouseDown={(event) => event.stopPropagation()}>
-          <div className="commodity-detail-head"><div><p className="eyebrow dark">Data Quality</p><h2>{qualityDetailDialog === "districts" ? "Province and district timeline details" : qualityDetailDialog === "library" ? "Weekly tracer report library" : qualityDetailDialog === "pending-report" ? "National report pending" : "Reporting follow-up register"}</h2><span>{qualityDetailDialog === "library" ? "January to June 2026" : qualityDetailDialog === "pending-report" ? selectedLibraryPeriod?.label : `${monthLabel(qualityRangeLower)} to ${monthLabel(qualityRangeUpper)}`}</span></div><button type="button" onClick={() => setQualityDetailDialog("")}>Close</button></div>
+          <div className="commodity-detail-head"><div><p className="eyebrow dark">Data Quality</p><h2>{qualityDetailDialog === "districts" ? "Province and district timeline details" : qualityDetailDialog === "library" ? "Weekly tracer report library" : qualityDetailDialog === "pending-report" ? "National report pending" : "Reporting follow-up register"}</h2><span>{qualityDetailDialog === "library" ? "Loaded reporting weeks" : qualityDetailDialog === "pending-report" ? selectedLibraryPeriod?.label : `${monthLabel(qualityRangeLower)} to ${monthLabel(qualityRangeUpper)}`}</span></div><button type="button" onClick={() => setQualityDetailDialog("")}>Close</button></div>
           {qualityDetailDialog === "districts" ? <>
             <div className="quality-drill-path"><button type="button" onClick={() => { resetFieldHierarchy(); setActivePage("quality"); }}>Zambia</button><span>/</span><button type="button" disabled={selectedProvince === "all"} onClick={() => selectQualityProvince(selectedProvince)}>{selectedProvince === "all" ? "Select province" : selectedProvince}</button></div>
             <div className="quality-grid"><QualityTable title="Provincial district-level reporting" rows={provinceQualityRows} firstColumn="Province" onSelect={(row) => selectQualityProvince(row.name)} /><ReportingBars title="Province reporting percentage" rows={[...provinceQualityRows].sort((a, b) => (a.rate || qualityRate(a)) - (b.rate || qualityRate(b)))} onSelect={(row) => selectQualityProvince(row.name)} /></div>

@@ -1,0 +1,14 @@
+.reporting-register-notice {
+  margin: 16px 0;
+  padding: 14px 0;
+  border-top: 1px solid #cdded6;
+  border-bottom: 1px solid #cdded6;
+}
+.reporting-register-notice .quality-panel-head { gap: 16px; flex-wrap: wrap; }
+.reporting-register-notice h3 { margin: 0 0 6px; font-size: 17px; }
+.reporting-register-notice p { margin: 6px 0; }
+.reporting-register-notice small { color: #566c63; }
+.reporting-register-notice button { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.reporting-register-notice details { margin-top: 12px; }
+.reporting-register-notice summary { cursor: pointer; font-weight: 600; }
+.reporting-register-notice td, .reporting-register-notice th { overflow-wrap: anywhere; }
