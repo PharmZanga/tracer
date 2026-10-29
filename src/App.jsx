@@ -7,6 +7,7 @@ import { commodityRowsFromPeriod } from './tracerRows.js';
 import NationalStockDetail from './NationalStockDetail.jsx';
 import RepeatedSohPanel from './RepeatedSohPanel.jsx';
 import ExecutiveRepeatedReportsCard from './ExecutiveRepeatedReportsCard.jsx';
+import LeadershipHighlights from './LeadershipHighlights.jsx';
 import ReportingRegisterNotice from './ReportingRegisterNotice.jsx';
 import {fixedDistrictDirectory, fixedReportingEvidence, usesFixedReportingRegister} from './fixedReportingRoster.js';
 import {matchesReportingSelection, reportingUnitKey} from './reportingIdentity.js';
@@ -4271,11 +4272,9 @@ function App() {
         </section>}
 
         {activePage === "executive" && <section className="executive-brief">
-          <div className="executive-statement">
-            <p className="eyebrow dark">Leadership Brief</p>
-            <h2>{fieldKpis.rows ? `${executiveGeography === 'National' ? 'National tracer availability' : `Tracer availability in ${executiveGeography}`} is ${fieldAvailabilityLabel}, with ${fieldKpis.riskRows.toLocaleString()} submitted rows requiring attention.` : 'No submitted tracer stock data match the current filters.'}</h2>
-            <p>{executiveGeography === 'National' && bestProvince && worstProvince ? `${bestProvince.name} has the strongest reported availability at ${formatPercent(bestProvince.availability)}, while ${worstProvince.name} is lowest at ${formatPercent(worstProvince.availability)}. ` : `${fieldFacilityReporting.reported} reporting units submitted, with ${missingFacilityUnits} known reporting units missing in this filter. `}In the current filter, {stockoutFacilityCount} reporting units have stockouts and {lowStockFacilityCount} have low-stock commodities.</p>
-          </div>
+          <LeadershipHighlights rollup={fieldKpis} rows={filteredCommodityRows} periodLabel={fieldData.label}
+            scopeLabel={[executiveGeography, selectedFacilityLevel === 'all' ? '' : facilityCareLevelLabel(selectedFacilityLevel), selectedFacility === 'all' ? '' : selectedFacility.split('|').at(-1)].filter(Boolean).join(' / ')}
+            scopeKey={JSON.stringify([fieldData.id, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility])} />
           <div className="executive-kpis">
             {executiveIndicatorCards.map((card) => {
               const IndicatorIcon = card.icon;
