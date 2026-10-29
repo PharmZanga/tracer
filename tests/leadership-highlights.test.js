@@ -79,14 +79,24 @@ test('empty and summary-only selections do not invent commodity or zero-stock ev
   assert.ok(items.every(item => !/NaN|Infinity/.test(item.value)));
 });
 
-test('the overview replaces only brief prose and wires all geography and unit filters to the strip', () => {
+test('the slim strip replaces the filter summary while preserving the Leadership Brief and KPI cards', () => {
   const source = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  const position = source.indexOf('<LeadershipHighlights rollup={fieldKpis}');
+  const headerEnd = source.indexOf('</header>', position);
+  const strip = source.slice(position, headerEnd);
   const executive = source.slice(source.indexOf('<section className="executive-brief">'), source.indexOf('<section className="management-kpi-summary">'));
-  assert.match(executive, /LeadershipHighlights rollup=\{fieldKpis\} rows=\{filteredCommodityRows\}/);
-  assert.match(executive, /fieldData.id, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility/);
+  assert.ok(position > source.indexOf('className="global-filter-bar"'));
+  assert.ok(headerEnd < source.indexOf('<section className="executive-brief">'));
+  assert.equal(source.match(/<LeadershipHighlights /g).length, 1);
+  assert.match(strip, /LeadershipHighlights rollup=\{fieldKpis\} rows=\{filteredCommodityRows\}/);
+  assert.match(strip, /fieldData.id, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility/);
+  assert.match(strip, /loading=\{Boolean\(monthLoading \|\| historicalYearLoading\)\}/);
+  assert.doesNotMatch(source, /className="filter-scope"/);
   assert.match(executive, /executiveIndicatorCards.map/);
   assert.match(executive, /ExecutiveRepeatedReportsCard/);
-  assert.doesNotMatch(executive, /executive-statement|National tracer availability|Leadership Brief/);
+  assert.match(executive, /executive-statement/);
+  assert.match(executive, /Leadership Brief/);
+  assert.doesNotMatch(executive, /LeadershipHighlights/);
 });
 
 test('motion is CSS-only, pausable, keyboard-safe and disabled for reduced-motion users', () => {
@@ -102,4 +112,9 @@ test('motion is CSS-only, pausable, keyboard-safe and disabled for reduced-motio
   assert.match(css, /animation-play-state: paused/);
   assert.match(css, /:focus-within/);
   assert.match(css, /translateX\(-50%\)/);
+  assert.match(css, /height: 36px/);
+  assert.match(css, /background: #087344; color: #fff/);
+  assert.match(css, /white-space: nowrap/);
+  assert.doesNotMatch(component, /leadership-highlights-head|<h2>/);
+  assert.match(component, /loading \? <p className="leadership-highlights-empty">Loading selected data/);
 });

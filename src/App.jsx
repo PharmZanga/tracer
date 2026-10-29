@@ -4248,7 +4248,10 @@ function App() {
               </select>
             </label></div></details><button type="button" className="filter-reset" title="Reset geography and facility filters" aria-label="Reset geography and facility filters" onClick={resetFieldHierarchy}><RotateCcw size={17}/></button></>}
           </div>
-          <div className="filter-scope" aria-live="polite"><span>{fieldData.label} <b>·</b> {selectedProvince === 'all' ? 'All provinces' : selectedProvince} <b>·</b> {selectedDistrict === 'all' ? 'All districts' : selectedDistrict}</span><span role="status">{monthLoading || historicalYearLoading ? 'Loading selected data...' : `${fieldKpis.rows.toLocaleString()} commodity observations in this filter`}</span></div>
+          <LeadershipHighlights rollup={fieldKpis} rows={filteredCommodityRows} periodLabel={fieldData.label}
+            loading={Boolean(monthLoading || historicalYearLoading)}
+            scopeLabel={[selectedProvince === 'all' ? 'All provinces' : selectedProvince, selectedDistrict === 'all' ? 'All districts' : selectedDistrict, selectedFacilityLevel === 'all' ? '' : facilityCareLevelLabel(selectedFacilityLevel), selectedFacility === 'all' ? '' : selectedFacility.split('|').at(-1)].filter(Boolean).join(' / ')}
+            scopeKey={JSON.stringify([fieldData.id, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility])} />
         </header>}
 
         <section className="module-context" aria-label={`${activePageLabel} module`}>
@@ -4272,9 +4275,11 @@ function App() {
         </section>}
 
         {activePage === "executive" && <section className="executive-brief">
-          <LeadershipHighlights rollup={fieldKpis} rows={filteredCommodityRows} periodLabel={fieldData.label}
-            scopeLabel={[executiveGeography, selectedFacilityLevel === 'all' ? '' : facilityCareLevelLabel(selectedFacilityLevel), selectedFacility === 'all' ? '' : selectedFacility.split('|').at(-1)].filter(Boolean).join(' / ')}
-            scopeKey={JSON.stringify([fieldData.id, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility])} />
+          <div className="executive-statement">
+            <p className="eyebrow dark">Leadership Brief</p>
+            <h2>{fieldKpis.rows ? `${executiveGeography === 'National' ? 'National tracer availability' : `Tracer availability in ${executiveGeography}`} is ${fieldAvailabilityLabel}, with ${fieldKpis.riskRows.toLocaleString()} submitted rows requiring attention.` : 'No submitted tracer stock data match the current filters.'}</h2>
+            <p>{executiveGeography === 'National' && bestProvince && worstProvince ? `${bestProvince.name} has the strongest reported availability at ${formatPercent(bestProvince.availability)}, while ${worstProvince.name} is lowest at ${formatPercent(worstProvince.availability)}. ` : `${fieldFacilityReporting.reported} reporting units submitted, with ${missingFacilityUnits} known reporting units missing in this filter. `}In the current filter, {stockoutFacilityCount} reporting units have stockouts and {lowStockFacilityCount} have low-stock commodities.</p>
+          </div>
           <div className="executive-kpis">
             {executiveIndicatorCards.map((card) => {
               const IndicatorIcon = card.icon;
