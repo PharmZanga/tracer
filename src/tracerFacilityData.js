@@ -4,7 +4,7 @@ import {withSubmittedAvailability} from './tracerAvailability.js';
 
 export const availableTracerYears = ["2024", "2025", "2026"];
 export const availableTracerMonths = ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"];
-export let tracerReportingPeriods = [{...tracerBootstrapPeriod, national: {...tracerBootstrapPeriod.national, availability: null}, commodities: canonicalCommodityRollups(tracerBootstrapPeriod.commodities)}];
+export let tracerReportingPeriods = [{...tracerBootstrapPeriod, commodities: canonicalCommodityRollups(tracerBootstrapPeriod.commodities)}];
 
 const loadedSets = new Set();
 const loadingSets = new Map();

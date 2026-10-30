@@ -12,7 +12,6 @@ import ReportingRegisterNotice from './ReportingRegisterNotice.jsx';
 import {fixedDistrictDirectory, fixedReportingEvidence, usesFixedReportingRegister} from './fixedReportingRoster.js';
 import {matchesReportingSelection, reportingUnitKey} from './reportingIdentity.js';
 import {availabilityForRows, availabilityMethodology, reportedAvailabilityBasis} from './tracerAvailability.js';
-import AvailabilityEvidence from './AvailabilityEvidence.jsx';
 import {isAdministrator,isAdministrationPage} from './dashboardAccess.js';
 import TracerAssistant from './NavigationGuide.jsx';
 import { emptyAssistantFocus, planAssistantRequest, assistantScopeLabel, validAssistantView, assistantSnapshot, assistantReporting, assistantComparison, assistantRecurring, assistantEvidence, previousAssistantWeek, assistantProgrammeMatches } from './tracerAssistant.js';
@@ -648,7 +647,7 @@ function LevelOfCarePerformance({ rows }) {
       </div>
       <div className="level-care-legend">
         <span><i className="mos-key" />Availability bar, average MOS shown inside (12-month cap)</span>
-        <span><i className="availability-key" />Submitted-report average availability</span>
+        <span><i className="availability-key" />Positive-SOH record availability</span>
       </div>
       {level3Row ? (
         <div className="level-care-inclusions">
@@ -1791,7 +1790,6 @@ function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
   const analysis = useMemo(() => analyseFacilityTracer(currentRows, previousRows), [currentRows, previousRows]);
   const statusTotal = analysis.total;
   const submittedAvailability = activeFacility.availability;
-  const districtAverage = activeFacility.availabilityBasis === reportedAvailabilityBasis && ['HEALTH CENTRE', 'HEALTH POST', 'PRIMARY CARE - NOT SPECIFIED'].includes(activeFacility.facilityLevel);
   const submittedAvailableCount = analysis.items.filter(item => item.quantity > 0).length;
   const programmes = [...new Set(analysis.items.map((item) => item.program).filter(Boolean))].sort();
   const filterAndSortItems = (items) => {
@@ -1831,7 +1829,7 @@ function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
   }
 
   function exportTracerExcel() {
-    const rows = facilityTracerExportRows({ reportLabel: report.label, province: activeFacility.province, district: activeFacility.district, facilityLevel: activeFacility.facilityLevel, facilityName: title, submittedAvailability: formatPercent(submittedAvailability), availabilityNumerator: districtAverage ? 'Not applicable: submitted district average' : submittedAvailableCount, availabilityDenominator: districtAverage ? 'Not inferred from combined stock' : statusTotal, analysis, items: filterAndSortItems(analysis.items) });
+    const rows = facilityTracerExportRows({ reportLabel: report.label, province: activeFacility.province, district: activeFacility.district, facilityLevel: activeFacility.facilityLevel, facilityName: title, submittedAvailability: formatPercent(submittedAvailability), availabilityNumerator: submittedAvailableCount, availabilityDenominator: statusTotal, analysis, items: filterAndSortItems(analysis.items) });
     const blob = new Blob([rows.map((row) => row.map(csvCell).join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -1899,7 +1897,7 @@ function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
           <>
             {facility.isAggregate && modalMode === "aggregate" ? (
               <div className="modal-warning">
-                This is the aggregate submitted tracer for all {facility.facilityLevel.toLowerCase()} facilities in {facility.district}. Availability is the submitted district percentage; stock-band counts describe the combined commodity stock, not individual facility availability.
+                This is the aggregate submitted tracer for all {facility.facilityLevel.toLowerCase()} facilities in {facility.district}. Availability counts positive-SOH tracer records; stock-band counts describe the combined commodity stock, not individual facility availability.
               </div>
             ) : null}
             {modalMode === "facility" ? (
@@ -1908,8 +1906,7 @@ function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
               </div>
             ) : null}
             <div className="modal-kpis">
-              <KpiCard label="Submitted tracer availability" value={formatPercent(submittedAvailability)} sub={districtAverage ? `District HC/HP percentage from ${activeFacility.availabilitySource ? `${activeFacility.availabilitySource.sheet}!${activeFacility.availabilitySource.cell}` : 'an unverified source (unavailable)'}. Not recalculated from combined stock.` : `${submittedAvailableCount} of ${statusTotal} tracer commodities had positive stock.`} />
-              {districtAverage && <KpiCard label="Combined-stock presence" value={statusTotal ? formatPercent(submittedAvailableCount / statusTotal) : 'Unavailable'} sub={`${submittedAvailableCount} of ${statusTotal} aggregate commodity records have positive SOH; not facility-average availability.`} />}
+              <KpiCard label="Submitted tracer availability" value={formatPercent(submittedAvailability)} sub={`${submittedAvailableCount} of ${statusTotal} tracer commodities had positive stock.`} />
               <KpiCard label="Average / median MOS" value={`${formatMos(analysis.averageMos)} / ${formatMos(analysis.medianMos)}`} sub={`${analysis.items.filter((item) => Number.isFinite(item.calculatedMos)).length} of ${statusTotal} commodities with calculable MOS`} />
               {statusRows.map((row) => <KpiCard key={row.label} label={row.label} value={row.value} sub={`${row.value} of ${statusTotal} commodities (${statusTotal ? formatPercent(row.value / statusTotal) : "-"}). ${row.definition}`} tone={row.tone === "neutral" ? undefined : row.tone} />)}
             </div>
@@ -3451,7 +3448,7 @@ function App() {
     `${comparisonBest.name} has the highest ${comparisonMetricLabel(comparisonMetric).toLowerCase()} at ${formatComparisonMetric(comparisonMetricValue(comparisonBest, comparisonMetric), comparisonMetric)}.`,
     `${comparisonWorst.name} is the lowest performer at ${formatComparisonMetric(comparisonMetricValue(comparisonWorst, comparisonMetric), comparisonMetric)}.`,
     `The performance gap across the selected comparison is ${formatComparisonMetric(comparisonGap, comparisonMetric)}.`,
-    comparisonDelta === null ? 'A verified change cannot be calculated until the missing source percentages are supplied.' : comparisonDelta >= 0
+    comparisonDelta === null ? 'A verified change cannot be calculated until the missing stock observations are supplied.' : comparisonDelta >= 0
       ? `The second period improved by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} compared with the first period.`
       : `The second period declined by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} compared with the first period.`,
   ];
@@ -3905,7 +3902,7 @@ function App() {
   }
 
   function explainAssistantPage() {
-    if (activePage === 'comparison') return { text: comparisonPreviousLabel + ': ' + formatPercent(comparisonPrevious.availability) + ' availability and ' + formatMos(comparisonPrevious.mos) + ' MOS. ' + comparisonCurrentLabel + ': ' + formatPercent(comparisonCurrent.availability) + ' availability and ' + formatMos(comparisonCurrent.mos) + ' MOS. ' + (comparisonAvailabilityDeltaPoints === null ? 'Availability change is unavailable because source percentages are missing.' : 'The availability movement is ' + comparisonAvailabilityDeltaPoints.toFixed(1) + ' percentage points.') + ' HC/HP availability averages submitted district percentages, not combined stock. The bars represent reported availability and the lines represent MOS. Coverage and commodity mix may affect the result; no cause is established.', evidence: [comparisonProvince, comparisonDistrict, comparisonProgram, comparisonCommodity, 'Source: selected provincial tracer submissions'].join(' | '), actions: [] };
+    if (activePage === 'comparison') return { text: comparisonPreviousLabel + ': ' + formatPercent(comparisonPrevious.availability) + ' availability and ' + formatMos(comparisonPrevious.mos) + ' MOS. ' + comparisonCurrentLabel + ': ' + formatPercent(comparisonCurrent.availability) + ' availability and ' + formatMos(comparisonCurrent.mos) + ' MOS. ' + (comparisonAvailabilityDeltaPoints === null ? 'Availability change is unavailable because stock observations are missing.' : 'The availability movement is ' + comparisonAvailabilityDeltaPoints.toFixed(1) + ' percentage points.') + ' Availability uses positive SOH records and the corresponding tracer-record denominator. District HC/HP stock may be aggregated across facilities. The bars represent reported availability and the lines represent MOS. Coverage and commodity mix may affect the result; no cause is established.', evidence: [comparisonProvince, comparisonDistrict, comparisonProgram, comparisonCommodity, 'Source: selected provincial tracer submissions'].join(' | '), actions: [] };
     if (activePage === 'vaccines') return { text: 'The selected vaccine source shows ' + vaccineSummary.districts + ' reporting units, ' + vaccineSummary.stockouts + ' submitted records with zero stock and ' + vaccineSummary.nonReporting + ' non-reporting units. District AMC is ' + vaccineSummary.districtAmc.toLocaleString() + '; provincial AMI is ' + vaccineSummary.provincialAmi.toLocaleString() + '. These measures are not added together as consumption. Missing reports are not stock-outs.', evidence: [selectedVaccinePeriod?.label, vaccineProvince, vaccineDistrict, vaccineName, selectedVaccinePeriod?.sourceSheet || 'Vaccine stock workbook'].join(' | '), actions: [] };
     if (activePage === 'stock') return { text: 'You are viewing ZAMMSA central inventory, not facility tracer stock. ' + (['control', 'navigator'].includes(stockWorkspace) ? centralStock.summary.belowTwoMos + ' listed items have reported MOS below two, and ' + centralStock.summary.confirmedStockouts + ' have both zero SOH and zero MOS.' : (stockData?.label || 'Selected weekly report') + ' has ' + formatPercent(stockData?.overallAvailability) + ' reported availability.') + ' Central and facility sources are not pooled. Check the inventory report date before comparing stock positions.', evidence: centralStock.source || stockData?.source || 'Selected ZAMMSA central inventory report', actions: [] };
     if (activePage === 'facilities') return { text: filteredFacilityAlerts.length + ' of ' + assessedFacilities.length + ' assessed reporting units match the visible alert filters. Stock-out counts use explicitly reported zero quantities; low-stock counts use positive SOH / AMC below two months. A unit can have both shortages and overstocked items. Non-reporting is separate, and aggregate Health Centre/Health Post rows are reporting groups, not named individual facilities.', evidence: assistantEvidence([fieldData], { ...assistantScope, ...emptyAssistantFocus }), actions: [] };
@@ -4284,7 +4281,6 @@ function App() {
           <div><span>Supply chain intelligence</span><strong>{activePageLabel}</strong><small>{moduleDescriptions[activePage] || "National tracer supply-chain intelligence."}</small></div>
         </section>
 
-        {['executive', 'national', 'provincial', 'facilities', 'programmes', 'quality'].includes(activePage) && <AvailabilityEvidence rows={filteredFacilities} />}
 
         {activePage === "executive" && <section className="hero">
           <div>
@@ -4963,7 +4959,7 @@ function App() {
               <h3>{comparisonPreviousLabel} vs {comparisonCurrentLabel}</h3>
               <strong>Drug availability and months of stock</strong>
               <div className={`comparison-story-callout ${comparisonAvailabilityDeltaPoints >= 0 ? "positive" : "negative"}`}>
-                {comparisonAvailabilityDeltaPoints === null ? 'A verified availability change is unavailable because source percentages are missing.' : Math.abs(comparisonAvailabilityDeltaPoints) < .05 ? 'Availability was unchanged at the displayed precision.' : `${comparisonAvailabilityDeltaPoints > 0 ? 'Availability improved' : 'Availability declined'} by ${Math.abs(comparisonAvailabilityDeltaPoints).toFixed(1)} percentage points in ${comparisonCurrentLabel} compared with ${comparisonPreviousLabel}.`}
+                {comparisonAvailabilityDeltaPoints === null ? 'A verified availability change is unavailable because stock observations are missing.' : Math.abs(comparisonAvailabilityDeltaPoints) < .05 ? 'Availability was unchanged at the displayed precision.' : `${comparisonAvailabilityDeltaPoints > 0 ? 'Availability improved' : 'Availability declined'} by ${Math.abs(comparisonAvailabilityDeltaPoints).toFixed(1)} percentage points in ${comparisonCurrentLabel} compared with ${comparisonPreviousLabel}.`}
               </div>
             </div>
 
@@ -5260,7 +5256,7 @@ function App() {
           </div>
           {activeProgrammeNavigationView.id !== "all" && <div className="stats-grid programme-kpis">
             <KpiCard icon={Users} label="Reporting facilities" value={programmeTracerSummary.facilities.toLocaleString()} sub={`${programmeTracerSummary.rows.toLocaleString()} submitted commodity rows`} />
-            <KpiCard icon={CircleCheck} label="Positive stock records" value={programmeTracerSummary.rows ? formatPercent(programmeTracerSummary.availability) : "-"} sub="Combined-stock presence; not the submitted district availability average" tone="green" />
+            <KpiCard icon={CircleCheck} label="Positive stock records" value={programmeTracerSummary.rows ? formatPercent(programmeTracerSummary.availability) : "-"} sub="Submitted programme records with positive SOH" tone="green" />
             <KpiCard icon={Gauge} label="Average MOS" value={formatMos(programmeTracerSummary.mos)} sub="Average across reporting facilities" tone="amber" />
             <KpiCard icon={CircleX} label="Stock-outs" value={programmeTracerSummary.stockout.toLocaleString()} sub="Submitted rows with SOH equal to zero" tone={programmeTracerSummary.stockout ? "red" : "green"} />
           </div>}

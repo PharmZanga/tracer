@@ -55,23 +55,19 @@ for (const period of tracerReportingPeriods) {
   for (const programme of period.programmes || []) {
     check(!["#REF!", "ABACAVIR SULPHATE/LAMIVUDINE 60/30MG TABLET(60)"].includes(programme.name), `${period.reportDate}: invalid programme label ${programme.name}`);
   }
-  // Preserve the raw stock reconciliation above, then independently verify the
-  // availability projection. Report averages do not reconcile by stock-row weights.
+  // District-aware programme scopes must not replace the original stock rollups.
   const projected = withSubmittedAvailability(period);
   const expected = availabilityForRows(projected.facilities);
-  check(projected.national.availability === expected.availability, `${period.id}: submitted-report average does not reconcile`);
+  check(Math.abs(expected.availability - weightedAvailability(period.facilities)) <= tolerance, `${period.id}: SOH availability weights do not reconcile`);
+  check(projected.national === period.national && projected.provinces === period.provinces && projected.districts === period.districts,
+    `${period.id}: programme filtering changed the original geographic rollups`);
+  check(projected.facilities === period.facilities, `${period.id}: programme filtering changed facility availability`);
   check(projected.commodityFacilityData === period.commodityFacilityData, `${period.id}: projection changed raw stock evidence`);
   check(sum(projected.programmes.filter(row => row.name !== 'ART'), 'rows') === period.national.rows,
     `${period.id}: full-template programme rows do not reconcile`);
   for (const row of projected.facilities) {
     check(row.availability === null || Number.isFinite(row.availability) && row.availability >= 0 && row.availability <= 1,
       `${period.id}: invalid report availability for ${row.name}`);
-    if (['HEALTH CENTRE', 'HEALTH POST'].includes(row.facilityLevel) && Number.isFinite(row.availability)) {
-      check(Boolean(row.availabilitySource), `${period.id}: primary-care percentage has no source cell`);
-      check(row.availability === row.availabilitySource?.availability, `${period.id}: primary-care percentage differs from its source`);
-      check(Boolean(row.availabilitySource?.workbookRevisionVerified || row.availabilitySource?.quantityValuesVerified),
-        `${period.id}: source revision is not verified for ${row.province}/${row.district}/${row.facilityLevel}`);
-    }
   }
 }
 

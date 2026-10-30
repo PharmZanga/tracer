@@ -1,60 +1,24 @@
-import submitted from './submittedAvailability2026.js';
-import {reportingUnitKey, reportingTextKey} from './reportingIdentity.js';
-
 export const reportedAvailabilityBasis = 'submitted-report-average';
-export const availabilityMethodology = 'HC/HP: each facility uses COUNTIF(SOH,">0")/70. The district submits its already-calculated percentage; provincial HC/HP availability is the arithmetic mean of submitted district percentages. Combined district stock is not used to recalculate this percentage. Other care levels retain their own tracer templates. Missing source percentages are unavailable, not zero; totals are report averages, not facility-count weighted estimates.';
-const primaryLevels = new Set(['HEALTH CENTRE', 'HEALTH POST', 'PRIMARY CARE - NOT SPECIFIED']);
-const sourceKey = row => [row.province, row.district, row.facilityLevel].map(reportingTextKey).join('|');
+export const availabilityMethodology = 'Availability uses the original SOH-based rollups: positive-stock tracer records divided by the corresponding tracer records, combined using record-count weights. HC/HP templates contain 70 tracer lines; other care levels retain their own templates. Entered workbook footer percentages do not replace this calculation. District HC/HP rows can contain combined facility stock, so their availability is not an estimate of the percentage of individual facilities with stock. Non-reporting is measured separately.';
 
 export function availabilityForRows(rows) {
-  let total = 0, reports = 0, missing = 0;
-  const corrected = rows.some(row => row.availabilityBasis === reportedAvailabilityBasis);
+  let total = 0, count = 0;
   for (const row of rows) {
-    if (row.availabilityBasis === reportedAvailabilityBasis) {
-      total += row.availabilityTotal || 0;
-      reports += row.availabilityReports || 0;
-      missing += row.availabilityMissingReports || 0;
-    } else if (Number.isFinite(row.availability) && row.rows > 0) {
-      const weight = corrected ? 1 : row.rows;
-      total += row.availability * weight;
-      reports += weight;
+    if (Number.isFinite(row.availability) && row.rows > 0) {
+      total += row.availability * row.rows;
+      count += row.rows;
     }
   }
-  return {availability: reports > 0 && missing < 1e-8 ? total / reports : null,
-    availabilityKnownAverage: reports ? total / reports : null,
-    availabilityTotal: total, availabilityReports: reports, availabilityMissingReports: missing,
-    ...(corrected ? {availabilityBasis: reportedAvailabilityBasis} : {})};
+  return {availability: count ? total / count : null};
 }
 
-export function withSubmittedAvailability(period, sources = submitted.periods[period?.id] || []) {
+export function withSubmittedAvailability(period) {
   if (!period?.id?.startsWith('2026-') || !Array.isArray(period.facilities)) return period;
-  if (period.national?.availabilityBasis === reportedAvailabilityBasis) return period;
-  const evidence = new Map(sources.map(row => [sourceKey(row), row]));
-  const duplicates = new Map();
-  const keyFor = row => primaryLevels.has(row.facilityLevel) ? sourceKey(row) : reportingUnitKey(row);
-  for (const row of period.facilities) if (row.quantity > 0) duplicates.set(keyFor(row), (duplicates.get(keyFor(row)) || 0) + 1);
-  const facilities = period.facilities.map(row => {
-    const primary = primaryLevels.has(row.facilityLevel);
-    const source = primary ? evidence.get(sourceKey(row)) : null;
-    const submittedReport = row.quantity > 0;
-    const availability = submittedReport ? primary ? source?.availability ?? null : row.availability : null;
-    const weight = 1 / (duplicates.get(keyFor(row)) || 1);
-    return {...row, stockPresenceAvailability: row.availability, availability,
-      availabilityBasis: reportedAvailabilityBasis, availabilityTotal: Number.isFinite(availability) ? availability * weight : 0,
-      availabilityReports: Number.isFinite(availability) ? weight : 0,
-      availabilityMissingReports: Number.isFinite(availability) || !submittedReport ? 0 : weight,
-      availabilitySource: source || null,
-      availabilityMethod: primary ? source ? 'Submitted district facility average' : 'Submitted district average unavailable'
-        : 'Individual hospital/service tracer report'};
-  });
-  function decorate(rows, accept) {
-    return (rows || []).map(row => ({...row, stockPresenceAvailability: row.availability,
-      ...availabilityForRows(facilities.filter(facility => accept(facility, row)))}));
-  }
+  const facilities = period.facilities;
+  // Retain district/facility identities for filtering without replacing stock-based rates.
   const programmeScopes = facilities.map(row => ({...row, facility: row.name,
     name: row.facilityLevel === 'CANCER DISEASES HOSPITAL' ? 'CANCER' : row.facilityLevel}));
-  // ART is a subset of several templates. District totals cannot recover its
-  // facility-average availability, so retain its stock evidence without inventing a rate.
+  // ART remains a separate subset for programme filtering.
   const art = new Map();
   const data = period.commodityFacilityData;
   if (data) for (const [p, d, l, f, , programme, quantity, amc, mos] of data.rows) {
@@ -71,14 +35,7 @@ export function withSubmittedAvailability(period, sources = submitted.periods[pe
     art.set(key, group);
   }
   for (const group of art.values()) {
-    const parentSubmitted = facilities.some(row => row.quantity > 0 && row.province === group.province && row.district === group.district
-      && row.facilityLevel === group.facilityLevel && row.name === group.facility);
-    const known = !primaryLevels.has(group.facilityLevel) && parentSubmitted;
-    programmeScopes.push({...group, availabilityBasis: reportedAvailabilityBasis,
-      availability: known ? group.positive / group.rows : null,
-      availabilityTotal: known ? group.positive / group.rows : 0, availabilityReports: known ? 1 : 0,
-      availabilityMissingReports: !known && parentSubmitted ? 1 : 0,
-      stockPresenceAvailability: group.positive / group.rows,
+    programmeScopes.push({...group, availability: group.positive / group.rows,
       mos: group.mosRows ? group.mosTotal / group.mosRows : null});
   }
   const streams = new Map();
@@ -94,13 +51,5 @@ export function withSubmittedAvailability(period, sources = submitted.periods[pe
     row.mos = mos.length ? mos.reduce((sum, r) => sum + r.mos * r.rows, 0) / mos.reduce((sum, r) => sum + r.rows, 0) : null;
     return row;
   });
-  return {...period, facilities,
-    national: {...period.national, stockPresenceAvailability: period.national.availability, ...availabilityForRows(facilities), availabilityBasis: reportedAvailabilityBasis},
-    provinces: decorate(period.provinces, (f, r) => f.province === r.name),
-    districts: decorate(period.districts, (f, r) => f.province === r.province && f.district === r.name),
-    facilityLevels: decorate(period.facilityLevels, (f, r) => f.facilityLevel === r.name),
-    programmeScopes, programmes,
-    availabilityReview: {method: 'Unweighted mean of submitted district/service report averages; not a facility-count weighted national estimate',
-      sources: [...evidence.values()], missing: facilities.filter(row => row.availabilityMissingReports > 0)
-        .map(({province, district, facilityLevel, name}) => ({province, district, facilityLevel, name}))}};
+  return {...period, programmeScopes, programmes};
 }

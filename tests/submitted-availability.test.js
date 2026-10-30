@@ -3,83 +3,80 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {availabilityForRows, withSubmittedAvailability} from '../src/tracerAvailability.js';
 import {assistantComparison, assistantSnapshot, emptyAssistantFocus} from '../src/tracerAssistant.js';
+import {commodityRowsFromPeriod} from '../src/tracerRows.js';
 
 const raw = JSON.parse(fs.readFileSync(new URL('../public/data/tracer/2026/oct.json', import.meta.url))).tracerReportingPeriods.find(p => p.id === '2026-10-25');
-const corrected = withSubmittedAvailability(raw);
-const lusaka = corrected.facilities.filter(row => row.province === 'LUSAKA PROVINCE');
-const average = level => availabilityForRows(lusaka.filter(row => row.facilityLevel === level));
+const restored = withSubmittedAvailability(raw);
+const kafue = restored.facilities.find(row => row.province === 'LUSAKA PROVINCE' && row.district === 'KAFUE' && row.facilityLevel === 'HEALTH POST');
+const scope = {...emptyAssistantFocus, province: 'LUSAKA PROVINCE', district: 'KAFUE', facilityLevel: 'HEALTH POST', facility: 'all'};
+const matchesLevel = (level, selection) => selection === 'all' || level === selection;
 
-test('Lusaka HC averages submitted district percentages: 78.4%, rounded 78%', () => {
-  assert.equal(average('HEALTH CENTRE').availability, .784);
-  assert.equal(Math.round(average('HEALTH CENTRE').availability * 100), 78);
-  assert.equal(average('HEALTH CENTRE').availabilityReports, 5);
-  assert.equal(average('HEALTH CENTRE').availabilityMissingReports, 0);
+test('Kafue HP restores positive SOH availability: 65 / 70, displayed 92.9%', () => {
+  const detail = commodityRowsFromPeriod(raw).filter(row => row.province === scope.province && row.district === scope.district && row.facilityLevel === scope.facilityLevel);
+  assert.equal(detail.length, 70);
+  assert.equal(detail.filter(row => row.quantity > 0).length, 65);
+  assert.ok(Math.abs(kafue.availability - 65 / 70) < .0001);
+  assert.equal((kafue.availability * 100).toFixed(1), '92.9');
+  assert.notEqual(kafue.availability, .78);
 });
 
-test('Kafue HP retains the submitted 78%, not 65 positive combined quantities / 70', () => {
-  const row = lusaka.find(row => row.district === 'KAFUE' && row.facilityLevel === 'HEALTH POST');
-  assert.equal(row.availability, .78);
-  assert.equal(row.availabilitySource.cell, 'M76');
-  assert.equal(row.availabilitySource.sheet, 'HP');
-  assert.notEqual(row.availability, row.stockPresenceAvailability);
-  assert.equal(average('HEALTH POST').availability, .75);
+test('programme scopes retain district and reporting-unit identity, not the provincial 96.4%', () => {
+  const rows = restored.programmeScopes.filter(row => row.province === scope.province && row.district === scope.district && row.name === 'HEALTH POST');
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].rows, 70);
+  assert.equal(rows[0].availability, kafue.availability);
+  assert.notEqual(rows[0].availability, .9642);
+  assert.ok(rows[0].facility);
 });
 
-test('programme scopes carry district and facility identity; HP uses all 70 tracer lines', () => {
-  const row = corrected.programmeScopes.find(row => row.province === 'LUSAKA PROVINCE' && row.district === 'KAFUE' && row.name === 'HEALTH POST');
-  assert.equal(row.availability, .78);
-  assert.equal(row.rows, 70);
-  assert.ok(row.facility);
-  assert.ok(corrected.programmes.some(row => row.name === 'ART'));
-  const art = corrected.programmeScopes.find(row => row.province === 'LUSAKA PROVINCE' && row.district === 'KAFUE' && row.name === 'ART' && row.facilityLevel === 'HEALTH POST');
-  assert.equal(art.availability, null, 'ART-specific facility average cannot be recovered from the full-template percentage');
+test('ART retains its own positive-SOH subset alongside the full HC/HP template', () => {
+  const art = restored.programmeScopes.find(row => row.province === scope.province && row.district === scope.district && row.name === 'ART' && row.facilityLevel === scope.facilityLevel);
+  assert.equal(art.rows, 3);
+  assert.equal(art.availability, 2 / 3);
 });
 
-test('averaging is associative and not weighted by stock rows or invented facility counts', () => {
-  const hc = lusaka.filter(row => row.facilityLevel === 'HEALTH CENTRE');
-  const weighted = hc.map((row, i) => ({...row, rows: i ? 1 : 10000}));
-  assert.equal(availabilityForRows(weighted).availability, .784);
-  const parts = [availabilityForRows(hc.slice(0, 2)), availabilityForRows(hc.slice(2))];
-  assert.equal(availabilityForRows(parts).availability, .784);
+test('rollups restore record-count weights and remain associative', () => {
+  const rows = [{rows: 70, availability: .9}, {rows: 50, availability: .5}, {rows: 20, availability: 1}];
+  const expected = (70 * .9 + 50 * .5 + 20) / 140;
+  assert.equal(availabilityForRows(rows).availability, expected);
+  const first = {...availabilityForRows(rows.slice(0, 2)), rows: 120};
+  assert.equal(availabilityForRows([first, rows[2]]).availability, expected);
+  assert.equal(availabilityForRows([{rows: 70, availability: 0}]).availability, 0);
+  assert.equal(availabilityForRows([]).availability, null);
 });
 
-test('missing percentages are unavailable, valid zero is retained, all-zero blocks are not reports', () => {
-  const facility = lusaka.find(row => row.facilityLevel === 'HEALTH CENTRE');
-  const input = {...raw, facilities: [{...facility, availability: .95}], national: {rows: 70}};
-  assert.equal(withSubmittedAvailability(input, []).national.availability, null);
-  const zero = withSubmittedAvailability(input, [{...facility, availability: 0}]);
-  assert.equal(zero.national.availability, 0);
-  assert.equal(zero.national.availabilityReports, 1);
-  const blank = withSubmittedAvailability({...input, facilities: [{...facility, quantity: 0}]}, []);
-  assert.equal(blank.national.availabilityMissingReports, 0);
-  assert.equal(blank.national.availabilityReports, 0);
+test('entered footer evidence cannot replace stock-based availability or suppress it', () => {
+  const projected = withSubmittedAvailability(raw, [{...kafue, availability: .78}]);
+  assert.equal(projected.facilities, raw.facilities);
+  assert.equal(projected.national, raw.national);
+  assert.equal(projected.provinces, raw.provinces);
+  assert.equal(projected.districts, raw.districts);
+  assert.equal(projected.facilityLevels, raw.facilityLevels);
 });
 
-test('SOH, AMC, MOS, encoded stock rows and reporting denominator evidence remain unchanged', () => {
-  assert.equal(corrected.commodityFacilityData, raw.commodityFacilityData);
-  assert.deepEqual(corrected.counts, raw.counts);
-  for (let i = 0; i < raw.facilities.length; i++) for (const key of ['quantity', 'amc', 'mos', 'rows'])
-    assert.equal(corrected.facilities[i][key], raw.facilities[i][key]);
-  assert.equal(withSubmittedAvailability(corrected), corrected);
+test('SOH, AMC, MOS, encoded stock rows and reporting evidence remain unchanged', () => {
+  assert.equal(restored.commodityFacilityData, raw.commodityFacilityData);
+  assert.equal(restored.counts, raw.counts);
+  assert.equal(restored.facilities, raw.facilities);
+  assert.deepEqual(withSubmittedAvailability(restored), restored);
 });
 
-test('assistant scoped to Kafue HP uses the same submitted percentage', () => {
-  const scope = {...emptyAssistantFocus, province: 'LUSAKA PROVINCE', district: 'KAFUE', facilityLevel: 'HEALTH POST', facility: 'all'};
-  const answer = assistantSnapshot(corrected, scope, (level, selection) => selection === 'all' || level === selection);
-  assert.equal(answer.facts.availability, .78);
-  assert.match(answer.text, /submitted-report average availability is 78.0%/);
+test('assistant scoped to Kafue HP also shows 65 / 70 rather than 78%', () => {
+  const answer = assistantSnapshot(restored, scope, matchesLevel);
+  assert.equal(answer.facts.availability, 65 / 70);
+  assert.match(answer.text, /92.9%/);
+  assert.doesNotMatch(answer.text, /uses submitted district percentages/);
 });
 
-test('assistant comparison preserves district-average evidence rather than aggregate-stock ratios', () => {
-  const scope = {...emptyAssistantFocus, province: 'LUSAKA PROVINCE', district: 'KAFUE', facilityLevel: 'HEALTH POST', facility: 'all'};
-  const answer = assistantComparison(corrected, corrected, scope, (level, selection) => level === selection);
-  assert.equal(answer.facts.current.availability, .78);
-  assert.equal(answer.facts.previous.availability, .78);
-  assert.match(answer.text, /submitted-report average availability was unchanged/);
+test('assistant comparison keeps the restored positive-SOH measure', () => {
+  const answer = assistantComparison(restored, restored, scope, matchesLevel);
+  assert.equal(answer.facts.current.availability, 65 / 70);
+  assert.equal(answer.facts.previous.availability, 65 / 70);
+  assert.match(answer.text, /positive stock-record share was unchanged/);
 });
 
-test('shifted Central HP footer uses the percentage row, not the MOS row or header label', () => {
-  const row = corrected.facilities.find(row => row.province === 'CENTRAL PROVINCE' && row.district === 'CHITAMBO' && row.facilityLevel === 'HEALTH POST');
-  assert.equal(row.availabilitySource?.cell, 'M77');
-  assert.ok(Math.abs(row.availability - 69 / 70) < 1e-10);
+test('Level 1 Lusaka district retains its original 80.8% calculation', () => {
+  const hospitals = restored.facilities.filter(row => row.province === 'LUSAKA PROVINCE' && row.district === 'LUSAKA' && row.facilityLevel === 'LEVEL 1 HOSPITAL');
+  assert.equal(hospitals.length, 5);
+  assert.ok(Math.abs(availabilityForRows(hospitals).availability - .808) < 1e-10);
 });
