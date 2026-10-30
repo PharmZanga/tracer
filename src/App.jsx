@@ -11,6 +11,8 @@ import LeadershipHighlights from './LeadershipHighlights.jsx';
 import ReportingRegisterNotice from './ReportingRegisterNotice.jsx';
 import {fixedDistrictDirectory, fixedReportingEvidence, usesFixedReportingRegister} from './fixedReportingRoster.js';
 import {matchesReportingSelection, reportingUnitKey} from './reportingIdentity.js';
+import {availabilityForRows, availabilityMethodology, reportedAvailabilityBasis} from './tracerAvailability.js';
+import AvailabilityEvidence from './AvailabilityEvidence.jsx';
 import {isAdministrator,isAdministrationPage} from './dashboardAccess.js';
 import TracerAssistant from './NavigationGuide.jsx';
 import { emptyAssistantFocus, planAssistantRequest, assistantScopeLabel, validAssistantView, assistantSnapshot, assistantReporting, assistantComparison, assistantRecurring, assistantEvidence, previousAssistantWeek, assistantProgrammeMatches } from './tracerAssistant.js';
@@ -318,6 +320,7 @@ function compareText(a, b) {
 }
 
 function formatPercent(value) {
+  if (value === null || value === undefined || !Number.isFinite(Number(value))) return 'Unavailable';
   return `${Math.round(normalizeRate(value) * 1000) / 10}%`;
 }
 
@@ -481,6 +484,7 @@ function combineRollups(rows, fallback) {
     amc: Math.round(totals.amc),
     riskRows: totals.riskRows,
     stockoutRate: totals.rows ? totals.stockout / totals.rows : 0,
+    ...availabilityForRows(rows),
   };
 }
 
@@ -644,7 +648,7 @@ function LevelOfCarePerformance({ rows }) {
       </div>
       <div className="level-care-legend">
         <span><i className="mos-key" />Availability bar, average MOS shown inside (12-month cap)</span>
-        <span><i className="availability-key" />Submitted-row availability</span>
+        <span><i className="availability-key" />Submitted-report average availability</span>
       </div>
       {level3Row ? (
         <div className="level-care-inclusions">
@@ -902,7 +906,7 @@ export function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPer
         </ol>
         <table><thead><tr><th>Action</th><th>Responsible team</th><th>Timing</th></tr></thead><tbody><tr><td>Validate quantities, expiry and replenishment for critical commodities</td><td>Provincial and district pharmacists</td><td>Immediate</td></tr><tr><td>Review programme shortages and order fulfilment</td><td>Programme managers and Control Tower</td><td>Within one week</td></tr><tr><td>Close incomplete primary-care and hospital reporting</td><td>Provincial health offices</td><td>Before next submission</td></tr><tr><td>Review constrained central inventory categories</td><td>ZAMMSA and Ministry of Health</td><td>Weekly</td></tr></tbody></table>
       </section>
-      <section className="national-report-section" {...sectionProps("sources")}><h2>Methodology and Sources</h2><p>Availability is the commodity-row-weighted reported availability used by the dashboard. MOS is the arithmetic mean of available numeric commodity MOS, capped at 12 months where detailed rows exist; historical summary-only periods use row-weighted source MOS. Missing MOS is excluded from the average, not replaced with zero. Stock status is reported separately from non-reporting. Multi-week totals are observations, not unique facilities, cumulative SOH or total consumption. Latest-week DHO coverage is distinct from the weekly reporting history.</p><p>Reporting periods follow the dashboard submission month, not the calendar month of the week-ending date. Partial quarters include only available submissions. Earlier period comparisons use the preceding available period of the same frequency. The Ministry of Health reference report supplies the presentation style only; every figure, chart and analytical statement is derived from the selected dashboard data. Comparisons are descriptive and do not establish the causes of changes in availability.</p><details open><summary>Provincial tracer sources</summary><ul>{[...new Set(summary.selectedPeriods.map((p) => p.source))].map((source) => <li key={source}>{source}</li>)}</ul></details></section>
+      <section className="national-report-section" {...sectionProps("sources")}><h2>Methodology and Sources</h2><p>{availabilityMethodology}</p><p>MOS is the arithmetic mean of available numeric commodity MOS, capped at 12 months where detailed rows exist; historical summary-only periods use row-weighted source MOS. Missing MOS is excluded from the average, not replaced with zero. Stock status is reported separately from non-reporting. Multi-week totals are observations, not unique facilities, cumulative SOH or total consumption. Latest-week DHO coverage is distinct from the weekly reporting history.</p><p>Reporting periods follow the dashboard submission month, not the calendar month of the week-ending date. Partial quarters include only available submissions. Earlier period comparisons use the preceding available period of the same frequency. The Ministry of Health reference report supplies the presentation style only; every figure, chart and analytical statement is derived from the selected dashboard data. Comparisons are descriptive and do not establish the causes of changes in availability.</p><details open><summary>Provincial tracer sources</summary><ul>{[...new Set(summary.selectedPeriods.map((p) => p.source))].map((source) => <li key={source}>{source}</li>)}</ul></details></section>
       <footer>National Supply Chain Tracer Report | Generated {new Date().toLocaleDateString("en-GB",{timeZone:"Africa/Lusaka"})}</footer>
     </OrderedReport>
   </section>;
@@ -1066,12 +1070,15 @@ function aggregateQualityRows(rows, groupKey, labelKey = "name") {
 
 function aggregateRollups(rows, groupKey = "name") {
   const groups = new Map();
+  const members = new Map();
   rows.forEach((row) => {
     const key = row[groupKey];
     if (!groups.has(key)) {
       groups.set(key, { ...makeEmptyRollup(key), name: key });
+      members.set(key, []);
     }
     const group = groups.get(key);
+    members.get(key).push(row);
     group.rows += row.rows || 0;
     group.availabilityWeighted = (group.availabilityWeighted || 0) + normalizeRate(row.availability) * (row.rows || 0);
     if (row.mos !== null && row.mos !== undefined) {
@@ -1094,6 +1101,7 @@ function aggregateRollups(rows, groupKey = "name") {
     availability: row.rows ? row.availabilityWeighted / row.rows : 0,
     mos: row.mosRows ? Math.round((row.mosWeighted / row.mosRows) * 100) / 100 : null,
     stockoutRate: row.rows ? row.stockout / row.rows : 0,
+    ...availabilityForRows(members.get(row.name)),
   }));
 }
 
@@ -1125,7 +1133,7 @@ function comparisonMetricValue(row, metric) {
   if (metric === "mos") return row.mos ?? 0;
   if (metric === "amc") return row.amc ?? 0;
   if (metric === "reporting") return row.expected ? (row.reported || 0) / row.expected : row.rows ? 1 : 0;
-  return normalizeRate(row.availability);
+  return Number.isFinite(row?.availability) ? normalizeRate(row.availability) : null;
 }
 
 function comparisonMetricLabel(metric) {
@@ -1177,6 +1185,7 @@ function commodityComparisonRowsForPeriod(period, filters) {
       const status = commodityStockStatus(row.mos);
       current.rows += 1;
       current.available += row.quantity > 0 ? 1 : 0;
+      if (period.national?.availabilityBasis === reportedAvailabilityBasis && ['HEALTH CENTRE', 'HEALTH POST', 'PRIMARY CARE - NOT SPECIFIED'].includes(row.facilityLevel)) current.missingFacilityAverage = true;
       current.stockout += status === "Stocked out" ? 1 : 0;
       current.nearCritical += status === "Emergency stock" ? 1 : 0;
       current.understocked += status === "Understocked" ? 1 : 0;
@@ -1197,6 +1206,8 @@ function commodityComparisonRowsForPeriod(period, filters) {
     availability: row.rows ? row.available / row.rows : 0,
     mos: filters.commodity !== 'all' && row.amc > 0 ? row.quantity / row.amc : (row.mosRows ? row.mosTotal / row.mosRows : null),
     stockoutRate: row.rows ? row.stockout / row.rows : 0,
+    ...(row.missingFacilityAverage ? {availability: null, availabilityBasis: reportedAvailabilityBasis,
+      availabilityTotal: 0, availabilityReports: 0, availabilityMissingReports: 1} : {}),
   }));
 }
 
@@ -1206,6 +1217,13 @@ function comparisonRowsForPeriod(period, filters) {
   const facilityLevelFilter = (row) => matchesFacilityCareLevel(row.facilityLevel, filters.facilityLevel);
   const programFilter = (row) => filters.program === "all" || row.name === filters.program || row.programme === filters.program || row.program === filters.program;
   const commodityFilter = (row) => filters.commodity === "all" || row.name === filters.commodity;
+
+  if (period.national?.availabilityBasis === reportedAvailabilityBasis && filters.commodity === 'all' && filters.program === 'all' && filters.compareBy !== 'commodity') {
+    const members = period.facilities.filter(provinceFilter).filter(districtFilter).filter(facilityLevelFilter)
+      .map(row => ({...row, comparisonGroup: filters.compareBy === 'province' ? row.province : filters.compareBy === 'district' ? row.district
+        : filters.compareBy === 'level' ? careLevelBuckets.find(bucket => bucket.id === careLevelBucket(row.facilityLevel))?.label || row.facilityLevel : row.facilityLevel}));
+    return aggregateRollups(members, 'comparisonGroup').map(row => ({...row, group: row.name}));
+  }
 
   if (hasComparisonScope(filters) && period.commodityFacilityData) return commodityComparisonRowsForPeriod(period, filters);
   // Historical national-only summaries cannot support a scoped commodity result.
@@ -1773,7 +1791,8 @@ function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
   const analysis = useMemo(() => analyseFacilityTracer(currentRows, previousRows), [currentRows, previousRows]);
   const statusTotal = analysis.total;
   const submittedAvailability = activeFacility.availability;
-  const submittedAvailableCount = Math.round(submittedAvailability * statusTotal);
+  const districtAverage = activeFacility.availabilityBasis === reportedAvailabilityBasis && ['HEALTH CENTRE', 'HEALTH POST', 'PRIMARY CARE - NOT SPECIFIED'].includes(activeFacility.facilityLevel);
+  const submittedAvailableCount = analysis.items.filter(item => item.quantity > 0).length;
   const programmes = [...new Set(analysis.items.map((item) => item.program).filter(Boolean))].sort();
   const filterAndSortItems = (items) => {
     const search = commoditySearch.trim().toLowerCase();
@@ -1812,7 +1831,7 @@ function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
   }
 
   function exportTracerExcel() {
-    const rows = facilityTracerExportRows({ reportLabel: report.label, province: activeFacility.province, district: activeFacility.district, facilityLevel: activeFacility.facilityLevel, facilityName: title, submittedAvailability: formatPercent(submittedAvailability), availabilityNumerator: submittedAvailableCount, availabilityDenominator: statusTotal, analysis, items: filterAndSortItems(analysis.items) });
+    const rows = facilityTracerExportRows({ reportLabel: report.label, province: activeFacility.province, district: activeFacility.district, facilityLevel: activeFacility.facilityLevel, facilityName: title, submittedAvailability: formatPercent(submittedAvailability), availabilityNumerator: districtAverage ? 'Not applicable: submitted district average' : submittedAvailableCount, availabilityDenominator: districtAverage ? 'Not inferred from combined stock' : statusTotal, analysis, items: filterAndSortItems(analysis.items) });
     const blob = new Blob([rows.map((row) => row.map(csvCell).join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -1880,7 +1899,7 @@ function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
           <>
             {facility.isAggregate && modalMode === "aggregate" ? (
               <div className="modal-warning">
-                This is the aggregate submitted tracer for all {facility.facilityLevel.toLowerCase()} facilities in {facility.district}. The percentages below show the overall drug status across the submitted rows before you drill into named facilities.
+                This is the aggregate submitted tracer for all {facility.facilityLevel.toLowerCase()} facilities in {facility.district}. Availability is the submitted district percentage; stock-band counts describe the combined commodity stock, not individual facility availability.
               </div>
             ) : null}
             {modalMode === "facility" ? (
@@ -1889,11 +1908,12 @@ function FacilityTracerModal({ facility, report, onClose, onOpenActions }) {
               </div>
             ) : null}
             <div className="modal-kpis">
-              <KpiCard label="Submitted tracer availability ⓘ" value={formatPercent(submittedAvailability)} sub={`${submittedAvailableCount} of ${statusTotal} tracer commodities had positive stock. Availability measures the proportion reported with quantity greater than zero.`} />
+              <KpiCard label="Submitted tracer availability" value={formatPercent(submittedAvailability)} sub={districtAverage ? `District HC/HP percentage from ${activeFacility.availabilitySource ? `${activeFacility.availabilitySource.sheet}!${activeFacility.availabilitySource.cell}` : 'an unverified source (unavailable)'}. Not recalculated from combined stock.` : `${submittedAvailableCount} of ${statusTotal} tracer commodities had positive stock.`} />
+              {districtAverage && <KpiCard label="Combined-stock presence" value={statusTotal ? formatPercent(submittedAvailableCount / statusTotal) : 'Unavailable'} sub={`${submittedAvailableCount} of ${statusTotal} aggregate commodity records have positive SOH; not facility-average availability.`} />}
               <KpiCard label="Average / median MOS" value={`${formatMos(analysis.averageMos)} / ${formatMos(analysis.medianMos)}`} sub={`${analysis.items.filter((item) => Number.isFinite(item.calculatedMos)).length} of ${statusTotal} commodities with calculable MOS`} />
               {statusRows.map((row) => <KpiCard key={row.label} label={row.label} value={row.value} sub={`${row.value} of ${statusTotal} commodities (${statusTotal ? formatPercent(row.value / statusTotal) : "-"}). ${row.definition}`} tone={row.tone === "neutral" ? undefined : row.tone} />)}
             </div>
-            <div className="availability-status-note">A commodity with positive stock is counted as available even when its months of stock are below the recommended level.</div>
+            <div className="availability-status-note">Positive combined SOH indicates stock somewhere in the reporting group. It does not establish availability at every facility. Low months of stock remain a separate risk.</div>
             <div className="facility-week-comparison">Compared with the previous week: <b>{analysis.comparison.newStockouts} new stock-outs</b>, <b>{analysis.comparison.continuingStockouts} continuing stock-outs</b> and <b>{analysis.comparison.resolvedStockouts} resolved stock-outs</b>.{previousReport ? ` Previous period: ${previousReport.label}.` : " No previous facility report was available."}</div>
             <div className="facility-tracer-tools">
               <label><span>Search commodity</span><input value={commoditySearch} onChange={(event) => setCommoditySearch(event.target.value)} placeholder="Search commodity name" /></label>
@@ -2380,7 +2400,7 @@ function App() {
         ...row,
         calculatedAvailability: row.availability,
         calculatedMos: row.mos,
-        availability: displayOverride.availability,
+        availability: row.availabilityBasis === reportedAvailabilityBasis ? row.availability : displayOverride.availability,
         mos: displayOverride.mos,
         displayOverride,
       } : row;
@@ -2398,7 +2418,7 @@ function App() {
       : null;
     return {
       ...calculatedRollup,
-      availability: displayOverride?.availability ?? calculatedRollup.availability,
+      availability: calculatedRollup.availabilityBasis === reportedAvailabilityBasis ? calculatedRollup.availability : displayOverride?.availability ?? calculatedRollup.availability,
       mos: displayOverride?.mos ?? calculatedMos,
       calculatedAvailability: calculatedRollup.availability,
       calculatedMos,
@@ -2411,8 +2431,8 @@ function App() {
         .map((facility) => facility.name))].sort(),
     };
   }).filter((row) => selectedProvince === "all" || row.rows > 0), [filteredFacilities, filteredCommodityRows, isNationalUnfilteredScope, fieldData, selectedProvince]);
-  const bestProvince = scopedProvinceRows[0];
-  const worstProvince = [...scopedProvinceRows].sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)[0];
+  const bestProvince = scopedProvinceRows.find(row => Number.isFinite(row.availability));
+  const worstProvince = scopedProvinceRows.filter(row => Number.isFinite(row.availability)).sort((a, b) => a.availability - b.availability || b.riskRows - a.riskRows)[0];
   const facilityCommodityRows = useMemo(() => groupCommodityRowsByFacility(filteredCommodityRows), [filteredCommodityRows]);
   const uniqueFilteredFacilities = useMemo(() => {
     const facilitiesByIdentity = new Map();
@@ -3148,7 +3168,8 @@ function App() {
   const scopedProgrammeRows = useMemo(() => (fieldData.programmeScopes || fieldData.programmes || [])
     .filter((row) => !row.province || selectedProvince === "all" || row.province === selectedProvince)
     .filter((row) => !row.district || selectedDistrict === "all" || row.district === selectedDistrict)
-    .filter((row) => !row.facilityLevel || matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel)), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel]);
+    .filter((row) => !row.facilityLevel || matchesFacilityCareLevel(row.facilityLevel, selectedFacilityLevel))
+    .filter((row) => selectedFacility === 'all' || matchesReportingSelection({...row, name: row.facility}, selectedFacility)), [fieldData, selectedProvince, selectedDistrict, selectedFacilityLevel, selectedFacility]);
   const activeProgrammeNavigationView = programmeNavigationViews.find((view) => view.id === programmeNavigationFocus) || programmeNavigationViews[0];
   const vaccineWorkspace = useMemo(() => {
     const selectedVaccinePeriod = vaccineStockData.periods.find((period) => period.id === vaccinePeriodId) || vaccineStockData.periods.at(-1);
@@ -3223,10 +3244,10 @@ function App() {
     return { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows, vaccineSummary, vaccineTrendRows, vaccineProductRows, vaccineExpiryRows, vaccineStockoutRows, vaccineNonReportingDistricts, vaccineReportingUnits };
   }, [activePage, vaccinePeriodId, vaccineProvince, vaccineDistrict, vaccineName, districtDirectory]);
   const { selectedVaccinePeriod, vaccineProvinceOptions, vaccineDistrictOptions, vaccineNameOptions, vaccineRows, vaccineSummary, vaccineTrendRows, vaccineProductRows, vaccineExpiryRows, vaccineStockoutRows, vaccineNonReportingDistricts } = vaccineWorkspace;
-  const programmeRowsForPage = (fieldData.programmes || []).filter((program) => programmeMatchesView(program.name, activeProgrammeNavigationView));
+  const programmeRowsForPage = aggregateRollups(scopedProgrammeRows, 'name').filter((program) => programmeMatchesView(program.name, activeProgrammeNavigationView));
   const needsProgrammeAnalysis = activePage === "programmes";
-  const programmeTracerRows = useMemo(() => needsProgrammeAnalysis ? periodCommodityRows
-    .filter((row) => programmeMatchesView(row.programme, activeProgrammeNavigationView)) : [], [needsProgrammeAnalysis, periodCommodityRows, activeProgrammeNavigationView]);
+  const programmeTracerRows = useMemo(() => needsProgrammeAnalysis ? filteredCommodityRows
+    .filter((row) => programmeMatchesView(row.programme, activeProgrammeNavigationView)) : [], [needsProgrammeAnalysis, filteredCommodityRows, activeProgrammeNavigationView]);
   const programmeFacilityRows = useMemo(() => Object.values(programmeTracerRows.reduce((groups, row) => {
     const key = [row.province, row.district, row.facilityLevel, row.facility].join("|");
     const group = groups[key] || {
@@ -3364,10 +3385,12 @@ function App() {
   const previousComparisonRows = useMemo(() => aggregateComparisonRows(previousComparisonPeriods, comparisonFilters), [previousComparisonPeriods, comparisonFilters]);
   const comparisonCurrent = combineRollups(comparisonRows, makeEmptyRollup("Current comparison"));
   const comparisonPrevious = combineRollups(previousComparisonRows, makeEmptyRollup("Previous comparison"));
-  const comparisonDelta = comparisonMetricValue(comparisonCurrent, comparisonMetric) - comparisonMetricValue(comparisonPrevious, comparisonMetric);
-  const comparisonBest = comparisonRows[0] || makeEmptyRollup("No data");
-  const comparisonWorst = comparisonRows.at(-1) || makeEmptyRollup("No data");
-  const comparisonGap = comparisonMetricValue(comparisonBest, comparisonMetric) - comparisonMetricValue(comparisonWorst, comparisonMetric);
+  const comparisonDelta = comparisonMetricValue(comparisonCurrent, comparisonMetric) === null || comparisonMetricValue(comparisonPrevious, comparisonMetric) === null ? null
+    : comparisonMetricValue(comparisonCurrent, comparisonMetric) - comparisonMetricValue(comparisonPrevious, comparisonMetric);
+  const rankedComparison = comparisonRows.filter(row => comparisonMetricValue(row, comparisonMetric) !== null);
+  const comparisonBest = rankedComparison[0] || {...makeEmptyRollup("No verified data"), availability: null};
+  const comparisonWorst = rankedComparison.at(-1) || {...makeEmptyRollup("No verified data"), availability: null};
+  const comparisonGap = rankedComparison.length ? comparisonMetricValue(comparisonBest, comparisonMetric) - comparisonMetricValue(comparisonWorst, comparisonMetric) : null;
   const comparisonCurrentLabel = comparisonRangeLabel(comparisonPeriodType, comparisonYear, comparisonRangeStart, comparisonRangeEnd);
   const comparisonPreviousLabel = comparisonRangeLabel(comparisonPeriodType, comparisonYear, comparisonBaselineStart, comparisonBaselineEnd);
   const comparisonPreviousByName = new Map(previousComparisonRows.map((row) => [row.name, row]));
@@ -3407,9 +3430,11 @@ function App() {
     const y = 100 - Math.min((row.current.mos || 0) / comparisonMosScale, 1) * 100;
     return `${x},${y}`;
   }).join(" ");
-  const comparisonAvailabilityDeltaPoints = (normalizeRate(comparisonCurrent.availability) - normalizeRate(comparisonPrevious.availability)) * 100;
+  const comparisonAvailabilityDeltaPoints = Number.isFinite(comparisonCurrent.availability) && Number.isFinite(comparisonPrevious.availability)
+    ? (comparisonCurrent.availability - comparisonPrevious.availability) * 100 : null;
   const comparisonMosDelta = (comparisonCurrent.mos || 0) - (comparisonPrevious.mos || 0);
   const comparisonTakeaways = [...comparisonExecutiveRows]
+    .filter(row => Number.isFinite(row.current.availability) && Number.isFinite(row.previous.availability))
     .map((row) => ({
       name: row.name,
       delta: (normalizeRate(row.current.availability) - normalizeRate(row.previous.availability)) * 100,
@@ -3426,7 +3451,7 @@ function App() {
     `${comparisonBest.name} has the highest ${comparisonMetricLabel(comparisonMetric).toLowerCase()} at ${formatComparisonMetric(comparisonMetricValue(comparisonBest, comparisonMetric), comparisonMetric)}.`,
     `${comparisonWorst.name} is the lowest performer at ${formatComparisonMetric(comparisonMetricValue(comparisonWorst, comparisonMetric), comparisonMetric)}.`,
     `The performance gap across the selected comparison is ${formatComparisonMetric(comparisonGap, comparisonMetric)}.`,
-    comparisonDelta >= 0
+    comparisonDelta === null ? 'A verified change cannot be calculated until the missing source percentages are supplied.' : comparisonDelta >= 0
       ? `The second period improved by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} compared with the first period.`
       : `The second period declined by ${formatComparisonMetric(Math.abs(comparisonDelta), comparisonMetric)} compared with the first period.`,
   ];
@@ -3880,7 +3905,7 @@ function App() {
   }
 
   function explainAssistantPage() {
-    if (activePage === 'comparison') return { text: comparisonPreviousLabel + ': ' + formatPercent(comparisonPrevious.availability) + ' availability and ' + formatMos(comparisonPrevious.mos) + ' MOS. ' + comparisonCurrentLabel + ': ' + formatPercent(comparisonCurrent.availability) + ' availability and ' + formatMos(comparisonCurrent.mos) + ' MOS. The availability movement is ' + comparisonAvailabilityDeltaPoints.toFixed(1) + ' percentage points. The bars represent reported availability and the lines represent MOS. Coverage and commodity mix may affect the result; no cause is established.', evidence: [comparisonProvince, comparisonDistrict, comparisonProgram, comparisonCommodity, 'Source: selected provincial tracer submissions'].join(' | '), actions: [] };
+    if (activePage === 'comparison') return { text: comparisonPreviousLabel + ': ' + formatPercent(comparisonPrevious.availability) + ' availability and ' + formatMos(comparisonPrevious.mos) + ' MOS. ' + comparisonCurrentLabel + ': ' + formatPercent(comparisonCurrent.availability) + ' availability and ' + formatMos(comparisonCurrent.mos) + ' MOS. ' + (comparisonAvailabilityDeltaPoints === null ? 'Availability change is unavailable because source percentages are missing.' : 'The availability movement is ' + comparisonAvailabilityDeltaPoints.toFixed(1) + ' percentage points.') + ' HC/HP availability averages submitted district percentages, not combined stock. The bars represent reported availability and the lines represent MOS. Coverage and commodity mix may affect the result; no cause is established.', evidence: [comparisonProvince, comparisonDistrict, comparisonProgram, comparisonCommodity, 'Source: selected provincial tracer submissions'].join(' | '), actions: [] };
     if (activePage === 'vaccines') return { text: 'The selected vaccine source shows ' + vaccineSummary.districts + ' reporting units, ' + vaccineSummary.stockouts + ' submitted records with zero stock and ' + vaccineSummary.nonReporting + ' non-reporting units. District AMC is ' + vaccineSummary.districtAmc.toLocaleString() + '; provincial AMI is ' + vaccineSummary.provincialAmi.toLocaleString() + '. These measures are not added together as consumption. Missing reports are not stock-outs.', evidence: [selectedVaccinePeriod?.label, vaccineProvince, vaccineDistrict, vaccineName, selectedVaccinePeriod?.sourceSheet || 'Vaccine stock workbook'].join(' | '), actions: [] };
     if (activePage === 'stock') return { text: 'You are viewing ZAMMSA central inventory, not facility tracer stock. ' + (['control', 'navigator'].includes(stockWorkspace) ? centralStock.summary.belowTwoMos + ' listed items have reported MOS below two, and ' + centralStock.summary.confirmedStockouts + ' have both zero SOH and zero MOS.' : (stockData?.label || 'Selected weekly report') + ' has ' + formatPercent(stockData?.overallAvailability) + ' reported availability.') + ' Central and facility sources are not pooled. Check the inventory report date before comparing stock positions.', evidence: centralStock.source || stockData?.source || 'Selected ZAMMSA central inventory report', actions: [] };
     if (activePage === 'facilities') return { text: filteredFacilityAlerts.length + ' of ' + assessedFacilities.length + ' assessed reporting units match the visible alert filters. Stock-out counts use explicitly reported zero quantities; low-stock counts use positive SOH / AMC below two months. A unit can have both shortages and overstocked items. Non-reporting is separate, and aggregate Health Centre/Health Post rows are reporting groups, not named individual facilities.', evidence: assistantEvidence([fieldData], { ...assistantScope, ...emptyAssistantFocus }), actions: [] };
@@ -4258,6 +4283,8 @@ function App() {
           <span className="module-context-icon"><ActivePageIcon size={21} strokeWidth={2.15} aria-hidden="true" /></span>
           <div><span>Supply chain intelligence</span><strong>{activePageLabel}</strong><small>{moduleDescriptions[activePage] || "National tracer supply-chain intelligence."}</small></div>
         </section>
+
+        {['executive', 'national', 'provincial', 'facilities', 'programmes', 'quality'].includes(activePage) && <AvailabilityEvidence rows={filteredFacilities} />}
 
         {activePage === "executive" && <section className="hero">
           <div>
@@ -4925,8 +4952,8 @@ function App() {
           {["province", "district"].includes(comparisonCompareBy) && comparisonFocusOptions.length > 0 && <div className="comparison-focus-mode">
             <div className="comparison-focus-head"><div><p className="eyebrow dark">Side-by-side compare</p><h3>Choose two {comparisonCompareBy === "province" ? "provinces" : "districts"}</h3></div><div><label>First<select value={effectiveComparisonFocusA} onChange={(event) => setComparisonFocusA(event.target.value)}>{comparisonFocusOptions.filter((name) => name !== effectiveComparisonFocusB).map((name) => <option value={name} key={name}>{name}</option>)}</select></label><span>versus</span><label>Second<select value={effectiveComparisonFocusB} onChange={(event) => setComparisonFocusB(event.target.value)}>{comparisonFocusOptions.filter((name) => name !== effectiveComparisonFocusA).map((name) => <option value={name} key={name}>{name}</option>)}</select></label></div></div>
             <div className="comparison-focus-cards">{comparisonFocusCards.map((row) => {
-              const availabilityDelta = normalizeRate(row.current.availability) - normalizeRate(row.previous.availability);
-              return <article key={row.name}><h4>{row.name}</h4><div><span><small>{comparisonPreviousLabel}</small><b>{formatPercent(row.previous.availability)}</b></span><em>→</em><span><small>{comparisonCurrentLabel}</small><b>{formatPercent(row.current.availability)}</b></span></div><p className={availabilityDelta >= 0 ? "positive" : "negative"}>{availabilityDelta >= 0 ? "▲" : "▼"} {Math.abs(availabilityDelta * 100).toFixed(1)}pp availability</p><dl><div><dt>Current MOS</dt><dd>{formatMos(row.current.mos)}</dd></div><div><dt>Stockouts</dt><dd>{row.current.stockout.toLocaleString()}</dd></div><div><dt>Facilities/rows</dt><dd>{row.current.rows.toLocaleString()}</dd></div></dl></article>;
+              const availabilityDelta = Number.isFinite(row.current.availability) && Number.isFinite(row.previous.availability) ? row.current.availability - row.previous.availability : null;
+              return <article key={row.name}><h4>{row.name}</h4><div><span><small>{comparisonPreviousLabel}</small><b>{formatPercent(row.previous.availability)}</b></span><em>→</em><span><small>{comparisonCurrentLabel}</small><b>{formatPercent(row.current.availability)}</b></span></div><p className={availabilityDelta >= 0 ? "positive" : "negative"}>{availabilityDelta === null ? 'Availability change unavailable' : `${availabilityDelta >= 0 ? 'Up' : 'Down'} ${Math.abs(availabilityDelta * 100).toFixed(1)}pp availability`}</p><dl><div><dt>Current MOS</dt><dd>{formatMos(row.current.mos)}</dd></div><div><dt>Stockouts</dt><dd>{row.current.stockout.toLocaleString()}</dd></div><div><dt>Facilities/rows</dt><dd>{row.current.rows.toLocaleString()}</dd></div></dl></article>;
             })}</div>
           </div>}
 
@@ -4936,7 +4963,7 @@ function App() {
               <h3>{comparisonPreviousLabel} vs {comparisonCurrentLabel}</h3>
               <strong>Drug availability and months of stock</strong>
               <div className={`comparison-story-callout ${comparisonAvailabilityDeltaPoints >= 0 ? "positive" : "negative"}`}>
-                {comparisonAvailabilityDeltaPoints >= 0 ? "Availability improved" : "Availability declined"} by {Math.abs(comparisonAvailabilityDeltaPoints).toFixed(1)} percentage points in {comparisonCurrentLabel} compared with {comparisonPreviousLabel}.
+                {comparisonAvailabilityDeltaPoints === null ? 'A verified availability change is unavailable because source percentages are missing.' : Math.abs(comparisonAvailabilityDeltaPoints) < .05 ? 'Availability was unchanged at the displayed precision.' : `${comparisonAvailabilityDeltaPoints > 0 ? 'Availability improved' : 'Availability declined'} by ${Math.abs(comparisonAvailabilityDeltaPoints).toFixed(1)} percentage points in ${comparisonCurrentLabel} compared with ${comparisonPreviousLabel}.`}
               </div>
             </div>
 
@@ -4948,7 +4975,7 @@ function App() {
                 <span><small>{comparisonCurrentLabel}</small><strong>{formatPercent(comparisonCurrent.availability)}</strong></span>
               </div>
               <p className={comparisonAvailabilityDeltaPoints >= 0 ? "positive" : "negative"}>
-                {comparisonAvailabilityDeltaPoints >= 0 ? "Up" : "Down"} {Math.abs(comparisonAvailabilityDeltaPoints).toFixed(1)} percentage points
+                {comparisonAvailabilityDeltaPoints === null ? 'Change unavailable' : Math.abs(comparisonAvailabilityDeltaPoints) < .05 ? 'Unchanged at displayed precision' : `${comparisonAvailabilityDeltaPoints > 0 ? 'Up' : 'Down'} ${Math.abs(comparisonAvailabilityDeltaPoints).toFixed(1)} percentage points`}
               </p>
             </div>
 
@@ -4997,8 +5024,8 @@ function App() {
                         return (
                           <div className="comparison-category" key={row.name}>
                             <div className="comparison-paired-bars">
-                              <i className="previous" style={{ height: `${previousAvailability}%` }}><b>{previousAvailability.toFixed(1)}%</b></i>
-                              <i className="current" style={{ height: `${currentAvailability}%` }}><b>{currentAvailability.toFixed(1)}%</b></i>
+                              <i className="previous" style={{ height: `${previousAvailability}%` }}><b>{formatPercent(row.previous.availability)}</b></i>
+                              <i className="current" style={{ height: `${currentAvailability}%` }}><b>{formatPercent(row.current.availability)}</b></i>
                             </div>
                             <span className="comparison-mos-marker previous" style={{ top: `${previousMosTop}%` }}>{formatMos(row.previous.mos)}</span>
                             <span className="comparison-mos-marker current" style={{ top: `${currentMosTop}%` }}>{formatMos(row.current.mos)}</span>
@@ -5233,7 +5260,7 @@ function App() {
           </div>
           {activeProgrammeNavigationView.id !== "all" && <div className="stats-grid programme-kpis">
             <KpiCard icon={Users} label="Reporting facilities" value={programmeTracerSummary.facilities.toLocaleString()} sub={`${programmeTracerSummary.rows.toLocaleString()} submitted commodity rows`} />
-            <KpiCard icon={CircleCheck} label="Commodity availability" value={programmeTracerSummary.rows ? formatPercent(programmeTracerSummary.availability) : "-"} sub="Tracer programme rows with positive SOH" tone="green" />
+            <KpiCard icon={CircleCheck} label="Positive stock records" value={programmeTracerSummary.rows ? formatPercent(programmeTracerSummary.availability) : "-"} sub="Combined-stock presence; not the submitted district availability average" tone="green" />
             <KpiCard icon={Gauge} label="Average MOS" value={formatMos(programmeTracerSummary.mos)} sub="Average across reporting facilities" tone="amber" />
             <KpiCard icon={CircleX} label="Stock-outs" value={programmeTracerSummary.stockout.toLocaleString()} sub="Submitted rows with SOH equal to zero" tone={programmeTracerSummary.stockout ? "red" : "green"} />
           </div>}

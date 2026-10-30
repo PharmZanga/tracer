@@ -54,7 +54,7 @@ test('zero/near-zero MOS and explicit zero SOH remain distinct; missing SOH neve
   const items = byId(buildLeadershipHighlights({rows: 3, availability: 1/3, stockout: 2, dataGap: 1}, detail));
   assert.equal(items.stockout.value, '66.7%');
   assert.equal(items['zero-soh'].value, '1');
-  assert.equal(items['commodity:Medicine 500 mg'].value, '33.3% availability');
+  assert.equal(items['commodity:Medicine 500 mg'].value, '33.3% positive stock records');
 });
 
 test('most-reported highlights preserve strengths, avoid quantity sums and have a deterministic bounded order', () => {

@@ -1,9 +1,10 @@
 import { tracerBootstrapPeriod } from "./tracerBootstrap.js";
 import { canonicalCommodityRollups } from "./commodityNormalization.js";
+import {withSubmittedAvailability} from './tracerAvailability.js';
 
 export const availableTracerYears = ["2024", "2025", "2026"];
 export const availableTracerMonths = ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"];
-export let tracerReportingPeriods = [{...tracerBootstrapPeriod, commodities: canonicalCommodityRollups(tracerBootstrapPeriod.commodities)}];
+export let tracerReportingPeriods = [{...tracerBootstrapPeriod, national: {...tracerBootstrapPeriod.national, availability: null}, commodities: canonicalCommodityRollups(tracerBootstrapPeriod.commodities)}];
 
 const loadedSets = new Set();
 const loadingSets = new Map();
@@ -20,7 +21,7 @@ const dataPaths = {
 
 function mergePeriods(periods) {
   const unique = new Map(tracerReportingPeriods.map((period) => [period.id, period]));
-  periods.forEach((period) => unique.set(period.id, {...period, commodities: canonicalCommodityRollups(period.commodities)}));
+  periods.forEach((period) => unique.set(period.id, {...withSubmittedAvailability(period), commodities: canonicalCommodityRollups(period.commodities)}));
   tracerReportingPeriods = [...unique.values()].sort((left, right) => left.reportDate.localeCompare(right.reportDate));
   return tracerReportingPeriods;
 }

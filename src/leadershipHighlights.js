@@ -1,5 +1,5 @@
 const percent = value => Number.isFinite(value)
-  ? `${(value * 100).toLocaleString('en', {maximumFractionDigits: 1})}%` : 'Not reported';
+  ? `${(value * 100).toLocaleString('en', {maximumFractionDigits: 1})}%` : 'Unavailable';
 const number = value => value.toLocaleString('en');
 
 export function summariseLeadershipCommodities(rows) {
@@ -31,13 +31,13 @@ export function buildLeadershipHighlights(rollup, detail) {
   ];
   return [
     {id: 'availability', label: 'Drug availability', value: percent(rollup.availability),
-      detail: `${number(total)} submitted records`, tone: 'green'},
+      detail: rollup.availabilityBasis === 'submitted-report-average' ? `${number(rollup.availabilityReports || 0)} verified report averages${rollup.availabilityMissingReports ? ` / ${number(rollup.availabilityMissingReports)} missing` : ''}` : `${number(total)} submitted records`, tone: 'green'},
     ...bands.map(([id, label, count, definition, tone]) => ({id, label, value: percent((count || 0) / total),
       detail: `${number(count || 0)} records`, title: `${definition}; ${number(count || 0)} of ${number(total)} submitted records`, tone})),
     ...(detail.records ? [{id: 'zero-soh', label: 'Explicit zero stock', value: number(detail.zeroQuantity),
       detail: `Of ${number(detail.records)} detailed records`, title: 'Submitted SOH equals zero; not a count of missing reports or units of medicine', tone: 'red'}] : []),
     ...detail.commodities.map(row => ({id: `commodity:${row.name}`, label: row.name,
-      value: `${percent(row.available / row.records)} availability`,
+      value: `${percent(row.available / row.records)} positive stock records`,
       detail: `${number(row.records)} records / ${number(row.zeroQuantity)} zero SOH`,
       title: `${row.name}: one of the most-reported commodities in this filter. ${number(row.available)} of ${number(row.records)} records have positive SOH; ${number(row.zeroQuantity)} have zero SOH.`,
       tone: 'teal'})),

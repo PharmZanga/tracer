@@ -4,6 +4,7 @@ import { facilityReportingRows, primaryCareDistrictRows } from './reportingQuali
 import {matchesReportingSelection} from './reportingIdentity.js';
 import { canAccessDashboardPage } from './dashboardAccess.js';
 import { guideAnswer } from './navigationGuide.js';
+import {availabilityForRows, reportedAvailabilityBasis} from './tracerAvailability.js';
 
 const normalise = value => String(value || '').toLowerCase().replace(/['\u2019]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
 const contains = (text, name) => (` ${text} `).includes(` ${normalise(name)} `);
@@ -174,7 +175,12 @@ export function assistantSnapshot(period, scope, matchesLevel) {
   const facilities = new Set(matches.map(facilityKey));
   const stockouts = rows.filter(row => row.quantity === 0).length;
   const low = rows.filter(row => selectedStatus(row, 'low')).length;
-  const availability = rows.length ? rows.filter(row => row.quantity > 0).length / rows.length : null;
+  const stockPresence = rows.length ? rows.filter(row => row.quantity > 0).length / rows.length : null;
+  const reportScope = (period.facilities || []).filter(row => (scope.province === 'all' || row.province === scope.province)
+    && (scope.district === 'all' || row.district === scope.district) && matchesLevel(row.facilityLevel, scope.facilityLevel)
+    && matchesReportingSelection(row, scope.facility));
+  const submittedAverage = scope.commodity === 'all' && scope.programme === 'all' && reportScope.some(row => row.availabilityBasis === reportedAvailabilityBasis);
+  const availability = submittedAverage ? availabilityForRows(reportScope).availability : stockPresence;
   const mosRows = rows.map(row => row.mos).filter(Number.isFinite);
   const averageMos = mosRows.length ? mosRows.reduce((sum, value) => sum + Math.min(12, Math.max(0, value)), 0) / mosRows.length : null;
   const groups = new Map();
@@ -183,12 +189,12 @@ export function assistantSnapshot(period, scope, matchesLevel) {
     group.records++; group.stockouts += Number(row.quantity === 0); group.low += Number(selectedStatus(row, 'low')); groups.set(key, group);
   });
   return {
-    text: programmeNote(scope) + (rows.length ? `${matches.length.toLocaleString()} matching commodity observations across ${facilities.size} reporting ${facilities.size === 1 ? 'unit' : 'units'}. In the full selected scope, availability is ${percent(availability)}; ${stockouts.toLocaleString()} observations have an explicitly reported zero quantity and ${low.toLocaleString()} have positive stock below two calculated MOS. Average submitted MOS is ${averageMos === null ? 'not available' : averageMos.toFixed(1)} (12-month cap). Missing reports are not stock-outs. Availability uses all scoped observations before the status filter; low-stock bands use SOH / AMC. ${observationBasis}` : 'No submitted commodity observations match this scope. That is not evidence of zero stock.'),
+    text: programmeNote(scope) + (rows.length ? `${matches.length.toLocaleString()} matching commodity observations across ${facilities.size} reporting ${facilities.size === 1 ? 'unit' : 'units'}. In the full selected scope, ${submittedAverage ? 'submitted-report average availability' : 'positive stock-record share'} is ${percent(availability)}; ${stockouts.toLocaleString()} observations have an explicitly reported zero quantity and ${low.toLocaleString()} have positive stock below two calculated MOS. Average submitted MOS is ${averageMos === null ? 'not available' : averageMos.toFixed(1)} (12-month cap). Missing reports are not stock-outs. HC/HP availability uses submitted district percentages, not combined district SOH. Positive stock-record share is a different measure and cannot recover individual facility availability. Low-stock bands use SOH / AMC. ${observationBasis}` : 'No submitted commodity observations match this scope. That is not evidence of zero stock.'),
     columns: ['Reporting unit', 'District', 'Records', 'Zero quantity', 'Below 2 MOS'],
     rows: [...groups.values()].sort((a, b) => b.stockouts - a.stockouts || b.low - a.low).slice(0, 10).map(({ row, records, stockouts, low }) => [row.facility, row.district, records, stockouts, low]),
     total: groups.size,
     actions: [{ label: 'Show facilities', page: 'facilities', scope }, { label: 'View commodities', page: 'commodities', scope }, { label: 'Compare last week', question: 'Compare with last week' }],
-    facts: { observations: rows.length, matched: matches.length, reportingUnits: facilities.size, stockouts, low, availability, averageMos },
+    facts: { observations: rows.length, matched: matches.length, reportingUnits: facilities.size, stockouts, low, availability, stockPresence, averageMos },
   };
 }
 
@@ -207,6 +213,14 @@ export function assistantComparison(current, previous, scope, matchesLevel) {
   if (!now.length || !before.length) return { text: 'Both weeks need detailed observations in this scope before I can calculate a change. Missing observations are not zero stock.', actions: [] };
   const summarise = rows => ({ rows: rows.length, availability: rows.filter(row => row.quantity > 0).length / rows.length, stockouts: rows.filter(row => row.quantity === 0).length });
   const a = summarise(before), b = summarise(now);
+  const submittedAverage = scope.commodity === 'all' && scope.programme === 'all'
+    && current.national?.availabilityBasis === reportedAvailabilityBasis && previous.national?.availabilityBasis === reportedAvailabilityBasis;
+  if (submittedAverage) {
+    const average = period => availabilityForRows((period.facilities || []).filter(row => (scope.province === 'all' || row.province === scope.province)
+      && (scope.district === 'all' || row.district === scope.district) && matchesLevel(row.facilityLevel, scope.facilityLevel)
+      && matchesReportingSelection(row, scope.facility))).availability;
+    a.availability = average(previous); b.availability = average(current);
+  }
   const uniqueRows = rows => {
     const map = new Map(), duplicates = new Set();
     rows.forEach(row => { const key = recordKey(row); if (map.has(key)) duplicates.add(key); map.set(key, row); });
@@ -217,8 +231,10 @@ export function assistantComparison(current, previous, scope, matchesLevel) {
   const currentKeys = uniqueRows(now), priorKeys = uniqueRows(before);
   const keys = [...currentKeys.keys()].filter(key => priorKeys.has(key));
   const pairedChange = keys.length ? keys.reduce((sum, key) => sum + Number(currentKeys.get(key).quantity > 0) - Number(priorKeys.get(key).quantity > 0), 0) / keys.length : null;
-  const delta = (b.availability - a.availability) * 100;
-  return { text: programmeNote(scope) + `Before the stock-status filter, full-scope availability ${Math.abs(delta) < .05 ? 'was unchanged at the displayed precision' : `${delta > 0 ? 'increased' : 'declined'} by ${Math.abs(delta).toFixed(1)} percentage points`}, from ${percent(a.availability)} to ${percent(b.availability)}. Observation coverage changed from ${a.rows} to ${b.rows}; confirmed zero quantities changed from ${a.stockouts} to ${b.stockouts}. ${keys.length} unambiguous facility-commodity-programme records occur in both weeks${pairedChange === null ? '.' : `; their like-for-like availability change is ${(pairedChange * 100).toFixed(1)} percentage points.`} Duplicate identities are excluded from paired comparison. Coverage and commodity mix may affect the overall movement; no cause is assumed. ${observationBasis}`, columns: ['Reporting week', 'Observations', 'Availability', 'Zero quantity'], rows: [[previous.label, a.rows, percent(a.availability), a.stockouts], [current.label, b.rows, percent(b.availability), b.stockouts]], facts: { previous: a, current: b, matchedRecords: keys.length, pairedChange }, actions: [{ label: 'Open comparison', page: 'comparison', scope: { ...scope, status: 'all' }, previousPeriodId: previous.id }, { label: 'Current facilities', page: 'facilities', scope }] };
+  const delta = Number.isFinite(a.availability) && Number.isFinite(b.availability) ? (b.availability - a.availability) * 100 : null;
+  const measure = submittedAverage ? 'submitted-report average availability' : 'positive stock-record share';
+  const movement = delta === null ? 'cannot be compared because source percentages are unavailable' : Math.abs(delta) < .05 ? 'was unchanged at the displayed precision' : `${delta > 0 ? 'increased' : 'declined'} by ${Math.abs(delta).toFixed(1)} percentage points`;
+  return { text: programmeNote(scope) + `Before the stock-status filter, ${measure} ${movement}, from ${percent(a.availability)} to ${percent(b.availability)}. Observation coverage changed from ${a.rows} to ${b.rows}; confirmed zero quantities changed from ${a.stockouts} to ${b.stockouts}. ${keys.length} unambiguous facility-commodity-programme records occur in both weeks${pairedChange === null ? '.' : `; their like-for-like positive stock-record share change is ${(pairedChange * 100).toFixed(1)} percentage points.`} Combined district stock presence is not a district facility-average percentage. Duplicate identities are excluded from paired comparison. Coverage and commodity mix may affect the overall movement; no cause is assumed. ${observationBasis}`, columns: ['Reporting week', 'Observations', submittedAverage ? 'Submitted availability' : 'Positive stock records', 'Zero quantity'], rows: [[previous.label, a.rows, percent(a.availability), a.stockouts], [current.label, b.rows, percent(b.availability), b.stockouts]], facts: { previous: a, current: b, matchedRecords: keys.length, pairedChange }, actions: [{ label: 'Open comparison', page: 'comparison', scope: { ...scope, status: 'all' }, previousPeriodId: previous.id }, { label: 'Current facilities', page: 'facilities', scope }] };
 }
 
 export function assistantRecurring(periods, scope, matchesLevel, unchanged = false) {
