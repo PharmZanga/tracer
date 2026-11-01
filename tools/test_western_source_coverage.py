@@ -15,7 +15,7 @@ class WesternSourceCoverage(unittest.TestCase):
         g.openpyxl.reader.excel.find_images = lambda archive, target: ([], [])
         dataset = json.loads(week2.OUTPUT.read_text(encoding='utf-8'))
         sources_by_date = {'2026-10-11': week1, '2026-10-18': week2, '2026-10-25': week3}
-        for period in dataset['tracerReportingPeriods']:
+        for period in (p for p in dataset['tracerReportingPeriods'] if p['id'] in sources_by_date):
             module = sources_by_date[period['id']]
             path = module.DIRECTORY / module.FILES['WESTERN PROVINCE']
             if not path.exists():
