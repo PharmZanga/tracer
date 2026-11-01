@@ -53,7 +53,7 @@ for (const datasetName of DATASETS) {
 }
 
 const periods = [...periodMap.values()].sort((left, right) => left.id.localeCompare(right.id));
-if (periods.length !== 43) errors.push(`Expected 43 January-October periods, found ${periods.length}`);
+if (periods.length !== 44) errors.push(`Expected 44 January-October periods, found ${periods.length}`);
 const octoberWeek2 = periods.find((period) => period.id === "2026-10-18");
 if (!octoberWeek2) errors.push("October Week 2 submission is missing");
 else {
@@ -66,6 +66,17 @@ else {
   if (octoberWeek3.counts?.provinces !== 10) errors.push("October Week 3 must contain all ten provincial submissions");
   if (octoberWeek3.sourceWorkbooks?.length !== 10 || octoberWeek3.sourceWorkbooks.some(source => !/^[a-f0-9]{64}$/.test(source.sha256))) errors.push("October Week 3 source workbook manifest is incomplete");
   if (!octoberWeek3.dataQuality?.facilityBlockReportingReview?.allZeroSOHBlocksExcludedFromStockMetrics) errors.push("October Week 3 must exclude all-zero SOH blocks");
+}
+
+const octoberWeek4 = periods.find((period) => period.id === "2026-11-01");
+if (!octoberWeek4) errors.push("October Week 4 submission is missing");
+else {
+  const expected = ['CENTRAL PROVINCE', 'COPPERBELT PROVINCE', 'EASTERN PROVINCE', 'LUAPULA PROVINCE', 'LUSAKA PROVINCE', 'NORTH-WESTERN PROVINCE', 'NORTHERN PROVINCE', 'SOUTHERN PROVINCE', 'WESTERN PROVINCE'];
+  if (octoberWeek4.month !== '2026-10' || octoberWeek4.week !== 'Week 4') errors.push('1 November round must remain October Week 4');
+  if (JSON.stringify(octoberWeek4.sourceWorkbooks?.map(row => row.province).sort()) !== JSON.stringify(expected)) errors.push('October Week 4 must contain exactly the nine current provincial workbooks');
+  if (octoberWeek4.sourceWorkbooks?.some(row => !/^[a-f0-9]{64}$/.test(row.sha256))) errors.push('October Week 4 source hashes are invalid');
+  if (octoberWeek4.counts?.provinces !== 9 || octoberWeek4.provinces?.some(row => row.name === 'MUCHINGA PROVINCE')) errors.push('October Week 4 must not carry forward unsubmitted provinces');
+  if (octoberWeek4.sourceWorkbooks?.find(row => row.province === 'NORTH-WESTERN PROVINCE')?.filename !== '01-11-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx') errors.push('October Week 4 must use the North-Western resubmission');
 }
 
 const report = { reviewedAt: new Date().toISOString(), periods: [], errors, warnings };

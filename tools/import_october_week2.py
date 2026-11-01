@@ -209,8 +209,7 @@ def audit_province_facility_blocks(generator, sources):
             if level in {"HEALTH POST", "HEALTH CENTRE", "PRIMARY CARE - NOT SPECIFIED"}:
                 continue
             for quantity_col, district_col, facility_col in generator.raw_sheet_facility_blocks(ws):
-                district_text = generator.clean(ws.cell(2, district_col).value)
-                facility_text = generator.clean(ws.cell(2, facility_col).value)
+                district_text, facility_text = generator.raw_sheet_block_identity(ws, district_col, facility_col)
                 if not facility_text or not isinstance(facility_text, str):
                     continue
                 district = generator.normalize_district(district_text) if district_text else None

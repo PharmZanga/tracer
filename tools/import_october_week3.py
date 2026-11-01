@@ -67,7 +67,15 @@ def source_number(value):
         return None
 
 
-def verify_source_samples(generator, normalized, period):
+def province_observations(period, province):
+    data = period["commodityFacilityData"]
+    names = ("provinces", "districts", "levels", "facilities", "items", "programmes")
+    return sorted(json.dumps(
+        [data["dictionaries"][name][row[index]] for index, name in enumerate(names)] + row[6:]
+    ) for row in data["rows"] if data["dictionaries"]["provinces"][row[0]] == province)
+
+
+def verify_source_samples(generator, normalized, period, *, directory=DIRECTORY, files=FILES):
     """Re-open Excel and verify saved numeric values at concrete source cells."""
     data = period["commodityFacilityData"]
     names = ("provinces", "districts", "levels", "facilities", "items")
@@ -76,7 +84,7 @@ def verify_source_samples(generator, normalized, period):
         identity = tuple(data["dictionaries"][name][row[index]] for index, name in enumerate(names))
         published[identity].append(row[6:9])
     samples, coverage = [], []
-    for province, filename in FILES.items():
+    for province, filename in files.items():
         available = [row for row in normalized if row["PROVINCE"] == province and tuple(row.get(key) for key in ("PROVINCE", "DISTRICT", "FACILITY LEVEL", "FACILITY NAME", "DESCRIPTION OF ITEM")) in published]
         chosen = []
         for predicate in (
@@ -93,7 +101,7 @@ def verify_source_samples(generator, normalized, period):
         chosen.extend(row for row in available if row.get("QUANTITY") is None and row not in chosen)
         if not chosen:
             raise ValueError(f"No source-verifiable sample for {province}")
-        workbook = generator.openpyxl.load_workbook(DIRECTORY / filename, data_only=True, read_only=False)
+        workbook = generator.openpyxl.load_workbook(directory / filename, data_only=True, read_only=False)
         for sheet in workbook.worksheets:
             if sheet.title.strip().upper() not in {"HC", "HP"}:
                 continue
@@ -140,36 +148,40 @@ def verify_source_samples(generator, normalized, period):
     return samples, coverage
 
 
-def main():
-    for name in FILES.values():
-        if not (DIRECTORY / name).is_file():
-            raise FileNotFoundError(DIRECTORY / name)
-    manifests = [{"province": province, "filename": filename, "sha256": digest(DIRECTORY / filename), "bytes": (DIRECTORY / filename).stat().st_size} for province, filename in FILES.items()]
+def main(*, directory=DIRECTORY, files=FILES, report_date=REPORT_DATE, source=SOURCE,
+         audit_path=AUDIT, label="Week 3 - 25 October 2026", month="2026-10", week="Week 3"):
+    for name in files.values():
+        if not (directory / name).is_file():
+            raise FileNotFoundError(directory / name)
+    manifests = [{"province": province, "filename": filename, "sha256": digest(directory / filename), "bytes": (directory / filename).stat().st_size} for province, filename in files.items()]
     historical_hashes = {str(path.relative_to(ROOT)).replace("\\", "/"): digest(path) for path in DATA_MODULES if path != OUTPUT}
     october = json.loads(OUTPUT.read_text(encoding="utf-8"))
-    prior_october = [p for p in october["tracerReportingPeriods"] if p["id"] != REPORT_DATE]
+    prior_october = [p for p in october["tracerReportingPeriods"] if p["id"] != report_date]
+    prior_period_hashes = {p["id"]: hashlib.sha256(json.dumps(p, sort_keys=True).encode()).hexdigest() for p in prior_october}
     generator = load_generator()
     generator.openpyxl.reader.excel.find_images = lambda archive, target: ([], [])
     print("Loading verified facility identities", flush=True)
     generator.RAW_FACILITY_IDENTITIES.clear()
     generator.RAW_FACILITY_IDENTITIES.update(generator.load_raw_facility_identities())
-    sources = [{"province": province, "path": DIRECTORY / filename, "primaryCareSummaryLayout": True} for province, filename in FILES.items()]
+    sources = [{"province": province, "path": directory / filename, "primaryCareSummaryLayout": True} for province, filename in files.items()]
     print("Auditing provincial facility headers", flush=True)
     findings, invalid_blocks = audit_province_facility_blocks(generator, sources)
-    print("Reading and normalizing Week 3 stock matrices", flush=True)
-    normalized = list(normalize_week2_rows(generator, sources, REPORT_DATE, invalid_blocks))
+    print(f"Reading and normalizing {week} stock matrices", flush=True)
+    normalized = list(normalize_week2_rows(generator, sources, report_date, invalid_blocks))
     normalization = normalize_week2_rows.last_stats
     normalized, zero_blocks = exclude_all_zero_soh_blocks(normalized)
-    period = generator.summarize({"rows": normalized, "source": SOURCE, "reportDate": REPORT_DATE, "label": "Week 3 - 25 October 2026", "month": "2026-10", "week": "Week 3"})
-    if {row["name"] for row in period["provinces"]} != set(FILES):
-        raise ValueError("All ten provinces must have source-supported observations")
-    history = sorted([p for path in DATA_MODULES for p in load_periods(path) if p["id"] < REPORT_DATE], key=lambda p: p["reportDate"])
+    period = generator.summarize({"rows": normalized, "source": source, "reportDate": report_date, "label": label, "month": month, "week": week})
+    if {row["name"] for row in period["provinces"]} != set(files):
+        raise ValueError("Every supplied province must have source-supported observations")
+    history = sorted([p for path in DATA_MODULES for p in load_periods(path) if p["id"] < report_date], key=lambda p: p["reportDate"])
     expected_districts = {(province, district) for province, districts in generator.VALID_DISTRICTS_BY_PROVINCE.items() for district in districts}
     expected_facilities = {(f["province"], f["district"], f["facilityLevel"], f["name"]) for p in history + [period] for f in p.get("facilities", []) if f["district"] != "UNKNOWN" and (f["facilityLevel"] in {"HEALTH CENTRE", "HEALTH POST", "PRIMARY CARE - NOT SPECIFIED"} or generator.facility_belongs_to_reporting_district(f["province"], f["district"], f["name"]))}
     generator.build_reporting_quality(history + [period], expected_districts, expected_facilities)
     if len(period["dataQuality"]["districts"]) != 116:
         raise ValueError("The district roster must contain exactly 116 districts")
     period["sourceWorkbooks"] = manifests
+    missing_provinces = sorted(set(generator.VALID_DISTRICTS_BY_PROVINCE) - set(files))
+    period["dataQuality"]["provincialSubmissionCoverage"] = {"expected": 10, "submitted": len(files), "missingProvinces": missing_provinces, "carriedForward": False}
     period["dataQuality"]["districtNameNormalization"] = "DISTRICT and DHO suffixes are removed only before matching the submitting province's official district roster."
     period["dataQuality"]["facilityProvinceValidation"] = {"rule": "Facility and district identities must belong to the submitting province", "flaggedBlocks": findings, "excludedBlockCount": len(invalid_blocks), "excludedFromMetrics": True}
     period["dataQuality"]["facilityBlockReportingReview"] = {
@@ -181,20 +193,24 @@ def main():
     }
     invalid_soh = [{"province": row["PROVINCE"], "district": row["DISTRICT"], "facility": row["FACILITY NAME"], "commodity": row["DESCRIPTION OF ITEM"], "workbook": Path(row["_RAW_SOURCE_WORKBOOK"]).name, "sheet": row["_RAW_SOURCE_SHEET"], "quantityColumn": row["_RAW_SOH_COLUMN"], "sourceValue": row["_RAW_QUANTITY_INPUT"]} for row in normalized if row.get("QUANTITY") is None]
     period["dataQuality"]["stockCalculationAudit"] = {"rule": "SOH floored to whole units; within a reported block blank, dash and negative SOH become zero; unreadable nonblank SOH remains missing; MOS recalculated as SOH / positive AMC", "provinces": normalization.get("calculationByProvince", {}), "invalidSOHRecords": invalid_soh}
-    samples, coverage = verify_source_samples(generator, normalized, period)
+    samples, coverage = verify_source_samples(generator, normalized, period, directory=directory, files=files)
     period["dataQuality"]["primaryCareSourceCoverage"] = coverage
     for manifest in manifests:
-        if digest(DIRECTORY / manifest["filename"]) != manifest["sha256"]:
+        if digest(directory / manifest["filename"]) != manifest["sha256"]:
             raise ValueError("A source workbook changed during import")
-    audit = {"reportDate": REPORT_DATE, "source": SOURCE, "sourceWorkbooks": manifests, "counts": period["counts"], "national": period["national"], "provinces": period["provinces"], "normalization": normalization, "invalidSOHRecords": invalid_soh, "allZeroSOHBlocksExcluded": zero_blocks, "facilityProvinceValidation": period["dataQuality"]["facilityProvinceValidation"], "sourceCellSamples": samples, "primaryCareSourceCoverage": coverage, "historicalDatasetHashes": historical_hashes, "preservedOctoberPeriods": [p["id"] for p in prior_october], "sourceWorkbooksUnchanged": True}
+    audit = {"reportDate": report_date, "source": source, "sourceWorkbooks": manifests, "counts": period["counts"], "national": period["national"], "provinces": period["provinces"], "normalization": normalization, "invalidSOHRecords": invalid_soh, "allZeroSOHBlocksExcluded": zero_blocks, "facilityProvinceValidation": period["dataQuality"]["facilityProvinceValidation"], "sourceCellSamples": samples, "primaryCareSourceCoverage": coverage, "historicalDatasetHashes": historical_hashes, "preservedOctoberPeriods": [p["id"] for p in prior_october], "preservedOctoberPeriodHashes": prior_period_hashes, "missingProvinces": missing_provinces, "sourceWorkbooksUnchanged": True}
     october["tracerReportingPeriods"] = sorted(prior_october + [period], key=lambda p: p["reportDate"])
     OUTPUT.write_text(json.dumps(october, separators=(",", ":")), encoding="utf-8")
     BOOTSTRAP.write_text("// Compact latest-period fallback. Full history is fetched from public/data at runtime.\nexport const tracerBootstrapPeriod = " + json.dumps(compact_bootstrap(period), separators=(",", ":")) + ";\n", encoding="utf-8")
-    AUDIT.parent.mkdir(parents=True, exist_ok=True)
-    AUDIT.write_text(json.dumps(audit, indent=2), encoding="utf-8")
+    audit_path.parent.mkdir(parents=True, exist_ok=True)
+    audit_path.write_text(json.dumps(audit, indent=2), encoding="utf-8")
+    saved = json.loads(OUTPUT.read_text(encoding="utf-8"))
+    for p in saved["tracerReportingPeriods"]:
+        if p["id"] in prior_period_hashes and hashlib.sha256(json.dumps(p, sort_keys=True).encode()).hexdigest() != prior_period_hashes[p["id"]]:
+            raise ValueError(f"A previous October period changed: {p['id']}")
     if any(digest(ROOT / path) != value for path, value in historical_hashes.items()):
         raise ValueError("A historical dataset was unexpectedly modified")
-    print(json.dumps({"reportDate": REPORT_DATE, "counts": period["counts"], "national": period["national"], "sourceSamplesVerified": len(samples), "zeroSOHBlocksExcluded": len(zero_blocks), "provinceBlocksExcluded": len(invalid_blocks), "audit": str(AUDIT)}, indent=2), flush=True)
+    print(json.dumps({"reportDate": report_date, "counts": period["counts"], "national": period["national"], "sourceSamplesVerified": len(samples), "zeroSOHBlocksExcluded": len(zero_blocks), "provinceBlocksExcluded": len(invalid_blocks), "missingProvinces": missing_provinces, "audit": str(audit_path)}, indent=2), flush=True)
 
 
 if __name__ == "__main__":

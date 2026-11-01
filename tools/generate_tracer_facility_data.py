@@ -1027,6 +1027,26 @@ def normalize_raw_facility_level(sheet_name, sheet_title):
     return canonical_facility_level(raw_facility_level(sheet_name, sheet_title))
 
 
+def raw_sheet_description_header(ws):
+    return next((row for row in range(1, min(11, (ws.max_row or 0) + 1))
+                 if any(token in str(ws.cell(row, 2).value or "").upper()
+                        for token in ("DESCRIPTION", "PRODUCT"))), None)
+
+
+def raw_sheet_block_identity(ws, district_col, facility_col):
+    """Read labelled hospital blocks even when spacer rows move the headers."""
+    header = raw_sheet_description_header(ws) or 3
+    for row in range(header - 1, 0, -1):
+        district = clean(ws.cell(row, district_col).value)
+        facility = clean(ws.cell(row, facility_col).value)
+        if (isinstance(district, str) and isinstance(facility, str)
+                and "NAME OF" not in " ".join(district.upper().split())
+                and "NAME OF" not in " ".join(facility.upper().split())
+                and not district.startswith("=") and not facility.startswith("=")):
+            return district, facility
+    return clean(ws.cell(2, district_col).value), clean(ws.cell(2, facility_col).value)
+
+
 def raw_sheet_facility_blocks(ws):
     """Return quantity, district and facility columns for each reporting block."""
     sheet_name = ws.title.strip().upper()
@@ -1045,7 +1065,7 @@ def raw_sheet_facility_blocks(ws):
             amc_header = str(ws.cell(header_row, quantity_col + 1).value or "").strip().upper()
             mos_header = str(ws.cell(header_row, quantity_col + 2).value or "").strip().upper()
             quantity_label = any(token in quantity_header for token in ("QUANTITY", "QUANTUTY", "STOCK ON HAND", "SOH"))
-            if (quantity_label or not quantity_header) and "AMC" in amc_header and "MOS" in mos_header:
+            if (quantity_label or not quantity_header) and "TOTAL" not in quantity_header and "AVERAGE" not in amc_header and "AMC" in amc_header and "MOS" in mos_header:
                 found.append((quantity_col, quantity_col, quantity_col + 1))
         if found:
             return found
@@ -1077,15 +1097,13 @@ def load_raw_facility_identities():
                 continue
             if (ws.max_row or 0) < 4 or (ws.max_column or 0) < 7:
                 continue
-            item_header = str(ws.cell(3, 2).value or "").upper()
-            if "DESCRIPTION" not in item_header and "PRODUCT" not in item_header:
+            if raw_sheet_description_header(ws) is None:
                 continue
             raw_level = normalize_raw_facility_level(sheet_name, ws.cell(1, 1).value)
             if raw_level in {"HEALTH POST", "HEALTH CENTRE", "PRIMARY CARE - NOT SPECIFIED"}:
                 continue
             for start_col, district_col, facility_col in raw_sheet_facility_blocks(ws):
-                district = clean(ws.cell(2, district_col).value)
-                facility = clean(ws.cell(2, facility_col).value)
+                district, facility = raw_sheet_block_identity(ws, district_col, facility_col)
                 facility_key = facility_match_key(facility)
                 verified = VERIFIED_FACILITY_IDENTITIES.get(facility_key)
                 if not district and verified:
@@ -1137,8 +1155,7 @@ def load_raw_availability_overrides():
             if not footer_row:
                 continue
             for start_col, district_col, facility_col in raw_sheet_facility_blocks(ws):
-                district = clean(ws.cell(2, district_col).value)
-                facility = clean(ws.cell(2, facility_col).value)
+                district, facility = raw_sheet_block_identity(ws, district_col, facility_col)
                 availability = availability_value(ws.cell(footer_row, start_col).value)
                 if not district or not facility or availability is None:
                     continue
@@ -1170,15 +1187,7 @@ def iter_raw_matrix_rows(source, report_date):
             and sheet_name.upper() in {"HC", "HP"}
         )
         is_health_post_sheet = is_primary_care_summary and sheet_name.upper() == "HP"
-        header_row = next(
-            (
-                row_index
-                for row_index in range(1, 7)
-                if "DESCRIPTION" in str(ws.cell(row_index, 2).value or "").upper()
-                or "PRODUCT" in str(ws.cell(row_index, 2).value or "").upper()
-            ),
-            None,
-        )
+        header_row = raw_sheet_description_header(ws)
         if is_primary_care_summary:
             # HC/HP templates can omit the description label or place it above
             # the metric headers. Prefer the full row of AMC/MOS triplets.
@@ -1259,8 +1268,10 @@ def iter_raw_matrix_rows(source, report_date):
         else:
             blocks = raw_sheet_facility_blocks(ws)
         for start_col, district_col, facility_col in blocks:
-            district = district_col if is_primary_care_summary else clean(ws.cell(2, district_col).value)
-            facility = "ALL" if is_primary_care_summary else clean(ws.cell(2, facility_col).value)
+            if is_primary_care_summary:
+                district, facility = district_col, "ALL"
+            else:
+                district, facility = raw_sheet_block_identity(ws, district_col, facility_col)
             verified = VERIFIED_FACILITY_IDENTITIES.get(facility_match_key(facility))
             if not district and verified:
                 district = verified[1]
@@ -1286,7 +1297,7 @@ def iter_raw_matrix_rows(source, report_date):
             if identity is None:
                 continue
             province, district, facility_level, facility_name = identity
-            for row_index in range((header_row + 1) if is_primary_care_summary else 4, ws.max_row + 1):
+            for row_index in range(header_row + 1, ws.max_row + 1):
                 item = clean(ws.cell(row_index, 2).value)
                 if not item:
                     continue

@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {facilityReportingSummary, primaryCareDistrictSummary} from '../src/reportingQuality.js';
 
-const period=JSON.parse(readFileSync(new URL('../public/data/tracer/2026/oct.json',import.meta.url),'utf8')).tracerReportingPeriods.at(-1);
+const period=JSON.parse(readFileSync(new URL('../public/data/tracer/2026/oct.json',import.meta.url),'utf8')).tracerReportingPeriods.find(p=>p.id==='2026-10-25');
 
 test('executive district counts use the selected province and district rather than national missing totals',()=>{
   assert.equal(primaryCareDistrictSummary(period).missing,6);

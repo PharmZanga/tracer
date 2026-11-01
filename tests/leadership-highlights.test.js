@@ -4,18 +4,18 @@ import test from 'node:test';
 import {buildLeadershipHighlights, summariseLeadershipCommodities} from '../src/leadershipHighlights.js';
 import {commodityRowsFromPeriod} from '../src/tracerRows.js';
 
-const period = JSON.parse(readFileSync(new URL('../public/data/tracer/2026/oct.json', import.meta.url), 'utf8')).tracerReportingPeriods.at(-1);
+const period = JSON.parse(readFileSync(new URL('../public/data/tracer/2026/oct.json', import.meta.url), 'utf8')).tracerReportingPeriods.find(p => p.id === '2026-10-25');
 const rows = commodityRowsFromPeriod(period);
 const byId = items => Object.fromEntries(items.map(item => [item.id, item]));
 
 test('national highlights preserve published availability and every submitted MOS band', () => {
   const highlights = byId(buildLeadershipHighlights(period.national, summariseLeadershipCommodities(rows)));
-  assert.equal(highlights.availability.value, '87.1%');
-  assert.equal(highlights.availability.detail, '23,661 submitted records');
-  for (const [id, count] of [['stockout', 3589], ['nearCritical', 5313], ['understocked', 4090],
-    ['accordingToPlan', 4359], ['overstock', 5867], ['dataGap', 443]]) {
+  assert.equal(highlights.availability.value, '86.8%');
+  assert.equal(highlights.availability.detail, '24,261 submitted records');
+  for (const [id, count] of [['stockout', 3764], ['nearCritical', 5448], ['understocked', 4169],
+    ['accordingToPlan', 4449], ['overstock', 5988], ['dataGap', 443]]) {
     assert.equal(highlights[id].detail, `${count.toLocaleString('en')} records`);
-    assert.ok(highlights[id].title.includes('23,661 submitted records'));
+    assert.ok(highlights[id].title.includes('24,261 submitted records'));
   }
   assert.equal(highlights['zero-soh'].value, rows.filter(row => row.quantity === 0).length.toLocaleString('en'));
 });

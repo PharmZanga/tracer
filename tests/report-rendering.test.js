@@ -30,7 +30,7 @@ function render(type, id) {
 
 test('weekly report renders actual labels, Ministry branding, charts and ordered supporting sections', () => {
   const html = render('weekly', '2026-10-25');
-  assert.match(html, /23,661 submitted commodity observations from 10 provinces/);
+  assert.match(html, /24,261 submitted commodity observations from 10 provinces/);
   assert.match(html, /1 reporting week</);
   assert.doesNotMatch(html, /Current selection|1 reporting weeks|control-tower-logo/);
   assert.match(html, /Weekly availability and average months of stock/);
@@ -56,11 +56,11 @@ test('care narrative names agree with care table and previous single-week label 
 test('monthly and partial-quarter reports use selected observations rather than reference PDF figures', () => {
   for (const type of ['monthly', 'quarterly']) {
     const {summary} = summaryFor(type);
-    assert.equal(summary.selectedPeriods.length, 3);
-    assert.equal(summary.period.national.rows, 72138);
+    assert.equal(summary.selectedPeriods.length, 4);
+    assert.equal(summary.period.national.rows, 97135);
     const html = render(type);
-    assert.match(html, /72,138 submitted commodity observations/);
-    assert.match(html, /3 reporting weeks/);
+    assert.match(html, /97,135 submitted commodity observations/);
+    assert.match(html, /4 reporting weeks/);
     assert.match(html, type === 'monthly' ? /MONTHLY|Monthly/ : /QUARTERLY|Quarterly/);
     if (type === 'quarterly') assert.match(html, /Partial quarter/);
   }

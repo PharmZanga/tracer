@@ -6,7 +6,7 @@ import {fixedReportingRegister as register, fixedReportingEvidence, outsideRegis
 import {matchesReportingSelection, reportingUnitKey} from '../src/reportingIdentity.js';
 
 await loadHistoricalTracerYear('2026');
-const october = tracerReportingPeriods.filter(p => p.id >= '2026-10-11');
+const october = tracerReportingPeriods.filter(p => p.id >= '2026-10-11' && p.id <= '2026-10-25');
 const fixture = facilities => ({id: '2026-10-25', reportDate: '2026-10-25',
   dataQuality: {facilityRosterRule: 'Versioned reporting evidence', facilities: []}, facilities});
 const hospital = register.units.find(row => row.district === 'MUFUMBWE' && row.facilityLevel === 'LEVEL 1 HOSPITAL');
@@ -24,7 +24,7 @@ test('register freezes 403 obligations, 116 districts, and service-specific iden
 });
 
 test('every January-October week and every geographic subset retain the same denominator', () => {
-  assert.equal(tracerReportingPeriods.length, 43);
+  assert.equal(tracerReportingPeriods.length, 44);
   for (const period of tracerReportingPeriods) {
     assert.equal(facilityReportingRows(period).length, 403, period.id);
     assert.equal(primaryCareDistrictSummary(period).expected, 116, period.id);

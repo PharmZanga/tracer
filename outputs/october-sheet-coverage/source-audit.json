@@ -1,0 +1,4539 @@
+{
+  "rule": "Read every labelled tab, regardless of order; add omitted positive SOH blocks only.",
+  "periods": [
+    {
+      "id": "2026-10-11",
+      "tabs": [
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "11 oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "11 oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 1050
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "11 oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 1050
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "11 oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_.xlsx",
+          "tab": "Sheet4",
+          "tabPosition": 4,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "11 oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 59
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "11 oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_.xlsx",
+          "tab": "L-3",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 180
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "11 oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_.xlsx",
+          "tab": "L-1",
+          "tabPosition": 7,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 750
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "11 oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_.xlsx",
+          "tab": "TB",
+          "tabPosition": 8,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "11 oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_.xlsx",
+          "tab": "EYE",
+          "tabPosition": 9,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "11 oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 10,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "11 oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 11,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 770
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 770
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 450
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 5,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 55
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-2",
+          "tabPosition": 7,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 8,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "TB",
+          "tabPosition": 9,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "EYE",
+          "tabPosition": 10,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 35
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 11,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 24
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "WNBH",
+          "tabPosition": 12,
+          "level": "WOMEN AND NEWBORN HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 13,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "11_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 14,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 420
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 420
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 450
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 58
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 55
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 90
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 8,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "TB",
+          "tabPosition": 9,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 75
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 10,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 50
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "EYE",
+          "tabPosition": 11,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 35
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 12,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "CANCER",
+          "tabPosition": 13,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 33
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "WNB",
+          "tabPosition": 14,
+          "level": "WOMEN AND NEWBORN HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 23
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HEART",
+          "tabPosition": 15,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "09.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 700
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 700
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 600
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 356
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 90
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 55
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 8,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 9,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 50
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "CANCER",
+          "tabPosition": 10,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "TB",
+          "tabPosition": 11,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 60
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 13,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HEART",
+          "tabPosition": 14,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "W & NB",
+          "tabPosition": 15,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "11.10.26  COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 840
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 840
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 4,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "EYE",
+          "tabPosition": 5,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-1",
+          "tabPosition": 6,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 500
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "TB",
+          "tabPosition": 7,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 86
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 8,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-2",
+          "tabPosition": 9,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 240
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 10,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "11.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 11,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 769
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 770
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 750
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-3",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 8,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 9,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "CANCER",
+          "tabPosition": 10,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "TB",
+          "tabPosition": 11,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 93
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 13,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 14,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 15,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx",
+          "tab": "Sheet1",
+          "tabPosition": 2,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx",
+          "tab": "HP",
+          "tabPosition": 3,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 1120
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx",
+          "tab": "HC",
+          "tabPosition": 4,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 1120
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx",
+          "tab": "L-1",
+          "tabPosition": 5,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 5,
+          "sourceRowsRead": 600
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx",
+          "tab": "L-2",
+          "tabPosition": 6,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 177
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx",
+          "tab": "EYE",
+          "tabPosition": 7,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx",
+          "tab": "TB",
+          "tabPosition": 8,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 9,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 10,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 560
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 560
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 250
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 180
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "L-3",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 8,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 9,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "CANCER",
+          "tabPosition": 10,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "TB",
+          "tabPosition": 11,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 13,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "HEART",
+          "tabPosition": 14,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "W & NB",
+          "tabPosition": 15,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 09_10_2026.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE-TRACER WEEKLY REPORT PROVINCES-4 to 10th October,2026.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE-TRACER WEEKLY REPORT PROVINCES-4 to 10th October,2026.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 5,
+          "sourceRowsRead": 828
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE-TRACER WEEKLY REPORT PROVINCES-4 to 10th October,2026.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 840
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE-TRACER WEEKLY REPORT PROVINCES-4 to 10th October,2026.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 400
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE-TRACER WEEKLY REPORT PROVINCES-4 to 10th October,2026.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 122
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE-TRACER WEEKLY REPORT PROVINCES-4 to 10th October,2026.xlsx",
+          "tab": "TB",
+          "tabPosition": 6,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 30
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE-TRACER WEEKLY REPORT PROVINCES-4 to 10th October,2026.xlsx",
+          "tab": "EYE",
+          "tabPosition": 7,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 68
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE-TRACER WEEKLY REPORT PROVINCES-4 to 10th October,2026.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 8,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE-TRACER WEEKLY REPORT PROVINCES-4 to 10th October,2026.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 9,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE-TRACER WEEKLY REPORT PROVINCES-4 to 10th October,2026.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 10,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "HP",
+          "tabPosition": 1,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 1050
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "HC",
+          "tabPosition": 2,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 1050
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 3,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 550
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 413
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "L-3",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 90
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 8,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "RENAL",
+          "tabPosition": 9,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "CANCER",
+          "tabPosition": 10,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "TB",
+          "tabPosition": 11,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 120
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 35
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 13,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "HEART",
+          "tabPosition": 14,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "W & NB",
+          "tabPosition": 15,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        }
+      ],
+      "addedRows": 600,
+      "addedBlocks": [
+        [
+          "WESTERN PROVINCE",
+          "MWANDI",
+          "LEVEL 1 HOSPITAL",
+          "LUTABA MINI HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "LUAMPA",
+          "LEVEL 1 HOSPITAL",
+          "LUAMPA MISSION HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KAOMA",
+          "LEVEL 1 HOSPITAL",
+          "MANGANGO HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KAOMA",
+          "LEVEL 1 HOSPITAL",
+          "KAOMA DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "MULOBEZI",
+          "LEVEL 1 HOSPITAL",
+          "MULOBEZI DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "MULOBEZI",
+          "LEVEL 1 HOSPITAL",
+          "SICHILI MISSION HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KALABO",
+          "LEVEL 1 HOSPITAL",
+          "KALABO DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KALABO",
+          "LEVEL 1 HOSPITAL",
+          "YUKA MISSION HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "SESHEKE",
+          "LEVEL 1 HOSPITAL",
+          "YETA DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "SHANGOMBO",
+          "LEVEL 1 HOSPITAL",
+          "SHANGOMBO DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "MONGU",
+          "LEVEL 1 HOSPITAL",
+          "MONGU DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "NALOLO",
+          "LEVEL 1 HOSPITAL",
+          "NALOLO DISTRICT HOSPITAL"
+        ]
+      ],
+      "sourceValidationFindings": [
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "CANCER",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 09_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "L-3",
+          "districtAsEntered": "KITWE",
+          "facilityAsEntered": "KITWE TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 09_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "L-3 ADULT",
+          "districtAsEntered": "NDOLA DISTRICT",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 09_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "L-3 PAED",
+          "districtAsEntered": "NDOLA DISTRICT",
+          "facilityAsEntered": "ARTHUR DAVISON CHILDRENS",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 09_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "RENAL",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 09_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 09_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "NORTH-WESTERN PROVINCE",
+          "sheet": "L-2",
+          "districtAsEntered": "CHITOKOLOKI MISSION HOSPITAL",
+          "facilityAsEntered": "CHITOKOLOKI MH",
+          "verifiedProvince": "NORTH-WESTERN PROVINCE",
+          "reasons": [
+            "district_header_misaligned_corrected_from_local_history"
+          ],
+          "correctedDistrict": "ZAMBEZI",
+          "excludedFromMetrics": false,
+          "sourceWorkbook": "11-10-2026 NORTHWESTERN TRACER WEEKLY REPORT.xlsx"
+        },
+        {
+          "submissionProvince": "NORTHERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NORTHERN PROVINCE",
+          "facilityAsEntered": "PHO STOCK",
+          "verifiedProvince": null,
+          "reasons": [
+            "district_not_in_national_roster"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "NORTHERN PROVINCE-TRACER WEEKLY REPORT PROVINCES-4 to 10th October,2026.xlsx"
+        },
+        {
+          "submissionProvince": "SOUTHERN PROVINCE",
+          "sheet": "L-3 ADULT",
+          "districtAsEntered": "NDOLA DISTRICT",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 09.10.26 (1).xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "EYE",
+          "districtAsEntered": "KITWE DISTRICT",
+          "facilityAsEntered": "KITWE EYE",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "CHINGOLA",
+          "facilityAsEntered": "NCHANGA GENERAL",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "CHIPOKOTA MAYAMABA HC",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "11-10-2026 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (1).xlsx"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-18",
+      "tabs": [
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 700
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 700
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 600
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 356
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 55
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 8,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 50
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3",
+          "tabPosition": 9,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 90
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "CANCER",
+          "tabPosition": 10,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "TB",
+          "tabPosition": 11,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 60
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 13,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HEART",
+          "tabPosition": 14,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "W & NB",
+          "tabPosition": 15,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "18.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 769
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 6,
+          "sourceRowsRead": 350
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 750
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 8,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 9,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "CANCER",
+          "tabPosition": 10,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "TB",
+          "tabPosition": 11,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 93
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 13,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 14,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 15,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx",
+          "tab": "Sheet1",
+          "tabPosition": 2,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx",
+          "tab": "HP",
+          "tabPosition": 3,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 1120
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx",
+          "tab": "HC",
+          "tabPosition": 4,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 1120
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx",
+          "tab": "L-1",
+          "tabPosition": 5,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 5,
+          "sourceRowsRead": 600
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx",
+          "tab": "L-2",
+          "tabPosition": 6,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 177
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx",
+          "tab": "EYE",
+          "tabPosition": 7,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx",
+          "tab": "TB",
+          "tabPosition": 8,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 9,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 10,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 980
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 910
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "Sheet4",
+          "tabPosition": 4,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "Copy of Sheet4",
+          "tabPosition": 5,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "L-2",
+          "tabPosition": 6,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 59
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "L-3",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 180
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "L-1",
+          "tabPosition": 8,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 750
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "TB",
+          "tabPosition": 9,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "EYE",
+          "tabPosition": 10,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 11,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "18th Oct EASTERN_PROVINCE_2026_TRACER_WEEKLY_REPORT_PROVINCES_(1).xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 12,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 5,
+          "sourceRowsRead": 828
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 840
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 400
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 122
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
+          "tab": "TB",
+          "tabPosition": 6,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 30
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
+          "tab": "EYE",
+          "tabPosition": 7,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 68
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 8,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 9,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 10,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "HC",
+          "tabPosition": 2,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 1050
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "Sheet1",
+          "tabPosition": 3,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "HP",
+          "tabPosition": 4,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 1050
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "L-1",
+          "tabPosition": 5,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 550
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "L-2",
+          "tabPosition": 6,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 420
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "L-3",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 90
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 8,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 9,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "RENAL",
+          "tabPosition": 10,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "CANCER",
+          "tabPosition": 11,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "TB",
+          "tabPosition": 12,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 120
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "EYE",
+          "tabPosition": 13,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 14,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "HEART",
+          "tabPosition": 15,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "W & NB",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 18,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 840
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 840
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 4,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "EYE",
+          "tabPosition": 5,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-1",
+          "tabPosition": 6,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 500
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "TB",
+          "tabPosition": 7,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 49
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 8,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-2",
+          "tabPosition": 9,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 240
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 10,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "18.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 11,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 770
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 770
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 450
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 5,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 55
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-2",
+          "tabPosition": 7,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 8,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 14
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "TB",
+          "tabPosition": 9,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "EYE",
+          "tabPosition": 10,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 35
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 11,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 24
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "WNBH",
+          "tabPosition": 12,
+          "level": "WOMEN AND NEWBORN HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 13,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "19_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 14,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 350
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 350
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 400
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 59
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 55
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 90
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 8,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "TB",
+          "tabPosition": 9,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 44
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 10,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 11,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 35
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "CANCER",
+          "tabPosition": 13,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 33
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "WNB",
+          "tabPosition": 14,
+          "level": "WOMEN AND NEWBORN HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 28
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HEART",
+          "tabPosition": 15,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "16.10.2026. LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 560
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 560
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 250
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 180
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "L-3",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 8,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 9,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "CANCER",
+          "tabPosition": 10,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "TB",
+          "tabPosition": 11,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 13,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "HEART",
+          "tabPosition": 14,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "W & NB",
+          "tabPosition": 15,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 25. 19.10.26.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        }
+      ],
+      "addedRows": 600,
+      "addedBlocks": [
+        [
+          "WESTERN PROVINCE",
+          "MWANDI",
+          "LEVEL 1 HOSPITAL",
+          "LUTABA MINI HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "LUAMPA",
+          "LEVEL 1 HOSPITAL",
+          "LUAMPA MISSION HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KAOMA",
+          "LEVEL 1 HOSPITAL",
+          "MANGANGO HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KAOMA",
+          "LEVEL 1 HOSPITAL",
+          "KAOMA DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "MULOBEZI",
+          "LEVEL 1 HOSPITAL",
+          "MULOBEZI DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "MULOBEZI",
+          "LEVEL 1 HOSPITAL",
+          "SICHILI MISSION HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KALABO",
+          "LEVEL 1 HOSPITAL",
+          "KALABO DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KALABO",
+          "LEVEL 1 HOSPITAL",
+          "YUKA MISSION HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "SESHEKE",
+          "LEVEL 1 HOSPITAL",
+          "YETA DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "SHANGOMBO",
+          "LEVEL 1 HOSPITAL",
+          "SHANGOMBO DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "MONGU",
+          "LEVEL 1 HOSPITAL",
+          "MONGU DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "NALOLO",
+          "LEVEL 1 HOSPITAL",
+          "NALOLO DISTRICT HOSPITAL"
+        ]
+      ],
+      "sourceValidationFindings": [
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "CANCER",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 25. 19.10.26.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "L-3",
+          "districtAsEntered": "KITWE",
+          "facilityAsEntered": "KITWE TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 25. 19.10.26.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "L-3 ADULT",
+          "districtAsEntered": "NDOLA DISTRICT",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 25. 19.10.26.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "L-3 PAED",
+          "districtAsEntered": "NDOLA DISTRICT",
+          "facilityAsEntered": "ARTHUR DAVISON CHILDRENS",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 25. 19.10.26.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "RENAL",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 25. 19.10.26.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 25. 19.10.26.xlsx"
+        },
+        {
+          "submissionProvince": "NORTH-WESTERN PROVINCE",
+          "sheet": "L-2",
+          "districtAsEntered": "CHITOKOLOKI MISSION HOSPITAL",
+          "facilityAsEntered": "CHITOKOLOKI MH",
+          "verifiedProvince": "NORTH-WESTERN PROVINCE",
+          "reasons": [
+            "district_header_misaligned_corrected_from_local_history"
+          ],
+          "correctedDistrict": "ZAMBEZI",
+          "excludedFromMetrics": false,
+          "sourceWorkbook": "18-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx"
+        },
+        {
+          "submissionProvince": "NORTHERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NORTHERN PROVINCE",
+          "facilityAsEntered": "PHO STOCK",
+          "verifiedProvince": null,
+          "reasons": [
+            "district_not_in_national_roster"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "NORTHERN PROVINCE TRACER WEEKLY REPORT 18th OCTOBER,2026.xlsx"
+        },
+        {
+          "submissionProvince": "SOUTHERN PROVINCE",
+          "sheet": "L-3 ADULT",
+          "districtAsEntered": "NDOLA DISTRICT",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 16.10.26 (1).xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "EYE",
+          "districtAsEntered": "KITWE DISTRICT",
+          "facilityAsEntered": "KITWE EYE",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "CHINGOLA",
+          "facilityAsEntered": "NCHANGA GENERAL",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "CHIPOKOTA MAYAMABA HC",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "18-10-2026WESTERNPROVINCE2025TRACERWEEKLYREPORT.xlsx"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-25",
+      "tabs": [
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 350
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 350
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 400
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 59
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 90
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 8,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "TB",
+          "tabPosition": 9,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 75
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 10,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 50
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 11,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 35
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "CANCER",
+          "tabPosition": 13,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 33
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "WNB",
+          "tabPosition": 14,
+          "level": "WOMEN AND NEWBORN HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 28
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HEART",
+          "tabPosition": 15,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUSAKA PROVINCE",
+          "workbook": "23.10.2026-LUSAKA PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx",
+          "tab": "Sheet1",
+          "tabPosition": 2,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx",
+          "tab": "HP",
+          "tabPosition": 3,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 1120
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx",
+          "tab": "HC",
+          "tabPosition": 4,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 1120
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx",
+          "tab": "L-1",
+          "tabPosition": 5,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 5,
+          "sourceRowsRead": 600
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx",
+          "tab": "L-2",
+          "tabPosition": 6,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 177
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx",
+          "tab": "EYE",
+          "tabPosition": 7,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx",
+          "tab": "TB",
+          "tabPosition": 8,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 9,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "WESTERN PROVINCE",
+          "workbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 10,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 700
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 700
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 599
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 357
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 90
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 55
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 8,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 9,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 50
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "CANCER",
+          "tabPosition": 10,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "TB",
+          "tabPosition": 11,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 60
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 68
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 13,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HEART",
+          "tabPosition": 14,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "W & NB",
+          "tabPosition": 15,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "COPPERBELT PROVINCE",
+          "workbook": "25.10.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "25.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "25.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 770
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "25.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 840
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "25.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 4,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "25.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "EYE",
+          "tabPosition": 5,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "25.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-1",
+          "tabPosition": 6,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 400
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "25.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "TB",
+          "tabPosition": 7,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 49
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "25.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 8,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "25.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-2",
+          "tabPosition": 9,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 240
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "25.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 10,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "LUAPULA PROVINCE",
+          "workbook": "25.10.26_LUAPULA PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 11,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "25.10.2026-NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "25.10.2026-NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 5,
+          "sourceRowsRead": 828
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "25.10.2026-NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 840
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "25.10.2026-NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 400
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "25.10.2026-NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 122
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "25.10.2026-NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "TB",
+          "tabPosition": 6,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 30
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "25.10.2026-NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "EYE",
+          "tabPosition": 7,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 68
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "25.10.2026-NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 8,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "25.10.2026-NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 9,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTHERN PROVINCE",
+          "workbook": "25.10.2026-NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 10,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 770
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 770
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 450
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 5,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 55
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "L-2",
+          "tabPosition": 7,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 8,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 14
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "TB",
+          "tabPosition": 9,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "EYE",
+          "tabPosition": 10,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 35
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 11,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 24
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "WNBH",
+          "tabPosition": 12,
+          "level": "WOMEN AND NEWBORN HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 13,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "CENTRAL PROVINCE",
+          "workbook": "25_10_2026 CENTRAL PROVINCE 2026 TRACER WEEKLY REPORT.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 14,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 700
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 628
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 735
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "L-3",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "RENAL",
+          "tabPosition": 8,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 9,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "CANCER",
+          "tabPosition": 10,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "TB",
+          "tabPosition": 11,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 93
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 13,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 14,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "NORTH-WESTERN PROVINCE",
+          "workbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 15,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 980
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 1050
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "Sheet4",
+          "tabPosition": 4,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "Copy of Sheet4",
+          "tabPosition": 5,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "L-2",
+          "tabPosition": 6,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 59
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "L-3",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 180
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "L-1",
+          "tabPosition": 8,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 750
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "TB",
+          "tabPosition": 9,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "EYE",
+          "tabPosition": 10,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 11,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "EASTERN PROVINCE",
+          "workbook": "25th Oct EASTERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES (46).xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 12,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 490
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 490
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 250
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 180
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "L-3",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 8,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "RENAL",
+          "tabPosition": 9,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "CANCER",
+          "tabPosition": 10,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "TB",
+          "tabPosition": 11,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 13,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "HEART",
+          "tabPosition": 14,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "W & NB",
+          "tabPosition": 15,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "MUCHINGA PROVINCE",
+          "workbook": "MUCHINGA 23_10_2026.xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "SITUATION BOARD",
+          "tabPosition": 1,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "HP",
+          "tabPosition": 2,
+          "level": "HEALTH POST",
+          "descriptionHeaderRow": 4,
+          "sourceRowsRead": 1050
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "HC",
+          "tabPosition": 3,
+          "level": "HEALTH CENTRE",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 1050
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "L-1",
+          "tabPosition": 4,
+          "level": "LEVEL 1 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 550
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "L-2",
+          "tabPosition": 5,
+          "level": "LEVEL 2/GENERAL HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 420
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "L-3",
+          "tabPosition": 6,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 90
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "L-3 PAED",
+          "tabPosition": 7,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "L-3 ADULT",
+          "tabPosition": 8,
+          "level": "LEVEL 3 HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "RENAL",
+          "tabPosition": 9,
+          "level": "RENAL UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 25
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "CANCER",
+          "tabPosition": 10,
+          "level": "CANCER DISEASES HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "TB",
+          "tabPosition": 11,
+          "level": "TB-DS/TB-MDR UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 120
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "EYE",
+          "tabPosition": 12,
+          "level": "EYE/OPHTHALMOLOGY HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 70
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "PSYCH",
+          "tabPosition": 13,
+          "level": "MENTAL HEALTH UNITS",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "HEART",
+          "tabPosition": 14,
+          "level": "NATIONAL HEART HOSPITAL",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "W & NB",
+          "tabPosition": 15,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": 3,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "SUMMARY SHEET",
+          "tabPosition": 16,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        },
+        {
+          "province": "SOUTHERN PROVINCE",
+          "workbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx",
+          "tab": "PROGRAM",
+          "tabPosition": 17,
+          "level": "PRIMARY CARE - NOT SPECIFIED",
+          "descriptionHeaderRow": null,
+          "sourceRowsRead": 0
+        }
+      ],
+      "addedRows": 600,
+      "addedBlocks": [
+        [
+          "WESTERN PROVINCE",
+          "MWANDI",
+          "LEVEL 1 HOSPITAL",
+          "LUTABA MINI HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "LUAMPA",
+          "LEVEL 1 HOSPITAL",
+          "LUAMPA MISSION HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KAOMA",
+          "LEVEL 1 HOSPITAL",
+          "MANGANGO HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KAOMA",
+          "LEVEL 1 HOSPITAL",
+          "KAOMA DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "MULOBEZI",
+          "LEVEL 1 HOSPITAL",
+          "MULOBEZI DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "MULOBEZI",
+          "LEVEL 1 HOSPITAL",
+          "SICHILI MISSION HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KALABO",
+          "LEVEL 1 HOSPITAL",
+          "KALABO DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "KALABO",
+          "LEVEL 1 HOSPITAL",
+          "YUKA MISSION HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "SESHEKE",
+          "LEVEL 1 HOSPITAL",
+          "YETA DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "SHANGOMBO",
+          "LEVEL 1 HOSPITAL",
+          "SHANGOMBO DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "MONGU",
+          "LEVEL 1 HOSPITAL",
+          "MONGU DISTRICT HOSPITAL"
+        ],
+        [
+          "WESTERN PROVINCE",
+          "NALOLO",
+          "LEVEL 1 HOSPITAL",
+          "NALOLO DISTRICT HOSPITAL"
+        ]
+      ],
+      "sourceValidationFindings": [
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "CANCER",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 23_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "L-3",
+          "districtAsEntered": "KITWE",
+          "facilityAsEntered": "KITWE TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 23_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "L-3 ADULT",
+          "districtAsEntered": "NDOLA DISTRICT",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 23_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "L-3 PAED",
+          "districtAsEntered": "NDOLA DISTRICT",
+          "facilityAsEntered": "ARTHUR DAVISON CHILDRENS",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 23_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "RENAL",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 23_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "MUCHINGA PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "MUCHINGA 23_10_2026.xlsx"
+        },
+        {
+          "submissionProvince": "NORTH-WESTERN PROVINCE",
+          "sheet": "L-2",
+          "districtAsEntered": "CHITOKOLOKI MISSION HOSPITAL",
+          "facilityAsEntered": "CHITOKOLOKI MH",
+          "verifiedProvince": "NORTH-WESTERN PROVINCE",
+          "reasons": [
+            "district_header_misaligned_corrected_from_local_history"
+          ],
+          "correctedDistrict": "ZAMBEZI",
+          "excludedFromMetrics": false,
+          "sourceWorkbook": "25-10-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES (2).xlsx"
+        },
+        {
+          "submissionProvince": "NORTHERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NORTHERN PROVINCE",
+          "facilityAsEntered": "PHO STOCK",
+          "verifiedProvince": null,
+          "reasons": [
+            "district_not_in_national_roster"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "25.10.2026-NORTHERN PROVINCE 2024 TRACER WEEKLY REPORT PROVINCES.xlsx"
+        },
+        {
+          "submissionProvince": "SOUTHERN PROVINCE",
+          "sheet": "L-3 ADULT",
+          "districtAsEntered": "NDOLA DISTRICT",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "SOUTHERN PROVINCE 2026 TRACER WEEKLY REPORT PROVINCES-WEEK ENDING 23.10.26 (1).xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "EYE",
+          "districtAsEntered": "KITWE DISTRICT",
+          "facilityAsEntered": "KITWE EYE",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "CHINGOLA",
+          "facilityAsEntered": "NCHANGA GENERAL",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "CHIPOKOTA MAYAMABA HC",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx"
+        },
+        {
+          "submissionProvince": "WESTERN PROVINCE",
+          "sheet": "TB",
+          "districtAsEntered": "NDOLA",
+          "facilityAsEntered": "NDOLA TEACHING",
+          "verifiedProvince": "COPPERBELT PROVINCE",
+          "reasons": [
+            "district_belongs_to_another_province"
+          ],
+          "correctedDistrict": null,
+          "excludedFromMetrics": true,
+          "sourceWorkbook": "24-10-26 WESTERN PROVINCE 2025 TRACER WEEKLY REPORT  (2).xlsx"
+        }
+      ]
+    }
+  ],
+  "sourceWorkbooksUnchanged": true
+}

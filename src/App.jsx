@@ -2341,24 +2341,30 @@ function App() {
     return summary;
   }, { expected: 0, received: 0, missing: 0 });
 
-  const provinceOptions = fieldData.provinces.map((province) => province.name).sort();
   // Retain every expected district in the filter even when it did not submit
   // during the selected week. This makes a reporting gap visible instead of
   // making the district disappear from the dashboard.
   const districtDirectory = fieldData.dataQuality?.districts?.length
     ? fieldData.dataQuality.districts
     : fieldData.districts;
+  const provinceOptions = [...new Set([
+    ...fieldData.provinces.map((province) => province.name),
+    ...districtDirectory.map((district) => district.province),
+  ])].filter(Boolean).sort();
   const districtOptions = [...new Set(districtDirectory
     .filter((district) => selectedProvince === "all" || district.province === selectedProvince)
     .map((district) => district.name))].sort();
   const facilityReportingUniverse = useMemo(() => facilityReportingRows(fieldData), [fieldData]);
-  const scopedFacilityLevelRows = facilityReportingUniverse
+  const facilitySelectionUniverse = useMemo(() => [...new Map(
+    [...facilityReportingUniverse, ...fieldData.facilities].map(facility => [reportingUnitKey(facility), facility]),
+  ).values()], [facilityReportingUniverse, fieldData]);
+  const scopedFacilityLevelRows = facilitySelectionUniverse
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
     .filter((facility) => selectedDistrict === "all" || facility.district === selectedDistrict);
   const optionIsAvailableInScope = (option) => scopedFacilityLevelRows.some((facility) => matchesFacilityCareLevel(facility.facilityLevel, option.value));
   const facilityLevelOptions = facilityCareLevelOptions.filter(optionIsAvailableInScope);
   const specialisedFacilityLevelOptions = specialisedCareLevelOptions.filter(optionIsAvailableInScope);
-  const facilityOptions = selectedDistrict === "all" ? [] : facilityReportingUniverse
+  const facilityOptions = selectedDistrict === "all" ? [] : facilitySelectionUniverse
     .filter((facility) => selectedProvince === "all" || facility.province === selectedProvince)
     .filter((facility) => facility.district === selectedDistrict)
     .filter((facility) => matchesFacilityCareLevel(facility.facilityLevel, selectedFacilityLevel))
@@ -4596,8 +4602,8 @@ function App() {
             <div><span><Users className="metric-icon" aria-hidden="true" />Current footprint</span><strong>{filteredFacilities.length}</strong><small>Reporting units in current filters</small></div>
           </div>
           <div className="field-grid">
-            <TopRowsTable title="Province availability" rows={scopedProvinceRows.slice(0, 10)} onSelect={(row) => selectProvince(row.name)} />
-            <TopRowsTable title={selectedProvince === "all" ? "Districts needing attention" : `Districts in ${selectedProvince}`} rows={districtsInScope.slice(0, 12)} onSelect={(row) => selectDistrict(row.name)} />
+            <TopRowsTable title="Province availability" rows={scopedProvinceRows} onSelect={(row) => selectProvince(row.name)} />
+            <TopRowsTable title={selectedProvince === "all" ? "District availability" : `Districts in ${selectedProvince}`} rows={districtsInScope} onSelect={(row) => selectDistrict(row.name)} />
             <TopRowsTable title="Programme pressure" rows={programmePressureRows} />
           </div>
           <div className="hierarchy-path">

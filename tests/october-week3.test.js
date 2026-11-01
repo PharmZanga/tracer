@@ -13,13 +13,13 @@ const period = dataset.tracerReportingPeriods.find(p => p.id === '2026-10-25');
 const audit = JSON.parse(readFileSync(new URL('../outputs/october-week3-province-audit/source-audit.json', import.meta.url), 'utf8'));
 const rows = commodityRowsFromPeriod(period);
 
-test('Week 3 has all ten source workbooks and is the latest selectable report', () => {
+test('Week 3 retains all ten source workbooks and remains selectable after later weeks', () => {
   assert.ok(period); assert.equal(period.week, 'Week 3'); assert.equal(period.month, '2026-10');
   assert.equal(period.counts.provinces, 10); assert.equal(period.sourceWorkbooks.length, 10);
   assert.equal(new Set(period.sourceWorkbooks.map(source => source.province)).size, 10);
   assert.ok(period.sourceWorkbooks.every(source => /^[a-f0-9]{64}$/.test(source.sha256) && source.bytes > 0));
-  assert.equal(reportCatalogue.at(-1).id, period.id); assert.equal(tracerBootstrapPeriod.id, period.id);
-  assert.deepEqual(dataset.tracerReportingPeriods.map(p => p.id), ['2026-10-11', '2026-10-18', '2026-10-25']);
+  assert.ok(reportCatalogue.some(p => p.id === period.id)); assert.ok(tracerBootstrapPeriod.id >= period.id);
+  assert.deepEqual(dataset.tracerReportingPeriods.filter(p => p.id <= period.id).map(p => p.id), ['2026-10-11', '2026-10-18', '2026-10-25']);
 });
 
 test('Week 3 stock rows reconcile and preserve SOH versus AMC definitions', () => {
@@ -72,10 +72,10 @@ test('North-Western HC data is retained despite its separated description and me
   assert.equal(primaryCareDistrictRows(period).find(row => row.province === 'NORTH-WESTERN PROVINCE' && row.name === 'MUFUMBWE').submitted, true);
 });
 
-test('the January-September datasets and earlier October totals are unchanged', () => {
+test('January-September is unchanged and earlier October totals include restored Western hospitals', () => {
   for (const [path, expected] of Object.entries(audit.historicalDatasetHashes)) {
     assert.equal(createHash('sha256').update(readFileSync(new URL('../' + path, import.meta.url))).digest('hex'), expected, path);
   }
-  assert.equal(dataset.tracerReportingPeriods.find(p => p.id === '2026-10-11').counts.rows, 24653);
-  assert.equal(dataset.tracerReportingPeriods.find(p => p.id === '2026-10-18').counts.rows, 23824);
+  assert.equal(dataset.tracerReportingPeriods.find(p => p.id === '2026-10-11').counts.rows, 24653 + 600);
+  assert.equal(dataset.tracerReportingPeriods.find(p => p.id === '2026-10-18').counts.rows, 23824 + 600);
 });

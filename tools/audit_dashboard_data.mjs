@@ -21,6 +21,8 @@ const check = (condition, message) => {
 };
 const belongsToReportingMonth = (period) => {
   if (period.reportDate.startsWith(period.month)) return true;
+  // The submitted 30 October-1 November round is designated October Week 4.
+  if (period.month === "2026-10" && period.reportDate === "2026-11-01" && period.week === "Week 4") return true;
   if (period.week !== "Week 5") return false;
   const [year, month] = period.month.split("-").map(Number);
   const monthEnd = new Date(Date.UTC(year, month, 0));
