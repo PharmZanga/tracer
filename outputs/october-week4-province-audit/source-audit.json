@@ -1,6 +1,6 @@
 {
   "reportDate": "2026-11-01",
-  "source": "October Week 4: nine provincial submissions received; North-Western resubmission replaces earlier workbook; Muchinga not submitted; SOH normalized to whole units; blank and all-zero SOH blocks excluded",
+  "source": "October Week 4: all ten provincial submissions received; North-Western resubmission replaces earlier workbook; SOH normalized to whole units; blank and all-zero SOH blocks excluded",
   "sourceWorkbooks": [
     {
       "province": "CENTRAL PROVINCE",
@@ -33,6 +33,12 @@
       "bytes": 1472309
     },
     {
+      "province": "MUCHINGA PROVINCE",
+      "filename": "MUCHINGA 25. 30_10_2026.xlsx",
+      "sha256": "1df0ea19494b1cad262ea0399640bd0d9a03cd222b01d5687c46f6bcb19ce4ef",
+      "bytes": 1804321
+    },
+    {
       "province": "NORTH-WESTERN PROVINCE",
       "filename": "01-11-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx",
       "sha256": "5ebfc0c5708cbb6e8cfebb9a841e492170e721e8ff6b0d392cf73ef18097be63",
@@ -58,39 +64,39 @@
     }
   ],
   "counts": {
-    "rows": 23197,
-    "provinces": 9,
-    "districts": 107,
-    "facilityUnits": 382,
+    "rows": 24747,
+    "provinces": 10,
+    "districts": 115,
+    "facilityUnits": 406,
     "programmes": 13,
     "commodities": 478,
-    "districtSubmissionFootprint": 107,
+    "districtSubmissionFootprint": 115,
     "expectedDistricts": 116,
     "partialDistricts": 0,
     "hospitalOnlyDistricts": 0,
     "expectedFacilityUnits": 647,
     "expectedLevelReports": 647,
     "expectedNamedFacilityReports": 79,
-    "missingDistricts": 9,
-    "missingFacilityUnits": 300,
-    "missingLevelReports": 300
+    "missingDistricts": 1,
+    "missingFacilityUnits": 278,
+    "missingLevelReports": 278
   },
   "national": {
     "name": "Zambia",
-    "rows": 23197,
-    "availability": 0.8647,
-    "mos": 2.94,
-    "stockout": 3746,
-    "nearCritical": 5313,
-    "understocked": 3997,
-    "accordingToPlan": 4291,
-    "abovePlan": 5488,
+    "rows": 24747,
+    "availability": 0.8672,
+    "mos": 3.01,
+    "stockout": 3928,
+    "nearCritical": 5563,
+    "understocked": 4222,
+    "accordingToPlan": 4648,
+    "abovePlan": 6014,
     "overstock": 0,
-    "dataGap": 362,
-    "quantity": 23301939.0,
-    "amc": 5410758.99,
-    "riskRows": 13056,
-    "stockoutRate": 0.1615
+    "dataGap": 372,
+    "quantity": 24239313.0,
+    "amc": 5635696.99,
+    "riskRows": 13713,
+    "stockoutRate": 0.1587
   },
   "provinces": [
     {
@@ -230,6 +236,23 @@
       "stockoutRate": 0.1228
     },
     {
+      "name": "MUCHINGA PROVINCE",
+      "rows": 1550,
+      "availability": 0.9045,
+      "mos": 4.02,
+      "stockout": 182,
+      "nearCritical": 250,
+      "understocked": 225,
+      "accordingToPlan": 357,
+      "abovePlan": 526,
+      "overstock": 0,
+      "dataGap": 10,
+      "quantity": 937374.0,
+      "amc": 224938.0,
+      "riskRows": 657,
+      "stockoutRate": 0.1174
+    },
+    {
       "name": "CENTRAL PROVINCE",
       "rows": 2188,
       "availability": 0.9278,
@@ -249,54 +272,43 @@
   ],
   "normalization": {
     "scope": "incoming replacement workbooks only",
-    "sourceBlocks": 95,
+    "sourceBlocks": 27,
     "allMetricBlankBlocks": 0,
     "allMetricBlankBlockRowsExcluded": 0,
-    "allSOHBlankBlocks": 4,
-    "allSOHBlankBlockRowsExcluded": 190,
-    "allMetricBlankRowsExcluded": 46,
+    "allSOHBlankBlocks": 3,
+    "allSOHBlankBlockRowsExcluded": 94,
+    "allMetricBlankRowsExcluded": 0,
     "provinceMismatchRowsExcluded": 0,
-    "blankSOHRowsSetToZero": 69,
-    "dashSOHRowsSetToZero": 140,
+    "blankSOHRowsSetToZero": 1,
+    "dashSOHRowsSetToZero": 47,
     "allMetricBlankBlockDetails": [],
     "allSOHBlankBlockDetails": [
       {
-        "province": "COPPERBELT PROVINCE",
-        "district": "KITWE",
-        "facility": "KITWE TEACHING HOSPITAL",
-        "facilityLevel": "LEVEL 3 HOSPITAL",
-        "sheet": "L-3 ADULT",
-        "column": 9,
-        "rows": 82,
-        "amcRowsEntered": 0,
-        "mosRowsEntered": 16
-      },
-      {
-        "province": "NORTH-WESTERN PROVINCE",
-        "district": "CHAVUMA",
-        "facility": "CHAVUMA DISTRICT HOSPITAL",
-        "facilityLevel": "LEVEL 1 HOSPITAL",
-        "sheet": "L-1",
-        "column": 65,
-        "rows": 49,
-        "amcRowsEntered": 49,
-        "mosRowsEntered": 48
-      },
-      {
-        "province": "NORTH-WESTERN PROVINCE",
-        "district": "MANYINGA",
-        "facility": "LOLOMA MH",
+        "province": "MUCHINGA PROVINCE",
+        "district": "CHINSALI",
+        "facility": "CHINSALI DISTRICT HOSPITAL",
         "facilityLevel": "TB-DS/TB-MDR UNITS",
         "sheet": "TB",
-        "column": 9,
+        "column": 5,
         "rows": 34,
         "amcRowsEntered": 30,
         "mosRowsEntered": 30
       },
       {
-        "province": "NORTH-WESTERN PROVINCE",
-        "district": "SOLWEZI",
-        "facility": "SOLWEZI GH",
+        "province": "MUCHINGA PROVINCE",
+        "district": "CHINSALI",
+        "facility": "CHINSALI GENERAL HOSPITAL",
+        "facilityLevel": "EYE/OPHTHALMOLOGY HOSPITAL",
+        "sheet": "EYE",
+        "column": 5,
+        "rows": 35,
+        "amcRowsEntered": 35,
+        "mosRowsEntered": 35
+      },
+      {
+        "province": "MUCHINGA PROVINCE",
+        "district": "MPIKA",
+        "facility": "MICHAEL CHILUFYA SATA HOSPITAL",
         "facilityLevel": "MENTAL HEALTH UNITS",
         "sheet": "PSYCH",
         "column": 4,
@@ -306,21 +318,13 @@
       }
     ],
     "calculationByProvince": {
-      "COPPERBELT PROVINCE": {
-        "rowsAudited": 2755,
+      "MUCHINGA PROVINCE": {
+        "rowsAudited": 1550,
         "fractionalSOHFloored": 0,
         "negativeSOHClipped": 0,
-        "dashSOHSetToZero": 6,
-        "blankSOHSetToZero": 3,
-        "sourceMOSMismatchRows": 19
-      },
-      "NORTH-WESTERN PROVINCE": {
-        "rowsAudited": 2441,
-        "fractionalSOHFloored": 2,
-        "negativeSOHClipped": 1,
-        "dashSOHSetToZero": 134,
-        "blankSOHSetToZero": 66,
-        "sourceMOSMismatchRows": 1144
+        "dashSOHSetToZero": 47,
+        "blankSOHSetToZero": 1,
+        "sourceMOSMismatchRows": 1071
       }
     }
   },
@@ -344,6 +348,36 @@
       "sheet": "HP",
       "quantityColumn": 21,
       "sourceValue": "#DIV/0!"
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "district": "ISOKA",
+      "facility": "ISOKA Health Centre facilities",
+      "commodity": "Umbilical Cord Clamps (1)",
+      "workbook": "C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\october\\week 4\\MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HC",
+      "quantityColumn": 9,
+      "sourceValue": "#REF!"
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "district": "ISOKA",
+      "facility": "ISOKA Health Centre facilities",
+      "commodity": "Vaccine- Inactivated polio (IPV)",
+      "workbook": "C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\october\\week 4\\MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HC",
+      "quantityColumn": 9,
+      "sourceValue": "#REF!"
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "district": "ISOKA",
+      "facility": "ISOKA Health Centre facilities",
+      "commodity": "Vaccine- Pneumococcal conjugate (PCV)",
+      "workbook": "C:\\Users\\Zanga Musakuzi\\Desktop\\NSCCU DATA ANALYSIS\\PROVINCIAL  tracer SUBMISSION\\province submissions\\october\\week 4\\MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HC",
+      "quantityColumn": 9,
+      "sourceValue": "#REF!"
     }
   ],
   "allZeroSOHBlocksExcluded": [
@@ -452,9 +486,87 @@
         "correctedDistrict": "ZAMBEZI",
         "excludedFromMetrics": false,
         "sourceWorkbook": "01-11-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx"
+      },
+      {
+        "submissionProvince": "MUCHINGA PROVINCE",
+        "sheet": "CANCER",
+        "districtAsEntered": "NDOLA",
+        "facilityAsEntered": "NDOLA TEACHING",
+        "verifiedProvince": "COPPERBELT PROVINCE",
+        "reasons": [
+          "district_belongs_to_another_province"
+        ],
+        "correctedDistrict": null,
+        "excludedFromMetrics": true,
+        "sourceWorkbook": "MUCHINGA 25. 30_10_2026.xlsx"
+      },
+      {
+        "submissionProvince": "MUCHINGA PROVINCE",
+        "sheet": "L-3",
+        "districtAsEntered": "KITWE",
+        "facilityAsEntered": "KITWE TEACHING",
+        "verifiedProvince": "COPPERBELT PROVINCE",
+        "reasons": [
+          "district_belongs_to_another_province"
+        ],
+        "correctedDistrict": null,
+        "excludedFromMetrics": true,
+        "sourceWorkbook": "MUCHINGA 25. 30_10_2026.xlsx"
+      },
+      {
+        "submissionProvince": "MUCHINGA PROVINCE",
+        "sheet": "L-3 ADULT",
+        "districtAsEntered": "NDOLA DISTRICT",
+        "facilityAsEntered": "NDOLA TEACHING",
+        "verifiedProvince": "COPPERBELT PROVINCE",
+        "reasons": [
+          "district_belongs_to_another_province"
+        ],
+        "correctedDistrict": null,
+        "excludedFromMetrics": true,
+        "sourceWorkbook": "MUCHINGA 25. 30_10_2026.xlsx"
+      },
+      {
+        "submissionProvince": "MUCHINGA PROVINCE",
+        "sheet": "L-3 PAED",
+        "districtAsEntered": "NDOLA DISTRICT",
+        "facilityAsEntered": "ARTHUR DAVISON CHILDRENS",
+        "verifiedProvince": "COPPERBELT PROVINCE",
+        "reasons": [
+          "district_belongs_to_another_province"
+        ],
+        "correctedDistrict": null,
+        "excludedFromMetrics": true,
+        "sourceWorkbook": "MUCHINGA 25. 30_10_2026.xlsx"
+      },
+      {
+        "submissionProvince": "MUCHINGA PROVINCE",
+        "sheet": "RENAL",
+        "districtAsEntered": "NDOLA",
+        "facilityAsEntered": "NDOLA TEACHING",
+        "verifiedProvince": "COPPERBELT PROVINCE",
+        "reasons": [
+          "district_belongs_to_another_province"
+        ],
+        "correctedDistrict": null,
+        "excludedFromMetrics": true,
+        "sourceWorkbook": "MUCHINGA 25. 30_10_2026.xlsx"
+      },
+      {
+        "submissionProvince": "MUCHINGA PROVINCE",
+        "sheet": "TB",
+        "districtAsEntered": "NDOLA",
+        "facilityAsEntered": "NDOLA TEACHING",
+        "verifiedProvince": "COPPERBELT PROVINCE",
+        "reasons": [
+          "district_belongs_to_another_province"
+        ],
+        "correctedDistrict": null,
+        "excludedFromMetrics": true,
+        "sourceWorkbook": "MUCHINGA 25. 30_10_2026.xlsx"
       }
     ],
-    "excludedBlockCount": 6,
+    "excludedBlockCount": 12,
     "excludedFromMetrics": true
   },
   "sourceCellSamples": [
@@ -1257,6 +1369,134 @@
       "publishedAMC": 6.0,
       "publishedMOS": null,
       "matched": true
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "workbook": "MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HP",
+      "quantityCell": "E50",
+      "amcCell": "F50",
+      "commodity": "Ringers Lactate solution 500ml (1)",
+      "facility": "CHINSALI Health Post facilities",
+      "district": "CHINSALI",
+      "sourceQuantity": 44.0,
+      "sourceAMC": 98.0,
+      "publishedSOH": 44,
+      "publishedAMC": 98.0,
+      "publishedMOS": 0.4489795918367347,
+      "matched": true
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "workbook": "MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HP",
+      "quantityCell": "E53",
+      "amcCell": "F53",
+      "commodity": "Sodium Chloride (Normal Saline) 500ml 0.09% (1)",
+      "facility": "CHINSALI Health Post facilities",
+      "district": "CHINSALI",
+      "sourceQuantity": 370.0,
+      "sourceAMC": 93.0,
+      "publishedSOH": 370,
+      "publishedAMC": 93.0,
+      "publishedMOS": 3.978494623655914,
+      "matched": true
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "workbook": "MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HP",
+      "quantityCell": "E5",
+      "amcCell": "F5",
+      "commodity": "Abacavir Sulphate/Lamivudine Dispersable 120/60mg Tablet(60)",
+      "facility": "CHINSALI Health Post facilities",
+      "district": "CHINSALI",
+      "sourceQuantity": 32.0,
+      "sourceAMC": 7.0,
+      "publishedSOH": 32,
+      "publishedAMC": 7.0,
+      "publishedMOS": 4.571428571428571,
+      "matched": true
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "workbook": "MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HP",
+      "quantityCell": "E10",
+      "amcCell": "F10",
+      "commodity": "Artemether + Lumefantrine 20/120mg 18's tab (30)",
+      "facility": "CHINSALI Health Post facilities",
+      "district": "CHINSALI",
+      "sourceQuantity": 0.0,
+      "sourceAMC": 79.0,
+      "publishedSOH": 0,
+      "publishedAMC": 79.0,
+      "publishedMOS": 0.0,
+      "matched": true
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "workbook": "MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HP",
+      "quantityCell": "E15",
+      "amcCell": "F15",
+      "commodity": "Benzyl Benzoate Lotion 25% 1(1)",
+      "facility": "CHINSALI Health Post facilities",
+      "district": "CHINSALI",
+      "sourceQuantity": "-",
+      "sourceAMC": 2.0,
+      "publishedSOH": 0,
+      "publishedAMC": 2.0,
+      "publishedMOS": 0.0,
+      "matched": true
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "workbook": "MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HC",
+      "quantityCell": "I63",
+      "amcCell": "J63",
+      "commodity": "Umbilical Cord Clamps (1)",
+      "facility": "ISOKA Health Centre facilities",
+      "district": "ISOKA",
+      "sourceQuantity": "#REF!",
+      "sourceAMC": 100.0,
+      "publishedSOH": null,
+      "publishedAMC": 100.0,
+      "publishedMOS": null,
+      "matched": true
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "workbook": "MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HC",
+      "quantityCell": "I66",
+      "amcCell": "J66",
+      "commodity": "Vaccine- Inactivated polio (IPV)",
+      "facility": "ISOKA Health Centre facilities",
+      "district": "ISOKA",
+      "sourceQuantity": "#REF!",
+      "sourceAMC": 265.0,
+      "publishedSOH": null,
+      "publishedAMC": 265.0,
+      "publishedMOS": null,
+      "matched": true
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "workbook": "MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HC",
+      "quantityCell": "I69",
+      "amcCell": "J69",
+      "commodity": "Vaccine- Pneumococcal conjugate (PCV)",
+      "facility": "ISOKA Health Centre facilities",
+      "district": "ISOKA",
+      "sourceQuantity": "#REF!",
+      "sourceAMC": 800.0,
+      "publishedSOH": null,
+      "publishedAMC": 800.0,
+      "publishedMOS": null,
+      "matched": true
     }
   ],
   "primaryCareSourceCoverage": [
@@ -1385,6 +1625,20 @@
       "sheet": "HC",
       "positiveSourceSOHCells": 786,
       "normalizedRecords": 767
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "workbook": "MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HP",
+      "positiveSourceSOHCells": 597,
+      "normalizedRecords": 560
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "workbook": "MUCHINGA 25. 30_10_2026.xlsx",
+      "sheet": "HC",
+      "positiveSourceSOHCells": 592,
+      "normalizedRecords": 560
     }
   ],
   "historicalDatasetHashes": {
@@ -1404,9 +1658,7 @@
     "2026-10-18": "fcecd327602ca8e27cc221202214bd07b16737bfdd6f57366a2e635fb5db9477",
     "2026-10-25": "95b06a6c9528494b2e8e7ec5fa9ab1a49bb880ece80c059af6b3f6dd392f8ead"
   },
-  "missingProvinces": [
-    "MUCHINGA PROVINCE"
-  ],
+  "missingProvinces": [],
   "sourceWorkbooksUnchanged": true,
   "sourceRevisions": [
     {
@@ -1435,18 +1687,30 @@
         "sha256": "5ebfc0c5708cbb6e8cfebb9a841e492170e721e8ff6b0d392cf73ef18097be63",
         "bytes": 1629344
       }
+    },
+    {
+      "province": "MUCHINGA PROVINCE",
+      "change": "added",
+      "previousWorkbook": null,
+      "currentWorkbook": {
+        "province": "MUCHINGA PROVINCE",
+        "filename": "MUCHINGA 25. 30_10_2026.xlsx",
+        "sha256": "1df0ea19494b1cad262ea0399640bd0d9a03cd222b01d5687c46f6bcb19ce4ef",
+        "bytes": 1804321
+      }
     }
   ],
   "importMode": "province-replacement",
   "sourceFilesReadThisRevision": [
-    "01.11.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
-    "01-11-2026 NORTHWESTERN TRACER WEEKLY REPORT PROVINCES.xlsx"
+    "MUCHINGA 25. 30_10_2026.xlsx"
   ],
   "unchangedSourceProvincesVerified": [
     "CENTRAL PROVINCE",
+    "COPPERBELT PROVINCE",
     "EASTERN PROVINCE",
     "LUAPULA PROVINCE",
     "LUSAKA PROVINCE",
+    "NORTH-WESTERN PROVINCE",
     "NORTHERN PROVINCE",
     "SOUTHERN PROVINCE",
     "WESTERN PROVINCE"
