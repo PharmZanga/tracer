@@ -4317,6 +4317,56 @@ button.stat:hover {
   gap: 16px;
 }
 
+.reporting-kpi-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.reporting-dho-summary {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid #dce7df;
+  padding-top: 16px;
+}
+
+.reporting-dho-summary h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.reporting-dho-summary p {
+  margin: 6px 0 0;
+  color: #607168;
+  font-size: 13px;
+}
+
+.reporting-dho-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 0;
+}
+
+.reporting-kpi-grid > *,
+.reporting-dho-grid > * {
+  min-width: 0;
+}
+
+.reporting-chart .quality-bar-row {
+  grid-template-columns: minmax(110px, 1fr) minmax(0, 2fr) 58px;
+}
+
+.reporting-chart .quality-bar-row > span {
+  overflow-wrap: anywhere;
+}
+
+.reporting-chart .quality-bar-row b {
+  display: grid;
+  gap: 3px;
+  justify-items: end;
+}
+
+.reporting-chart .quality-bar-row small {
+  font-weight: 400;
+}
+
 .reporting-facilities .table-scroll {
   max-height: 470px;
 }

@@ -2286,6 +2286,9 @@ function App() {
         district: facility.district,
         facilityName: facility.name,
         facilityType: facility.facilityLevel,
+        expected: 1,
+        reported: facility.reported ? 1 : 0,
+        missing: facility.reported ? 0 : 1,
         status: facility.reported ? "Reported" : "Not Reported",
         rate: facility.reported ? 1 : 0,
         lastReportingPeriod: facility.reported ? reportData.label : previous?.label || "No previous report available",
@@ -2317,14 +2320,6 @@ function App() {
     return acc;
   }, { expected: 0, reported: 0, notReported: 0, partial: 0, hospitalOnly: 0 });
   reportingKpis.rate = reportingKpis.expected ? reportingKpis.reported / reportingKpis.expected : 0;
-  const reportingProvinceRows = aggregateQualityRows(reportingRows, "province", "name")
-    .sort((a, b) => a.name.localeCompare(b.name));
-  const reportingDistrictRows = aggregateQualityRows(
-    reportingRows.filter((row) => (reportDrillProvince || reportProvince) === "all" || row.province === (reportDrillProvince || reportProvince)),
-    "district",
-    "name",
-  ).sort((a, b) => a.name.localeCompare(b.name));
-  const reportingChartRows = reportDrillProvince ? reportingDistrictRows : reportingProvinceRows;
   const reportingFacilityScopeRows = reportSubmittedFacilityRows
     .filter((row) => reportProvince === "all" || row.province === reportProvince)
     .filter((row) => reportDistrict === "all" || row.district === reportDistrict)
@@ -2340,6 +2335,18 @@ function App() {
     else summary.missing += 1;
     return summary;
   }, { expected: 0, received: 0, missing: 0 });
+  reportingFacilityKpis.rate = reportingFacilityKpis.expected ? reportingFacilityKpis.received / reportingFacilityKpis.expected : null;
+  // Status filters narrow follow-up lists, never the completeness denominator.
+  const reportingProvinceRows = aggregateQualityRows(reportingFacilityScopeRows, "province", "name")
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const reportingUnitDistrictRows = aggregateQualityRows(reportingFacilityScopeRows
+    .map(row => ({...row, districtKey: JSON.stringify([row.province, row.district])})), "districtKey", "key")
+    .map(({key, ...row}) => { const [province, name] = JSON.parse(key); return {...row, province, name}; })
+    .sort((a, b) => a.province.localeCompare(b.province) || a.name.localeCompare(b.name));
+  const reportingChartRows = reportDrillProvince ? reportingUnitDistrictRows : reportingProvinceRows;
+  const isDhoReportingDetail = reportKpiFilter.startsWith("district-");
+  const reportingUnitDetailRows = reportingUnitDistrictRows.filter(row => effectiveFacilityReportStatus === "all"
+    || (effectiveFacilityReportStatus === "Reported" ? row.reported > 0 : row.missing > 0));
 
   // Retain every expected district in the filter even when it did not submit
   // during the selected week. This makes a reporting gap visible instead of
@@ -3913,7 +3920,7 @@ function App() {
     if (activePage === 'stock') return { text: 'You are viewing ZAMMSA central inventory, not facility tracer stock. ' + (['control', 'navigator'].includes(stockWorkspace) ? centralStock.summary.belowTwoMos + ' listed items have reported MOS below two, and ' + centralStock.summary.confirmedStockouts + ' have both zero SOH and zero MOS.' : (stockData?.label || 'Selected weekly report') + ' has ' + formatPercent(stockData?.overallAvailability) + ' reported availability.') + ' Central and facility sources are not pooled. Check the inventory report date before comparing stock positions.', evidence: centralStock.source || stockData?.source || 'Selected ZAMMSA central inventory report', actions: [] };
     if (activePage === 'facilities') return { text: filteredFacilityAlerts.length + ' of ' + assessedFacilities.length + ' assessed reporting units match the visible alert filters. Stock-out counts use explicitly reported zero quantities; low-stock counts use positive SOH / AMC below two months. A unit can have both shortages and overstocked items. Non-reporting is separate, and aggregate Health Centre/Health Post rows are reporting groups, not named individual facilities.', evidence: assistantEvidence([fieldData], { ...assistantScope, ...emptyAssistantFocus }), actions: [] };
     if (activePage === 'commodities') return { text: selectedCommodity ? selectedCommodity + ': ' + commodityFilteredSummaryRows.length + ' matching facility records, ' + commodityAvailableCount + ' with positive stock. The displayed stock bands use submitted MOS; the assistant stock summary and Facility Alerts use calculated SOH / AMC. Differences require source validation, not assumed consumption or deliveries.' : commodityMatches.length + ' commodities match the current search and programme filters. Select a commodity to inspect its submitted facility stock position. Missing rows are not evidence of zero stock.', evidence: assistantEvidence([fieldData], assistantScope), actions: [] };
-    if (activePage === 'reporting') return { text: reportingKpis.reported + ' of ' + reportingKpis.expected + ' scoped districts have complete primary-care submissions (' + formatPercent(reportingKpis.rate) + '). Health Centre and Health Post SOH streams are both required unless valid combined evidence exists. Hospital-only submissions do not make a district complete. The facility list is a separate reporting-unit measure.', evidence: reportData.label + ' | ' + reportProvince + ' | ' + reportDistrict + ' | Source: ' + reportData.source, actions: [] };
+    if (activePage === 'reporting') return { text: reportingFacilityKpis.received + ' of ' + reportingFacilityKpis.expected + ' expected reporting units submitted (' + formatPercent(reportingFacilityKpis.rate) + ' completeness), with ' + reportingFacilityKpis.missing + ' missing in the selected geography and care level. This includes HC/HP district aggregates, hospitals and specialist services. Separately, ' + reportingKpis.reported + ' of ' + reportingKpis.expected + ' DHO districts submitted both HC and HP streams; that primary-care measure excludes hospitals.', evidence: reportData.label + ' | ' + reportProvince + ' | ' + reportDistrict + ' | Source: ' + reportData.source, actions: [] };
     if (['executive', 'national', 'provincial'].includes(activePage)) return { text: 'The displayed scope has ' + formatPercent(fieldKpis.availability) + ' reported availability across ' + fieldKpis.rows.toLocaleString() + ' commodity observations. Average submitted MOS is ' + formatMos(fieldAverageMos) + ' with a 12-month cap. Availability and average MOS describe different aspects of the stock position: an adequate average can coexist with shortages of particular items. Missing reports are not stock-outs; no delivery or consumption cause is assumed.', evidence: assistantEvidence([fieldData], { ...assistantScope, ...emptyAssistantFocus }), actions: [] };
     return null;
   }
@@ -5452,7 +5459,7 @@ function App() {
             <div>
               <p className="eyebrow dark">Reporting Rate</p>
               <h2>{effectiveFacilityReportStatus === "Not Reported" ? `Facilities that did not report — ${reportData.label}` : "District and facility reporting performance"}</h2>
-              <p>A district counts as reported only when its DHO submission includes both Health Centre and Health Post reporting. Combined primary-care source sheets count for both; Level 1, 2, or 3 hospital submissions never make the district count as reported.</p>
+              <p>Reporting-unit completeness includes district HC/HP aggregates, hospitals and specialist services. Each expected reporting unit counts once; missing reports remain in the denominator.</p>
               {reportFacilityName !== "all" ? <p className="active-reporting-context">Reporting unit: <b>{reportFacilityName}</b> <button type="button" onClick={() => setReportFacilityName("all")}>Clear</button></p> : null}
               <p>Facility counts use registered reporting units. Grouped Health Centre and Health Post submissions do not identify individual clinics.</p>
             </div>
@@ -5487,9 +5494,9 @@ function App() {
               <span>Facility Type</span>
               <select value={reportFacilityType} onChange={(event) => {
                 setReportFacilityType(event.target.value);
-                setReportDrillDistrict("");
+                setReportFacilityName("all");
               }}>
-                <option value="all">All submitted facility levels</option>
+                <option value="all">All levels</option>
                 {reportFacilityType !== 'all' && !reportFacilityTypeOptions.includes(reportFacilityType) && <option value={reportFacilityType}>{facilityCareLevelLabel(reportFacilityType)}</option>}
                 {reportFacilityTypeOptions.map((type) => <option value={type} key={type}>{type}</option>)}
               </select>
@@ -5504,22 +5511,26 @@ function App() {
             </label>
           </div>
           <div className="stats-grid reporting-kpi-grid">
-            <KpiCard icon={MapPinned} label="Expected districts" value={reportingKpis.expected.toLocaleString()} sub="Click to show all expected districts" onClick={() => applyReportingKpiFilter("district-all", "all", "reporting-district-results")} active={reportKpiFilter === "district-all"} title="Show all expected districts" />
-            <KpiCard icon={CircleCheck} label="DHO districts submitted" value={reportingKpis.reported.toLocaleString()} sub="Click to show districts with both Health Centre and Health Post received" onClick={() => applyReportingKpiFilter("district-reported", "Reported", "reporting-district-results")} active={reportKpiFilter === "district-reported"} title="Filter to submitted DHO districts" />
-            <KpiCard icon={CircleAlert} label="Districts not complete" value={reportingKpis.notReported.toLocaleString()} sub={`${reportingKpis.partial} partial · ${reportingKpis.hospitalOnly} hospital-only · click to filter`} tone="red" onClick={() => applyReportingKpiFilter("district-missing", "Not Reported", "reporting-district-results")} active={reportKpiFilter === "district-missing"} title="Filter to incomplete or non-reporting districts" />
-            <KpiCard icon={Activity} label="District reporting rate" value={formatPercent(reportingKpis.rate)} sub="Click to show all districts behind this rate" tone={reportingTone(reportingKpis.rate)} onClick={() => applyReportingKpiFilter("district-rate", "all", "reporting-district-results")} active={reportKpiFilter === "district-rate"} title="Show the districts behind the reporting rate" />
-            <KpiCard icon={Users} label="Facilities expected" value={reportingFacilityKpis.expected.toLocaleString()} sub="Click to show all expected reporting units" onClick={() => applyReportingKpiFilter("facility-all", "all", "reporting-facility-results")} active={reportKpiFilter === "facility-all"} title="Show all expected facilities" />
+            <KpiCard icon={Activity} label="Reporting-unit completeness" value={formatPercent(reportingFacilityKpis.rate)} sub={`${reportingFacilityKpis.received} of ${reportingFacilityKpis.expected} expected reporting units received`} tone={reportingTone(reportingFacilityKpis.rate)} onClick={() => applyReportingKpiFilter("facility-rate", "all", "reporting-district-results")} active={reportKpiFilter === "facility-rate"} title="Show reporting-unit completeness by district" />
+            <KpiCard icon={Users} label="Expected reporting units" value={reportingFacilityKpis.expected.toLocaleString()} sub="Registered units in the selected geography and care level" onClick={() => applyReportingKpiFilter("facility-all", "all", "reporting-facility-results")} active={reportKpiFilter === "facility-all"} title="Show all expected reporting units" />
             <KpiCard icon={FileCheck} label="Reports received" value={reportingFacilityKpis.received.toLocaleString()} sub="Click to show valid tracer submissions received" onClick={() => applyReportingKpiFilter("facility-reported", "Reported", "reporting-facility-results")} active={reportKpiFilter === "facility-reported"} title="Filter to facilities that reported" />
             <KpiCard icon={FileX} label="Reports missing" value={reportingFacilityKpis.missing.toLocaleString()} sub="Click to show expected units without a valid submission" tone={reportingFacilityKpis.missing ? "red" : undefined} onClick={() => applyReportingKpiFilter("facility-missing", "Not Reported", "reporting-facility-results")} active={reportKpiFilter === "facility-missing"} title="Filter to facilities that did not report" />
           </div>
-          {reportKpiFilter !== "all" && reportKpiFilter !== "dropdown" ? <div className="reporting-active-filter"><span>Active KPI filter: <b>{reportKpiFilter === "district-reported" ? "DHO districts submitted" : reportKpiFilter === "district-missing" ? "Districts not complete" : reportKpiFilter === "district-rate" || reportKpiFilter === "district-all" ? "All expected districts" : reportKpiFilter === "facility-reported" ? "Reports received" : reportKpiFilter === "facility-missing" ? "Reports missing" : "All expected facilities"}</b></span><button type="button" onClick={() => { setReportKpiFilter("all"); setReportStatus("all"); }}>Clear KPI filter</button></div> : null}
+          <section className="reporting-dho-summary" aria-label="DHO primary-care reporting">
+            <div><h3>DHO primary-care submissions (HC + HP)</h3><p>{reportingKpis.reported} of {reportingKpis.expected} districts complete. This separate primary-care measure excludes hospitals and is independent of the facility-type filter.</p></div>
+            <div className="stats-grid reporting-dho-grid">
+              <KpiCard icon={MapPinned} label="Expected DHO districts" value={reportingKpis.expected.toLocaleString()} sub="Districts in the selected geography" onClick={() => applyReportingKpiFilter("district-all", "all", "reporting-district-results")} active={reportKpiFilter === "district-all"} title="Show expected DHO districts" />
+              <KpiCard icon={CircleCheck} label="HC/HP districts complete" value={reportingKpis.reported.toLocaleString()} sub="Both primary-care streams received, or valid combined evidence" onClick={() => applyReportingKpiFilter("district-reported", "Reported", "reporting-district-results")} active={reportKpiFilter === "district-reported"} title="Show submitted DHO districts" />
+              <KpiCard icon={CircleAlert} label="HC/HP districts incomplete" value={reportingKpis.notReported.toLocaleString()} sub={`${reportingKpis.partial} partial · ${reportingKpis.hospitalOnly} hospital-only`} tone={reportingKpis.notReported ? "red" : "green"} onClick={() => applyReportingKpiFilter("district-missing", "Not Reported", "reporting-district-results")} active={reportKpiFilter === "district-missing"} title="Show incomplete DHO districts" />
+            </div>
+          </section>
+          {reportKpiFilter !== "all" && reportKpiFilter !== "dropdown" ? <div className="reporting-active-filter"><span>Active KPI filter: <b>{reportKpiFilter === "district-reported" ? "Complete HC/HP districts" : reportKpiFilter === "district-missing" ? "Incomplete HC/HP districts" : reportKpiFilter === "district-rate" || reportKpiFilter === "district-all" ? "All DHO districts" : reportKpiFilter === "facility-reported" ? "Reports received" : reportKpiFilter === "facility-missing" ? "Reports missing" : "All expected reporting units"}</b></span><button type="button" onClick={() => { setReportKpiFilter("all"); setReportStatus("all"); }}>Clear KPI filter</button></div> : null}
           <div className="reporting-drill-path">
             <button type="button" onClick={() => {
-              setReportDrillProvince("");
-              setReportDrillDistrict("");
+              changeReportProvince("all");
             }}>Zambia</button>
             <span>/</span>
-            <button type="button" disabled={!reportDrillProvince} onClick={() => setReportDrillDistrict("")}>
+            <button type="button" disabled={!reportDrillProvince} onClick={() => changeReportDistrict("all")}>
               {reportDrillProvince || "Select province"}
             </button>
             <span>/</span>
@@ -5529,20 +5540,22 @@ function App() {
             <div className="quality-panel reporting-chart">
               <div className="quality-panel-head">
                 <div>
-                  <h3>{reportDrillProvince ? `District reporting rate in ${reportDrillProvince}` : "Reporting rate by province"}</h3>
-                  <p>{reportDrillProvince ? "Click a district to show submitted facilities." : "Click a province to drill down to district reporting rate."}</p>
+                  <h3>{reportDrillProvince ? `Reporting-unit completeness in ${reportDrillProvince}` : "Reporting-unit completeness by province"}</h3>
+                  <p>Received / expected reporting units, including missing hospitals and specialist services.</p>
                 </div>
                 <span>{reportingChartRows.length} rows</span>
               </div>
               <div className="quality-bars">
                 {reportingChartRows.map((row) => {
-                  const rate = row.rate || qualityRate(row);
+                  const rate = row.rate ?? qualityRate(row);
                   const tone = reportingTone(rate);
                   return (
                     <button
                       type="button"
                       className={`quality-bar-row reporting-tone-${tone}`}
                       key={row.name}
+                      aria-label={`${row.name}: ${formatPercent(rate)}, ${row.reported} of ${row.expected} reporting units received`}
+                      title={`${row.reported} received; ${row.missing} missing; ${row.expected} expected`}
                       onClick={() => {
                         if (reportDrillProvince) {
                           setReportDrillDistrict(row.name);
@@ -5557,10 +5570,11 @@ function App() {
                     >
                       <span>{row.name}</span>
                       <div className="quality-bar-track"><i style={{ width: `${Math.round(normalizeRate(rate) * 100)}%` }} /></div>
-                      <b>{formatPercent(rate)}</b>
+                      <b>{formatPercent(rate)}<small>{row.reported}/{row.expected}</small></b>
                     </button>
                   );
                 })}
+                {!reportingChartRows.length && <div className="empty-state">No expected reporting units match the selected geography and care level.</div>}
               </div>
             </div>
             <div className="quality-panel reporting-facilities" id="reporting-facility-results">
@@ -5600,8 +5614,8 @@ function App() {
           <div className="table-panel reporting-table" id="reporting-district-results">
             <div className="table-headline">
               <div>
-                <h2>Reporting rate detail</h2>
-                <p>District reporting summary for the selected reporting filters.</p>
+                <h2>{isDhoReportingDetail ? "DHO primary-care detail (HC + HP)" : "Reporting-unit completeness by district"}</h2>
+                <p>{isDhoReportingDetail ? "Primary-care submissions only; hospitals and specialist services are excluded from this DHO assessment." : "Received and missing units share the same fixed, scoped denominator as the chart. HC/HP aggregates, hospitals and specialist services are included."}</p>
               </div>
             </div>
             <div className="table-scroll">
@@ -5610,17 +5624,15 @@ function App() {
                   <tr>
                     <th>Province</th>
                     <th>District</th>
-                    <th>Expected</th>
-                    <th>Reported</th>
-                    <th>Not Reported</th>
-                    <th>Health Centre</th>
-                    <th>Health Post</th>
-                    <th>DHO assessment</th>
-                    <th>Reporting Rate %</th>
+                    <th>{isDhoReportingDetail ? "Expected districts" : "Expected units"}</th>
+                    <th>{isDhoReportingDetail ? "Complete" : "Received"}</th>
+                    <th>{isDhoReportingDetail ? "Incomplete" : "Missing"}</th>
+                    {isDhoReportingDetail && <><th>Health Centre</th><th>Health Post</th><th>DHO assessment</th></>}
+                    <th>{isDhoReportingDetail ? "HC/HP completeness" : "Reporting-unit completeness"}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {reportingRows.map((row) => (
+                  {isDhoReportingDetail ? reportingRows.map((row) => (
                     <tr key={`${row.province}-${row.district}`}>
                       <td>{row.province}</td>
                       <td>{row.district}</td>
@@ -5632,7 +5644,12 @@ function App() {
                       <td><span className={`comparison-signal ${row.reported ? "green" : "red"}`}>{row.detailStatus}</span></td>
                       <td><span className={`comparison-signal ${reportingTone(row.rate)}`}>{formatPercent(row.rate)}</span></td>
                     </tr>
-                  ))}
+                  )) : reportingUnitDetailRows.map(row => <tr key={JSON.stringify([row.province, row.name])}>
+                    <td>{row.province}</td><td>{row.name}</td><td>{row.expected.toLocaleString()}</td>
+                    <td>{row.reported.toLocaleString()}</td><td>{row.missing.toLocaleString()}</td>
+                    <td><span className={`comparison-signal ${reportingTone(row.rate)}`}>{formatPercent(row.rate)}</span></td>
+                  </tr>)}
+                  {!(isDhoReportingDetail ? reportingRows : reportingUnitDetailRows).length && <tr><td colSpan={isDhoReportingDetail ? 9 : 6}>No reporting units match the selected filters.</td></tr>}
                 </tbody>
               </table>
             </div>
