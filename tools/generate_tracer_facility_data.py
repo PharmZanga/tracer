@@ -1,4 +1,5 @@
 import gc
+import hashlib
 import json
 import math
 import re
@@ -6,6 +7,16 @@ from collections import defaultdict
 from pathlib import Path
 
 import openpyxl
+
+CONFIRMED_SOURCE_BLOCK_IDENTITIES = [{
+    "reportDate": "2026-11-01",
+    "province": "COPPERBELT PROVINCE",
+    "workbook": "01.11.26 COPPERBELT PROVINCE  TRACER WEEKLY REPORT PROVINCES.xlsx",
+    "workbookSha256": "d1b0f185b41bfe406952f33bda0053e27380de9e9b72155f8ee8b0ef3b808678",
+    "sheet": "L-1", "quantityColumn": 49, "districtColumn": 49, "facilityColumn": 50,
+    "district": "MUFULIRA", "facility": "KAMUCHANGA DISTRICT HOSPITAL",
+    "basis": "User confirmed the unnamed Level 1 block immediately after St Theresa is Kamuchanga; district verified against the fixed reporting register.",
+}]
 
 
 JULY_WEEK4_CLEAN_WORKBOOK = Path(r"C:\Users\Zanga Musakuzi\Desktop\NSCCU DATA ANALYSIS\PROVINCIAL  tracer SUBMISSION\tracer summery report clean data\july\28.07.26 summary reports.xlsx")
@@ -1033,9 +1044,22 @@ def raw_sheet_description_header(ws):
                         for token in ("DESCRIPTION", "PRODUCT"))), None)
 
 
-def raw_sheet_block_identity(ws, district_col, facility_col):
+def confirmed_source_block_corrections(source, report_date):
+    matches = [row for row in CONFIRMED_SOURCE_BLOCK_IDENTITIES
+               if row["reportDate"] == report_date and row["workbook"] == source["path"].name]
+    if not matches:
+        return {}
+    source_hash = hashlib.sha256(source["path"].read_bytes()).hexdigest()
+    for row in matches:
+        if normalize_province(source["province"]) != row["province"] or source_hash != row["workbookSha256"]:
+            raise ValueError("Confirmed block identity requires the exact reviewed workbook and province")
+    return {(row["sheet"], row["districtColumn"], row["facilityColumn"]): row for row in matches}
+
+
+def raw_sheet_block_identity(ws, district_col, facility_col, corrections=None):
     """Read labelled hospital blocks even when spacer rows move the headers."""
     header = raw_sheet_description_header(ws) or 3
+    identity = clean(ws.cell(2, district_col).value), clean(ws.cell(2, facility_col).value)
     for row in range(header - 1, 0, -1):
         district = clean(ws.cell(row, district_col).value)
         facility = clean(ws.cell(row, facility_col).value)
@@ -1043,8 +1067,14 @@ def raw_sheet_block_identity(ws, district_col, facility_col):
                 and "NAME OF" not in " ".join(district.upper().split())
                 and "NAME OF" not in " ".join(facility.upper().split())
                 and not district.startswith("=") and not facility.startswith("=")):
-            return district, facility
-    return clean(ws.cell(2, district_col).value), clean(ws.cell(2, facility_col).value)
+            identity = district, facility
+            break
+    correction = (corrections or {}).get((ws.title.strip(), district_col, facility_col))
+    if correction:
+        if any(value is not None for value in identity):
+            raise ValueError("A confirmed unnamed-block correction cannot overwrite entered identities")
+        return correction["district"], correction["facility"]
+    return identity
 
 
 def raw_sheet_facility_blocks(ws):
@@ -1171,6 +1201,7 @@ def load_raw_availability_overrides():
 
 def iter_raw_matrix_rows(source, report_date):
     workbook_path = source["path"]
+    corrections = confirmed_source_block_corrections(source, report_date)
     province = normalize_province(source["province"])
     wb = openpyxl.load_workbook(workbook_path, read_only=False, data_only=True)
     skip = {"SITUATION BOARD", "SUMMARY", "COMMENTS", "COMMENT", "RECOMMENDATIONS", "RECOMEDATIONS"}
@@ -1271,7 +1302,7 @@ def iter_raw_matrix_rows(source, report_date):
             if is_primary_care_summary:
                 district, facility = district_col, "ALL"
             else:
-                district, facility = raw_sheet_block_identity(ws, district_col, facility_col)
+                district, facility = raw_sheet_block_identity(ws, district_col, facility_col, corrections)
             verified = VERIFIED_FACILITY_IDENTITIES.get(facility_match_key(facility))
             if not district and verified:
                 district = verified[1]
@@ -1331,6 +1362,7 @@ def iter_raw_matrix_rows(source, report_date):
                     "_RAW_SOURCE_WORKBOOK": str(workbook_path),
                     "_RAW_SOURCE_SHEET": sheet_name,
                     "_RAW_SOH_COLUMN": start_col,
+                    "_RAW_IDENTITY_CORRECTION": corrections.get((sheet_name, district_col, facility_col)),
                 }
     wb.close()
     del wb

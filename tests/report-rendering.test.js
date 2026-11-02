@@ -57,9 +57,9 @@ test('monthly and partial-quarter reports use selected observations rather than 
   for (const type of ['monthly', 'quarterly']) {
     const {summary} = summaryFor(type);
     assert.equal(summary.selectedPeriods.length, 4);
-    assert.equal(summary.period.national.rows, 98685);
+    assert.equal(summary.period.national.rows, 98735);
     const html = render(type);
-    assert.match(html, /98,685 submitted commodity observations/);
+    assert.match(html, /98,735 submitted commodity observations/);
     assert.match(html, /4 reporting weeks/);
     assert.match(html, type === 'monthly' ? /MONTHLY|Monthly/ : /QUARTERLY|Quarterly/);
     if (type === 'quarterly') assert.match(html, /Partial quarter/);

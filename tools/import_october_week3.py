@@ -88,6 +88,7 @@ def verify_source_samples(generator, normalized, period, *, directory=DIRECTORY,
         available = [row for row in normalized if row["PROVINCE"] == province and tuple(row.get(key) for key in ("PROVINCE", "DISTRICT", "FACILITY LEVEL", "FACILITY NAME", "DESCRIPTION OF ITEM")) in published]
         chosen = []
         for predicate in (
+            lambda row: bool(row.get("_RAW_IDENTITY_CORRECTION")),
             lambda row: "ringer" in row["DESCRIPTION OF ITEM"].lower(),
             lambda row: "sodium chloride" in row["DESCRIPTION OF ITEM"].lower() or "saline" in row["DESCRIPTION OF ITEM"].lower(),
             lambda row: (row.get("QUANTITY") or 0) > 0,
@@ -165,7 +166,7 @@ def main(*, directory=DIRECTORY, files=FILES, report_date=REPORT_DATE, source=SO
     generator.RAW_FACILITY_IDENTITIES.update(generator.load_raw_facility_identities())
     sources = [{"province": province, "path": directory / filename, "primaryCareSummaryLayout": True} for province, filename in files.items()]
     print("Auditing provincial facility headers", flush=True)
-    findings, invalid_blocks = audit_province_facility_blocks(generator, sources)
+    findings, invalid_blocks = audit_province_facility_blocks(generator, sources, report_date)
     print(f"Reading and normalizing {week} stock matrices", flush=True)
     normalized = list(normalize_week2_rows(generator, sources, report_date, invalid_blocks))
     normalization = normalize_week2_rows.last_stats
@@ -180,6 +181,9 @@ def main(*, directory=DIRECTORY, files=FILES, report_date=REPORT_DATE, source=SO
     if len(period["dataQuality"]["districts"]) != 116:
         raise ValueError("The district roster must contain exactly 116 districts")
     period["sourceWorkbooks"] = manifests
+    identity_corrections = list({json.dumps(row["_RAW_IDENTITY_CORRECTION"], sort_keys=True): row["_RAW_IDENTITY_CORRECTION"]
+        for row in normalized if row.get("_RAW_IDENTITY_CORRECTION")}.values())
+    period["dataQuality"]["sourceBlockIdentityCorrections"] = identity_corrections
     missing_provinces = sorted(set(generator.VALID_DISTRICTS_BY_PROVINCE) - set(files))
     period["dataQuality"]["provincialSubmissionCoverage"] = {"expected": 10, "submitted": len(files), "missingProvinces": missing_provinces, "carriedForward": False}
     period["dataQuality"]["districtNameNormalization"] = "DISTRICT and DHO suffixes are removed only before matching the submitting province's official district roster."
@@ -199,6 +203,7 @@ def main(*, directory=DIRECTORY, files=FILES, report_date=REPORT_DATE, source=SO
         if digest(directory / manifest["filename"]) != manifest["sha256"]:
             raise ValueError("A source workbook changed during import")
     audit = {"reportDate": report_date, "source": source, "sourceWorkbooks": manifests, "counts": period["counts"], "national": period["national"], "provinces": period["provinces"], "normalization": normalization, "invalidSOHRecords": invalid_soh, "allZeroSOHBlocksExcluded": zero_blocks, "facilityProvinceValidation": period["dataQuality"]["facilityProvinceValidation"], "sourceCellSamples": samples, "primaryCareSourceCoverage": coverage, "historicalDatasetHashes": historical_hashes, "preservedOctoberPeriods": [p["id"] for p in prior_october], "preservedOctoberPeriodHashes": prior_period_hashes, "missingProvinces": missing_provinces, "sourceWorkbooksUnchanged": True}
+    audit["sourceBlockIdentityCorrections"] = identity_corrections
     october["tracerReportingPeriods"] = sorted(prior_october + [period], key=lambda p: p["reportDate"])
     OUTPUT.write_text(json.dumps(october, separators=(",", ":")), encoding="utf-8")
     BOOTSTRAP.write_text("// Compact latest-period fallback. Full history is fetched from public/data at runtime.\nexport const tracerBootstrapPeriod = " + json.dumps(compact_bootstrap(period), separators=(",", ":")) + ";\n", encoding="utf-8")

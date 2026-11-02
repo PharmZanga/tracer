@@ -34,7 +34,7 @@ test('province completeness totals reconcile against the fixed national register
   const national = facilityReportingSummary(period);
   const provinces = [...new Set(national.rows.map(row => row.province))];
   const summaries = provinces.map(province => facilityReportingSummary(period, {province}));
-  assert.deepEqual([national.reported, national.expected, national.missing], [392, 403, 11]);
+  assert.deepEqual([national.reported, national.expected, national.missing], [393, 403, 10]);
   for (const key of ['reported', 'expected', 'missing']) assert.equal(summaries.reduce((sum, row) => sum + row[key], 0), national[key]);
 });
 

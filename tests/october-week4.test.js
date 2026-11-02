@@ -30,11 +30,11 @@ test('1 November is selectable as October Week 4 with all ten source submissions
 });
 
 test('Week 4 retains SOH-based availability and recalculates MOS without switching to the mirror indicator', () => {
-  assert.equal(rows.length, 24747);
+  assert.equal(rows.length, 24797);
   assert.equal(rows.length, period.counts.rows);
   assert.equal(period.national.rows, rows.length);
   assert.ok(Math.abs(rows.filter(row => row.quantity > 0).length / rows.length - period.national.availability) < .000051);
-  assert.equal(period.national.availability, .8672);
+  assert.equal(period.national.availability, .8673);
   for (const row of rows) {
     assert.ok(row.quantity === null || (Number.isInteger(row.quantity) && row.quantity >= 0));
     assert.equal(row.mos, row.quantity !== null && row.amc > 0 ? row.quantity / row.amc : null);
@@ -47,14 +47,14 @@ test('fixed reporting denominators remain stable after Muchinga submits and resp
   assert.match(app, /const provinceOptions = \[\.\.\.new Set\(\[\s*\.\.\.fieldData.provinces.map\([\s\S]*?\.\.\.districtDirectory.map\(\(district\) => district.province\)/);
   const f = facilityReportingSummary(period);
   const d = primaryCareDistrictSummary(period);
-  assert.deepEqual([f.reported, f.expected, f.missing], [392, 403, 11]);
+  assert.deepEqual([f.reported, f.expected, f.missing], [393, 403, 10]);
   assert.deepEqual([d.reported, d.expected, d.missing], [115, 116, 1]);
   const muchinga = facilityReportingSummary(period, {province: 'MUCHINGA PROVINCE'});
   assert.deepEqual([muchinga.reported, muchinga.expected, muchinga.missing], [24, 24, 0]);
   const muchingaDhos = primaryCareDistrictSummary(period, {province: 'MUCHINGA PROVINCE'});
   assert.deepEqual([muchingaDhos.reported, muchingaDhos.expected, muchingaDhos.missing], [8, 8, 0]);
   const copperbelt = facilityReportingSummary(period, {province: 'COPPERBELT PROVINCE'});
-  assert.deepEqual([copperbelt.reported, copperbelt.expected, copperbelt.missing], [47, 48, 1]);
+  assert.deepEqual([copperbelt.reported, copperbelt.expected, copperbelt.missing], [48, 48, 0]);
   assert.equal(primaryCareDistrictSummary(period, {province: 'COPPERBELT PROVINCE'}).reported, 10);
   const western = primaryCareDistrictSummary(period, {province: 'WESTERN PROVINCE'});
   assert.deepEqual([western.reported, western.expected], [16, 16]);
@@ -62,7 +62,7 @@ test('fixed reporting denominators remain stable after Muchinga submits and resp
 });
 
 test('all ten provinces have matching source-cell evidence and primary-care worksheet coverage', () => {
-  assert.equal(audit.sourceCellSamples.length, 58);
+  assert.equal(audit.sourceCellSamples.length, 59);
   assert.equal(new Set(audit.sourceCellSamples.map(s => s.province)).size, 10);
   for (const sample of audit.sourceCellSamples) {
     assert.ok(sample.matched);
@@ -97,11 +97,28 @@ test('Muchinga is added once while all other nine provinces retain their stock e
   assert.equal(manifest.length, 1);
   assert.equal(manifest[0].filename, 'MUCHINGA 25. 30_10_2026.xlsx');
   assert.ok(period.sourceRevisions.some(r => r.province === 'MUCHINGA PROVINCE' && r.change === 'added' && r.currentWorkbook.sha256 === manifest[0].sha256));
-  assert.equal(audit.unchangedSourceProvincesVerified.length, 9);
-  assert.ok(!audit.unchangedSourceProvincesVerified.includes('MUCHINGA PROVINCE'));
-  assert.deepEqual(audit.sourceFilesReadThisRevision, [manifest[0].filename]);
   assert.equal(rows.filter(row => row.province === 'MUCHINGA PROVINCE').length, 1550);
   assert.equal(audit.sourceCellSamples.filter(sample => sample.province === 'MUCHINGA PROVINCE').length, 8);
+});
+
+test('the user-confirmed unnamed Copperbelt block is Kamuchanga, not a new reporting obligation', () => {
+  const units = facilityReportingSummary(period, {province: 'COPPERBELT PROVINCE', district: 'MUFULIRA'}).rows;
+  const matched = units.filter(unit => unit.name === 'KAMUCHANGA DISTRICT HOSPITAL');
+  assert.equal(matched.length, 1);
+  assert.ok(matched[0].reported && matched[0].hasTracerSubmission);
+  const stock = rows.filter(row => row.province === 'COPPERBELT PROVINCE' && row.district === 'MUFULIRA' && row.facility === matched[0].name);
+  assert.equal(stock.length, 50);
+  assert.ok(stock.some(row => row.quantity === 10 && row.amc === 65 && row.mos === 10 / 65));
+  const [correction] = period.dataQuality.sourceBlockIdentityCorrections;
+  assert.equal(correction.facility, matched[0].name);
+  assert.equal(correction.quantityColumn, 49);
+  assert.equal(correction.sheet, 'L-1');
+  assert.equal(correction.workbookSha256, period.sourceWorkbooks.find(source => source.province === 'COPPERBELT PROVINCE').sha256);
+  assert.match(correction.basis, /User confirmed/);
+  assert.deepEqual(audit.sourceBlockIdentityCorrections, [correction]);
+  assert.equal(audit.unchangedSourceProvincesVerified.length, 9);
+  assert.ok(!audit.unchangedSourceProvincesVerified.includes('COPPERBELT PROVINCE'));
+  assert.deepEqual(audit.sourceFilesReadThisRevision, [correction.workbook]);
 });
 
 test('earlier periods and all source workbooks remain unchanged during import', () => {

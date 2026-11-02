@@ -185,7 +185,7 @@ def normalize_week2_rows(generator, sources, report_date, invalid_source_blocks=
     yield from normalized
 
 
-def audit_province_facility_blocks(generator, sources):
+def audit_province_facility_blocks(generator, sources, report_date=None):
     """Flag specialty-unit template names that conflict with their province."""
     from collections import defaultdict
 
@@ -200,6 +200,7 @@ def audit_province_facility_blocks(generator, sources):
     findings = []
     skip = {"SITUATION BOARD", "SUMMARY", "SUMMARY SHEET", "COMMENTS", "COMMENT", "RECOMMENDATIONS", "RECOMEDATIONS", "PROGRAM"}
     for source in sources:
+        corrections = generator.confirmed_source_block_corrections(source, report_date)
         source_province = generator.normalize_province(source["province"])
         workbook = generator.openpyxl.load_workbook(source["path"], read_only=False, data_only=True)
         for ws in workbook.worksheets:
@@ -209,7 +210,7 @@ def audit_province_facility_blocks(generator, sources):
             if level in {"HEALTH POST", "HEALTH CENTRE", "PRIMARY CARE - NOT SPECIFIED"}:
                 continue
             for quantity_col, district_col, facility_col in generator.raw_sheet_facility_blocks(ws):
-                district_text, facility_text = generator.raw_sheet_block_identity(ws, district_col, facility_col)
+                district_text, facility_text = generator.raw_sheet_block_identity(ws, district_col, facility_col, corrections)
                 if not facility_text or not isinstance(facility_text, str):
                     continue
                 district = generator.normalize_district(district_text) if district_text else None

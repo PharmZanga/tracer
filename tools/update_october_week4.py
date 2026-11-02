@@ -60,7 +60,7 @@ def main(provinces=None):
     generator.RAW_FACILITY_IDENTITIES.update(generator.load_raw_facility_identities())
     sources = [{"province": p, "path": DIRECTORY / name, "primaryCareSummaryLayout": True} for p, name in updates.items()]
     print(f"Auditing and reading {len(updates)} selected provincial workbook(s)", flush=True)
-    findings, invalid = audit_province_facility_blocks(generator, sources)
+    findings, invalid = audit_province_facility_blocks(generator, sources, DATE)
     incoming = list(normalize_week2_rows(generator, sources, DATE, invalid))
     normalization = normalize_week2_rows.last_stats
     incoming, zero_blocks = exclude_all_zero_soh_blocks(incoming)
@@ -83,6 +83,9 @@ def main(provinces=None):
         or generator.facility_belongs_to_reporting_district(f["province"], f["district"], f["name"]))}
     generator.build_reporting_quality(history + [period], expected_districts, expected_facilities)
     quality = period["dataQuality"]
+    identity_corrections = list({json.dumps(row["_RAW_IDENTITY_CORRECTION"], sort_keys=True): row["_RAW_IDENTITY_CORRECTION"]
+        for row in incoming if row.get("_RAW_IDENTITY_CORRECTION")}.values())
+    quality["sourceBlockIdentityCorrections"] = retained(old_quality.get("sourceBlockIdentityCorrections", []), updates) + identity_corrections
     quality["provincialSubmissionCoverage"] = {"expected": 10, "submitted": len(manifests), "missingProvinces": missing, "carriedForward": False}
     quality["districtNameNormalization"] = old_quality["districtNameNormalization"]
     flags = retained(old_quality["facilityProvinceValidation"]["flaggedBlocks"], updates, "submissionProvince") + findings
@@ -113,6 +116,7 @@ def main(provinces=None):
         raise ValueError("Expected 116 district reporting obligations")
 
     audit = {**old_audit, "source": source, "sourceWorkbooks": period["sourceWorkbooks"], "sourceRevisions": revisions,
+        "sourceBlockIdentityCorrections": quality["sourceBlockIdentityCorrections"],
         "counts": period["counts"], "national": period["national"], "provinces": period["provinces"],
         "invalidSOHRecords": invalid_soh, "allZeroSOHBlocksExcluded": quality["facilityBlockReportingReview"]["allZeroSOHBlocks"],
         "facilityProvinceValidation": quality["facilityProvinceValidation"], "sourceCellSamples": retained(old_audit["sourceCellSamples"], updates) + samples,
