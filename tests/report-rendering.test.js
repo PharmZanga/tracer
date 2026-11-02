@@ -13,7 +13,8 @@ const {NationalWeeklyReport, buildNationalReportSummary} = await server.ssrLoadM
 const data = await server.ssrLoadModule('/src/tracerFacilityData.js');
 const {reportCatalogue} = await server.ssrLoadModule('/src/reportCatalogue.js');
 const {reportOptions, selectReportPeriods} = await server.ssrLoadModule('/src/reportPeriods.js');
-const {ReportPerformanceChart, ReportProvincialStockChart} = await server.ssrLoadModule('/src/ReportCharts.jsx');
+const {ReportPerformanceChart, ReportProvincialStockChart, ReportDistrictChart} = await server.ssrLoadModule('/src/ReportCharts.jsx');
+const {ReportGeography} = await server.ssrLoadModule('/src/ReportAnalytics.jsx');
 await data.loadLiveTracerData();
 
 function summaryFor(type, id) {
@@ -44,6 +45,9 @@ test('weekly report renders actual labels, Ministry branding, charts and ordered
   assert.ok(html.indexOf('data-report-section="imbalance"') < html.indexOf('data-report-section="reporting-rate"'));
   assert.match(html, /E\. National Stock Imbalance/);
   assert.match(html, /G\. Reporting Rate/);
+  assert.match(html, /H\. District Drug Availability/);
+  assert.equal((html.match(/class="report-district-province"/g)||[]).length,10);
+  assert.equal((html.match(/data-district="/g)||[]).length,116);
 });
 
 test('care narrative names agree with care table and previous single-week label is not repeated', () => {
@@ -82,4 +86,42 @@ test('provincial stack SVG includes grey MOS gaps without converting the other b
   assert.match(html,/Submitted observations/);
   assert.match(html,/10.0%/);
   assert.doesNotMatch(html,/NaN|Infinity|height="-/);
+});
+
+test('district graphs match the reference with ranked bars, a separate MOS scale and gaps', () => {
+  const rows=[{name:'C',availability:.9,mos:8.2},{name:'A',availability:.7,mos:0},
+    {name:'B',availability:.8,mos:null},{name:'MISSING',availability:null,mos:null}];
+  const before=JSON.stringify(rows);
+  const html=renderToStaticMarkup(React.createElement(ReportDistrictChart,{rows,province:'TEST PROVINCE',periodLabel:'Week 4 - 1 November 2026',reportingNote:'Final-week DHO reporting (HC + HP): 3/4 complete.'}));
+  assert.equal(JSON.stringify(rows),before);
+  assert.ok(html.indexOf('data-district="A"') < html.indexOf('data-district="B"'));
+  assert.ok(html.indexOf('data-district="B"') < html.indexOf('data-district="C"'));
+  assert.ok(html.indexOf('data-district="C"') < html.indexOf('data-district="MISSING"'));
+  assert.equal((html.match(/class="district-availability-bar"/g)||[]).length,3);
+  assert.equal((html.match(/class="district-mos-point"/g)||[]).length,2);
+  assert.equal((html.match(/class="district-mos-line"/g)||[]).length,2,'missing MOS must break the line');
+  assert.match(html,/class="chart-mos-label"[^>]*>0.0</);
+  assert.match(html,/class="district-not-reported"/);
+  assert.match(html,/TEST PROVINCE/);
+  assert.match(html,/District tracer availability and stock coverage \| Week 4/);
+  assert.match(html,/Commodity availability \(%\)/);
+  assert.match(html,/Months of stock \(MOS\)/);
+  assert.match(html,/stroke="#ed6a00"/);
+  assert.doesNotMatch(html,/NaN|Infinity|height="-/);
+});
+
+test('the district section charts and tabulates all 116 districts across all ten provinces', () => {
+  for (const type of ['weekly','monthly']) {
+    const {summary}=summaryFor(type,type==='weekly'?'2026-11-01':'2026-10');
+    const html=renderToStaticMarkup(React.createElement(ReportGeography,{summary,mode:'district-availability'}));
+    assert.equal((html.match(/class="report-district-province"/g)||[]).length,10);
+    assert.equal((html.match(/data-district="/g)||[]).length,116);
+    assert.equal((html.match(/<tbody>/g)||[]).length,10);
+    assert.match(html,/data-district="RUFUNSA"/);
+    assert.match(html,/data-district="KAOMA"/);
+    assert.match(html,/data-district="NAKONDE"/);
+    assert.match(html,/Final-week DHO reporting \(HC \+ HP\): 10\/10 complete/);
+    assert.match(html,/Incomplete: Rufunsa/);
+    assert.doesNotMatch(html,/report-stock-bars|NaN|Infinity/);
+  }
 });

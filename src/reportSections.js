@@ -12,7 +12,7 @@ export const reportSectionDefinitions = [
 ];
 const letterSections = sections => sections.map(([id,title],index)=>[id,`${String.fromCharCode(65+index)}. ${title}`]);
 export const reportSections = letterSections(reportSectionDefinitions);
-export const defaultReportSectionIds = reportSectionDefinitions.slice(0,7).map(([id])=>id);
+export const defaultReportSectionIds = [...reportSectionDefinitions.slice(0,7).map(([id])=>id),'district-availability'];
 export function selectedReportSections(ids) {
   return letterSections(reportSectionDefinitions.filter(([id])=>ids.includes(id)));
 }

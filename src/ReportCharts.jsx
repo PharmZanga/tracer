@@ -7,10 +7,12 @@ const mosColour = '#c55a00';
 const width = 1200;
 const sourceNote = 'Source: selected provincial tracer submissions. Missing values are not zero stock.';
 
-function Chart({title, children, height, note = sourceNote}) {
-  return <figure className="national-report-chart report-reference-chart"><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={title}>
+function Chart({title, children, height, note = sourceNote, subtitle, className = '', ariaLabel = title}) {
+  const notes = Array.isArray(note) ? note : [note];
+  return <figure className={`national-report-chart report-reference-chart ${className}`.trim()}><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={ariaLabel}>
     <title>{title}</title><text className="chart-title" x="72" y="32">{title}</text>{children}
-    <text className="chart-source" x="20" y={height-12}>{note}</text>
+    {subtitle && <text className="chart-subtitle" x="72" y="64">{subtitle}</text>}
+    {notes.map((line, i) => <text className="chart-source" x={subtitle ? 72 : 20} y={height-12-(notes.length-1-i)*21} key={i}>{line}</text>)}
   </svg></figure>;
 }
 
@@ -74,6 +76,61 @@ export function ReportPerformanceChart({rows, subject}) {
       if(!points[i])return null;
       const above=province||points[i].y>top+plot-50;
       return <g key={row.label||row.name}><circle {...{cx:points[i].x,cy:points[i].y}} r="6" fill="white" stroke={mosColour} strokeWidth="2.5"/><rect x={points[i].x-19} y={points[i].y+(above?-31:13)} width="38" height="22" rx="2" fill="#fff"/><text className="chart-mos-label" x={points[i].x} y={points[i].y+(above?-14:29)} textAnchor="middle">{row.mos.toFixed(1)}</text></g>;
+    })}
+  </Chart>;
+}
+
+function chartNoteLines(text) {
+  const lines = [];
+  for (const word of text.split(/\s+/)) {
+    if (!lines.length || `${lines.at(-1)} ${word}`.length > 135) lines.push(word);
+    else lines[lines.length - 1] += ` ${word}`;
+  }
+  return lines;
+}
+
+export function ReportDistrictChart({rows, province, periodLabel, reportingNote}) {
+  const ranked = rankedReportRows(rows);
+  if (!ranked.length) return <p>No expected districts are available for this province.</p>;
+  const left=85, right=1110, top=135, plot=410, base=top+plot;
+  const step=(right-left)/ranked.length, maximum=Math.max(7, reportMosMaximum(ranked)), orange='#ed6a00';
+  const names=ranked.map(row => row.name.toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase()));
+  const labelSpace=Math.max(115, ...names.map(name => name.length*5.6+32));
+  const notes=[...chartNoteLines('Source: selected provincial tracer observations. Districts ordered by availability; the two axes use different units.'),
+    ...chartNoteLines(`${reportingNote} Missing values are not zero stock. N/R = no stock observations.`)];
+  const height=base+labelSpace+notes.length*21+40;
+  const points=ranked.map((row,i) => Number.isFinite(row.mos) ? {x:left+step*(i+.5), y:top+plot*(1-row.mos/maximum)} : null);
+  const segments=[];
+  points.forEach((point,i) => {if(point){if(!i||!points[i-1])segments.push([]);segments.at(-1).push(`${point.x},${point.y}`);}});
+  const periodText=periodLabel.replace(/^(Week \d+) - /,'$1 ending ');
+  return <Chart title={province} subtitle={`District tracer availability and stock coverage | ${periodText}`}
+    ariaLabel={`District drug availability and months of stock in ${province}`} className="report-district-chart" height={height} note={notes}>
+    <g className="chart-legend"><rect x={left} y="94" width="26" height="12" fill="#2e75b6"/><text x={left+38} y="106">Availability (%)</text>
+      <line x1={left+225} x2={left+260} y1="100" y2="100" stroke={orange} strokeWidth="3"/><circle cx={left+242} cy="100" r="5.5" fill="white" stroke={orange} strokeWidth="2"/><text x={left+273} y="106">Months of stock (MOS)</text></g>
+    <PercentAxis {...{left,right,top,plot}}/>
+    <line x1={right} x2={right} y1={top} y2={base} stroke="#555"/>
+    {Array.from({length: maximum+1}, (_,i) => <g key={i}><line x1={right} x2={right+5} y1={base-plot*i/maximum} y2={base-plot*i/maximum} stroke="#555"/><text x={right+12} y={base-plot*i/maximum+5}>{i}</text></g>)}
+    <text className="chart-axis-title" transform={`translate(1170 ${top+plot/2}) rotate(-90)`} textAnchor="middle">Months of stock (MOS)</text>
+    {ranked.map((row,i) => {
+      const x=left+step*(i+.15), barWidth=step*.7, centre=left+step*(i+.5), available=Number.isFinite(row.availability);
+      const y=available ? base-plot*Math.max(0,Math.min(1,row.availability)) : base;
+      const label=available ? formatReportPercent(row.availability) : 'N/R';
+      return <g key={row.name} data-district={row.name}>
+        {available ? <><rect className="district-availability-bar" x={x} y={y} width={barWidth} height={base-y} fill="#2e75b6"><title>{`${names[i]}: ${label} availability`}</title></rect>
+          <text className="chart-bar-label" x={centre} y={row.availability>=.08 ? base-12 : y-10} textAnchor="middle"
+            style={{fill: row.availability>=.08 ? 'white' : '#111', fontSize: Math.min(17,(barWidth-2)/(label.length*.58))}}>{label}</text></> :
+          <text className="district-not-reported" x={centre} y={top+plot/2} textAnchor="middle">N/R</text>}
+        <text className="chart-category" transform={`translate(${centre} ${base+25}) rotate(-38)`} textAnchor="end">{names[i]}</text>
+      </g>;
+    })}
+    {segments.map((segment,i) => <polyline className="district-mos-line" key={i} points={segment.join(' ')} fill="none" stroke={orange} strokeWidth="3"/>)}
+    {ranked.map((row,i) => {
+      const point=points[i];
+      if (!point) return null;
+      const above=point.y>base-55, offset=above ? -33 : 13;
+      return <g key={row.name} data-mos-district={row.name}><circle className="district-mos-point" cx={point.x} cy={point.y} r="5.5" fill="white" stroke={orange} strokeWidth="2.5"><title>{`${names[i]}: ${row.mos.toFixed(1)} MOS`}</title></circle>
+        <rect x={point.x-20} y={point.y+offset} width="40" height="23" fill="white"/>
+        <text className="chart-mos-label" x={point.x} y={point.y+offset+17} textAnchor="middle">{row.mos.toFixed(1)}</text></g>;
     })}
   </Chart>;
 }

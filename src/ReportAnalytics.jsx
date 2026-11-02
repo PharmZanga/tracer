@@ -2,7 +2,8 @@ import {useMemo,useState} from 'react';
 import './reportAnalytics.css';
 import {reportSeries,forecastAvailability,stockBands,provincialReporting,allReportDistricts} from './reportAnalytics.js';
 import {formatReportPercent,performanceNarrative,reportingRateNarrative,imbalanceNarrative,reportingWeeks} from './reportNarrative.js';
-import {ReportPerformanceChart,ReportProvincialStockChart,ReportNationalStockChart} from './ReportCharts.jsx';
+import {ReportPerformanceChart,ReportProvincialStockChart,ReportNationalStockChart,ReportDistrictChart} from './ReportCharts.jsx';
+import {rankedReportRows} from './reportChartData.js';
 const colours=['#d32620','#c86c00','#d6a126','#278150','#2365ad','#777'];
 const bands=['Zero / near-zero MOS','Emergency','Understocked','According to plan','Overstocked','MOS data gap'];
 const percent=value=>Number.isFinite(value)?formatReportPercent(value):'Not reported';
@@ -32,7 +33,17 @@ export function ReportGeography({summary,mode}) {
   if(mode==='district-availability') {
     const all=allReportDistricts(summary);
     const provinces=[...new Set(all.map(r=>r.province))];
-    return <><p>All {all.length} expected districts, grouped by province. Availability covers submitted observations across the selected period; reporting status refers to the final week. Missing stock submissions are shown as not reported, not zero availability.</p>{provinces.map(name=>{const rows=all.filter(r=>r.province===name);return <div key={name}><h3>{name}</h3><AvailabilityBars rows={rows}/><table><thead><tr><th>District</th><th>Observations</th><th>Availability</th><th>Average MOS</th><th>Final-week DHO reporting</th></tr></thead><tbody>{rows.map(r=><tr key={r.name}><td>{r.name}</td><td>{r.rows??'Not reported'}</td><td>{percent(r.availability)}</td><td>{Number.isFinite(r.mos)?r.mos.toFixed(1):'Unavailable'}</td><td>{r.detailStatus}</td></tr>)}</tbody></table></div>;})}</>;
+    return <><p>All {all.length} expected districts, grouped by province. Availability covers submitted observations across the selected period; reporting status refers to the final week. Missing stock submissions are shown as not reported, not zero availability.</p>{provinces.map(name=>{
+      const rows=rankedReportRows(all.filter(r=>r.province===name));
+      const reporting=summary.reportingDistricts.filter(r=>r.province===name&&r.periodId===last.id);
+      const finalCoverage=provincialReporting(reporting,name,summary.expectedDistrictRoster?.[name]||[]);
+      const incomplete=reporting.filter(r=>!r.submitted).map(r=>r.name.toLowerCase().replace(/\b[a-z]/g,letter=>letter.toUpperCase()));
+      const reportingNote=`Final-week DHO reporting (HC + HP): ${finalCoverage.reported}/${finalCoverage.expected} complete.${incomplete.length?` Incomplete: ${incomplete.join(', ')}.`:''}`;
+      return <div className="report-district-province" data-province={name} key={name}>
+        <ReportDistrictChart rows={rows} province={name} periodLabel={summary.period.label} reportingNote={reportingNote}/>
+        <table><thead><tr><th>District</th><th>Observations</th><th>Availability</th><th>Average MOS</th><th>Final-week DHO reporting</th></tr></thead><tbody>{rows.map(r=><tr key={r.name}><td>{r.name}</td><td>{r.rows??'Not reported'}</td><td>{percent(r.availability)}</td><td>{Number.isFinite(r.mos)?r.mos.toFixed(1):'Unavailable'}</td><td>{r.detailStatus}</td></tr>)}</tbody></table>
+      </div>;
+    })}</>;
   }
   if(mode==='province-availability') return <>{paragraphs(performanceNarrative(summary.provinces,'Provincial'))}<AvailabilityBars rows={summary.provinces}/><p>Availability uses positive-SOH tracer records, combined using record-count weights. Entered footer percentages do not override this calculation. District HC/HP stock can be aggregated and does not measure individual facility availability. Missing submissions are not zero stock.</p></>;
   if(mode==='reporting-rate') return <>
