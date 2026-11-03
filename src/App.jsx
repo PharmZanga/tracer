@@ -2,6 +2,7 @@ import { Children, cloneElement, isValidElement, lazy, Suspense, useEffect, useM
 const FacilityAlertsMap=lazy(()=>import('./FacilityAlertsMap.jsx'));
 import { reportSections, reportSectionDefinitions, defaultReportSectionIds, selectedReportSections } from './reportSections.js';
 import {ReportCareChart} from './ReportCharts.jsx';
+import ComparisonReport from './ComparisonReport.jsx';
 import { buildReportNarrative, formatReportPercent, reportingWeeks, reportAverageMos, reportPeriodRange } from './reportNarrative.js';
 import { commodityRowsFromPeriod } from './tracerRows.js';
 import NationalStockDetail from './NationalStockDetail.jsx';
@@ -792,7 +793,7 @@ export function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPer
   const sectionLabels = new Map(selectedSections);
   const sectionProps = (id) => ({ hidden: !includedSections.includes(id), "data-report-section": id });
   const tools = <div className="national-report-tools">
-    <label><span>Report frequency</span><select disabled={Boolean(exporting)} value={type} onChange={(e) => onTypeChange(e.target.value)}><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option></select></label>
+    <label><span>Report type</span><select disabled={Boolean(exporting)} value={type} onChange={(e) => onTypeChange(e.target.value)}><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option><option value="comparison">Comparison Report</option></select></label>
     <label><span>Year</span><select disabled={Boolean(exporting)} value={year} onChange={(e) => onYearChange(e.target.value)}>{availableTracerYears.map((y) => <option key={y}>{y}</option>)}</select></label>
     <label><span>Report period</span><select disabled={Boolean(exporting)} value={selectedPeriodId} onChange={(event) => onPeriodChange(event.target.value)}>{periods.map((item) => <option value={item.id} key={item.id}>{item.label}</option>)}</select></label>
     <div className="national-report-tool-actions">
@@ -1282,6 +1283,26 @@ function aggregateComparisonRows(periods, filters) {
     name,
     periods: values.length,
   }));
+}
+
+export function buildComparisonReportPeriods(periods, options) {
+  const filters = {province: 'all', district: 'all', facilityLevel: 'all', commodity: 'all', program: 'all'};
+  return [...options].sort((a, b) => a.id.localeCompare(b.id)).map(option => {
+    const selected = selectReportPeriods(periods, option);
+    if (!selected.length || selected.length !== option.periods.length) throw new Error('Incomplete comparison dataset.');
+    const group = compareBy => aggregateComparisonRows(selected, {...filters, compareBy}).map(row => row.rows > 0 ? row : {...row, availability: null, mos: null});
+    const levels = group('level');
+    const national = combineRollups(levels);
+    if (!national.rows) national.availability = null;
+    return {id: option.id, label: option.label, shortLabel: option.id.includes('-Q') ? option.id.split('-').at(-1) : option.id,
+      months: option.months, weeks: selected.length, lastDate: selected.at(-1).reportDate,
+      national, levels, provinces: group('province'), programmes: group('program')};
+  });
+}
+
+async function loadComparisonReport(options) {
+  for (const month of new Set(options.flatMap(option => option.months))) await loadTracerMonth(month);
+  return buildComparisonReportPeriods(tracerReportingPeriods, options);
 }
 
 function forecastRiskTone(likelihood) {
@@ -1948,7 +1969,7 @@ function App() {
   const [stockWorkspace, setStockWorkspace] = useState("control");
   const [fieldPeriodId, setFieldPeriodId] = useState(() => tracerReportingPeriods.some((period) => period.id === initialDashboardParam("period")) ? initialDashboardParam("period") : tracerReportingPeriods.at(-1).id);
   const [nationalReportPeriodId, setNationalReportPeriodId] = useState(() => initialDashboardParam("reportPeriod") || initialDashboardParam("period") || tracerReportingPeriods.at(-1).id);
-  const [nationalReportType, setNationalReportType] = useState(() => ["weekly","monthly","quarterly"].includes(initialDashboardParam("reportType")) ? initialDashboardParam("reportType") : "weekly");
+  const [nationalReportType, setNationalReportType] = useState(() => ["weekly","monthly","quarterly","comparison"].includes(initialDashboardParam("reportType")) ? initialDashboardParam("reportType") : "weekly");
   const [nationalReportYear, setNationalReportYear] = useState(() => availableTracerYears.includes(initialDashboardParam("reportYear")) ? initialDashboardParam("reportYear") : "2026");
   const [nationalReportLoading, setNationalReportLoading] = useState(false);
   const [nationalReportError, setNationalReportError] = useState("");
@@ -3295,11 +3316,11 @@ function App() {
     .sort((a, b) => a.availability - b.availability || (a.mos || 0) - (b.mos || 0))
     .slice(0, 36);
   const currentReportCatalogue = useMemo(() => mergeReportCatalogue(reportCatalogue, tracerReportingPeriods), [historicalDataVersion]);
-  const nationalReportOptions = useMemo(() => reportOptions(currentReportCatalogue, nationalReportType, nationalReportYear), [currentReportCatalogue, nationalReportType, nationalReportYear]);
+  const nationalReportOptions = useMemo(() => reportOptions(currentReportCatalogue, nationalReportType === 'comparison' ? 'quarterly' : nationalReportType, nationalReportYear), [currentReportCatalogue, nationalReportType, nationalReportYear]);
   const nationalReportOption = nationalReportOptions.find((o) => o.id === nationalReportPeriodId) || nationalReportOptions.at(-1);
   const nationalReportPreviousOption = nationalReportOptions[nationalReportOptions.findIndex((o) => o.id === nationalReportOption?.id) - 1];
   useEffect(() => {
-    if (activePage !== "reports" || !nationalReportOption) return;
+    if (activePage !== "reports" || nationalReportType === 'comparison' || !nationalReportOption) return;
     let cancelled = false;
     setNationalReportLoading(true);
     setNationalReportError("");
@@ -3315,7 +3336,7 @@ function App() {
     return () => { cancelled = true; };
   }, [activePage, nationalReportOption?.id, nationalReportType, nationalReportYear, nationalReportRetry]);
   const nationalReportSummary = useMemo(
-    () => activePage === "reports" ? buildNationalReportSummary(selectReportPeriods(tracerReportingPeriods, nationalReportOption), selectReportPeriods(tracerReportingPeriods, nationalReportPreviousOption), nationalReportOption, nationalReportType) : null,
+    () => activePage === "reports" && nationalReportType !== 'comparison' ? buildNationalReportSummary(selectReportPeriods(tracerReportingPeriods, nationalReportOption), selectReportPeriods(tracerReportingPeriods, nationalReportPreviousOption), nationalReportOption, nationalReportType) : null,
     [activePage, nationalReportOption, nationalReportPreviousOption, nationalReportType, historicalDataVersion],
   );
   const programmePressureRows = aggregateRollups(scopedProgrammeRows, "name")
@@ -5974,7 +5995,8 @@ function App() {
             </div>
           </div>
         </section>}
-        {isDashboardAdmin && activePage === "reports" && <NationalWeeklyReport
+        {isDashboardAdmin && activePage === "reports" && nationalReportType === 'comparison' && <ComparisonReport catalogue={currentReportCatalogue} years={availableTracerYears} year={nationalReportYear} onYearChange={setNationalReportYear} onTypeChange={type => {setNationalReportType(type); setNationalReportPeriodId('');}} loadReport={loadComparisonReport}/>}
+        {isDashboardAdmin && activePage === "reports" && nationalReportType !== 'comparison' && <NationalWeeklyReport
           summary={nationalReportSummary}
           periods={nationalReportOptions}
           selectedPeriodId={nationalReportOption?.id || ""}
