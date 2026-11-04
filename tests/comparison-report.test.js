@@ -13,6 +13,7 @@ const {ComparisonReportChart, ComparisonReportDocument} = await server.ssrLoadMo
 const data = await server.ssrLoadModule('/src/tracerFacilityData.js');
 const {reportCatalogue} = await server.ssrLoadModule('/src/reportCatalogue.js');
 const {reportOptions} = await server.ssrLoadModule('/src/reportPeriods.js');
+const {comparisonSections} = await server.ssrLoadModule('/src/reportComparison.js');
 const options = reportOptions(reportCatalogue, 'quarterly', '2026');
 await data.loadHistoricalTracerYear('2026');
 const selected = options.slice(0, 3);
@@ -74,6 +75,17 @@ test('unchecked sections disappear and remaining headings renumber', () => {
   assert.match(html, /A. Provincial Performance/);
   assert.match(html, /B. Coverage and Methodology/);
   assert.doesNotMatch(html, /data-report-section="national"|data-report-section="levels"|data-report-section="programmes"/);
+});
+
+test('comparison reports include the same feedback headings by default and keep them optional', () => {
+  const sections = comparisonSections.map(([id]) => id);
+  const html = renderToStaticMarkup(React.createElement(ComparisonReportDocument, {periods, year: '2026', sections}));
+  for (const heading of ['Key findings', 'E. Proposed interventions', 'F. Conclusion/Way forward', 'G. Coverage and Methodology']) assert.ok(html.includes(heading), heading);
+  assert.match(html, /Proposed responsible team/);
+  assert.match(html, /final selected period \(2026 Quarter 3\)/);
+  assert.doesNotMatch(html, /1 November 2026/);
+  const without = renderToStaticMarkup(React.createElement(ComparisonReportDocument, {periods, year: '2026', sections: ['national']}));
+  assert.doesNotMatch(without, /Proposed interventions|Conclusion\/Way forward/);
 });
 
 test('partial periods retain partial label and incomplete loads cannot generate a comparison', () => {

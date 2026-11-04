@@ -46,6 +46,9 @@ test('weekly report renders actual labels, Ministry branding, charts and ordered
   assert.match(html, /E\. National Stock Imbalance/);
   assert.match(html, /G\. Reporting Rate/);
   assert.match(html, /H\. District Drug Availability/);
+  assert.match(html, /Key findings/);
+  assert.match(html, /I\. Proposed interventions/);
+  assert.match(html, /J\. Conclusion\/Way forward/);
   assert.equal((html.match(/class="report-district-province"/g)||[]).length,10);
   assert.equal((html.match(/data-district="/g)||[]).length,116);
 });
@@ -63,6 +66,7 @@ test('monthly and partial-quarter reports use selected observations rather than 
     assert.equal(summary.selectedPeriods.length, 4);
     assert.equal(summary.period.national.rows, 98735);
     const html = render(type);
+    for (const heading of ['Key findings','Proposed interventions','Conclusion/Way forward']) assert.ok(html.includes(heading));
     assert.match(html, /98,735 submitted commodity observations/);
     assert.match(html, /4 reporting weeks/);
     assert.match(html, type === 'monthly' ? /MONTHLY|Monthly/ : /QUARTERLY|Quarterly/);

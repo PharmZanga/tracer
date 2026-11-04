@@ -3,6 +3,7 @@ import {formatReportPercent} from './reportNarrative.js';
 export const comparisonSections = [
   ['national', 'National Overview'], ['levels', 'Availability by Level of Care'],
   ['provinces', 'Provincial Performance'], ['programmes', 'Programme Performance'],
+  ['actions', 'Proposed interventions'], ['conclusion', 'Conclusion/Way forward'],
   ['coverage', 'Coverage and Methodology'],
 ];
 

@@ -3,6 +3,8 @@ const FacilityAlertsMap=lazy(()=>import('./FacilityAlertsMap.jsx'));
 import { reportSections, reportSectionDefinitions, defaultReportSectionIds, selectedReportSections } from './reportSections.js';
 import {ReportCareChart} from './ReportCharts.jsx';
 import ComparisonReport from './ComparisonReport.jsx';
+import {buildReportFeedback, reportFeedbackReporting} from './reportFeedback.js';
+import {ReportKeyFindings, ReportInterventions, ReportConclusion} from './ReportFeedback.jsx';
 import { buildReportNarrative, formatReportPercent, reportingWeeks, reportAverageMos, reportPeriodRange } from './reportNarrative.js';
 import { commodityRowsFromPeriod } from './tracerRows.js';
 import NationalStockDetail from './NationalStockDetail.jsx';
@@ -807,6 +809,9 @@ export function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPer
   if (loading || error || !summary || summary.selectedPeriods.length !== summary.option.periods.length) return <section className="national-report-workspace">{tools}<div role={error ? "alert" : "status"}>{error || "Loading selected reporting periods..."}{error && <button type="button" onClick={onRetry}>Try again</button>}</div></section>;
   const { period, levelRows, provinces, programmes, districtReporting, stockStatus } = summary;
   const narrative = buildReportNarrative(summary);
+  const feedback = buildReportFeedback({label: period.label, national: period.national, programmes, provinces, levels: levelRows,
+    provinceCount: period.counts?.provinces, reporting: reportFeedbackReporting(summary.selectedPeriods.at(-1)),
+    previous: {type, label: summary.previousLabel, availabilityChange: summary.availabilityChange, mosChange: summary.mosChange}});
   const analyticalText = (section) => narrative[section].map((text) => <p className="national-report-narrative" key={text}>{text}</p>);
   return <section className="national-report-workspace">
     {tools}
@@ -825,7 +830,7 @@ export function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPer
       <section className="national-report-section national-report-contents"><h2>Contents</h2>{selectedSections.map(([id,label]) => <p key={id}>{label}</p>)}</section>
       <section className="national-report-section" {...sectionProps("overview")}>
         <div className="national-report-section-head"><p>A. National Overview</p><span>{period.label}</span></div>
-        {analyticalText('overview')}
+        <ReportKeyFindings feedback={feedback}/>
         {type === "quarterly" && <p className="national-report-callout">Quarter coverage: {summary.option.months.map(monthLabel).join(", ")}. {summary.option.months.length < 3 ? "Partial quarter: only the listed submitted months are included." : "Three submitted months are included; individual weekly gaps remain visible below."}</p>}
         <div className="national-report-kpis">
           <div><span>Availability</span><strong>{formatPercent(period.national.availability)}</strong><small>Submitted tracer rows</small></div>
@@ -897,15 +902,10 @@ export function NationalWeeklyReport({ summary, periods, selectedPeriodId, onPer
         <p>DHO reporting requires Health Centre and Health Post SOH reports, or valid combined primary-care SOH evidence. Hospital-only submissions do not satisfy this requirement. Blank and all-zero SOH blocks are not submitted reports, even when AMC is entered. Within a submitted block containing positive SOH, blank or dash quantities are zero; unreadable nonblank values remain missing.</p>
       </section>
       <section className="national-report-section national-report-actions" {...sectionProps("actions")}>
-        <div className="national-report-section-head"><p>Recommended Actions</p><span>Management follow-up</span></div>
-        <ol>
-          <li>Validate zero-quantity observations and the {period.national.stockout.toLocaleString()} zero/near-zero MOS records, using verified excess stock for targeted redistribution where feasible.</li>
-          <li>Prioritise the {period.national.nearCritical.toLocaleString()} emergency records below one month of stock before they progress to stockout.</li>
-          <li>Follow up the {districtReporting.missing} DHO districts without a complete Health Centre and Health Post submission; missing reports are not treated as stock data.</li>
-          <li>Review the lowest-performing province and level of care with provincial teams, including AMC, physical stock, order fulfilment and expiry constraints.</li>
-        </ol>
-        <table><thead><tr><th>Action</th><th>Responsible team</th><th>Timing</th></tr></thead><tbody><tr><td>Validate quantities, expiry and replenishment for critical commodities</td><td>Provincial and district pharmacists</td><td>Immediate</td></tr><tr><td>Review programme shortages and order fulfilment</td><td>Programme managers and Control Tower</td><td>Within one week</td></tr><tr><td>Close incomplete primary-care and hospital reporting</td><td>Provincial health offices</td><td>Before next submission</td></tr><tr><td>Review constrained central inventory categories</td><td>ZAMMSA and Ministry of Health</td><td>Weekly</td></tr></tbody></table>
+        <div className="national-report-section-head"><p>Proposed interventions</p><span>Management follow-up</span></div>
+        <ReportInterventions feedback={feedback}/>
       </section>
+      <section className="national-report-section" {...sectionProps('conclusion')}><div className="national-report-section-head"><p>Conclusion/Way forward</p><span>{period.label}</span></div><ReportConclusion feedback={feedback}/></section>
       <section className="national-report-section" {...sectionProps("sources")}><h2>Methodology and Sources</h2><p>{availabilityMethodology}</p><p>MOS is the arithmetic mean of available numeric commodity MOS, capped at 12 months where detailed rows exist; historical summary-only periods use row-weighted source MOS. Missing MOS is excluded from the average, not replaced with zero. Stock status is reported separately from non-reporting. Multi-week totals are observations, not unique facilities, cumulative SOH or total consumption. Latest-week DHO coverage is distinct from the weekly reporting history.</p><p>Reporting periods follow the dashboard submission month, not the calendar month of the week-ending date. Partial quarters include only available submissions. Earlier period comparisons use the preceding available period of the same frequency. The Ministry of Health reference report supplies the presentation style only; every figure, chart and analytical statement is derived from the selected dashboard data. Comparisons are descriptive and do not establish the causes of changes in availability.</p><details open><summary>Provincial tracer sources</summary><ul>{[...new Set(summary.selectedPeriods.map((p) => p.source))].map((source) => <li key={source}>{source}</li>)}</ul></details></section>
       <footer>National Supply Chain Tracer Report | Generated {new Date().toLocaleDateString("en-GB",{timeZone:"Africa/Lusaka"})}</footer>
     </OrderedReport>
@@ -1296,7 +1296,7 @@ export function buildComparisonReportPeriods(periods, options) {
     if (!national.rows) national.availability = null;
     return {id: option.id, label: option.label, shortLabel: option.id.includes('-Q') ? option.id.split('-').at(-1) : option.id,
       months: option.months, weeks: selected.length, lastDate: selected.at(-1).reportDate,
-      national, levels, provinces: group('province'), programmes: group('program')};
+      national, levels, provinces: group('province'), programmes: group('program'), reporting: reportFeedbackReporting(selected.at(-1))};
   });
 }
 

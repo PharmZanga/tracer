@@ -6,17 +6,18 @@ test('report stylesheet does not override document section order',()=>{
   const css=readFileSync(new URL('../src/index.css',import.meta.url),'utf8');
   assert.doesNotMatch(css,/\.national[^{}]*\{[^{}]*\border\s*:/);
 });
-test('report section labels continue A through R in declared order',()=>{
-  assert.equal(reportSections.length,18);
+test('report section labels continue A through S in declared order',()=>{
+  assert.equal(reportSections.length,19);
   reportSections.forEach(([,title],i)=>assert.ok(title.startsWith(`${String.fromCharCode(65+i)}. `)));
   assert.equal(reportSections[4][0],'stock');assert.equal(reportSections[5][0],'imbalance');
 });
 
 test('default reports retain A-G and include district availability as H, renumbering omissions',()=>{
-  assert.deepEqual(defaultReportSectionIds,['overview','care','provinces','programmes','stock','imbalance','reporting-rate','district-availability']);
+  assert.deepEqual(defaultReportSectionIds,['overview','care','provinces','programmes','stock','imbalance','reporting-rate','district-availability','actions','conclusion']);
   assert.deepEqual(selectedReportSections(defaultReportSectionIds).map(([,title])=>title),[
     'A. National Overview','B. Availability by Level of Care','C. Provincial Performance','D. Programme Performance',
     'E. National Stock Imbalance','F. Provincial Stock Imbalance','G. Reporting Rate','H. District Drug Availability',
+    'I. Proposed interventions','J. Conclusion/Way forward',
   ]);
   assert.deepEqual(selectedReportSections(['overview','stock','reporting-rate']).map(([,title])=>title),['A. National Overview','B. National Stock Imbalance','C. Reporting Rate']);
   assert.ok(!selectedReportSections(defaultReportSectionIds.filter(id=>id!=='district-availability')).some(([id])=>id==='district-availability'));

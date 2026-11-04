@@ -3,6 +3,8 @@ import {FileText, RotateCcw} from 'lucide-react';
 import {reportOptions} from './reportPeriods.js';
 import {comparisonSections, defaultComparisonPeriods, comparisonGroups, comparisonNarrative, comparisonChanges, comparisonChange, comparisonPercent, comparisonMos} from './reportComparison.js';
 import './comparisonReport.css';
+import {buildReportFeedback} from './reportFeedback.js';
+import {ReportKeyFindings, ReportInterventions, ReportConclusion} from './ReportFeedback.jsx';
 
 const shortName = name => name.replace(/ PROVINCE$/i, '').replace(/\s+/g, ' ').trim();
 const wrap = text => {
@@ -65,18 +67,19 @@ function ComparisonChangeTable({periods, groups}) {
 export function ComparisonReportDocument({periods, year, sections, exporting}) {
   const selected = comparisonSections.filter(([id]) => sections.includes(id));
   const labelled = selected.map(([id, title], i) => [id, `${String.fromCharCode(65 + i)}. ${title}`]);
+  const feedback = buildReportFeedback({periods});
   return <article className="national-weekly-report" id="comparison-report-document" inert={exporting || undefined} aria-busy={exporting || undefined}>
     <header className="national-report-cover"><img src="/zambia-coat-of-arms.svg" alt="Republic of Zambia coat of arms" width="80" height="80"/><p>MINISTRY OF HEALTH</p><h1>Tracer Comparison Report</h1><p className="national-report-cover-description">Comparative analysis of tracer commodity availability and months of stock across the selected reporting periods, using dashboard data.</p><span>Report periods: {periods.map(period => period.label).join(' | ')}</span><strong>Prepared by: Zanga Musakuzi</strong><small>Principal Pharmacist - Data Analytics</small><b className="national-report-cover-year">{year}</b></header>
     <section className="national-report-section"><h2>Contents</h2>{labelled.map(([id, title]) => <p key={id}>{title}</p>)}</section>
     {labelled.map(([id, title]) => <section className="national-report-section" data-report-section={id} key={id}>
       <div className="national-report-section-head"><p>{title}</p></div>
-      {id === 'coverage' ? <>
+      {id === 'actions' ? <ReportInterventions feedback={feedback}/> : id === 'conclusion' ? <ReportConclusion feedback={feedback}/> : id === 'coverage' ? <>
         <table><thead><tr><th>Period</th><th>Submission months</th><th>Weeks loaded</th><th>Commodity observations</th><th>Last reporting date</th></tr></thead><tbody>{periods.map(period => <tr key={period.id}><td>{period.label}</td><td>{period.months.join(', ')}</td><td>{period.weeks}</td><td>{period.national.rows.toLocaleString('en-GB')}</td><td>{period.lastDate}</td></tr>)}</tbody></table>
         <p>Availability and MOS use the same aggregation functions as the dashboard Comparison view, with all provinces, districts, care levels, commodities and programmes included. Availability is weighted by submitted commodity observations; it is not the simple mean of quarter percentages. MOS uses the dashboard row-weighted summary method. No published report percentages have been substituted.</p>
         <p>Periods follow the dashboard submission month rather than the calendar month of the reporting date. Quarter labels marked partial lack one or more submission months; the coverage table also shows the number of available reporting weeks. Available months do not guarantee that every expected weekly or facility submission was received. Totals across weeks are repeated observations, not unique facilities or cumulative stock balances.</p>
         <p>Changes in availability are percentage points (pp); changes in MOS are months. N/R means no verified observation, not zero stock. Positive SOH indicates reported stock presence, not assured service continuity. Different facility and commodity coverage can influence period comparisons; verify commodity-level evidence before deciding on replenishment or redistribution.</p>
       </> : <>
-        {comparisonNarrative(periods, comparisonGroups(periods, id), id === 'national' ? 'National' : comparisonSections.find(([key]) => key === id)[1]).map(text => <p className="national-report-narrative" key={text}>{text}</p>)}
+        {id === 'national' ? <ReportKeyFindings feedback={feedback}/> : comparisonNarrative(periods, comparisonGroups(periods, id), comparisonSections.find(([key]) => key === id)[1]).map(text => <p className="national-report-narrative" key={text}>{text}</p>)}
         {Array.from({length: Math.ceil(comparisonGroups(periods, id).length / 3)}, (_, i) => <ComparisonReportChart key={i} periods={periods} groups={comparisonGroups(periods, id).slice(i * 3, i * 3 + 3)} title={`${title.slice(3)}${i ? ` (continued ${i + 1})` : ''}`}/>)}
         <ComparisonTable periods={periods} groups={comparisonGroups(periods, id)}/>
         <ComparisonChangeTable periods={periods} groups={comparisonGroups(periods, id)}/>

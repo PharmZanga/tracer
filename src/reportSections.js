@@ -8,11 +8,11 @@ export const reportSectionDefinitions = [
   ['provincial-trends','Provincial Trends'],['commodity-trends','Commodity Stock Status Trends'],
   ['predictive','Predictive Analysis'],['profile','Provincial Profile'],
   ['province-availability','Provincial Drug Availability'],['district-availability','District Drug Availability'],
-  ['actions','Recommended Actions'],['sources','Methodology and Sources'],
+  ['actions','Proposed interventions'],['conclusion','Conclusion/Way forward'],['sources','Methodology and Sources'],
 ];
 const letterSections = sections => sections.map(([id,title],index)=>[id,`${String.fromCharCode(65+index)}. ${title}`]);
 export const reportSections = letterSections(reportSectionDefinitions);
-export const defaultReportSectionIds = [...reportSectionDefinitions.slice(0,7).map(([id])=>id),'district-availability'];
+export const defaultReportSectionIds = [...reportSectionDefinitions.slice(0,7).map(([id])=>id),'district-availability','actions','conclusion'];
 export function selectedReportSections(ids) {
   return letterSections(reportSectionDefinitions.filter(([id])=>ids.includes(id)));
 }

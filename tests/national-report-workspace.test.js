@@ -14,7 +14,8 @@ test("national weekly report workspace is available from the sidebar and uses it
   assert.match(appSource, /Download Word \(\.docx\)/);
   const narrativeSource = fs.readFileSync(new URL('../src/reportNarrative.js', import.meta.url), 'utf8');
   assert.match(narrativeSource, /\(DHO\) reporting completeness stood at/);
-  assert.match(appSource, /missing reports are not treated as stock data/);
+  const feedbackSource = fs.readFileSync(new URL('../src/reportFeedback.js', import.meta.url), 'utf8');
+  assert.match(feedbackSource, /Missing submissions do not establish zero stock/);
 });
 
 test("report template supports independently selected sections and Ministry-only branding", () => {
