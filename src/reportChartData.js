@@ -66,6 +66,8 @@ export function reportAvailabilityGap(rows) {
   return values.length > 1 ? (Math.max(...values) - Math.min(...values)) * 100 : null;
 }
 
-export function reportImbalanceRows(rows) {
-  return rankedReportRows(rows).map(row => ({...row, shares: stockImbalanceShares(row)}));
+export function reportImbalanceRows(rows, national) {
+  const ranked = rankedReportRows(rows).map(row => ({...row, shares: stockImbalanceShares(row)}));
+  if (national) ranked.push({...national, name: 'National', label: 'National', isNational: true, shares: stockImbalanceShares(national)});
+  return ranked;
 }

@@ -93,6 +93,23 @@ test('provincial stack SVG includes grey MOS gaps without converting the other b
   assert.doesNotMatch(html,/NaN|Infinity|height="-/);
 });
 
+test('weekly and multi-week provincial stock charts finish with the authoritative national benchmark', () => {
+  for (const [type,id] of [['weekly','2026-11-01'],['monthly','2026-10'],['quarterly','2026-Q4']]) {
+    const {summary}=summaryFor(type,id);
+    const html=renderToStaticMarkup(React.createElement(ReportGeography,{summary,mode:'imbalance'}));
+    const names=[...html.matchAll(/data-stock-geography="([^"]+)"/g)].map(match=>match[1]);
+    assert.equal(names.length,11);
+    assert.equal(names.at(-1),'National');
+    assert.equal(names.filter(name=>name==='National').length,1);
+    const nationalGroup=html.slice(html.indexOf('data-stock-geography="National"'));
+    const counts=summary.period.national;
+    const expected=[counts.stockout,(counts.nearCritical||0)+(counts.understocked||0),counts.accordingToPlan,(counts.abovePlan||0)+(counts.overstock||0),counts.dataGap].map(count=>count/counts.rows);
+    assert.deepEqual([...nationalGroup.matchAll(/data-share="([^"]+)"/g)].map(match=>Number(match[1])),expected);
+    assert.match(nationalGroup,/>NATIONAL<\/text>/);
+    assert.doesNotMatch(html,/NaN|Infinity|height="-/);
+  }
+});
+
 test('district graphs match the reference with ranked bars, a separate MOS scale and gaps', () => {
   const rows=[{name:'C',availability:.9,mos:8.2},{name:'A',availability:.7,mos:0},
     {name:'B',availability:.8,mos:null},{name:'MISSING',availability:null,mos:null}];

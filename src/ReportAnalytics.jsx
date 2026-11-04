@@ -14,8 +14,8 @@ function AvailabilityBars({rows,label='Reported drug availability by geography',
 export function ReportPerformanceBars({rows,subject}) {
   return <ReportPerformanceChart rows={rows} subject={subject}/>;
 }
-function ImbalanceChart({rows}) {
-  return <ReportProvincialStockChart rows={rows}/>;
+function ImbalanceChart({rows,national}) {
+  return <ReportProvincialStockChart rows={rows} national={national}/>;
 }
 export function ReportGeography({summary,mode}) {
   const [chosen,setChosen]=useState('');
@@ -52,7 +52,7 @@ export function ReportGeography({summary,mode}) {
     <p>Reporting rate is complete district-week submissions divided by expected district-weeks ({reportingWeeks(summary.selectedPeriods.length)}). Both Health Centre and Health Post evidence are required; hospital-only and all-zero template blocks do not count. A missing denominator is shown as not reported.</p>
   </>;
   if(imbalance) return <>
-    {paragraphs(imbalanceNarrative(summary.provinces))}<ImbalanceChart rows={summary.provinces}/>
+    {paragraphs(imbalanceNarrative(summary.provinces))}<ImbalanceChart rows={summary.provinces} national={summary.period.national}/>
     <p>Each percentage uses all submitted commodity observations for that province as its denominator, including MOS gaps. Zero/near-zero MOS may include positive quantities. Grey percentages above the columns identify missing MOS. Multi-week totals are repeated observations, not cumulative stock balances or unique commodities.</p>
   </>;
   return <>{selector}{mode==='profile'&&<><p>{row?`${row.rows.toLocaleString()} submitted commodity observations; availability ${percent(row.availability)}; average MOS ${Number.isFinite(row.mos)?row.mos.toFixed(1):'unavailable'}.`:'No stock observations were submitted for this province.'}</p><p>Complete district reports in the final week ({last.reportDate}): {latestCoverage.reported}/{latestCoverage.expected} ({percent(latestCoverage.rate)}). Across the selected period: {coverage.reported}/{coverage.expected} district-week submissions ({percent(coverage.rate)}).</p></>}<AvailabilityBars rows={districts}/><table><thead><tr><th>District</th><th>Observations</th><th>Availability</th><th>Average MOS</th><th>Final-week DHO reporting</th></tr></thead><tbody>{summary.reportingDistricts.filter(r=>r.province===province&&r.periodId===last.id).map(d=>{const r=districts.find(r=>r.name===d.name);return <tr key={d.name}><td>{d.name}</td><td>{r?.rows??'Not reported'}</td><td>{percent(r?.availability)}</td><td>{Number.isFinite(r?.mos)?r.mos.toFixed(1):'Unavailable'}</td><td>{d.detailStatus}</td></tr>;})}</tbody></table><p>District availability includes submitted facility levels within the district; DHO reporting measures primary-care submission completeness separately. No facility roster size is inferred from aggregate reporting units.</p></>;

@@ -112,24 +112,27 @@ export function ReportDistrictChart({rows, province, periodLabel, reportingNote}
   </Chart>;
 }
 
-export function ReportProvincialStockChart({rows}) {
+export function ReportProvincialStockChart({rows, national}) {
   const id=useId().replaceAll(':','_');
-  const ranked=reportImbalanceRows(rows);
+  const ranked=reportImbalanceRows(rows, national);
   if (!ranked.length) return <p>No provincial stock observations are available.</p>;
   const labels=['Zero / near-zero MOS','Emergency + understocked','According to plan','Above 4 MOS','MOS gaps'];
   const colours=[palette[0],palette[1],palette[4],'#26ad40',palette[5]];
   const left=155,right=1130,top=75,plot=400,step=(right-left)/ranked.length;
-  return <Chart title="Provincial Stock Imbalance" height={730} note="Percentages use all submitted observations. Grey caps show missing MOS; these are not zero stock.">
+  return <Chart title="Provincial Stock Imbalance" height={730} note={`Percentages use all submitted observations. Grey caps show missing MOS, not zero stock.${national ? ' National uses total counts, not average provincial percentages.' : ''}`}>
     <defs>{colours.map((colour,i)=><linearGradient key={i} id={`${id}-${i}`}><stop offset="0" stopColor="#000" stopOpacity=".25"/><stop offset=".15" stopColor={colour}/><stop offset=".38" stopColor={colour}/><stop offset=".8" stopColor={colour}/><stop offset="1" stopColor="#000" stopOpacity=".25"/></linearGradient>)}</defs>
     <PercentAxis {...{left,right,top,plot}} every={10} label="Submitted observations (%)"/>
     {ranked.map((row,i)=>{
       let offset=0;
-      return <g key={row.name}>{row.shares.map((share,j)=>{
+      return <g key={row.name} data-stock-geography={row.name} data-national={row.isNational ? 'true' : undefined}>
+        {row.isNational && i > 0 && <line x1={left+step*i} x2={left+step*i} y1={top} y2={top+plot} stroke="#777" strokeDasharray="4 4"/>}
+        {row.shares.every(share=>share===null) && <text x={left+step*(i+.5)} y={top+plot/2} textAnchor="middle">N/R</text>}
+        {row.shares.map((share,j)=>{
         if(!Number.isFinite(share)||share<=0)return null;
         const x=left+step*(i+.3), w=step*.4, h=share*plot, y=top+plot*(1-offset-share);offset+=share;
         const bevel=Math.min(5,h/4);
-        return <g key={j}><rect x={x} y={y} width={w} height={h} fill={colours[j]}/><rect x={x} y={y} width={w} height={h} fill={`url(#${id}-${j})`}/><path d={`M${x},${y} H${x+w} L${x+w-bevel},${y+bevel} H${x+bevel} Z`} fill="white" opacity=".65"/>{h>=24&&j!==4&&<><rect x={x+w/2-25} y={y+h/2-11} width="50" height="22" fill="#fff" stroke="#245675" strokeWidth="2"/><text className="chart-stack-label" x={x+w/2} y={y+h/2+5} textAnchor="middle">{formatReportPercent(share)}</text></>}</g>;
-      })}{row.shares[4]>0&&<text className="chart-gap-share" x={left+step*(i+.5)} y={top-12} textAnchor="middle">{formatReportPercent(row.shares[4])}</text>}<text className="chart-category" transform={`translate(${left+step*(i+.5)} ${top+plot+24}) rotate(-45)`} textAnchor="end">{reportGroupName(row).toUpperCase()}</text></g>;
+        return <g key={j} data-stock-band={labels[j]} data-share={share}><rect x={x} y={y} width={w} height={h} fill={colours[j]}/><rect x={x} y={y} width={w} height={h} fill={`url(#${id}-${j})`}/><path d={`M${x},${y} H${x+w} L${x+w-bevel},${y+bevel} H${x+bevel} Z`} fill="white" opacity=".65"/>{h>=24&&j!==4&&<><rect x={x+w/2-25} y={y+h/2-11} width="50" height="22" fill="#fff" stroke="#245675" strokeWidth="2"/><text className="chart-stack-label" x={x+w/2} y={y+h/2+5} textAnchor="middle">{formatReportPercent(share)}</text></>}</g>;
+      })}{row.shares[4]>0&&<text className="chart-gap-share" x={left+step*(i+.5)} y={top-12} textAnchor="middle">{formatReportPercent(row.shares[4])}</text>}<text className="chart-category" transform={`translate(${left+step*(i+.5)} ${top+plot+24}) rotate(-45)`} textAnchor="end" style={row.isNational ? {fontWeight: 700} : undefined}>{reportGroupName(row).toUpperCase()}</text></g>;
     })}
     {labels.map((label,i)=><g className="chart-legend" key={label}><rect x={85+(i%3)*360} y={650+Math.floor(i/3)*26} width="14" height="14" fill={colours[i]}/><text x={106+(i%3)*360} y={662+Math.floor(i/3)*26}>{label}</text></g>)}
   </Chart>;

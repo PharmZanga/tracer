@@ -35,6 +35,20 @@ test('provincial stack shares retain MOS gaps and never renormalize the four vis
   assert.deepEqual(reportImbalanceRows([{name:'Missing',rows:0}])[0].shares,[null,null,null,null,null]);
 });
 
+test('national imbalance is appended after the provinces using its own observation denominator',()=>{
+  const rows=[{name:'CENTRAL PROVINCE',rows:100,availability:.95,stockout:10,nearCritical:20,understocked:10,accordingToPlan:20,abovePlan:30,dataGap:10},
+    {name:'WESTERN PROVINCE',rows:300,availability:.8,stockout:90,nearCritical:30,understocked:60,accordingToPlan:60,abovePlan:45,dataGap:15}];
+  const national={rows:400,availability:.1,stockout:100,nearCritical:50,understocked:70,accordingToPlan:80,abovePlan:75,dataGap:25};
+  const before=JSON.stringify({rows,national});
+  const result=reportImbalanceRows(rows,national);
+  assert.deepEqual(result.map(row=>row.name),['WESTERN PROVINCE','CENTRAL PROVINCE','National']);
+  assert.equal(result.at(-1).isNational,true);
+  assert.deepEqual(result.at(-1).shares,[.25,.3,.2,.1875,.0625]);
+  assert.notEqual(result.at(-1).shares[0],(.1+.3)/2,'national shares are not an average of provincial percentages');
+  assert.equal(JSON.stringify({rows,national}),before);
+  assert.deepEqual(reportImbalanceRows(rows,{rows:0}).at(-1).shares,[null,null,null,null,null]);
+});
+
 test('reference names are readable and provincial and programme paragraphs use observed rankings',()=>{
   assert.equal(reportGroupName({name:'NORTH-WESTERN PROVINCE'}),'North-Western Province');
   assert.deepEqual(reportChartLabels({name:'RENAL UNITS'}),['Renal','Units']);
