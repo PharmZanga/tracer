@@ -1,9 +1,10 @@
 import {useId} from 'react';
 import {formatReportPercent} from './reportNarrative.js';
-import {rankedReportRows, reportChartLabels, reportGroupName, reportMosMaximum, reportAvailabilityGap, reportImbalanceRows} from './reportChartData.js';
+import {rankedReportRows, reportChartLabels, reportGroupName, reportMosMaximum, reportImbalanceRows} from './reportChartData.js';
+import {ReportAvailabilityBar, ReportMosPoint, reportAvailabilityColour, reportMosColour} from './ReportChartMarks.jsx';
 
 const palette = ['#c00000', '#e87500', '#f2bb2d', '#2f8b57', '#2e75b6', '#9a9a9a'];
-const mosColour = '#c55a00';
+const mosColour = reportMosColour;
 const width = 1200;
 const sourceNote = 'Source: selected provincial tracer submissions. Missing values are not zero stock.';
 
@@ -25,41 +26,23 @@ function PercentAxis({left, right, top, plot, every = 20, label = 'Commodity ava
 }
 
 export function ReportCareChart({rows}) {
-  const ranked = rankedReportRows(rows, true);
-  if (!ranked.length) return <p>No care-level observations are available for this chart.</p>;
-  const left=85, right=1080, top=76, plot=410, step=(right-left)/ranked.length;
-  const gap=reportAvailabilityGap(ranked);
-  const observed=ranked.filter(row=>Number.isFinite(row.availability));
-  return <Chart title="Commodity Availability by Level of Care" height={610}>
-    <PercentAxis {...{left,right,top,plot}}/>
-    {ranked.map((row,i)=>{
-      const x=left+step*(i+.2), barWidth=step*.6;
-      const y=top+plot*(1-(row.availability||0));
-      const lines=reportChartLabels(row);
-      return <g key={row.label||row.name}>
-        {Number.isFinite(row.availability)?<><rect x={x} y={y} width={barWidth} height={top+plot-y} fill={i===0?'#1f4e79':i===observed.length-1?'#bf570c':'#2e75b6'}/><text className="chart-value" x={x+barWidth/2} y={y-12} textAnchor="middle">{formatReportPercent(row.availability)}</text></>:<text x={x+barWidth/2} y={top+plot/2} textAnchor="middle">Not reported</text>}
-        <text x={x+barWidth/2} y={top+plot+23} textAnchor="middle">{lines.map((line,j)=><tspan x={x+barWidth/2} dy={j?18:0} key={j}>{line}</tspan>)}<tspan x={x+barWidth/2} dy="20">MOS: {Number.isFinite(row.mos)?row.mos.toFixed(1):'N/R'}</tspan></text>
-      </g>;
-    })}
-    {gap>0&&(()=>{
-      const x=right-12, high=top+plot*(1-observed[0].availability), low=top+plot*(1-observed.at(-1).availability);
-      return <g className="chart-gap"><line x1={x} x2={x} y1={high} y2={low} stroke="#555"/><path d={`M${x-4},${high+7} L${x},${high} L${x+4},${high+7} M${x-4},${low-7} L${x},${low} L${x+4},${low-7}`} fill="none" stroke="#555"/><text x={x+12} y={(high+low)/2-2}>{gap.toFixed(1)} pp<tspan x={x+12} dy="19">gap</tspan></text></g>;
-    })()}
-  </Chart>;
+  return <ReportPerformanceChart rows={rows} subject="Care" descending title="Commodity Availability by Level of Care"/>;
 }
 
-export function ReportPerformanceChart({rows, subject}) {
+export function ReportPerformanceChart({rows, subject, title, descending, preserveOrder = false}) {
   const province=subject==='Provincial';
-  const ranked=rankedReportRows(rows, province);
+  const district=subject==='District';
+  const ranked=preserveOrder ? rows : rankedReportRows(rows, descending ?? province);
   if (!ranked.length) return <p>No observations are available for this chart.</p>;
   const left=85, right=1110, top=92, plot=410, step=(right-left)/ranked.length, maximum=reportMosMaximum(ranked);
   const labelLines=Math.max(...ranked.map(row=>reportChartLabels(row,province).length));
-  const height=top+plot+labelLines*18+55;
+  const labelSpace=district ? Math.max(115,...ranked.map(row=>row.name.length*5.6+32)) : labelLines*18+20;
+  const height=top+plot+labelSpace+35;
   const points=ranked.map((row,i)=>Number.isFinite(row.mos)?{x:left+step*(i+.5),y:top+plot*(1-row.mos/maximum)}:null);
   const segments=[];
   points.forEach((point,i)=>{if(point){if(!i||!points[i-1])segments.push([]);segments.at(-1).push(`${point.x},${point.y}`);}});
-  return <Chart title={`Commodity Availability and Months of Stock by ${province?'Province':'Programme/Facility Type'}`} height={height}>
-    <g className="chart-legend"><rect x={left} y="53" width="17" height="12" fill="#2e75b6"/><text x={left+24} y="64">Availability (%)</text><line x1={left+190} x2={left+220} y1="59" y2="59" stroke={mosColour} strokeWidth="3"/><circle cx={left+205} cy="59" r="5" fill="white" stroke={mosColour} strokeWidth="2"/><text x={left+230} y="64">Months of stock (MOS)</text></g>
+  return <Chart title={title || `Commodity Availability and Months of Stock by ${province?'Province':'Programme/Facility Type'}`} height={height} className="report-availability-combo">
+    <g className="chart-legend"><rect x={left} y="53" width="17" height="12" fill={reportAvailabilityColour}/><text x={left+24} y="64">Availability (%)</text><line x1={left+190} x2={left+220} y1="59" y2="59" stroke={mosColour} strokeWidth="3"/><text x={left+230} y="64">Months of stock (MOS)</text></g>
     <PercentAxis {...{left,right,top,plot}}/>
     <line x1={right} x2={right} y1={top} y2={top+plot} stroke="#222"/>
     {Array.from({length:7},(_,i)=>i*maximum/6).map((tick,i)=><text key={i} x={right+10} y={top+plot*(1-i/6)+5}>{Number.isInteger(tick)?tick:tick.toFixed(1)}</text>)}
@@ -67,15 +50,14 @@ export function ReportPerformanceChart({rows, subject}) {
     {ranked.map((row,i)=>{
       const x=left+step*(i+.22), barWidth=step*.56, y=top+plot*(1-(row.availability||0));
       return <g key={row.label||row.name}>
-        {Number.isFinite(row.availability)?<><rect x={x} y={y} width={barWidth} height={top+plot-y} fill="#2e75b6"/><text className="chart-bar-label" x={x+barWidth/2} y={row.availability<.1?top+plot-50:province?y+22:top+plot-12} textAnchor="middle" style={{fill:row.availability<.1?'#111':'white'}}>{formatReportPercent(row.availability)}</text></>:<text x={x+barWidth/2} y={top+plot/2} textAnchor="middle">N/R</text>}
-        <text className="chart-category" x={x+barWidth/2} y={top+plot+22} textAnchor="middle">{reportChartLabels(row,province).map((line,j)=><tspan key={j} x={x+barWidth/2} dy={j?18:0}>{line}</tspan>)}</text>
+        {Number.isFinite(row.availability)?<ReportAvailabilityBar x={x} y={y} width={barWidth} height={top+plot-y} label={formatReportPercent(row.availability)}/>:<text x={x+barWidth/2} y={top+plot/2} textAnchor="middle">N/R</text>}
+        {district ? <text className="chart-category" transform={`translate(${x+barWidth/2} ${top+plot+25}) rotate(-38)`} textAnchor="end">{row.name}</text> : <text className="chart-category" x={x+barWidth/2} y={top+plot+22} textAnchor="middle">{reportChartLabels(row,province).map((line,j)=><tspan key={j} x={x+barWidth/2} dy={j?18:0}>{line}</tspan>)}</text>}
       </g>;
     })}
     {segments.map((segment,i)=><polyline key={i} points={segment.join(' ')} fill="none" stroke={mosColour} strokeWidth="3"/>)}
     {ranked.map((row,i)=>{
       if(!points[i])return null;
-      const above=province||points[i].y>top+plot-50;
-      return <g key={row.label||row.name}><circle {...{cx:points[i].x,cy:points[i].y}} r="6" fill="white" stroke={mosColour} strokeWidth="2.5"/><rect x={points[i].x-19} y={points[i].y+(above?-31:13)} width="38" height="22" rx="2" fill="#fff"/><text className="chart-mos-label" x={points[i].x} y={points[i].y+(above?-14:29)} textAnchor="middle">{row.mos.toFixed(1)}</text></g>;
+      return <ReportMosPoint key={row.label||row.name} {...points[i]} value={row.mos} top={top} bottom={top+plot}/>;
     })}
   </Chart>;
 }
@@ -93,7 +75,7 @@ export function ReportDistrictChart({rows, province, periodLabel, reportingNote}
   const ranked = rankedReportRows(rows);
   if (!ranked.length) return <p>No expected districts are available for this province.</p>;
   const left=85, right=1110, top=135, plot=410, base=top+plot;
-  const step=(right-left)/ranked.length, maximum=Math.max(7, reportMosMaximum(ranked)), orange='#ed6a00';
+  const step=(right-left)/ranked.length, maximum=Math.max(7, reportMosMaximum(ranked));
   const names=ranked.map(row => row.name.toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase()));
   const labelSpace=Math.max(115, ...names.map(name => name.length*5.6+32));
   const notes=[...chartNoteLines('Source: selected provincial tracer observations. Districts ordered by availability; the two axes use different units.'),
@@ -105,8 +87,8 @@ export function ReportDistrictChart({rows, province, periodLabel, reportingNote}
   const periodText=periodLabel.replace(/^(Week \d+) - /,'$1 ending ');
   return <Chart title={province} subtitle={`District tracer availability and stock coverage | ${periodText}`}
     ariaLabel={`District drug availability and months of stock in ${province}`} className="report-district-chart" height={height} note={notes}>
-    <g className="chart-legend"><rect x={left} y="94" width="26" height="12" fill="#2e75b6"/><text x={left+38} y="106">Availability (%)</text>
-      <line x1={left+225} x2={left+260} y1="100" y2="100" stroke={orange} strokeWidth="3"/><circle cx={left+242} cy="100" r="5.5" fill="white" stroke={orange} strokeWidth="2"/><text x={left+273} y="106">Months of stock (MOS)</text></g>
+    <g className="chart-legend"><rect x={left} y="94" width="26" height="12" fill={reportAvailabilityColour}/><text x={left+38} y="106">Availability (%)</text>
+      <line x1={left+225} x2={left+260} y1="100" y2="100" stroke={mosColour} strokeWidth="3"/><text x={left+273} y="106">Months of stock (MOS)</text></g>
     <PercentAxis {...{left,right,top,plot}}/>
     <line x1={right} x2={right} y1={top} y2={base} stroke="#555"/>
     {Array.from({length: maximum+1}, (_,i) => <g key={i}><line x1={right} x2={right+5} y1={base-plot*i/maximum} y2={base-plot*i/maximum} stroke="#555"/><text x={right+12} y={base-plot*i/maximum+5}>{i}</text></g>)}
@@ -116,21 +98,16 @@ export function ReportDistrictChart({rows, province, periodLabel, reportingNote}
       const y=available ? base-plot*Math.max(0,Math.min(1,row.availability)) : base;
       const label=available ? formatReportPercent(row.availability) : 'N/R';
       return <g key={row.name} data-district={row.name}>
-        {available ? <><rect className="district-availability-bar" x={x} y={y} width={barWidth} height={base-y} fill="#2e75b6"><title>{`${names[i]}: ${label} availability`}</title></rect>
-          <text className="chart-bar-label" x={centre} y={row.availability>=.08 ? base-12 : y-10} textAnchor="middle"
-            style={{fill: row.availability>=.08 ? 'white' : '#111', fontSize: Math.min(17,(barWidth-2)/(label.length*.58))}}>{label}</text></> :
+        {available ? <ReportAvailabilityBar className="district-availability-bar" x={x} y={y} width={barWidth} height={base-y} label={label} title={`${names[i]}: ${label} availability`}/> :
           <text className="district-not-reported" x={centre} y={top+plot/2} textAnchor="middle">N/R</text>}
         <text className="chart-category" transform={`translate(${centre} ${base+25}) rotate(-38)`} textAnchor="end">{names[i]}</text>
       </g>;
     })}
-    {segments.map((segment,i) => <polyline className="district-mos-line" key={i} points={segment.join(' ')} fill="none" stroke={orange} strokeWidth="3"/>)}
+    {segments.map((segment,i) => <polyline className="district-mos-line" key={i} points={segment.join(' ')} fill="none" stroke={mosColour} strokeWidth="3"/>)}
     {ranked.map((row,i) => {
       const point=points[i];
       if (!point) return null;
-      const above=point.y>base-55, offset=above ? -33 : 13;
-      return <g key={row.name} data-mos-district={row.name}><circle className="district-mos-point" cx={point.x} cy={point.y} r="5.5" fill="white" stroke={orange} strokeWidth="2.5"><title>{`${names[i]}: ${row.mos.toFixed(1)} MOS`}</title></circle>
-        <rect x={point.x-20} y={point.y+offset} width="40" height="23" fill="white"/>
-        <text className="chart-mos-label" x={point.x} y={point.y+offset+17} textAnchor="middle">{row.mos.toFixed(1)}</text></g>;
+      return <g key={row.name} data-mos-district={row.name}><ReportMosPoint {...point} value={row.mos} top={top} bottom={base} pointClassName="district-mos-point"/></g>;
     })}
   </Chart>;
 }

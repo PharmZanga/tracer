@@ -14,6 +14,7 @@ const data = await server.ssrLoadModule('/src/tracerFacilityData.js');
 const {reportCatalogue} = await server.ssrLoadModule('/src/reportCatalogue.js');
 const {reportOptions, selectReportPeriods} = await server.ssrLoadModule('/src/reportPeriods.js');
 const {ReportPerformanceChart, ReportProvincialStockChart, ReportDistrictChart} = await server.ssrLoadModule('/src/ReportCharts.jsx');
+const {ReportAvailabilityBar, ReportMosPoint} = await server.ssrLoadModule('/src/ReportChartMarks.jsx');
 const {ReportGeography} = await server.ssrLoadModule('/src/ReportAnalytics.jsx');
 await data.loadLiveTracerData();
 
@@ -110,8 +111,26 @@ test('district graphs match the reference with ranked bars, a separate MOS scale
   assert.match(html,/District tracer availability and stock coverage \| Week 4/);
   assert.match(html,/Commodity availability \(%\)/);
   assert.match(html,/Months of stock \(MOS\)/);
-  assert.match(html,/stroke="#ed6a00"/);
+  assert.match(html,/stroke="#4472c4"/);
+  assert.match(html,/fill="#ff7f23"/);
+  assert.match(html,/report-bar-bevel/);
+  assert.match(html,/report-mos-value-box/);
   assert.doesNotMatch(html,/NaN|Infinity|height="-/);
+});
+
+test('bevelled bars preserve exact data geometry, unique gradients and legible zero labels', () => {
+  const html = renderToStaticMarkup(React.createElement('svg', null,
+    React.createElement(ReportAvailabilityBar, {x: 20, y: 80, width: 60, height: 200, label: '50.0%', className: 'source-bar'}),
+    React.createElement(ReportAvailabilityBar, {x: 100, y: 280, width: 60, height: 0, label: '0.0%', className: 'source-zero'}),
+    React.createElement(ReportMosPoint, {x: 100, y: 280, value: 0, top: 30, bottom: 280})));
+  assert.match(html, /<rect x="20" y="80" width="60" height="200" class="source-bar"/);
+  assert.match(html, /<rect x="100" y="280" width="60" height="0" class="source-zero"/);
+  const ids = [...html.matchAll(/id="(availability-[^"]+)"/g)].map(match => match[1]);
+  assert.equal(new Set(ids).size, 2);
+  assert.equal((html.match(/report-bar-bevel/g) || []).length, 1);
+  assert.match(html, />0.0%<\/text>/);
+  assert.match(html, />0.0<\/text>/);
+  assert.doesNotMatch(html, /NaN|Infinity|height="-/);
 });
 
 test('the district section charts and tabulates all 116 districts across all ten provinces', () => {

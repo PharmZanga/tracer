@@ -8,8 +8,8 @@ const colours=['#d32620','#c86c00','#d6a126','#278150','#2365ad','#777'];
 const bands=['Zero / near-zero MOS','Emergency','Understocked','According to plan','Overstocked','MOS data gap'];
 const percent=value=>Number.isFinite(value)?formatReportPercent(value):'Not reported';
 const paragraphs = texts => texts.map(text => <p className="national-report-narrative" key={text}>{text}</p>);
-function AvailabilityBars({rows,label='Reported drug availability by geography'}) {
-  return <div className="report-stock-bars" role="img" aria-label={label}>{rows.map(row=><div className="report-stock-bar" key={`${row.province||''}|${row.name}`}><strong>{row.name}</strong><div className="report-bar-track"><i style={{width:`${Math.max(0,Math.min(1,row.availability||0))*100}%`,background:'#2365ad'}}/></div><span>{percent(row.availability)}</span></div>)}</div>;
+function AvailabilityBars({rows,label='Reported drug availability by geography',province=false}) {
+  return <ReportPerformanceChart rows={rows} subject={province ? 'Provincial' : 'District'} title={label} preserveOrder/>;
 }
 export function ReportPerformanceBars({rows,subject}) {
   return <ReportPerformanceChart rows={rows} subject={subject}/>;
@@ -45,7 +45,7 @@ export function ReportGeography({summary,mode}) {
       </div>;
     })}</>;
   }
-  if(mode==='province-availability') return <>{paragraphs(performanceNarrative(summary.provinces,'Provincial'))}<AvailabilityBars rows={summary.provinces}/><p>Availability uses positive-SOH tracer records, combined using record-count weights. Entered footer percentages do not override this calculation. District HC/HP stock can be aggregated and does not measure individual facility availability. Missing submissions are not zero stock.</p></>;
+  if(mode==='province-availability') return <>{paragraphs(performanceNarrative(summary.provinces,'Provincial'))}<AvailabilityBars rows={summary.provinces} province/><p>Availability uses positive-SOH tracer records, combined using record-count weights. Entered footer percentages do not override this calculation. District HC/HP stock can be aggregated and does not measure individual facility availability. Missing submissions are not zero stock.</p></>;
   if(mode==='reporting-rate') return <>
     {paragraphs(reportingRateNarrative(reportingRates))}
     <table><thead><tr><th>Province</th><th>Complete / expected district-weeks</th><th>Rate</th><th>Partial district-weeks</th></tr></thead><tbody>{reportingRates.map(r=><tr key={r.name}><td>{r.name}</td><td>{r.reported}/{r.expected}</td><td>{percent(r.rate)}</td><td>{r.partial}</td></tr>)}</tbody></table>
@@ -61,6 +61,7 @@ export function ReportStockBars({rows}) {
   return <ReportNationalStockChart rows={rows}/>;
 }
 function SeriesChart({series,stock=false}) {
+  if (!stock) return <ReportPerformanceChart rows={series.map(point => ({...point.row, name: point.date.slice(5), availability: point.row?.availability ?? null, mos: point.row?.mos ?? null}))} subject="Week" title="Weekly reported availability" preserveOrder/>;
   const width=760,height=310,left=48,top=24,plot=210,step=(width-80)/Math.max(1,series.length);
   return <div className="national-report-chart"><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={stock?'Weekly commodity stock-band shares':'Weekly reported availability'}>
     {[0,25,50,75,100].map(value=><g key={value}><line x1={left} x2={width-20} y1={top+plot*(1-value/100)} y2={top+plot*(1-value/100)} stroke="#ddd"/><text x={left-5} y={top+plot*(1-value/100)+4} textAnchor="end">{value}%</text></g>)}

@@ -2,7 +2,7 @@ import { Children, cloneElement, isValidElement, lazy, Suspense, useEffect, useM
 const FacilityAlertsMap=lazy(()=>import('./FacilityAlertsMap.jsx'));
 import { reportSections, reportSectionDefinitions, defaultReportSectionIds, selectedReportSections } from './reportSections.js';
 import {ReportCareChart} from './ReportCharts.jsx';
-import ComparisonReport from './ComparisonReport.jsx';
+import ComparisonReport, {ComparisonReportChart} from './ComparisonReport.jsx';
 import {buildReportFeedback, reportFeedbackReporting} from './reportFeedback.js';
 import {ReportKeyFindings, ReportInterventions, ReportConclusion} from './ReportFeedback.jsx';
 import { buildReportNarrative, formatReportPercent, reportingWeeks, reportAverageMos, reportPeriodRange } from './reportNarrative.js';
@@ -735,28 +735,10 @@ export function buildNationalReportSummary(selectedPeriods, previousPeriods, opt
   };
 }
 
-function ReportAvailabilityChart({ weekly, care = false }) {
-  const formatPercent = formatReportPercent;
-  const width = Math.max(680, weekly.length * (care ? 115 : 80));
-  const left = 48, top = 42, height = 210, step = (width - 100) / weekly.length;
-  const colors = ["#ed7d31", "#4472c4", "#70ad47", "#a5a5a5"];
-  const mosMaximum = Math.max(4, ...weekly.map((w) => w.mos || 0));
-  const mosSegments = [];
-  weekly.forEach((w, index) => {
-    if (!Number.isFinite(w.mos)) return;
-    if (!index || !Number.isFinite(weekly[index - 1].mos)) mosSegments.push([]);
-    mosSegments.at(-1).push(`${left+step*(index+.5)},${top+height-(w.mos/mosMaximum)*height}`);
-  });
-  return <div className="national-report-chart"><svg viewBox={`0 0 ${width} 340`} role="img" aria-label={care ? "Weekly availability by level of care" : "Weekly availability and average months of stock"}>
-    <text x={left} y="20">Availability (%)</text>{!care && <text x={width-50} y="20" textAnchor="end">Average MOS</text>}
-    {[0,20,40,60,80,100].map((value) => <g key={value}><line x1={left} x2={width-50} y1={top+height-value*height/100} y2={top+height-value*height/100} stroke="#d4d4d4" strokeDasharray="3 3"/><text x={left-8} y={top+height-value*height/100+4} textAnchor="end">{value}%</text></g>)}
-    {weekly.map((w,index) => <g key={w.period.id}>{(care ? w.levels : [{availability:w.period.national.availability}]).map((r,j,rows) => {
-      const barWidth=step*.7/rows.length, x=left+step*index+step*.15+j*barWidth, barHeight=(r.availability || 0)*height;
-      return <g key={j}>{Number.isFinite(r.availability) ? <><rect x={x} y={top+height-barHeight} width={barWidth-2} height={barHeight} fill={colors[j]}/><text x={x+barWidth/2} y={top+height-barHeight-6} textAnchor="middle" fontSize={care ? "8" : "11"}>{formatPercent(r.availability)}</text></> : <text x={x+barWidth/2} y={top+height/2} textAnchor="middle">N/R</text>}</g>;
-    })}<text x={left+step*(index+.5)} y={top+height+22} textAnchor="middle">{w.period.reportDate.slice(5)}</text></g>)}
-    {!care && <>{mosSegments.map((points,i)=><polyline key={i} points={points.join(' ')} fill="none" stroke="#4472c4" strokeWidth="2"/>)}{weekly.map((w,i) => Number.isFinite(w.mos) && <g key={w.period.id}><rect x={left+step*(i+.5)-4} y={top+height-w.mos/mosMaximum*height-4} width="8" height="8" fill="#4472c4"/><text x={left+step*(i+.5)} y={top+height-w.mos/mosMaximum*height-12} textAnchor="middle">{formatMos(w.mos)}</text></g>)}{[0,1,2,3,4].map((i) => <text key={i} x={width-42} y={top+height-i*height/4+4}>{(i*mosMaximum/4).toFixed(1)}</text>)}</>}
-    {(care ? careLevelBuckets.map((b) => b.label) : ["Availability", "Average MOS"]).map((label,i) => <g key={label}><rect x={left} y={294+i*11} width="12" height="7" fill={colors[i]}/><text x={left+18} y={301+i*11}>{label}</text></g>)}
-  </svg></div>;
+function ReportAvailabilityChart({weekly}) {
+  const periods = weekly.map(({period}) => ({id: period.id, shortLabel: period.reportDate.slice(5)}));
+  const values = weekly.map(({period, mos}) => ({availability: period.national.availability, mos}));
+  return <ComparisonReportChart periods={periods} groups={[{name: 'National', values}]} title="Weekly availability and average months of stock"/>;
 }
 
 function OrderedReport({children,sections=reportSections,exporting=false}) {

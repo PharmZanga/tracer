@@ -5,6 +5,7 @@ import {comparisonSections, defaultComparisonPeriods, comparisonGroups, comparis
 import './comparisonReport.css';
 import {buildReportFeedback} from './reportFeedback.js';
 import {ReportKeyFindings, ReportInterventions, ReportConclusion} from './ReportFeedback.jsx';
+import {ReportAvailabilityBar, ReportMosPoint, reportAvailabilityColour, reportMosColour} from './ReportChartMarks.jsx';
 
 const shortName = name => name.replace(/ PROVINCE$/i, '').replace(/\s+/g, ' ').trim();
 const wrap = text => {
@@ -18,35 +19,35 @@ const wrap = text => {
 
 export function ComparisonReportChart({periods, groups, title}) {
   const left = 78, right = 1100, top = 105, plot = 345, bottom = top + plot;
-  const count = Math.max(1, groups.length * periods.length), step = (right - left) / count;
-  const maximum = Math.max(6, Math.ceil(Math.max(0, ...groups.flatMap(group => group.values.map(row => Number.isFinite(row.mos) ? row.mos : 0)))));
+  const groupWidth = (right - left) / Math.max(1, groups.length), step = groupWidth * .78 / Math.max(1, periods.length);
+  const centre = (groupIndex, index) => left + groupWidth * (groupIndex + .11) + step * (index + .5);
+  const maximum = Math.max(4, Math.ceil(Math.max(0, ...groups.flatMap(group => group.values.map(row => Number.isFinite(row.mos) ? row.mos : 0)))));
   const labelLines = Math.max(1, ...groups.map(group => wrap(group.name).length));
-  const height = bottom + 80 + labelLines * 18;
+  const height = bottom + 115 + labelLines * 18;
   const yMos = value => bottom - value / maximum * plot;
   return <figure className="national-report-chart report-reference-chart comparison-report-chart"><svg viewBox={`0 0 1200 ${height}`} role="img" aria-label={title}>
     <title>{title}</title><text className="chart-title" x={left} y="30">{title}</text>
-    <rect x={left} y="48" width="20" height="13" fill="#ed7d31"/><text x={left + 28} y="60">Availability (%)</text>
-    <line x1="310" x2="345" y1="55" y2="55" stroke="#2365ad" strokeWidth="3"/><circle cx="328" cy="55" r="5" fill="white" stroke="#2365ad" strokeWidth="2"/><text x="356" y="60">Months of stock (MOS)</text>
+    <g className="chart-legend"><rect x="350" y={height - 49} width="22" height="14" fill={reportAvailabilityColour}/><text x="382" y={height - 37}>Availability (%)</text>
+    <line x1="610" x2="645" y1={height - 42} y2={height - 42} stroke={reportMosColour} strokeWidth="3"/><text x="658" y={height - 37}>Months of stock (MOS)</text></g>
     <text x={left} y="88">Availability (%)</text><text x={right} y="88" textAnchor="end">Months of stock (MOS)</text>
     {[0, 20, 40, 60, 80, 100].map(value => <g key={value}><line x1={left} x2={right} y1={bottom - value / 100 * plot} y2={bottom - value / 100 * plot} stroke="#ddd" strokeDasharray="4 3"/><text x={left - 10} y={bottom - value / 100 * plot + 5} textAnchor="end">{value}%</text></g>)}
     <line x1={left} x2={left} y1={top} y2={bottom} stroke="#333"/><line x1={left} x2={right} y1={bottom} y2={bottom} stroke="#333"/><line x1={right} x2={right} y1={top} y2={bottom} stroke="#333"/>
-    {Array.from({length: 7}, (_, i) => <text key={i} x={right + 12} y={bottom - i / 6 * plot + 5}>{(i * maximum / 6).toFixed(1)}</text>)}
+    {Array.from({length: 6}, (_, i) => <text key={i} x={right + 12} y={bottom - i / 5 * plot + 5}>{(i * maximum / 5).toFixed(1)}</text>)}
     {groups.map((group, groupIndex) => {
-      const points = group.values.map((row, i) => Number.isFinite(row.mos) ? {x: left + step * (groupIndex * periods.length + i + .5), y: yMos(row.mos)} : null);
+      const points = group.values.map((row, i) => Number.isFinite(row.mos) ? {x: centre(groupIndex, i), y: yMos(row.mos)} : null);
       const segments = [];
       points.forEach((point, i) => {if (point) {if (!i || !points[i - 1]) segments.push([]); segments.at(-1).push(`${point.x},${point.y}`);}});
       return <g key={group.name} data-comparison-group={group.name}>
-        {groupIndex > 0 && <line x1={left + step * groupIndex * periods.length} x2={left + step * groupIndex * periods.length} y1={top} y2={bottom + 30} stroke="#ccc" strokeDasharray="2 4"/>}
         {group.values.map((row, i) => {
-          const x = left + step * (groupIndex * periods.length + i + .5), h = Number.isFinite(row.availability) ? row.availability * plot : 0;
+          const x = centre(groupIndex, i), h = Number.isFinite(row.availability) ? row.availability * plot : 0;
           return <g key={periods[i].id} data-comparison-period={periods[i].id}>
-            {Number.isFinite(row.availability) ? <><rect x={x - step * .32} y={bottom - h} width={step * .64} height={h} fill="#ed7d31"/><text className="chart-value" x={x} y={Math.max(top - 10, bottom - h - 10)} textAnchor="middle">{comparisonPercent(row.availability)}</text></> : <text x={x} y={bottom - 20} textAnchor="middle">N/R</text>}
+            {Number.isFinite(row.availability) ? <ReportAvailabilityBar x={x - step * .4} y={bottom - h} width={step * .8} height={h} label={comparisonPercent(row.availability)}/> : <text x={x} y={bottom - 20} textAnchor="middle">N/R</text>}
             <text x={x} y={bottom + 23} textAnchor="middle">{periods[i].shortLabel}</text>
           </g>;
         })}
-        {segments.map((segment, i) => <polyline key={i} points={segment.join(' ')} fill="none" stroke="#2365ad" strokeWidth="3"/>)}
-        {points.map((point, i) => point && <g key={i}><circle cx={point.x} cy={point.y} r="6" fill="white" stroke="#2365ad" strokeWidth="2.5"/><rect x={point.x - 20} y={point.y + (point.y > bottom - 35 ? -31 : 12)} width="40" height="22" fill="white"/><text className="comparison-mos-label" x={point.x} y={point.y + (point.y > bottom - 35 ? -15 : 28)} textAnchor="middle">{comparisonMos(group.values[i].mos)}</text></g>)}
-        <text x={left + step * (groupIndex * periods.length + periods.length / 2)} y={bottom + 48} textAnchor="middle">{wrap(group.name).map((line, i) => <tspan key={i} x={left + step * (groupIndex * periods.length + periods.length / 2)} dy={i ? 18 : 0}>{line}</tspan>)}</text>
+        {segments.map((segment, i) => <polyline key={i} points={segment.join(' ')} fill="none" stroke={reportMosColour} strokeWidth="3.5"/>)}
+        {points.map((point, i) => point && <ReportMosPoint key={i} {...point} value={group.values[i].mos} top={top} bottom={bottom} className="comparison-mos-label"/>)}
+        <text x={left + groupWidth * (groupIndex + .5)} y={bottom + 48} textAnchor="middle">{wrap(group.name).map((line, i) => <tspan key={i} x={left + groupWidth * (groupIndex + .5)} dy={i ? 18 : 0}>{line}</tspan>)}</text>
       </g>;
     })}
     <text className="chart-source" x={left} y={height - 10}>Source: dashboard tracer submissions. Missing values are N/R; availability and MOS use different axes.</text>
@@ -80,7 +81,7 @@ export function ComparisonReportDocument({periods, year, sections, exporting}) {
         <p>Changes in availability are percentage points (pp); changes in MOS are months. N/R means no verified observation, not zero stock. Positive SOH indicates reported stock presence, not assured service continuity. Different facility and commodity coverage can influence period comparisons; verify commodity-level evidence before deciding on replenishment or redistribution.</p>
       </> : <>
         {id === 'national' ? <ReportKeyFindings feedback={feedback}/> : comparisonNarrative(periods, comparisonGroups(periods, id), comparisonSections.find(([key]) => key === id)[1]).map(text => <p className="national-report-narrative" key={text}>{text}</p>)}
-        {Array.from({length: Math.ceil(comparisonGroups(periods, id).length / 3)}, (_, i) => <ComparisonReportChart key={i} periods={periods} groups={comparisonGroups(periods, id).slice(i * 3, i * 3 + 3)} title={`${title.slice(3)}${i ? ` (continued ${i + 1})` : ''}`}/>)}
+        {Array.from({length: Math.ceil(comparisonGroups(periods, id).length / (id === 'levels' ? 4 : 3))}, (_, i) => <ComparisonReportChart key={i} periods={periods} groups={comparisonGroups(periods, id).slice(i * (id === 'levels' ? 4 : 3), (i + 1) * (id === 'levels' ? 4 : 3))} title={`${title.slice(3)}${i ? ` (continued ${i + 1})` : ''}`}/>)}
         <ComparisonTable periods={periods} groups={comparisonGroups(periods, id)}/>
         <ComparisonChangeTable periods={periods} groups={comparisonGroups(periods, id)}/>
       </>}

@@ -52,11 +52,24 @@ test('combined charts keep missing MOS gaps and plot actual zero without negativ
   const groups = [{name: 'Example', values: [{availability: .8, mos: 3}, {availability: null, mos: null}, {availability: .7, mos: 0}]}];
   const html = renderToStaticMarkup(React.createElement(ComparisonReportChart, {periods, groups, title: 'Combined comparison'}));
   assert.equal((html.match(/<polyline /g) || []).length, 2);
-  assert.match(html, /fill="#ed7d31"/);
-  assert.match(html, /stroke="#2365ad"/);
+  assert.match(html, /fill="#ff7f23"/);
+  assert.match(html, /stroke="#4472c4"/);
+  assert.match(html, /report-bar-bevel/);
+  assert.match(html, /report-bar-value-band/);
+  assert.match(html, /report-mos-value-box/);
   assert.match(html, />N\/R</);
   assert.match(html, />0.0<\/text>/);
   assert.doesNotMatch(html, /NaN|Infinity|height="-/);
+});
+
+test('all four care levels remain on one grouped orange-bar and blue-MOS comparison graph', () => {
+  const html = renderToStaticMarkup(React.createElement(ComparisonReportDocument, {periods, year: '2026', sections: ['levels']}));
+  assert.equal((html.match(/<svg /g) || []).length, 1);
+  assert.equal((html.match(/data-comparison-group=/g) || []).length, 4);
+  assert.equal((html.match(/data-comparison-period=/g) || []).length, 12);
+  assert.equal((html.match(/report-bar-bevel/g) || []).length, 12);
+  assert.equal((html.match(/report-bar-value-band/g) || []).length, 12);
+  assert.equal((html.match(/report-mos-value-box/g) || []).length, 12);
 });
 
 test('report has national provincial level and programme combined charts, coverage and quarter changes', () => {
